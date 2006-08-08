@@ -1,0 +1,2 @@
+The sample pattern definition can be found in the "default/" directory.
+If you would like to use your own pattern, either replace the files in default, or create a new directory (e.g., "myPattern") and point the toolkit to the new pattern definition directory.
