@@ -4,5 +4,10 @@
 	<classpathentry path="examples" kind="src"/>
 	<classpathentry path="tests" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
+	<classpathentry path="lib/epsgraphics.jar" kind="lib">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/PaperToolkit/lib/epsgraphics.jar!/javadocs"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
