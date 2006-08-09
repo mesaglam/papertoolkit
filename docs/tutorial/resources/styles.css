@@ -1,0 +1,13 @@
+.Heading {
+	font-family: "Trebuchet MS", Verdana, Helvetica, sans-serif;
+	font-size: x-large;
+	font-weight: bolder;
+}
+
+body,td,th {
+	font-family: Trebuchet MS, Verdana, Helvetica, sans-serif;
+	font-size: medium;
+	font-weight: normal;
+}
+
+.Code {font-family: "Courier New", Courier, monospace}

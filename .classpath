@@ -9,5 +9,14 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/PaperToolkit/lib/epsgraphics.jar!/javadocs"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry path="lib/adobe/acrobat.jar" kind="lib"/>
+	<classpathentry path="lib/adobe/MRJToolkitStubs.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/bcprov-jdk15-133.jar" kind="lib"/>
+	<classpathentry path="lib/itext-1.4.3.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/jai_codec.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/jai_core.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/jdom.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/jpedal.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/pjes.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
