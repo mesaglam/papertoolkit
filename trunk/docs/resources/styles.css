@@ -1,0 +1,32 @@
+.Heading {
+	font-family: "Trebuchet MS", Verdana, Helvetica, sans-serif;
+	font-size: x-large;
+	font-weight: bolder;
+}
+
+body,td,th {
+	background-color:#333333;
+	font-family: Trebuchet MS, Verdana, Helvetica, sans-serif;
+	font-size: medium;
+	font-weight: normal;
+	color:#DFDFDF;
+}
+
+a:link {
+	color: #7888FF;
+}
+
+
+a:visited {
+	color: #AA77DD;
+}
+
+.Code {font-family: "Courier New", Courier, monospace}
+
+.PageHeader {
+	display:block;
+	color:#CCCCCC;
+	background-color: #2A2A2A;	
+	margin: 0px 0px 10px 0px
+	border-style: solid;
+}
