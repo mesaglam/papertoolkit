@@ -1,0 +1,31 @@
+<html>
+<head><title>Tools of the Trade</title>
+<link href="../resources/styles.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<p class="Heading"> Tools of the Trade </p>
+<ol>
+  <li><a href="http://www.eclipse.org/">Eclipse IDE</a><br>
+  The Eclipse IDE is (in my opinion) the best development environment out there (regardless of programming language). I occasionally work in C# with VS .NET 2005, and they have different advantages... but Eclipse has some features that are way ahead of the game. Trust me on this one. At the time of this writing, we use Eclipse 3.2. Remember, CTRL+1 is your friend.</li>
+  <li><a href="http://java.sun.com/javase/6/">Java 6</a><br>
+  Java is a great language. I also like C#, but the Java development environment (see above) is so good that I only use C++/C# if I absolutely have to.</li>
+  <li><a href="http://java.sun.com/products/javacomm/">Java Comm</a><br>
+    One of the drawbacks of Java is that you don't get easy access to system-level resources, like the COM ports. Java Comm provides that access. Java Comm is currently on version 3.0, but there is no 3.0 release for the Windows platform. Instead, we use the older 2.0 release. You can probably find it with a quick Google search. There is also an open-source implementation of Java Comm called <a href="http://www.rxtx.org/">rxtx</a>. <br>
+  <p>If you would like to leverage R3's pen streaming functionality, you will need to install Java Comm 2.0 in each of your Java installation directories. For example, in my <span class="Code">C:\Program Files\Java\jre1.6.0\lib</span>, I have copies of the <span class="Code">comm.jar</span> and <span class="Code">javax.comm.properties</span> files. I also place these two files in my <span class="Code">C:\Program Files\Java\jdk1.6.0\jre\lib</span>. You do not need to worry about <span class="Code">win32com.dll</span>, as R3 includes it. However, if you are making your own custom solution, you will need to place the dll in the working directory of your software.</p>
+  </li>
+  <li><a href="http://java.sun.com/products/java-media/jai/">Java Advanced Imaging</a><br>
+    JAI is a high-level image processing library. It's good in some ways, bad in others. R3 uses JAI, so you will need to install it. In reality, we just include the JAI jars in the R3 distribution, but for higher performance you will want to install JAI's performance packs in each of your JREs. </li>
+  <li><a href="http://www.adobe.com/products/flash/flashpro/">Adobe (Macromedia) Flash Professional 8/9</a><br>
+  I have a love/hate relationship with Flash. It is great for making quick and dirty UI prototypes. However, pretty soon you hit a ceiling and ask: &quot;Why can't I just hook this up to my Java/C# backend?&quot; Adobe provides a 30-day trial so you can poke around and see if it works for you. Currently, there is an alpha release of Flash 9 that supports ActionScript 3.0. AS3 is <em>substantially </em>different from AS2. If you are a Flash hacker, then AS3 might confuse you for a day or two. However, if you are a Java hacker and have never played with Flash before, I would recommend jumping straight into Flash 9 and AS3. </li>
+  <li>&lt;work in progress...&gt; </li>
+</ol>
+<p>Ron B. Yeh </p>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-522093-7";
+urchinTracker();
+</script>
+</body>
+</html>
