@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>Streaming Live Data</title>
+<link href="../resources/styles.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<script language="javascript" type="text/javascript" 
+  src="../resources/header.js"></script>
+<p class="Heading">Streaming Live Data with the Nokia SU-1B </p>
+<p>The streaming functionality is not part of the Anoto SDK. It is enabled via a firmware upgrade. If you need this firmware upgrade, please speak with your Nokia representative. The rest of this tutorial assumes you have acquired the streaming firmware. </p>
+<ol>
+  <li>First, let's upgrade our pen's firmware. Remember how we looked up the <a href="BasicPenSetup/NokiaPanel.png">firmware version</a> in an earlier tutorial?</li>
+  <li>We need to &quot;upgrade&quot; our firmware to 16C_Streaming.<br><img src="Streaming/StreamingUpgrade.png" alt="Streaming Upgrade">  </li>
+  <li>First, run <span class="Code">KillPCSW.exe</span>. The little Nokia icon in your System Tray disappears.</li>
+  <li>Now,  run the <span class="Code">7610...UpgradeUtil.exe</span>. If Windows Firewall asks you to unblock, do so.</li>
+  <li>The UpgradeUtil's Status should read: &quot;Pen Connected.&quot; Click Upgrade. Navigate to the folder where you have all the BIN Files (usually the same folder where the UpgradeUtil resides).<br>
+    <img src="Streaming/UpgradeUtil.png" alt="Upgrade Util" width="486" height="117"></li>
+  <li>When the upgrade finishes, we'll need to restart Windows. =)</li>
+  <li>...go get coffee...</li>
+  <li>Windows has restarted, and you see the Nokia dock icon again. Examine the firmware revision, and you will see that  it says 16C_STREAMING_2. Your pen is now ready to stream.</li>
+</ol>
+<p>However, your computer is not yet ready to talk to your pen. You will need a bluetooth dongle (or built in bluetooth)  to do this. The basic requirement is that your computer needs Bluetooth, and a Bluetooth service named &quot;ANOTO STREAMING&quot; (note the space) that is mapped to a COM port (our software will by default look for it on COM5; this is customizable). If you feel brave enough to go at this alone, good luck. In my experience, connecting over Bluetooth is a big pain. Also, we have not been able to do this with Mac OS X (with enough massaging, we can get it to work through Parallels). Let me know how it goes, if you're a Mac fan. </p>
+<p>On Windows, we have had the best experience with Widcomm's Bluetooth stack. You may try other stacks, but in our testing, they generally do not work. </p>
+<p>If you would like to stream <em>exactly </em>the same way we do, please read on... </p>
+<ol>
+  <li>Go to your nearest computer store and buy the Zoom USB Bluetooth Adapter, Model 4320 (A or AF also work). In the past, we have had success finding this model at Fry's Electronics.  The adapter and the box look like this:<br>
+  <img src="Streaming/Zoom.jpg" alt="Zoom" width="76" height="196"> <img src="Streaming/Box.png" alt="Box" width="233" height="294"></li>
+  <li>Do not install the driver that came with the   box. =) In earlier versions of the box, the disk came with the Widcomm stack. They have since moved to a different (presumably cheaper-to-license) BT stack. You will need to find a copy of the Widcomm BT Software version 5 (we use 5.0.1.801). If you can find another Bluetooth Adapter that comes with the Widcomm 5 stack, let us know. In our sampling, most of the adapters we bought came with non-Widcomm stacks. </li>
+  <li>Install the Widcomm 5 BT Software (by running <span class="Code">setup.exe</span>). At some point during the installation, it will ask you to plug in your Bluetooth adapter. Do so. After you install the software (and reboot), you should see a white Bluetooth icon in the system tray. If you ever unplug your adapter, you will see a red icon. <br>
+    <img src="Streaming/BTIconPluggedIn.png" alt="PluggedIn" width="69" height="39"> <img src="Streaming/BTIcon.png" alt="Icon" width="68" height="40"></li>
+  <li>Make sure your Bluetooth adapter is plugged in and the icon is white. Double-click this icon to open the My Bluetooth Places window.</li>
+  <li>Click on &quot;View or modify configuration&quot;. Navigate to the &quot;Local Services&quot; tab. </li>
+  <li>Click &quot;Add Serial Service&quot; and   enter &quot;ANOTO STREAMING&quot; as the name, and have it start up automatically. Set it to COM5. If COM5 isn't available, choose the next available one. But, if you can, uninstall whatever is hogging up COM5. It makes things a little bit easier later on. If you have a lot of devices that are hogging up your COM ports, and you'd like to remove them, see <a href="http://support.dlink.com/faq/view.asp?prod_id=2146&question=DBT-120_revB4">this link</a> (a <a href="Streaming/BluetoothDevices.html">mirror</a> in case DLink removes that page). <br>
+  <img src="Streaming/BluetoothProps.png" alt="Properties" width="353" height="366"></li>
+  <li>Next, you will need to pair your pen to your computer. This is always a fun process. I always unplug the AC adapter, and put the cap on the Nokia pen (thus turning it off) before I try to pair the pen to my PC. If you leave it charging, sometimes it will not pair. Trust me on this one.</li>
+  <li>Double-Click on your Bluetooth tray icon, and you will see this window:<br>
+    <img src="Streaming/EmptyNeighborhood.png" alt="Neighborhood" width="547" height="481"></li>
+  <li>Click &quot;Search for devices in range&quot; and uncap your pen at the same time. If you get lucky, you will see a new Nokia device appear.<br>
+    <img src="Streaming/Unpaired.png" alt="Unpaired" width="547" height="481"></li>
+  <li>Right-Click the device, and choose Pair.</li>
+  <li>Enter your Bluetooth Passkey here. It is the last 4 digits of the serial number printed on the back of your pen (e.g., 7235).<br>
+    <img src="Streaming/Passkey.png" alt="Passkey" width="422" height="255"></li>
+  <li>When the pen connects, the pen will buzz three times. You will see a red check mark next to the device. Your pen is now paired to your PC.<br>
+    <img src="Streaming/Paired.png" alt="Paired" width="547" height="481"></li>
+</ol>
+<p>Allllmossssssssst Therrre...</p>
+<p>Your pen  is paired, but your pen will not start sending any data until you tell it to go into Streaming Mode.</p>
+<ol>
+  <li>Remember  the folder where you stored <span class="Code">KillPCSW.exe</span> and the rest of the firmware upgrade files? Go back to that folder, and find the Postscript file named <span class="Code">streaming_onoff.eps</span>. Send this to your nearest printer using Ghostscript or <span class="Code">lpr</span>. In my experience, it works best with a color printer. This postscript file contains a page of paper &quot;buttons&quot; that tell your pen to start communicating with your computer over Bluetooth. In my experience, I use this button so often that I have taped it to my laptop.<br>
+    <img src="Streaming/StreamingButton.jpg" alt="Streaming Button" width="427" height="320"></li>
+  <li>Uncap your pen and tap the blue square with the tip of your pen. If it asks you to unblock a port, agree. A bubble might also pop up asking if it's ok to connect to this device. Agree, and check the &quot;always allow&quot; option. If all goes well, your pen is now streaming. You can tell because the power icon on your pen is blinking like mad. </li>
+  <li>Also, when in streaming mode, your bluetooth icon turns green. You can tap the streaming on/off button to turn off streaming. When debugging, I sometimes keep the AC adapter plugged in, so it will never run out of batteries. Note: turning the streaming on and off might not work as well if the AC adapter is plugged in. I tend to unplug, turn on streaming, and replug. </li>
+  <li>One question you may be asking is: &quot;How do I see that data is actually getting transferred?&quot;<br>
+  Run HyperTerminal (under Accessories &gt; Communications). Create a new profile and pick any icon. <br>
+    <img src="Streaming/Hyper.png" alt="HyperTerm" width="296" height="300"></li>
+  <li>Connect to COM5. Hit OK (leave the connections settings at their defaults). </li>
+  <li>Now, turn streaming on. Pick up your favorite Anoto notebook and write on it. You should see data streaming in real time in the HyperTerminal.<br>
+    <img src="Streaming/HyperTermData.png" alt="Data" width="590" height="400"><br>
+  Now doesn't that data look beautiful? To really get raw data from the pen, you'll have to study the data format in the PDF document provided with the streaming driver. If you don't want to write your own app to read from the serial port, forge on to the next tutorial. =) </li>
+  <li>Also, pat yourself on the back. </li>
+</ol>
+<p>Ron B. Yeh</p>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-522093-7";
+urchinTracker();
+</script>
+</body>
+</html>

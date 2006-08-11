@@ -1,0 +1,1446 @@
+<html><head><title>D-Link TechSupport - FAQ</title>
+
+
+
+
+
+<script language="JavaScript">
+<!-- Begin
+image1 = new Image();
+image1.src = "../images/nav/products_on.gif";
+image2 = new Image();
+image2.src = "../images/nav/downloads_on.gif";
+image3 = new Image();
+image3.src = "../images/nav/registration_on.gif";
+image4 = new Image();
+image4.src = "../images/nav/training_on.gif";
+image5 = new Image();
+image5.src = "../images/nav/faq_on.gif";
+image6 = new Image();
+image6.src = "../images/nav/contact_on.gif";
+image7 = new Image();
+image7.src = "../images/nav/utilities.gif";
+image8 = new Image();
+image8.src = "../images/nav/print_on.gif";
+image9 = new Image();
+image9.src = "../images/nav/bookmark_on.gif";
+image10 = new Image();
+image10.src = "../images/nav/send_on.gif";
+image11 = new Image();
+image11.src = "../images/nav/print_text.gif";
+image12 = new Image();
+image12.src = "../images/nav/bookmark_text.gif";
+image13 = new Image();
+image13.src = "../images/nav/send_text.gif";
+// End -->
+</script>
+
+<script language="JavaScript">
+<!-- Begin
+function movepic(img_name,img_src) {
+document[img_name].src=img_src;
+}
+// End -->
+</script>
+<script>
+image1 = new Image();
+image1.src = "images/printclickon.gif";
+
+function showcursor()
+{
+	hoverItem=event.srcElement;
+	hoverItem.style.cursor="hand";
+}
+
+function validate(frm) 
+{
+	var comlen = frm.Comments.value.length;
+	var dellen = comlen - 300 ; 
+
+	if(frm.Comments.value.length > 300)
+	{
+	alert("Sorry, comments are limited to 300 characters.      \n\n    Please delete " + dellen + " characters and resubmit.   \n\n                          Thank you!");
+	return false;
+	}
+}
+
+	function CommentsInput()
+	{
+		if (document.Feed.Comments.value == 'Please limit comments to 300 characters. Approximately 5 lines of text. Thank you!') 
+			document.Feed.Comments.value = '';
+	}
+</script>
+<style>
+a.{text-decoration: none;}
+</style>
+<style type="text/css">
+.footer { color : #336699; text-decoration : none; }
+a:hover.footer { color : #D68E07; text-decoration : none; }
+.topNavWhite { font-family: arial,helvetica; font-size: 11px; text-decoration: none; color: #ffffff; }
+a:link.topNavWhite { font-family: arial,helvetica; font-size: 11px; text-decoration: none; color: #ffffff; }
+a:visited.topNavWhite { font-family: arial,helvetica; font-size: 11px; text-decoration: none; color: #ffffff; }
+a:hover.topNavWhite { font-family: arial,helvetica; font-size: 11px; text-decoration : underline; color : #ffffff; }
+.menuProdBtn, .menuProdBtn :link, .menuProdBtn :visited, .menuProdBtn :hover {font-family:Arial;font-size:8pt;font-weight:bold;color:#FFFFFF;text-decoration:none;}
+</style><!-- base href="http://support.dlink.com/faq/view.asp?prod_id=2146&question=DBT-120_revB4" --></head><body topmargin="0" leftmargin="2" alink="#d68e07" background="BluetoothDevices_files/mainbg.gif" link="#336699" marginheight="0" marginwidth="2" vlink="#336699">
+
+
+
+<!--START MENU-->
+
+<table border="0" cellpadding="0" cellspacing="0" width="775">
+	<tbody><tr>
+		<td>
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tbody><tr>
+					<td style="padding-left: 20px; padding-right: 20px; padding-top: 10px;"><a href="http://support.dlink.com/"><img src="BluetoothDevices_files/dlinksupport_logo.gif" border="0" height="63" width="252"></a></td>
+					<!--<td><br>&nbsp;&nbsp;<a href="../"><img border="0" src="../images/menu/dlink_logo.gif" width="200" height="50"></a></td>-->
+					<!--<td background="../images/menu/header_bg.gif"><a href="../"><img border="0" src="../images/menu/dlink_logo.gif" width="130" height="72"></a></td>-->
+					
+					<!-----------------------------------------------Start Product Select------------------------------------->
+					<td style="padding-right: 10px; padding-top: 10px;" align="right" nowrap="nowrap" valign="top">
+						<table border="0" cellpadding="0" cellspacing="3">
+						<form name="frmMenu" action="../products/revision.asp" id="Form1"></form>
+							<tbody><tr>
+								<td style="font-family: Arial; font-size: 8pt; font-weight: bold; color: rgb(102, 102, 102);">quick find:</td>
+								<td>
+									<input name="hidMenuProductId" value="-" id="Hidden1" type="hidden">
+									<select name="selMenuProductPre" onchange="menuRedirect(this.options.selectedIndex);" onclick="menuRedirect(this.options.selectedIndex);" style="font-family: Arial; font-size: 7.5pt; font-weight: bold;" id="Select1">
+									<option value="">Select</option>
+									
+									<option value="ANT24">ANT24</option>
+									
+									<option value="DBT">DBT</option>
+									
+									<option value="DCF">DCF</option>
+									
+									<option value="DCM">DCM</option>
+									
+									<option value="DCS">DCS</option>
+									
+									<option value="DE">DE</option>
+									
+									<option value="DEM">DEM</option>
+									
+									<option value="DES">DES</option>
+									
+									<option value="DFB">DFB</option>
+									
+									<option value="DFE">DFE</option>
+									
+									<option value="DFL">DFL</option>
+									
+									<option value="DFM">DFM</option>
+									
+									<option value="DFW">DFW</option>
+									
+									<option value="DG">DG</option>
+									
+									<option value="DGE">DGE</option>
+									
+									<option value="DGL">DGL</option>
+									
+									<option value="DGS">DGS</option>
+									
+									<option value="DHN">DHN</option>
+									
+									<option value="DHP">DHP</option>
+									
+									<option value="DI">DI</option>
+									
+									<option value="DIR">DIR</option>
+									
+									<option value="DKVM">DKVM</option>
+									
+									<option value="DM">DM</option>
+									
+									<option value="DMC">DMC</option>
+									
+									<option value="DMF">DMF</option>
+									
+									<option value="DMP">DMP</option>
+									
+									<option value="DNS">DNS</option>
+									
+									<option value="DP">DP</option>
+									
+									<option value="DPG">DPG</option>
+									
+									<option value="DPH">DPH</option>
+									
+									<option value="DPR">DPR</option>
+									
+									<option value="DPS">DPS</option>
+									
+									<option value="DRW">DRW</option>
+									
+									<option value="DS">DS</option>
+									
+									<option value="DSA">DSA</option>
+									
+									<option value="DSB">DSB</option>
+									
+									<option value="DSC">DSC</option>
+									
+									<option value="DSD">DSD</option>
+									
+									<option value="DSH">DSH</option>
+									
+									<option value="DSL">DSL</option>
+									
+									<option value="DSM">DSM</option>
+									
+									<option value="DSS">DSS</option>
+									
+									<option value="DTA">DTA</option>
+									
+									<option value="DU">DU</option>
+									
+									<option value="DUB">DUB</option>
+									
+									<option value="DVC">DVC</option>
+									
+									<option value="DVG">DVG</option>
+									
+									<option value="DVX">DVX</option>
+									
+									<option value="DWA">DWA</option>
+									
+									<option value="DWB">DWB</option>
+									
+									<option value="DWL">DWL</option>
+									
+									<option value="DWS">DWS</option>
+									
+									<option value="DXS">DXS</option>
+									
+									<option value="EBR">EBR</option>
+									
+									<option value="KR">KR</option>
+									
+									<option value="KVM">KVM</option>
+									
+									<option value="VTA">VTA</option>
+									
+									<option value="WBR">WBR</option>
+									
+									<option value="WDA">WDA</option>
+									
+									<option value="WNA">WNA</option>
+									
+									<option value="WUA">WUA</option>
+									
+									</select>
+									<select name="selMenuProductSuf" onchange="menuModelvalue();" style="font-family: Arial; font-size: 7.5pt; font-weight: bold;" id="Select2">
+									<option value="">Select One...</option>
+									</select>
+								</td>
+								<td>
+									<table style="border: 1px solid rgb(102, 102, 102); background-color: rgb(141, 148, 151);" border="0" cellpadding="0" cellspacing="0">
+										<tbody><tr>
+											<td class="menuProdBtn" style="padding: 1px 3px;"><a href="#" onclick="menuVerify();">GO</a></td>
+										</tr>
+									</tbody></table>
+								</td>
+							</tr>
+						
+						</tbody></table>
+						
+						<script>
+						var mgroups=document.frmMenu.selMenuProductPre.options.length
+						var mgroup=new Array(mgroups)
+						for (i=0; i<mgroups; i++)
+						mgroup[i]=new Array()
+						
+						mgroup[1][0]=new Option("0400","0400")
+						
+						mgroup[1][1]=new Option("0401","0401")
+						
+						mgroup[1][2]=new Option("0500","0500")
+						
+						mgroup[1][3]=new Option("0700","0700")
+						
+						mgroup[1][4]=new Option("0800","0800")
+						
+						mgroup[1][5]=new Option("0801","0801")
+						
+						mgroup[1][6]=new Option("1400","1400")
+						
+						mgroup[1][7]=new Option("1500","1500")
+						
+						mgroup[1][8]=new Option("1800","1800")
+						
+						mgroup[1][9]=new Option("1801","1801")
+						
+						mgroup[2][0]=new Option("120","120")
+						
+						mgroup[2][1]=new Option("320","320")
+						
+						mgroup[2][2]=new Option("900AP","900AP")
+						
+						mgroup[3][0]=new Option("560M","560M")
+						
+						mgroup[3][1]=new Option("650W","650W")
+						
+						mgroup[3][2]=new Option("650WK","650WK")
+						
+						mgroup[3][3]=new Option("660W","660W")
+						
+						mgroup[4][0]=new Option("100","100")
+						
+						mgroup[4][1]=new Option("200","200")
+						
+						mgroup[4][2]=new Option("201","201")
+						
+						mgroup[4][3]=new Option("202","202")
+						
+						mgroup[5][0]=new Option("1000","1000")
+						
+						mgroup[5][1]=new Option("1000W","1000W")
+						
+						mgroup[5][2]=new Option("1110","1110")
+						
+						mgroup[5][3]=new Option("2000","2000")
+						
+						mgroup[5][4]=new Option("2100","2100")
+						
+						mgroup[5][5]=new Option("2100+","2100+")
+						
+						mgroup[5][6]=new Option("2100G","2100G")
+						
+						mgroup[5][7]=new Option("2120","2120")
+						
+						mgroup[5][8]=new Option("3220","3220")
+						
+						mgroup[5][9]=new Option("3220G","3220G")
+						
+						mgroup[5][10]=new Option("5300","5300")
+						
+						mgroup[5][11]=new Option("5300G","5300G")
+						
+						mgroup[5][12]=new Option("5300W","5300W")
+						
+						mgroup[5][13]=new Option("6620","6620")
+						
+						mgroup[5][14]=new Option("6620G","6620G")
+						
+						mgroup[5][15]=new Option("900","900")
+						
+						mgroup[5][16]=new Option("900W","900W")
+						
+						mgroup[5][17]=new Option("950","950")
+						
+						mgroup[5][18]=new Option("950G","950G")
+						
+						mgroup[5][19]=new Option("G900","G900")
+						
+						mgroup[6][0]=new Option("1824EI","1824EI")
+						
+						mgroup[6][1]=new Option("220PCT","220PCT")
+						
+						mgroup[6][2]=new Option("528CT","528CT")
+						
+						mgroup[6][3]=new Option("660CT","660CT")
+						
+						mgroup[6][4]=new Option("805TP/C","805TP/C")
+						
+						mgroup[6][5]=new Option("809TC","809TC")
+						
+						mgroup[6][6]=new Option("816TP","816TP")
+						
+						mgroup[6][7]=new Option("824TP","824TP")
+						
+						mgroup[7][0]=new Option("310GM2","310GM2")
+						
+						mgroup[7][1]=new Option("310GT","310GT")
+						
+						mgroup[7][2]=new Option("311GT","311GT")
+						
+						mgroup[7][3]=new Option("312GT2","312GT2")
+						
+						mgroup[7][4]=new Option("314GT","314GT")
+						
+						mgroup[7][5]=new Option("315GT","315GT")
+						
+						mgroup[7][6]=new Option("420X","420X")
+						
+						mgroup[7][7]=new Option("421XT","421XT")
+						
+						mgroup[7][8]=new Option("422XT","422XT")
+						
+						mgroup[8][0]=new Option("1009G","1009G")
+						
+						mgroup[8][1]=new Option("1024D","1024D")
+						
+						mgroup[8][2]=new Option("1026G","1026G")
+						
+						mgroup[8][3]=new Option("105","105")
+						
+						mgroup[8][4]=new Option("108","108")
+						
+						mgroup[8][5]=new Option("1105","1105")
+						
+						mgroup[8][6]=new Option("1226G","1226G")
+						
+						mgroup[8][7]=new Option("1250G","1250G")
+						
+						mgroup[8][8]=new Option("1316","1316")
+						
+						mgroup[8][9]=new Option("1526","1526")
+						
+						mgroup[8][10]=new Option("3010FA","3010FA")
+						
+						mgroup[8][11]=new Option("3010GA","3010GA")
+						
+						mgroup[8][12]=new Option("3010PA","3010PA")
+						
+						mgroup[8][13]=new Option("3205","3205")
+						
+						mgroup[8][14]=new Option("3216","3216")
+						
+						mgroup[8][15]=new Option("3224","3224")
+						
+						mgroup[8][16]=new Option("3224+","3224+")
+						
+						mgroup[8][17]=new Option("3225G","3225G")
+						
+						mgroup[8][18]=new Option("3226","3226")
+						
+						mgroup[8][19]=new Option("3226L","3226L")
+						
+						mgroup[8][20]=new Option("3226SM","3226SM")
+						
+						mgroup[8][21]=new Option("3250TG","3250TG")
+						
+						mgroup[8][22]=new Option("3326","3326")
+						
+						mgroup[8][23]=new Option("3326SRM","3326SRM")
+						
+						mgroup[8][24]=new Option("3350SR","3350SR")
+						
+						mgroup[8][25]=new Option("3526","3526")
+						
+						mgroup[8][26]=new Option("3550","3550")
+						
+						mgroup[8][27]=new Option("3624i","3624i")
+						
+						mgroup[8][28]=new Option("3828","3828")
+						
+						mgroup[8][29]=new Option("3828P","3828P")
+						
+						mgroup[8][30]=new Option("5016","5016")
+						
+						mgroup[8][31]=new Option("5016FX","5016FX")
+						
+						mgroup[8][32]=new Option("5016TF","5016TF")
+						
+						mgroup[8][33]=new Option("5024","5024")
+						
+						mgroup[8][34]=new Option("5216FX","5216FX")
+						
+						mgroup[8][35]=new Option("5220TF","5220TF")
+						
+						mgroup[8][36]=new Option("5224TX","5224TX")
+						
+						mgroup[8][37]=new Option("5600","5600")
+						
+						mgroup[8][38]=new Option("6000","6000")
+						
+						mgroup[8][39]=new Option("6300","6300")
+						
+						mgroup[8][40]=new Option("6500","6500")
+						
+						mgroup[9][0]=new Option("A5","A5")
+						
+						mgroup[9][1]=new Option("H7","H7")
+						
+						mgroup[10][0]=new Option("2616iX","2616iX")
+						
+						mgroup[10][1]=new Option("2616X","2616X")
+						
+						mgroup[10][2]=new Option("2624","2624")
+						
+						mgroup[10][3]=new Option("2624iX","2624iX")
+						
+						mgroup[10][4]=new Option("2624X","2624X")
+						
+						mgroup[10][5]=new Option("500TX","500TX")
+						
+						mgroup[10][6]=new Option("528TX","528TX")
+						
+						mgroup[10][7]=new Option("530TX","530TX")
+						
+						mgroup[10][8]=new Option("530TX+","530TX+")
+						
+						mgroup[10][9]=new Option("530TXS","530TXS")
+						
+						mgroup[10][10]=new Option("538TX","538TX")
+						
+						mgroup[10][11]=new Option("540TX","540TX")
+						
+						mgroup[10][12]=new Option("550FX","550FX")
+						
+						mgroup[10][13]=new Option("550TX","550TX")
+						
+						mgroup[10][14]=new Option("570TX","570TX")
+						
+						mgroup[10][15]=new Option("580TX","580TX")
+						
+						mgroup[10][16]=new Option("650TX","650TX")
+						
+						mgroup[10][17]=new Option("660TX","660TX")
+						
+						mgroup[10][18]=new Option("670TXD","670TXD")
+						
+						mgroup[10][19]=new Option("680TX","680TX")
+						
+						mgroup[10][20]=new Option("680TXD","680TXD")
+						
+						mgroup[10][21]=new Option("690TXD","690TXD")
+						
+						mgroup[10][22]=new Option("855","855")
+						
+						mgroup[11][0]=new Option("100","100")
+						
+						mgroup[11][1]=new Option("1000","1000")
+						
+						mgroup[11][2]=new Option("1100","1100")
+						
+						mgroup[11][3]=new Option("1500","1500")
+						
+						mgroup[11][4]=new Option("1600","1600")
+						
+						mgroup[11][5]=new Option("200","200")
+						
+						mgroup[11][6]=new Option("210","210")
+						
+						mgroup[11][7]=new Option("300","300")
+						
+						mgroup[11][8]=new Option("500","500")
+						
+						mgroup[11][9]=new Option("600","600")
+						
+						mgroup[11][10]=new Option("700","700")
+						
+						mgroup[11][11]=new Option("80","80")
+						
+						mgroup[11][12]=new Option("800","800")
+						
+						mgroup[11][13]=new Option("900","900")
+						
+						mgroup[11][14]=new Option("CP310","CP310")
+						
+						mgroup[11][15]=new Option("CPG310","CPG310")
+						
+						mgroup[11][16]=new Option("M510","M510")
+						
+						mgroup[12][0]=new Option("560E+","560E+")
+						
+						mgroup[12][1]=new Option("560I+","560I+")
+						
+						mgroup[12][2]=new Option("562is","562is")
+						
+						mgroup[13][0]=new Option("500","500")
+						
+						mgroup[14][0]=new Option("102S","102S")
+						
+						mgroup[14][1]=new Option("102SH","102SH")
+						
+						mgroup[14][2]=new Option("102SP","102SP")
+						
+						mgroup[14][3]=new Option("104S","104S")
+						
+						mgroup[14][4]=new Option("104SH","104SH")
+						
+						mgroup[15][0]=new Option("500SX","500SX")
+						
+						mgroup[15][1]=new Option("500T","500T")
+						
+						mgroup[15][2]=new Option("530T","530T")
+						
+						mgroup[15][3]=new Option("550SX","550SX")
+						
+						mgroup[15][4]=new Option("550T","550T")
+						
+						mgroup[15][5]=new Option("560T","560T")
+						
+						mgroup[15][6]=new Option("660TD","660TD")
+						
+						mgroup[16][0]=new Option("3420","3420")
+						
+						mgroup[16][1]=new Option("4100","4100")
+						
+						mgroup[16][2]=new Option("4300","4300")
+						
+						mgroup[17][0]=new Option("1004T","1004T")
+						
+						mgroup[17][1]=new Option("1005D","1005D")
+						
+						mgroup[17][2]=new Option("1008D","1008D")
+						
+						mgroup[17][3]=new Option("1008T","1008T")
+						
+						mgroup[17][4]=new Option("1008TL","1008TL")
+						
+						mgroup[17][5]=new Option("1016D","1016D")
+						
+						mgroup[17][6]=new Option("1016T","1016T")
+						
+						mgroup[17][7]=new Option("1016TG","1016TG")
+						
+						mgroup[17][8]=new Option("1024D","1024D")
+						
+						mgroup[17][9]=new Option("1024T","1024T")
+						
+						mgroup[17][10]=new Option("1024TG","1024TG")
+						
+						mgroup[17][11]=new Option("105","105")
+						
+						mgroup[17][12]=new Option("108","108")
+						
+						mgroup[17][13]=new Option("1216T","1216T")
+						
+						mgroup[17][14]=new Option("1224T","1224T")
+						
+						mgroup[17][15]=new Option("1248T","1248T")
+						
+						mgroup[17][16]=new Option("2205","2205")
+						
+						mgroup[17][17]=new Option("2208","2208")
+						
+						mgroup[17][18]=new Option("3024","3024")
+						
+						mgroup[17][19]=new Option("3204","3204")
+						
+						mgroup[17][20]=new Option("3208F","3208F")
+						
+						mgroup[17][21]=new Option("3212SR","3212SR")
+						
+						mgroup[17][22]=new Option("3224SR","3224SR")
+						
+						mgroup[17][23]=new Option("3224TG","3224TG")
+						
+						mgroup[17][24]=new Option("3224TGR","3224TGR")
+						
+						mgroup[17][25]=new Option("3308FG","3308FG")
+						
+						mgroup[17][26]=new Option("3308TG","3308TG")
+						
+						mgroup[17][27]=new Option("3312SR","3312SR")
+						
+						mgroup[17][28]=new Option("3324SR","3324SR")
+						
+						mgroup[17][29]=new Option("3324SRi","3324SRi")
+						
+						mgroup[17][30]=new Option("701","701")
+						
+						mgroup[17][31]=new Option("702","702")
+						
+						mgroup[17][32]=new Option("703","703")
+						
+						mgroup[17][33]=new Option("704","704")
+						
+						mgroup[17][34]=new Option("705","705")
+						
+						mgroup[17][35]=new Option("706","706")
+						
+						mgroup[17][36]=new Option("707","707")
+						
+						mgroup[17][37]=new Option("708","708")
+						
+						mgroup[17][38]=new Option("711","711")
+						
+						mgroup[18][0]=new Option("1000","1000")
+						
+						mgroup[18][1]=new Option("120","120")
+						
+						mgroup[18][2]=new Option("520","520")
+						
+						mgroup[19][0]=new Option("100","100")
+						
+						mgroup[20][0]=new Option("102","102")
+						
+						mgroup[20][1]=new Option("304","304")
+						
+						mgroup[20][2]=new Option("514","514")
+						
+						mgroup[20][3]=new Option("524","524")
+						
+						mgroup[20][4]=new Option("604","604")
+						
+						mgroup[20][5]=new Option("614+","614+")
+						
+						mgroup[20][6]=new Option("624","624")
+						
+						mgroup[20][7]=new Option("624+","624+")
+						
+						mgroup[20][8]=new Option("624M","624M")
+						
+						mgroup[20][9]=new Option("624S","624S")
+						
+						mgroup[20][10]=new Option("634M","634M")
+						
+						mgroup[20][11]=new Option("701","701")
+						
+						mgroup[20][12]=new Option("704","704")
+						
+						mgroup[20][13]=new Option("704P","704P")
+						
+						mgroup[20][14]=new Option("704UP","704UP")
+						
+						mgroup[20][15]=new Option("707","707")
+						
+						mgroup[20][16]=new Option("707P","707P")
+						
+						mgroup[20][17]=new Option("711","711")
+						
+						mgroup[20][18]=new Option("713","713")
+						
+						mgroup[20][19]=new Option("713P","713P")
+						
+						mgroup[20][20]=new Option("714","714")
+						
+						mgroup[20][21]=new Option("714P+","714P+")
+						
+						mgroup[20][22]=new Option("724GU","724GU")
+						
+						mgroup[20][23]=new Option("724U","724U")
+						
+						mgroup[20][24]=new Option("754","754")
+						
+						mgroup[20][25]=new Option("764","764")
+						
+						mgroup[20][26]=new Option("774","774")
+						
+						mgroup[20][27]=new Option("784","784")
+						
+						mgroup[20][28]=new Option("804","804")
+						
+						mgroup[20][29]=new Option("804HV","804HV")
+						
+						mgroup[20][30]=new Option("804V","804V")
+						
+						mgroup[20][31]=new Option("808HV","808HV")
+						
+						mgroup[20][32]=new Option("824VUP","824VUP")
+						
+						mgroup[20][33]=new Option("824VUP+","824VUP+")
+						
+						mgroup[20][34]=new Option("LB604","LB604")
+						
+						mgroup[21][0]=new Option("625","625")
+						
+						mgroup[21][1]=new Option("635","635")
+						
+						mgroup[22][0]=new Option("16","16")
+						
+						mgroup[22][1]=new Option("2","2")
+						
+						mgroup[22][2]=new Option("2K","2K")
+						
+						mgroup[22][3]=new Option("2U","2U")
+						
+						mgroup[22][4]=new Option("4","4")
+						
+						mgroup[22][5]=new Option("4K","4K")
+						
+						mgroup[22][6]=new Option("8","8")
+						
+						mgroup[22][7]=new Option("8E","8E")
+						
+						mgroup[23][0]=new Option("560","560")
+						
+						mgroup[24][0]=new Option("700SC","700SC")
+						
+						mgroup[25][0]=new Option("560TX","560TX")
+						
+						mgroup[25][1]=new Option("560TXD","560TXD")
+						
+						mgroup[26][0]=new Option("100","100")
+						
+						mgroup[26][1]=new Option("110","110")
+						
+						mgroup[26][2]=new Option("110b","110b")
+						
+						mgroup[26][3]=new Option("120","120")
+						
+						mgroup[26][4]=new Option("210","210")
+						
+						mgroup[26][5]=new Option("220","220")
+						
+						mgroup[26][6]=new Option("90","90")
+						
+						mgroup[26][7]=new Option("CD100","CD100")
+						
+						mgroup[26][8]=new Option("HD610","HD610")
+						
+						mgroup[27][0]=new Option("120","120")
+						
+						mgroup[27][1]=new Option("323","323")
+						
+						mgroup[27][2]=new Option("6040M","6040M")
+						
+						mgroup[27][3]=new Option("G120","G120")
+						
+						mgroup[28][0]=new Option("100","100")
+						
+						mgroup[28][1]=new Option("100P","100P")
+						
+						mgroup[28][2]=new Option("101","101")
+						
+						mgroup[28][3]=new Option("101P+","101P+")
+						
+						mgroup[28][4]=new Option("300","300")
+						
+						mgroup[28][5]=new Option("300U","300U")
+						
+						mgroup[28][6]=new Option("301","301")
+						
+						mgroup[28][7]=new Option("301+","301+")
+						
+						mgroup[28][8]=new Option("301P+","301P+")
+						
+						mgroup[28][9]=new Option("301U","301U")
+						
+						mgroup[28][10]=new Option("303","303")
+						
+						mgroup[28][11]=new Option("311P","311P")
+						
+						mgroup[28][12]=new Option("311U","311U")
+						
+						mgroup[28][13]=new Option("313","313")
+						
+						mgroup[28][14]=new Option("602","602")
+						
+						mgroup[28][15]=new Option("802","802")
+						
+						mgroup[28][16]=new Option("G301","G301")
+						
+						mgroup[28][17]=new Option("G310","G310")
+						
+						mgroup[28][18]=new Option("G321","G321")
+						
+						mgroup[29][0]=new Option("2000W","2000W")
+						
+						mgroup[30][0]=new Option("100H","100H")
+						
+						mgroup[30][1]=new Option("100M","100M")
+						
+						mgroup[30][2]=new Option("140S","140S")
+						
+						mgroup[30][3]=new Option("50U","50U")
+						
+						mgroup[30][4]=new Option("540","540")
+						
+						mgroup[30][5]=new Option("541","541")
+						
+						mgroup[30][6]=new Option("80","80")
+						
+						mgroup[30][7]=new Option("T100","T100")
+						
+						mgroup[31][0]=new Option("1260","1260")
+						
+						mgroup[32][0]=new Option("510","510")
+						
+						mgroup[33][0]=new Option("100U","100U")
+						
+						mgroup[34][0]=new Option("601","601")
+						
+						mgroup[34][1]=new Option("605","605")
+						
+						mgroup[35][0]=new Option("3100","3100")
+						
+						mgroup[35][1]=new Option("3100P","3100P")
+						
+						mgroup[35][2]=new Option("3200","3200")
+						
+						mgroup[35][3]=new Option("5100","5100")
+						
+						mgroup[36][0]=new Option("500","500")
+						
+						mgroup[36][1]=new Option("560","560")
+						
+						mgroup[36][2]=new Option("650TX","650TX")
+						
+						mgroup[36][3]=new Option("C100Clear","C100Clear")
+						
+						mgroup[36][4]=new Option("C100White","C100White")
+						
+						mgroup[36][5]=new Option("C110","C110")
+						
+						mgroup[36][6]=new Option("C300Clear","C300Clear")
+						
+						mgroup[36][7]=new Option("C300White","C300White")
+						
+						mgroup[36][8]=new Option("C310","C310")
+						
+						mgroup[36][9]=new Option("H3E","H3E")
+						
+						mgroup[36][10]=new Option("H3ETX","H3ETX")
+						
+						mgroup[36][11]=new Option("H3SP","H3SP")
+						
+						mgroup[36][12]=new Option("H4","H4")
+						
+						mgroup[36][13]=new Option("H4SMK","H4SMK")
+						
+						mgroup[36][14]=new Option("H7","H7")
+						
+						mgroup[36][15]=new Option("P36","P36")
+						
+						mgroup[36][16]=new Option("R100","R100")
+						
+						mgroup[36][17]=new Option("S25","S25")
+						
+						mgroup[36][18]=new Option("T100","T100")
+						
+						mgroup[36][19]=new Option("V100","V100")
+						
+						mgroup[37][0]=new Option("350","350")
+						
+						mgroup[37][1]=new Option("350F","350F")
+						
+						mgroup[38][0]=new Option("150","150")
+						
+						mgroup[39][0]=new Option("16","16")
+						
+						mgroup[39][1]=new Option("5","5")
+						
+						mgroup[39][2]=new Option("8","8")
+						
+						mgroup[40][0]=new Option("100D","100D")
+						
+						mgroup[40][1]=new Option("200","200")
+						
+						mgroup[40][2]=new Option("300","300")
+						
+						mgroup[40][3]=new Option("300+","300+")
+						
+						mgroup[40][4]=new Option("300G","300G")
+						
+						mgroup[40][5]=new Option("300G+","300G+")
+						
+						mgroup[40][6]=new Option("302G","302G")
+						
+						mgroup[40][7]=new Option("500","500")
+						
+						mgroup[40][8]=new Option("502G","502G")
+						
+						mgroup[40][9]=new Option("502T","502T")
+						
+						mgroup[40][10]=new Option("504","504")
+						
+						mgroup[40][11]=new Option("504T","504T")
+						
+						mgroup[40][12]=new Option("604+","604+")
+						
+						mgroup[40][13]=new Option("G604T","G604T")
+						
+						mgroup[40][14]=new Option("G664T","G664T")
+						
+						mgroup[41][0]=new Option("120","120")
+						
+						mgroup[41][1]=new Option("320","320")
+						
+						mgroup[41][2]=new Option("320RD","320RD")
+						
+						mgroup[41][3]=new Option("520","520")
+						
+						mgroup[41][4]=new Option("602H","602H")
+						
+						mgroup[41][5]=new Option("604H","604H")
+						
+						mgroup[41][6]=new Option("622H","622H")
+						
+						mgroup[41][7]=new Option("624H","624H")
+						
+						mgroup[41][8]=new Option("910BT","910BT")
+						
+						mgroup[41][9]=new Option("920BT","920BT")
+						
+						mgroup[41][10]=new Option("G600_revA1","G600_revA1")
+						
+						mgroup[41][11]=new Option("G600_revB","G600_revB")
+						
+						mgroup[42][0]=new Option("16+","16+")
+						
+						mgroup[42][1]=new Option("24+","24+")
+						
+						mgroup[42][2]=new Option("5+","5+")
+						
+						mgroup[42][3]=new Option("8+","8+")
+						
+						mgroup[43][0]=new Option("128+","128+")
+						
+						mgroup[44][0]=new Option("128TA+","128TA+")
+						
+						mgroup[44][1]=new Option("520","520")
+						
+						mgroup[44][2]=new Option("560M","560M")
+						
+						mgroup[44][3]=new Option("E100","E100")
+						
+						mgroup[44][4]=new Option("H4","H4")
+						
+						mgroup[44][5]=new Option("H7","H7")
+						
+						mgroup[44][6]=new Option("R100","R100")
+						
+						mgroup[45][0]=new Option("A2","A2")
+						
+						mgroup[45][1]=new Option("C2","C2")
+						
+						mgroup[45][2]=new Option("CR200","CR200")
+						
+						mgroup[45][3]=new Option("E100","E100")
+						
+						mgroup[45][4]=new Option("H4","H4")
+						
+						mgroup[45][5]=new Option("H7","H7")
+						
+						mgroup[46][0]=new Option("10","10")
+						
+						mgroup[46][1]=new Option("1000","1000")
+						
+						mgroup[46][2]=new Option("1100","1100")
+						
+						mgroup[46][3]=new Option("20","20")
+						
+						mgroup[46][4]=new Option("2000","2000")
+						
+						mgroup[47][0]=new Option("1120M","1120M")
+						
+						mgroup[47][1]=new Option("1402S","1402S")
+						
+						mgroup[47][2]=new Option("1402S_L","1402S_L")
+						
+						mgroup[47][3]=new Option("2001S","2001S")
+						
+						mgroup[47][4]=new Option("3004S","3004S")
+						
+						mgroup[47][5]=new Option("G1402S","G1402S")
+						
+						mgroup[47][6]=new Option("G1402S_L","G1402S_L")
+						
+						mgroup[48][0]=new Option("1000","1000")
+						
+						mgroup[49][0]=new Option("542","542")
+						
+						mgroup[49][1]=new Option("547","547")
+						
+						mgroup[49][2]=new Option("642","642")
+						
+						mgroup[49][3]=new Option("645","645")
+						
+						mgroup[50][0]=new Option("120M","120M")
+						
+						mgroup[51][0]=new Option("1000AP","1000AP")
+						
+						mgroup[51][1]=new Option("1000AP+","1000AP+")
+						
+						mgroup[51][2]=new Option("120","120")
+						
+						mgroup[51][3]=new Option("120+","120+")
+						
+						mgroup[51][4]=new Option("122","122")
+						
+						mgroup[51][5]=new Option("1700AP","1700AP")
+						
+						mgroup[51][6]=new Option("1750","1750")
+						
+						mgroup[51][7]=new Option("2000AP","2000AP")
+						
+						mgroup[51][8]=new Option("2000AP+","2000AP+")
+						
+						mgroup[51][9]=new Option("2100AP","2100AP")
+						
+						mgroup[51][10]=new Option("2200AP","2200AP")
+						
+						mgroup[51][11]=new Option("2210AP","2210AP")
+						
+						mgroup[51][12]=new Option("2700AP","2700AP")
+						
+						mgroup[51][13]=new Option("3200AP","3200AP")
+						
+						mgroup[51][14]=new Option("500","500")
+						
+						mgroup[51][15]=new Option("5000AP","5000AP")
+						
+						mgroup[51][16]=new Option("520","520")
+						
+						mgroup[51][17]=new Option("520+","520+")
+						
+						mgroup[51][18]=new Option("6000AP","6000AP")
+						
+						mgroup[51][19]=new Option("610","610")
+						
+						mgroup[51][20]=new Option("650","650")
+						
+						mgroup[51][21]=new Option("650+","650+")
+						
+						mgroup[51][22]=new Option("650H","650H")
+						
+						mgroup[51][23]=new Option("7000AP","7000AP")
+						
+						mgroup[51][24]=new Option("700AP","700AP")
+						
+						mgroup[51][25]=new Option("7100AP","7100AP")
+						
+						mgroup[51][26]=new Option("7200AP","7200AP")
+						
+						mgroup[51][27]=new Option("7700AP","7700AP")
+						
+						mgroup[51][28]=new Option("800AP+","800AP+")
+						
+						mgroup[51][29]=new Option("810","810")
+						
+						mgroup[51][30]=new Option("810+","810+")
+						
+						mgroup[51][31]=new Option("8200AP","8200AP")
+						
+						mgroup[51][32]=new Option("8220AP","8220AP")
+						
+						mgroup[51][33]=new Option("900AP","900AP")
+						
+						mgroup[51][34]=new Option("900AP+","900AP+")
+						
+						mgroup[51][35]=new Option("A520","A520")
+						
+						mgroup[51][36]=new Option("A650","A650")
+						
+						mgroup[51][37]=new Option("AB520","AB520")
+						
+						mgroup[51][38]=new Option("AB650","AB650")
+						
+						mgroup[51][39]=new Option("AG132","AG132")
+						
+						mgroup[51][40]=new Option("AG520","AG520")
+						
+						mgroup[51][41]=new Option("AG530","AG530")
+						
+						mgroup[51][42]=new Option("AG650","AG650")
+						
+						mgroup[51][43]=new Option("AG660","AG660")
+						
+						mgroup[51][44]=new Option("AG700AP","AG700AP")
+						
+						mgroup[51][45]=new Option("G120","G120")
+						
+						mgroup[51][46]=new Option("G122","G122")
+						
+						mgroup[51][47]=new Option("G132","G132")
+						
+						mgroup[51][48]=new Option("G510","G510")
+						
+						mgroup[51][49]=new Option("G520","G520")
+						
+						mgroup[51][50]=new Option("G520+","G520+")
+						
+						mgroup[51][51]=new Option("G520M","G520M")
+						
+						mgroup[51][52]=new Option("G550","G550")
+						
+						mgroup[51][53]=new Option("G630","G630")
+						
+						mgroup[51][54]=new Option("G650","G650")
+						
+						mgroup[51][55]=new Option("G650+","G650+")
+						
+						mgroup[51][56]=new Option("G650M","G650M")
+						
+						mgroup[51][57]=new Option("G650X","G650X")
+						
+						mgroup[51][58]=new Option("G680","G680")
+						
+						mgroup[51][59]=new Option("G700AP","G700AP")
+						
+						mgroup[51][60]=new Option("G710","G710")
+						
+						mgroup[51][61]=new Option("G730AP","G730AP")
+						
+						mgroup[51][62]=new Option("G800AP","G800AP")
+						
+						mgroup[51][63]=new Option("G810","G810")
+						
+						mgroup[51][64]=new Option("G820","G820")
+						
+						mgroup[51][65]=new Option("M60AT","M60AT")
+						
+						mgroup[51][66]=new Option("P100","P100")
+						
+						mgroup[51][67]=new Option("P1012","P1012")
+						
+						mgroup[51][68]=new Option("P200","P200")
+						
+						mgroup[51][69]=new Option("P50","P50")
+						
+						mgroup[51][70]=new Option("R60AT","R60AT")
+						
+						mgroup[52][0]=new Option("1008","1008")
+						
+						mgroup[52][1]=new Option("3250","3250")
+						
+						mgroup[53][0]=new Option("3227","3227")
+						
+						mgroup[53][1]=new Option("3250","3250")
+						
+						mgroup[53][2]=new Option("3326GSR","3326GSR")
+						
+						mgroup[53][3]=new Option("3350SR","3350SR")
+						
+						mgroup[54][0]=new Option("2310","2310")
+						
+						mgroup[55][0]=new Option("1","1")
+						
+						mgroup[56][0]=new Option("121","121")
+						
+						mgroup[57][0]=new Option("VR","VR")
+						
+						mgroup[58][0]=new Option("1310","1310")
+						
+						mgroup[58][1]=new Option("2310","2310")
+						
+						mgroup[59][0]=new Option("1320","1320")
+						
+						mgroup[59][1]=new Option("2320","2320")
+						
+						mgroup[60][0]=new Option("1330","1330")
+						
+						mgroup[60][1]=new Option("2330","2330")
+						
+						mgroup[61][0]=new Option("1340","1340")
+						
+						mgroup[61][1]=new Option("2340","2340")
+						
+						document.frmMenu.selMenuProductPre.index = document.frmMenu.selMenuProductPre.options[0].text;
+						//alert(document.frmMenu.selMenuProductPre.options[0].text);
+						var mtemp=document.frmMenu.selMenuProductSuf;
+						function menuRedirect(x){
+							for (m=mtemp.options.length-1;m>0;m--)
+							mtemp.options[m]=null
+							for (i=0;i<mgroup[x].length;i++){
+								mtemp.options[i]=new Option(mgroup[x][i].text,mgroup[x][i].value)
+							}
+							var mprevalue = document.frmMenu.selMenuProductPre.value
+							var msufvalue = mtemp.value
+							document.frmMenu.hidMenuProductId.value=(mprevalue+"-"+msufvalue)
+						}
+						function menuModelvalue(){
+							var mprevalue2=document.frmMenu.selMenuProductPre.value
+							var msufvalue2=document.frmMenu.selMenuProductSuf.value
+							document.frmMenu.hidMenuProductId.value=(mprevalue2+"-"+msufvalue2)
+						}
+						function menuVerify(){
+							if(document.frmMenu.hidMenuProductId.value == "-"){
+								alert("Please select your product.");
+								return(false);
+							}else{
+							this.location.href='../products/revision.asp?productId=' + document.frmMenu.hidMenuProductId.value;
+							}
+						}
+						</script>
+						
+					</td>
+					<!--------------------------------------------------------End Product Select --------------------------------->
+									
+					
+					
+				</tr>
+				<tr bgcolor="#8d9497">
+					<td style="border-top: 3px solid rgb(0, 124, 144);" height="18">
+						<table border="0" cellpadding="0" cellspacing="3">
+							
+							<!--New UI look with plain text links-->
+							<tbody><tr>
+								<td style="padding-left: 15px;"><a class="topNavWhite" href="http://support.dlink.com/products">Products</a></td>
+								<td style="padding-left: 15px;"><a class="topNavWhite" href="http://support.dlink.com/downloads">Downloads</a></td>
+								<td style="padding-left: 15px;"><a class="topNavWhite" href="http://support.dlink.com/register">Registration</a></td>
+								<td style="padding-left: 15px;"><a class="topNavWhite" href="http://support.dlink.com/faq">F.A.Q.</a></td>
+								<td style="padding-left: 15px;"><a class="topNavWhite" href="http://support.dlink.com/supportfaq">Knowledge Base</a></td>
+								<td style="padding-left: 15px;"><a class="topNavWhite" href="https://rma.dlink.com/">Returns</a></td>
+								<td style="padding-left: 15px;"><a class="topNavWhite" href="http://support.dlink.com/contact">Contact</a></td>
+							</tr>
+							
+							<!--Original UI with image links
+							<tr>
+								<td><a onmouseover="movepic('products','../images/nav/products_on.gif')" onmouseout="movepic('products','../images/nav/products.gif')" href="../products"><img border="0" src="../images/nav/products.gif" name="products" width="72" height="18"></a></td>
+								<td><a onmouseover="movepic('downloads','../images/nav/downloads_on.gif')" onmouseout="movepic('downloads','../images/nav/downloads.gif')" href="../downloads"><img border="0" src="../images/nav/downloads.gif" name="downloads" width="84" height="18"></a></td>
+								<td><a onmouseover="movepic('registration','../images/nav/registration_on.gif')" onmouseout="movepic('registration','../images/nav/registration.gif')" href="../register"><img border="0" src="../images/nav/registration.gif" name="registration" width="93" height="18"></a></td>
+								<td><a onmouseover="movepic('training','../images/nav/training_on.gif')" onmouseout="movepic('training','../images/nav/training.gif')" href="../techtool/"><img border="0" src="../images/nav/training.gif" name="training" width="116" height="18"></a></td>
+								<td><a onmouseover="movepic('faq','../images/nav/faq_on.gif')" onmouseout="movepic('faq','../images/nav/faq.gif')" href="../faq"><img border="0" src="../images/nav/faq.gif" name="faq" width="51" height="18"></a></td>
+								<td><a onmouseover="movepic('knowledge','../images/nav/knowledge_on.gif')" onmouseout="movepic('knowledge','../images/nav/knowledge.gif')" href="../supportfaq"><img border="0" src="../images/nav/knowledge.gif" name="knowledge" width="125" height="18"></a></td>
+								
+								<td><a onmouseover="movepic('contact','../images/nav/contact_on.gif')" onmouseout="movepic('contact','../images/nav/contact.gif')" href="../contact"><img border="0" src="../images/nav/contact.gif" name="contact" width="65" height="18"></a></td>
+							</tr>
+							-->
+							
+						</tbody></table>
+					</td>
+					<td style="border-top: 3px solid rgb(0, 124, 144);" align="right" height="18"><img src="BluetoothDevices_files/spacer.gif" border="0" height="18" width="6"></td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tbody></table>
+
+<table bgcolor="#336699" border="0" cellpadding="0" cellspacing="0" height="40" width="775"><form action="search.asp" method="post"></form><tbody><tr><td valign="top" width="104"><img src="BluetoothDevices_files/search.gif"><img src="BluetoothDevices_files/spacer.gif" height="40" width="4"></td><td valign="middle" width="150"><input name="question" size="30" value="DBT-120_revB4" style="border-color: rgb(87, 154, 220);" type="text"></td><td valign="middle"><input src="BluetoothDevices_files/go.gif" value="Submit" border="0" type="image"></td></tr></tbody></table>
+
+<table border="0" cellpadding="6" cellspacing="0" width="775"><tbody><tr><td><font face="Verdana" size="1">
+
+<!-- BEGIN PAGE CONTENTS -->
+
+<table width="100%"><tbody><tr><td>&nbsp;</td><td align="right"><a href="http://support.dlink.com/faq/print.asp?productid=2146" target="_blank" onmouseover="image1.src='images/printclickon.gif'" onmouseout="image1.src='images/printclick.gif';"><img name="image1" src="BluetoothDevices_files/printclick.gif" border="0"></a></td></tr><tr><td align="right" valign="top" width="50"><img src="BluetoothDevices_files/question3.gif"></td><td valign="top"><font face="Verdana" size="2">What do I do if I get error message <i>Valid security code not found.</i> or <i>Your Bluetooth Software license does not include use with this Bluetooth device [6]</i> after installing the Bluetooth software?</font></td></tr><tr><td align="right" valign="top" width="50"><img src="BluetoothDevices_files/answer3.gif"><br></td><td valign="top"><font face="Verdana" size="2"><b>Note:</b> This FAQ only applies to DBT-120 revision B4 units with a MAC Address that starts with <i>0011</i> or <i>0013</i>.
+<br><br>
+<b>Step 1</b> Physically remove the DBT-120 rev B4 from your computers USB port.
+<br><br>
+<b>Step 2</b> Uninstall the current software for the DBT-120 in <i>Add/Remove Programs</i>.
+<br><br>
+<b>Step 3</b> <a href="ftp://ftp.dlink.com/Wireless/dbt120_revB4/Driver/dbt120_setup_35.zip" class="footer">Click here</a> to download an updated driver.
+<br><br>
+<b>Step 4</b> Remove inactive Bluetooth devices from the Device Manager.
+<br><br>
+<table style="border: 3px none ; border-collapse: collapse;" align="center" border="1" bordercolor="#000000" cellpadding="2" cellspacing="0" width="500">
+<tbody><tr bgcolor="#d3d3d3">
+<td align="left"><b><font face="Verdana" size="2">Show Hidden Devices</font></b></td>
+</tr>
+<tr>
+<td>
+<table align="center" border="0" cellpadding="2" cellspacing="0" width="100%">
+<tbody><tr>
+<td align="left" valign="top"><font face="Verdana" size="2">A.</font></td>
+<td align="left"><font face="Verdana" size="2">Click <b>Start</b> &gt; <b>All Programs</b> &gt; <b>Accessories</b> and then click <b>Command Prompt</b>.</font></td>
+</tr>
+<tr>
+<td align="left" valign="top"><font face="Verdana" size="2">B.</font></td>
+<td align="left"><font face="Verdana" size="2">Type <b>set devmgr_show_nonpresent_devices=1</b> in the Command Prompt and then press <b>Enter</b>.</font></td>
+</tr>
+<tr>
+<td align="left" valign="top"><font face="Verdana" size="2">C.</font></td>
+<td align="left"><font face="Verdana" size="2">Type <b>cd \Windows\system32</b> in the Command Prompt and then press <b>Enter</b>.</font></td>
+</tr>
+<tr>
+<td align="left" valign="top"><font face="Verdana" size="2">D.</font></td>
+<td align="left"><font face="Verdana" size="2">Type <b>start devmgmt.msc</b> in the Command Prompt and then press <b>Enter</b>.</font></td>
+</tr>
+<tr>
+<td align="left" valign="top"><font face="Verdana" size="2">E.</font></td>
+<td align="left"><font face="Verdana" size="2">Click <b>View</b> &gt; <b>Show hidden devices</b>. This will display devices that are not connected to your computer.</font></td>
+</tr>
+<tr>
+<td align="left" valign="top"><font face="Verdana" size="2">F.</font></td>
+<td align="left"><font face="Verdana" size="2">When you are finished troubleshooting, close the Device Manager.</font></td>
+</tr>
+<tr>
+<td align="left" valign="top"><font face="Verdana" size="2">G.</font></td>
+<td align="left"><font face="Verdana" size="2">Type <b>exit</b> in the Command Prompt</font></td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<br>
+The above instructions can be found at <a href="http://support.microsoft.com/?id=315539" class="footer" target="_blank">http://support.microsoft.com/?id=315539</a>.
+<br><br>
+<b>Note:</b> During Step E you will need to go into the different ports and delete all the grayed out Bluetooth devices.
+<br><br>
+<img src="BluetoothDevices_files/devicemanager1.gif" alt="">
+<br><br>
+<b>Step 5</b> Remove all Bluetooth Devices.
+<br><br>
+<img src="BluetoothDevices_files/devicemanager2.gif" alt="">
+<br><br>
+<img src="BluetoothDevices_files/devicemanager3.gif" alt="">
+<br><br>
+<b>Step 6</b> Reboot your computer.
+<br><br>
+<b>Step 7</b> Execute the Inst.exe file from the version 3.5 drivers that were downloaded in Step 3.
+<br><br>
+<b>Step 8</b> Towards the end of the installation you will receive an
+error stating that no bluetooth device is present, select the cancel
+option and the software will continue installing.
+<br><br>
+<b>Step 9</b> Once the installation has finished, insert your DBT-120
+rev B4 into your USB port and wait for windows to install the generic
+drivers.
+<br><br>
+<b>Step 10</b> Force the D-Link driver to replace the Generic Bluetooth drivers.
+</font><ul>
+<font face="Verdana" size="2"><li>Right click on your <b>My Computer</b> icon and select properties.</li>
+<li>Select the <b>Hardware</b> tab and open the Device Manager.</li>
+<li>Click on the plus sign next to <b>Bluetooth Radios</b> and right-click on the Generic Bluetooth driver.</li>
+<li>Select <b>Update Driver</b></li>
+<li>Once the wizard has opened you will be prompted to have Windows check online for updates, Select <b>No, not at this time</b></li>
+</font></ul>
+<font face="Verdana" size="2"><img src="BluetoothDevices_files/setup1.gif" alt="">
+<br><br>
+<b>Step 11</b> Select <b>Install from a list or specific location (Advanced)</b> and then lick <b>Next</b>.
+<br><br>
+<img src="BluetoothDevices_files/setup2.gif" alt="">
+<br><br>
+<b>Step 12</b> Select <b>Don�t search. I will choose the driver to install</b> and then click <b>Next</b>.
+<br><br>
+<img src="BluetoothDevices_files/setup3.gif" alt="">
+<br><br>
+<b>Step 13</b> Select the D-Link DBT-120 driver and then click <b>Next</b>.
+<br><br>
+<img src="BluetoothDevices_files/setup4.gif" alt="">
+<br><br>
+<b>Step 14</b> Once the driver files have been successfully copied, Click <b>Finish</b>.
+<br><br>After the driver update double-click Bluetooth Places. This
+will begin a wizard that will walk you through the setup of your
+Bluetooth devices.<br><br>
+		</font><hr color="#cccccc" noshade="noshade" size="1" width="100%">
+<font face="Verdana" size="2">		</font><form action="save.asp" method="post" name="Feed" onsubmit="return validate(Feed)">
+<font face="Verdana" size="2">		<input name="FaqID" value="2146" type="hidden">
+		<input name="FullQuestion" value="DBT-120_revB4" type="hidden">
+		<table align="center" border="0" cellpadding="0" cellspacing="1">
+		<tbody><tr>
+			<td><font face="verdana" size="2"><b>Comments:</b></font><br>
+			<font face="verdana" size="1">We <b>do not</b>
+reply to these comments. However, we do read them and use your
+suggestions to improve our site. If you would like to receive a
+response to a question please go to the <a href="http://support.dlink.com/contact/" class="footer">Contacts</a> page and select the appropriate department to contact.<br><br></font></td>
+			</tr>
+		<tr bgcolor="#ffffff">
+			<td width="300"><font face="verdana" size="1">Was this information helpful?&nbsp;&nbsp;&nbsp;Yes <input value="Yes" name="Rate" checked="checked" type="radio"> No <input value="No" name="Rate" type="radio"></font></td>
+		</tr>
+		<tr bgcolor="#ffffff">
+			<td height="100"><font face="verdana" size="1">How can we improve it?<br>
+			<textarea rows="3" cols="50" name="Comments" wrap="virtual" maxlength="300" onfocus="CommentsInput()">Please limit comments to 300 characters. Approximately 5 lines of text. Thank you!</textarea></font>
+			</td>
+		</tr>
+		<tr>
+			<td align="right"><input value="Submit" onmouseover="showcursor();" type="submit"></td>
+		</tr></tbody></table>
+		
+		
+
+<!-- END PAGE CONTENTS -->
+
+<!--FOOTER CODE-->
+
+<br>
+
+</font><hr color="#cccccc" noshade="noshade" size="1" width="100%">
+
+<font face="Verdana" size="2"><script language="JavaScript">
+<!-- Begin
+function NewWindow(mypage, myname, w, h, scroll) {
+var winl = (screen.width - w) / 2;
+var wint = (screen.height - h) / 2;
+winprops = 'height='+h+',width='+w+',top='+wint+',left='+winl+',scrollbars='+scroll+',resizable'
+win = window.open(mypage, myname, winprops)
+if (parseInt(navigator.appVersion) >= 4) { win.window.focus(); }
+}
+//  End -->
+</script>
+
+<font face="Verdana" size="1">
+<center>
+All Contents � <a href="http://support.dlink.com/international" class="footer">D-Link Systems, Inc</a> 2006 | All Rights Reserved | <a href="http://support.dlink.com/terms/terms.asp" class="footer">Terms of Use</a> | <a href="http://support.dlink.com/privacy/privacy.asp" class="footer">Privacy Policy</a><!-- | <a href="../comments" onclick="NewWindow(this.href,'name','300','304','no');return false;" class="footer">Site Suggestions</a>--><br>
+<a href="http://support.dlink.com/" class="footer">Main Page</a> | <a href="http://support.dlink.com/products" class="footer">Products</a> | <a href="http://support.dlink.com/downloads" class="footer">Downloads</a> | <a href="http://support.dlink.com/register" class="footer">Registration</a> | <a href="http://support.dlink.com/supportfaq/" class="footer">Training Guides</a> | <a href="http://support.dlink.com/faq" class="footer">F.A.Q.</a> | <a href="http://support.dlink.com/contact" class="footer">Contact</a><br>
+</center>
+</font>
+
+</font></form></td></tr></tbody></table>
+
+</font></td></tr></tbody></table></body></html>
