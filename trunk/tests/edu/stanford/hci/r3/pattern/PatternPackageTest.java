@@ -16,7 +16,7 @@ public class PatternPackageTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PostscriptPatternGenerator generator = new PostscriptPatternGenerator();
+		TiledPatternGenerator generator = new TiledPatternGenerator();
 		generator.getAvailablePatternPackages();
 	}
 }
