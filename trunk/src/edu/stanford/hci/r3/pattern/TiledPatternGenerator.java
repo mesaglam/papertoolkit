@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -30,11 +32,6 @@ public class TiledPatternGenerator {
 	public static final File PATTERN_PATH = new File("pattern");
 
 	/**
-	 * Customize this to reflect where you store your pattern definition files.
-	 */
-	private File patternPath;
-
-	/**
 	 * Packages indexed by name.
 	 */
 	private Map<String, PatternPackage> availablePackages;
@@ -43,6 +40,11 @@ public class TiledPatternGenerator {
 	 * Currently selected pattern package.
 	 */
 	private PatternPackage patternPackage;
+
+	/**
+	 * Customize this to reflect where you store your pattern definition files.
+	 */
+	private File patternPath;
 
 	/**
 	 * Default Pattern Path Location.
@@ -60,20 +62,6 @@ public class TiledPatternGenerator {
 		patternPath = patternPathLocation;
 		availablePackages = getAvailablePatternPackages();
 		setPackage(DEFAULT_PATTERN_PACKAGE_NAME);
-	}
-
-	/**
-	 * @param packageName
-	 */
-	private void setPackage(String packageName) {
-		PatternPackage pkg = availablePackages.get(packageName);
-		if (pkg == null) {
-			pkg = new ArrayList<PatternPackage>(availablePackages.values()).get(0);
-			System.err.println("Warning: " + packageName
-					+ " does not exist. Setting Pattern Package to the first one available ("
-					+ pkg.getName() + ").");
-		}
-		patternPackage = pkg;
 	}
 
 	/**
@@ -99,10 +87,83 @@ public class TiledPatternGenerator {
 	}
 
 	/**
+	 * @return the current pattern package.
+	 */
+	public PatternPackage getCurrentPatternPackage() {
+		return patternPackage;
+	}
+
+	/**
+	 * @param name
+	 * @return a PatternPackage, indexed by name.
+	 */
+	public PatternPackage getPatternPackageByName(String name) {
+		return availablePackages.get(name);
+	}
+
+	/**
 	 * @return
 	 * @return the set of name of available pattern packages.
 	 */
 	public List<String> listAvailablePatternPackageNames() {
 		return new ArrayList<String>(availablePackages.keySet());
 	}
+
+	/**
+	 * @param packageName
+	 */
+	private void setPackage(String packageName) {
+		PatternPackage pkg = availablePackages.get(packageName);
+		if (pkg == null) {
+			pkg = new ArrayList<PatternPackage>(availablePackages.values()).get(0);
+			System.err.println("Warning: " + packageName
+					+ " does not exist. Setting Pattern Package to the first one available ("
+					+ pkg.getName() + ").");
+		}
+		patternPackage = pkg;
+	}
+
+	/**
+	 * Prints out some information on the tiling...
+	 */
+	public void displayTilingInformation(Units horizontal, Units vertical) {
+		long numDotsX = Math.round(horizontal.getValueIn(new PatternDots()));
+		long numDotsY = Math.round(vertical.getValueIn(new PatternDots()));
+
+		// System.out.println(numDotsX + " " + numDotsY);
+
+		int numTilesNeededX = 0;
+		int numTilesNeededY = 0;
+
+		int numDotsRemainingX = (int) numDotsX;
+		int numDotsRemainingY = (int) numDotsY;
+
+		final int numPatternColsPerFile = patternPackage.getNumPatternColsPerFile();
+		final int numPatternRowsPerFile = patternPackage.getNumPatternRowsPerFile();
+
+		while (numDotsRemainingX > 0) {
+			// use up one tile, and subtract an appropriate number of columns...
+			numDotsRemainingX -= numPatternColsPerFile;
+			numTilesNeededX++;
+		}
+		final int numDotsXFromRightMostTiles = numDotsRemainingX + numPatternColsPerFile;
+
+		while (numDotsRemainingY > 0) {
+			// use up one tile, and subtract an appropriate number of rows...
+			numDotsRemainingY -= numPatternRowsPerFile;
+			numTilesNeededY++;
+		}
+		final int numDotsYFromBottomMostTiles = numDotsRemainingY + numPatternRowsPerFile;
+
+		// the tiling is...
+		// numTilesNeededX, numTilesNeededY
+		// numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles
+		System.out.println("Tiling Information (" + horizontal + ", " + vertical + ") {");
+		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with " + numDotsXFromRightMostTiles
+				+ " horizontal dots from the rightmost tiles.");
+		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with " + numDotsYFromBottomMostTiles
+				+ " vertical dots from the bottommost tiles.");
+		System.out.println("}");
+	}
+
 }

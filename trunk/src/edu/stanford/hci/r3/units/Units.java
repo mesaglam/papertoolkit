@@ -26,11 +26,15 @@ public abstract class Units {
 
 	/**
 	 * @param destUnits
-	 * @return the number of this Unit that fits in the destination Unit.
+	 * @return the number of destination Units that fit into this Unit. Alternatively, the number n
+	 *         that we would need to multiply the current value to in order to achieve the same
+	 *         length in the destination unit. For example, if we are one inch, and the destination
+	 *         is Points, then the number we need is 72, because we would have to multiply our value
+	 *         (1) by 72 to achieve 72 points, which is the same length.
+	 * @note we flipped the definition of this from Diamond's Edge.
 	 */
 	public double getConversionTo(Units destUnits) {
-		final double retVal = getNumberOfUnitsInOneInch() / destUnits.getNumberOfUnitsInOneInch();
-		// System.out.println("Units :: Conversion is: " + retVal);
+		final double retVal = destUnits.getNumberOfUnitsInOneInch() / getNumberOfUnitsInOneInch();
 		return retVal;
 	}
 
@@ -47,15 +51,41 @@ public abstract class Units {
 	}
 
 	/**
+	 * @param destUnits
+	 * @return
+	 */
+	public Units getUnitsObjectIn(Units destUnits) {
+		Units units = null;
+		try {
+			units = destUnits.getClass().newInstance();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		units.value = getValueIn(destUnits);
+		return units;
+	}
+
+	/**
 	 * @return the numerical value of this unit measure.
 	 */
 	public double getValue() {
 		return value;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * For example, you have a Units object that represents 2 Inches. You want to see what the value
+	 * will be in Points. getConversionTo(new Points()) will return 72. 2 * 72 is 144.
 	 * 
+	 * @param destUnits
+	 * @return
+	 */
+	public double getValueIn(Units destUnits) {
+		return value * getConversionTo(destUnits);
+	}
+
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {

@@ -15,9 +15,11 @@ public class PatternDots extends Units {
 	 * I picked a number in between the dots per X inches and dots per Y inches. Hopefully this
 	 * number will work for most calculations.
 	 * 
-	 * 84.77540106951871657754010695187 is the average of X & Y (see Pattern.java)
+	 * 84.77540106951871657754010695187 is the average of X & Y from earlier experiments.
+	 * 84.820855614973262032085561497325 is the average from reading the pattern files.
 	 */
-	private static final double PATTERN_UNITS_PER_INCH = 84.77540106951871657754010695187;
+	// private static final double PATTERN_UNITS_PER_INCH = 84.77540106951871657754010695187;
+	private static final double PATTERN_UNITS_PER_INCH = 84.820855614973262032085561497325;
 
 	/**
 	 * Default Constructor for Doing unit conversions, etc...

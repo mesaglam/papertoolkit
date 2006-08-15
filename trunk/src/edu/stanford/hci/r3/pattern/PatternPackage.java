@@ -23,10 +23,12 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class PatternPackage {
 
+	private String name;
+
 	/**
-	 * Where we will find the pattern definition files.
+	 * The width of a pattern file, in num dots.
 	 */
-	private File patternDefinitionPath;
+	private int numPatternColsPerFile;
 
 	/**
 	 * <p>
@@ -36,26 +38,24 @@ public class PatternPackage {
 	 */
 	private int numPatternFiles;
 
-	private List<File> patternFiles;
-
 	/**
 	 * The height of a pattern file, in num dots.
 	 */
 	private int numPatternRowsPerFile;
 
 	/**
-	 * The width of a pattern file, in num dots.
+	 * Where we will find the pattern definition files.
 	 */
-	private int numPatternColsPerFile;
+	private File patternDefinitionPath;
 
-	private String name;
+	private List<File> patternFiles;
 
 	/**
 	 * @param location
 	 */
 	public PatternPackage(File location) {
 		patternDefinitionPath = location;
-		
+
 		name = location.getName();
 
 		// look at the directory to see how many pattern files are available
@@ -104,5 +104,13 @@ public class PatternPackage {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	public int getNumPatternColsPerFile() {
+		return numPatternColsPerFile;
+	}
+
+	public int getNumPatternRowsPerFile() {
+		return numPatternRowsPerFile;
 	}
 }

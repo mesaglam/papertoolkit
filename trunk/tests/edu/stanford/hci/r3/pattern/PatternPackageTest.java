@@ -1,8 +1,8 @@
 package edu.stanford.hci.r3.pattern;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import edu.stanford.hci.r3.units.Inches;
 
 /**
  * <p>
@@ -23,5 +23,10 @@ public class PatternPackageTest {
 		TiledPatternGenerator generator = new TiledPatternGenerator();
 		List<String> availablePatternPackages = generator.listAvailablePatternPackageNames();
 		System.out.println(availablePatternPackages);
+		PatternPackage pkg = generator.getPatternPackageByName("default");
+		System.out.println(pkg.getNumPatternRowsPerFile());
+		System.out.println(pkg.getNumPatternColsPerFile());
+		generator.displayTilingInformation(new Inches(8.5), new Inches(11));
+		generator.displayTilingInformation(new Inches(8), new Inches(8));
 	}
 }
