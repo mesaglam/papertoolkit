@@ -1,5 +1,9 @@
 package edu.stanford.hci.r3.pattern;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
@@ -17,6 +21,7 @@ public class PatternPackageTest {
 	 */
 	public static void main(String[] args) {
 		TiledPatternGenerator generator = new TiledPatternGenerator();
-		generator.getAvailablePatternPackages();
+		List<String> availablePatternPackages = generator.listAvailablePatternPackageNames();
+		System.out.println(availablePatternPackages);
 	}
 }
