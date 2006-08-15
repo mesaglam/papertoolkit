@@ -15,8 +15,6 @@ import edu.stanford.hci.r3.units.Inches;
 public class PatternPackageTest {
 
 	/**
-	 * Default
-	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
