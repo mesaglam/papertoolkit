@@ -16,7 +16,7 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * 
  * Given input dimensions, this class will generate a postscript file of tiled Anoto pattern.
  */
-public class PostscriptPatternGenerator {
+public class TiledPatternGenerator {
 
 	/**
 	 * The name of the default pattern package (stored in pattern/default/).
@@ -36,14 +36,14 @@ public class PostscriptPatternGenerator {
 	/**
 	 * Default Pattern Path Location.
 	 */
-	public PostscriptPatternGenerator() {
+	public TiledPatternGenerator() {
 		patternPath = PATTERN_PATH;
 	}
 
 	/**
 	 * Customize the location of pattern definition files.
 	 */
-	public PostscriptPatternGenerator(File patternPathLocation) {
+	public TiledPatternGenerator(File patternPathLocation) {
 		patternPath = patternPathLocation;
 	}
 
