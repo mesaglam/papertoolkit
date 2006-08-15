@@ -26,4 +26,19 @@ public class ArrayUtils {
 		Collections.addAll(list, arrayOfObjects);
 		return list;
 	}
+
+	/**
+	 * @param array
+	 */
+	public static void printArray(double[] array) {
+		System.out.print("Double Array: [");
+		for (int i = 0; i < array.length; i++) {
+			System.out.print(array[i]);
+			if (i != array.length - 1) {
+				System.out.print(", ");
+			}
+		}
+		System.out.println("]");
+	}
+
 }

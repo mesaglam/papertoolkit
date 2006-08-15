@@ -48,11 +48,15 @@ public class PatternPackage {
 	 */
 	private int numPatternColsPerFile;
 
+	private String name;
+
 	/**
 	 * @param location
 	 */
 	public PatternPackage(File location) {
 		patternDefinitionPath = location;
+		
+		name = location.getName();
 
 		// look at the directory to see how many pattern files are available
 		// System.out.println(patternDefinitionPath.getAbsolutePath());
@@ -93,5 +97,12 @@ public class PatternPackage {
 		// see how many dots across each .pattern file is by checking length of the first line
 		numPatternColsPerFile = firstLine.length();
 		numPatternRowsPerFile = lnr.getLineNumber();
+	}
+
+	/**
+	 * @return the name of the package (same as the directory's name)
+	 */
+	public String getName() {
+		return name;
 	}
 }

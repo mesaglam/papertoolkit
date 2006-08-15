@@ -2,7 +2,9 @@ package edu.stanford.hci.r3.pattern;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -14,7 +16,6 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
- * Given input dimensions, this class will generate a postscript file of tiled Anoto pattern.
  */
 public class TiledPatternGenerator {
 
@@ -34,10 +35,22 @@ public class TiledPatternGenerator {
 	private File patternPath;
 
 	/**
+	 * Packages indexed by name.
+	 */
+	private Map<String, PatternPackage> availablePackages;
+
+	/**
+	 * Currently selected pattern package.
+	 */
+	private PatternPackage patternPackage;
+
+	/**
 	 * Default Pattern Path Location.
 	 */
 	public TiledPatternGenerator() {
 		patternPath = PATTERN_PATH;
+		availablePackages = getAvailablePatternPackages();
+		setPackage(DEFAULT_PATTERN_PACKAGE_NAME);
 	}
 
 	/**
@@ -45,26 +58,51 @@ public class TiledPatternGenerator {
 	 */
 	public TiledPatternGenerator(File patternPathLocation) {
 		patternPath = patternPathLocation;
+		availablePackages = getAvailablePatternPackages();
+		setPackage(DEFAULT_PATTERN_PACKAGE_NAME);
 	}
 
 	/**
-	 * @return a list of Pattern Packages that are available to the system. Packages are stored in
+	 * @param packageName
 	 */
-	public List<PatternPackage> getAvailablePatternPackages() {
+	private void setPackage(String packageName) {
+		PatternPackage pkg = availablePackages.get(packageName);
+		if (pkg == null) {
+			pkg = new ArrayList<PatternPackage>(availablePackages.values()).get(0);
+			System.err.println("Warning: " + packageName
+					+ " does not exist. Setting Pattern Package to the first one available ("
+					+ pkg.getName() + ").");
+		}
+		patternPackage = pkg;
+	}
 
-		final List<PatternPackage> packages = new ArrayList<PatternPackage>();
+	/**
+	 * @return the Pattern Packages that are available to the system. Packages are stored in the
+	 *         directory (pattern/). We return a Map<String, PatternPackage> so you can address the
+	 *         package by name.
+	 */
+	private Map<String, PatternPackage> getAvailablePatternPackages() {
+		final HashMap<String, PatternPackage> packages = new HashMap<String, PatternPackage>();
 
 		// list the available directories
 		final List<File> visibleDirs = FileUtils.listVisibleDirs(patternPath);
 		// System.out.println(visibleDirs);
 
-		
 		// create new PatternPackage objects from the directories
 		for (File f : visibleDirs) {
-			packages.add(new PatternPackage(f));
+			PatternPackage patternPackage = new PatternPackage(f);
+			packages.put(patternPackage.getName(), patternPackage);
 		}
-		
+
 		// return the list of packages
 		return packages;
+	}
+
+	/**
+	 * @return
+	 * @return the set of name of available pattern packages.
+	 */
+	public List<String> listAvailablePatternPackageNames() {
+		return new ArrayList<String>(availablePackages.keySet());
 	}
 }
