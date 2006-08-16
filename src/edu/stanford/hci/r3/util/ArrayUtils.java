@@ -41,4 +41,22 @@ public class ArrayUtils {
 		System.out.println("]");
 	}
 
+	/**
+	 * Prints an array of Objects to console.
+	 * 
+	 * @param array
+	 */
+	public static void printArray(Object[] array) {
+		String className = array[0].getClass().toString();
+		System.out.print(className.substring(className.lastIndexOf(".") + 1, className.length())
+				+ " Array: [");
+		for (int i = 0; i < array.length; i++) {
+			System.out.print(array[i]);
+			if (i != array.length - 1) {
+				System.out.print(", ");
+			}
+		}
+		System.out.println("]");
+	}
+
 }

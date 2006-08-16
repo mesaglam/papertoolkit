@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pattern;
+package edu.stanford.hci.r3.pattern.output;
 
 /**
  * <p>
@@ -8,11 +8,10 @@ package edu.stanford.hci.r3.pattern;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
- * A TiledPatternGenerator can create a TiledPattern object, which allows you to iterate through the
- * object to find the location of the dots.
+ * This sits on top of PatternPackage and/or TiledPattern to create PDFs that can be printed. It
+ * uses the iText library to create and manipulate PDFs.
  */
-public class TiledPattern {
-	
+public class PDFPatternGenerator {
 	
 	
 }

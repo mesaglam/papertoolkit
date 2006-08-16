@@ -14,6 +14,15 @@ package edu.stanford.hci.r3.units;
 public class Inches extends Units {
 
 	/**
+	 * Identity Element, representing one inch.
+	 */
+	public static final Units ONE = new Inches(1.0);
+
+	public Inches() {
+		value = 1;
+	}
+
+	/**
 	 * @param d
 	 */
 	public Inches(double inches) {
@@ -21,10 +30,11 @@ public class Inches extends Units {
 	}
 
 	/**
-	 * 
+	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
-	public Inches() {
-		value = 1;
+	@Override
+	public double getNumberOfUnitsInOneInch() {
+		return 1.0;
 	}
 
 	/**
@@ -32,16 +42,6 @@ public class Inches extends Units {
 	 */
 	public Points toPoints() {
 		return new Points(value * POINTS_PER_INCH);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.stanford.hci.diamondsedge.printing.api.units.Units#getNumberOfUnitsInOneInch()
-	 */
-	@Override
-	public double getNumberOfUnitsInOneInch() {
-		return 1.0;
 	}
 
 }
