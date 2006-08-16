@@ -18,5 +18,8 @@
 	<classpathentry path="lib/jpedal/jdom.jar" kind="lib"/>
 	<classpathentry path="lib/jpedal/jpedal.jar" kind="lib"/>
 	<classpathentry path="lib/jpedal/pjes.jar" kind="lib"/>
+	<classpathentry path="lib/xstream/xpp3-1.1.3.4.O.jar" kind="lib"/>
+	<classpathentry path="lib/xstream/xstream-1.1.3.jar" kind="lib"/>
+	<classpathentry path="lib/comm/comm.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
