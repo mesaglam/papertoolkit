@@ -1,7 +1,8 @@
-package edu.stanford.hci.r3.pattern;
+package edu.stanford.hci.r3.pattern.output;
 
 import java.io.File;
 
+import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.units.Units;
 
 /**

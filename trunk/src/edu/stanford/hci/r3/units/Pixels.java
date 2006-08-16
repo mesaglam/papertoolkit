@@ -15,6 +15,11 @@ package edu.stanford.hci.r3.units;
  */
 public class Pixels extends Units {
 
+	/**
+	 * The Identity Element representing one Pixel on a "default" screen at a default pixelsPerInch.
+	 */
+	public static final Units ONE = new Pixels(1);
+
 	// on the HCI Group Laptops, we have 900 Pixels for 8.5 Inches (PPI = 105.88)
 	// on the DiamondTouch Table, we have 413 pixels for 11 Inches (PPI = 37.545)
 	private double pixelsPerInch = 105.88;
@@ -40,13 +45,12 @@ public class Pixels extends Units {
 		pixelsPerInch = ppi;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.stanford.hci.diamondsedge.printing.api.units.Units#getNumberOfUnitsInOneInch()
+	/**
+	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
 	@Override
 	public double getNumberOfUnitsInOneInch() {
 		return pixelsPerInch;
 	}
+
 }

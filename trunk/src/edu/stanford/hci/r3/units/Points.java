@@ -14,17 +14,27 @@ package edu.stanford.hci.r3.units;
 public class Points extends Units {
 
 	/**
-	 * @param width
+	 * The Identity Element; One Point, representing 1/72nd of an inch.
+	 */
+	public static final Units ONE = new Points(1);
+
+	public Points() {
+		value = 1;
+	}
+
+	/**
+	 * @param pts
 	 */
 	public Points(double pts) {
 		value = pts;
 	}
 
 	/**
-	 * 
+	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
-	public Points() {
-		value = 1;
+	@Override
+	public double getNumberOfUnitsInOneInch() {
+		return 72;
 	}
 
 	/**
@@ -32,16 +42,6 @@ public class Points extends Units {
 	 */
 	public Inches toInches() {
 		return new Inches(value / POINTS_PER_INCH);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.stanford.hci.diamondsedge.printing.api.units.Units#getNumberOfUnitsInOneInch()
-	 */
-	@Override
-	public double getNumberOfUnitsInOneInch() {
-		return 72;
 	}
 
 }

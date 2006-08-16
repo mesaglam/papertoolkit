@@ -26,6 +26,9 @@ public class ITextToPDF {
 	
 	public static final Font TAHOMA_BOLD = new Font("Tahoma", Font.BOLD, 21);
 
+	/**
+	 * Use iText to draw some dots into a PDF document.
+	 */
 	private static void drawDots() {
 		Rectangle customPageSize8x8 = new Rectangle(0, 0, 576, 576);
 		Document doc = new Document(customPageSize8x8, 50, 50, 50, 50);
