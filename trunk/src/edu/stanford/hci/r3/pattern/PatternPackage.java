@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -29,6 +28,11 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * All interaction with the specific pattern files should go in this class.
  */
 public class PatternPackage {
+
+	/**
+	 * All pattern files' names look like N.pattern, where N is the page number.
+	 */
+	private static final String PATTERN_FILE_EXTENSION = ".pattern";
 
 	private String name;
 
@@ -51,21 +55,16 @@ public class PatternPackage {
 	private int numPatternRowsPerFile;
 
 	/**
-	 * Where we will find the pattern definition files.
-	 */
-	private File patternDefinitionPath;
-
-	private List<File> patternFiles;
-
-	/**
 	 * Enables access to a pattern file by the pattern file number N. It will retrieve "N.pattern"
 	 */
 	private Map<Integer, File> numToPatternFile;
 
 	/**
-	 * All pattern files' names look like N.pattern, where N is the page number.
+	 * Where we will find the pattern definition files.
 	 */
-	private static final String PATTERN_FILE_EXTENSION = ".pattern";
+	private File patternDefinitionPath;
+
+	private List<File> patternFiles;
 
 	/**
 	 * @param location
@@ -175,10 +174,10 @@ public class PatternPackage {
 			Units width, Units height) {
 
 		// regardless of the units, convert them to pattern dots
-		int startDotsX = (int) Math.round(originX.getValueIn(PatternDots.ONE));
-		int startDotsY = (int) Math.round(originX.getValueIn(PatternDots.ONE));
-		int numDotsAcross = (int) Math.round(width.getValueIn(PatternDots.ONE));
-		int numDotsDown = (int) Math.round(height.getValueIn(PatternDots.ONE));
+		int startDotsX = (int) Math.round(originX.getValueInPatternDots());
+		int startDotsY = (int) Math.round(originX.getValueInPatternDots());
+		int numDotsAcross = (int) Math.round(width.getValueInPatternDots());
+		int numDotsDown = (int) Math.round(height.getValueInPatternDots());
 
 		// ///////////////////////////////////////
 		// begin: making sure the units make sense
