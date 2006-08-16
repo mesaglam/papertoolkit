@@ -12,8 +12,6 @@ import edu.stanford.hci.r3.util.WindowUtils;
  */
 public class PaperToolkit {
 
-	
-	
 	/**
 	 * 
 	 */
