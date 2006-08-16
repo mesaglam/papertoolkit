@@ -34,8 +34,7 @@ public abstract class Units {
 	 * @note we flipped the definition of this from Diamond's Edge.
 	 */
 	public double getConversionTo(Units destUnits) {
-		final double retVal = destUnits.getNumberOfUnitsInOneInch() / getNumberOfUnitsInOneInch();
-		return retVal;
+		return destUnits.getNumberOfUnitsInOneInch() / getNumberOfUnitsInOneInch();
 	}
 
 	/**
@@ -83,6 +82,36 @@ public abstract class Units {
 	 */
 	public double getValueIn(Units destUnits) {
 		return value * getConversionTo(destUnits);
+	}
+
+	/**
+	 * This is a CONVENIENCE method. Yes, Yes... it's probably poor programming style to have the
+	 * Units class be aware of its subclass (Inches). However, it makes code a lot more readable.
+	 * Plus, if you implement your own Units class, you can use the generic method
+	 * getValueIn(Units).
+	 * 
+	 * @return the double value of this unit, converted to Inches.
+	 */
+	public double getValueInInches() {
+		return getValueIn(Inches.ONE);
+	}
+
+	/**
+	 * CONVENIENCE method for converting this unit to PatternDots.
+	 * 
+	 * @return
+	 */
+	public double getValueInPatternDots() {
+		return getValueIn(PatternDots.ONE);
+	}
+
+	/**
+	 * CONVENIENCE method for converting this unit to Points.
+	 * 
+	 * @return
+	 */
+	public double getValueInPoints() {
+		return getValueIn(Points.ONE);
 	}
 
 	/**

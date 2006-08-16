@@ -127,8 +127,8 @@ public class TiledPatternGenerator {
 	 * Prints out some information on the tiling...
 	 */
 	public void displayTilingInformation(Units horizontal, Units vertical) {
-		long numDotsX = Math.round(horizontal.getValueIn(new PatternDots()));
-		long numDotsY = Math.round(vertical.getValueIn(new PatternDots()));
+		long numDotsX = Math.round(horizontal.getValueInPatternDots());
+		long numDotsY = Math.round(vertical.getValueInPatternDots());
 
 		// System.out.println(numDotsX + " " + numDotsY);
 
@@ -159,14 +159,13 @@ public class TiledPatternGenerator {
 		// numTilesNeededX, numTilesNeededY
 		// numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles
 		System.out.println("Tiling Information (" + horizontal + ", " + vertical + ") {");
-		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with " + numDotsXFromRightMostTiles
-				+ " horizontal dots from the rightmost tiles.");
-		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with " + numDotsYFromBottomMostTiles
-				+ " vertical dots from the bottommost tiles.");
+		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with "
+				+ numDotsXFromRightMostTiles + " horizontal dots from the rightmost tiles.");
+		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with "
+				+ numDotsYFromBottomMostTiles + " vertical dots from the bottommost tiles.");
 		System.out.println("}");
 	}
 
-	
 	/**
 	 * @param horizontal
 	 * @param vertical
@@ -175,9 +174,9 @@ public class TiledPatternGenerator {
 
 		// TODO
 		// Finish This
-		
-		long numDotsX = Math.round(horizontal.getValueIn(new PatternDots()));
-		long numDotsY = Math.round(vertical.getValueIn(new PatternDots()));
+
+		long numDotsX = Math.round(horizontal.getValueInPatternDots());
+		long numDotsY = Math.round(vertical.getValueInPatternDots());
 
 		// System.out.println(numDotsX + " " + numDotsY);
 
@@ -208,12 +207,12 @@ public class TiledPatternGenerator {
 		// numTilesNeededX, numTilesNeededY
 		// numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles
 		System.out.println("Tiling Information (" + horizontal + ", " + vertical + ") {");
-		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with " + numDotsXFromRightMostTiles
-				+ " horizontal dots from the rightmost tiles.");
-		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with " + numDotsYFromBottomMostTiles
-				+ " vertical dots from the bottommost tiles.");
+		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with "
+				+ numDotsXFromRightMostTiles + " horizontal dots from the rightmost tiles.");
+		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with "
+				+ numDotsYFromBottomMostTiles + " vertical dots from the bottommost tiles.");
 		System.out.println("}");
-		
+
 		return new TiledPattern();
 	}
 

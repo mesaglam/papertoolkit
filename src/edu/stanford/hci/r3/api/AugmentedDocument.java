@@ -10,6 +10,6 @@ package edu.stanford.hci.r3.api;
  * 
  * A collection of pages/sheets of interactive paper. A document contains multiple InteractiveSheets.
  */
-public class InteractiveDocument {
+public class AugmentedDocument {
 
 }
