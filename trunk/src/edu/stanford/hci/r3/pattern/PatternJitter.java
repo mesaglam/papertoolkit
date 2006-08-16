@@ -12,12 +12,11 @@ package edu.stanford.hci.r3.pattern;
  * DOWN, LEFT, RIGHT.
  */
 public class PatternJitter {
+	public static final char DOWN = 'd';
 
-	public static final byte DOWN = 'd';
+	public static final char LEFT = 'l';
 
-	public static final byte LEFT = 'l';
+	public static final char RIGHT = 'r';
 
-	public static final byte RIGHT = 'r';
-
-	public static final byte UP = 'u';
+	public static final char UP = 'u';
 }

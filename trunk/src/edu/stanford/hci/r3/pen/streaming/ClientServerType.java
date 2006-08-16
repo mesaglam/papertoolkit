@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.util;
+package edu.stanford.hci.r3.pen.streaming;
 
 /**
  * <p>
@@ -7,13 +7,11 @@ package edu.stanford.hci.r3.util;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * 
+ * When we connect to a pen server, we can either stream Java objects (serialized to XML) or just
+ * show plain text.
  */
-public class SystemUtils {
-
-	/**
-	 * System character(s) for separating lines. Different for Unix/DOS/Mac.
-	 */
-	public static final String LINE_SEPARATOR = System.getProperties()
-			.getProperty("line.separator");
-
+public enum ClientServerType {
+	JAVA, 
+	PLAINTEXT
 }
