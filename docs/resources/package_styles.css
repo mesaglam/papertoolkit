@@ -1,0 +1,22 @@
+.Header1 {
+	font-family: "Trebuchet MS";
+	font-size: medium;
+	font-style: normal;
+	font-weight: bolder;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}
+.Title {
+	font-family: "Trebuchet MS";
+	font-size: x-large;
+	font-weight: bolder;
+}
+
+.Normal {
+	font-family: "Trebuchet MS";
+}
+.Author {
+	font-family: "Trebuchet MS";
+	font-size: x-small;
+	color: #666666;
+}
