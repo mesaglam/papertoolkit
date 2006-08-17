@@ -53,7 +53,8 @@ public class PDFPatternGenerator {
 	public static void main(String[] args) {
 		TiledPatternGenerator generator = new TiledPatternGenerator();
 		PatternPackage pkg = generator.getCurrentPatternPackage();
-		String[] pattern = pkg.readPatternFromFile(0, new PatternDots(0), new PatternDots(0),
+		String[] pattern = pkg.readPatternFromFile(0, 
+				new Inches(.5), new Inches(1),
 				new Inches(.5), new Inches(5));
 
 		try {
