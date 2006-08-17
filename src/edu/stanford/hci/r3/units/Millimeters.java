@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.units;
 
 /**
@@ -11,22 +8,25 @@ package edu.stanford.hci.r3.units;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class Inches extends Units {
+public class Millimeters extends Units {
 
 	/**
-	 * Identity Element, representing one inch.
+	 * Identity Element, representing one centimeter.
 	 */
-	public static final Units ONE = new Inches(1.0);
+	public static final Units ONE = new Millimeters(1.0);
 
-	public Inches() {
+	/**
+	 * 
+	 */
+	public Millimeters() {
 		value = 1;
 	}
 
 	/**
-	 * @param d
+	 * @param mm
 	 */
-	public Inches(double inches) {
-		value = inches;
+	public Millimeters(double mm) {
+		value = mm;
 	}
 
 	/**
@@ -34,6 +34,6 @@ public class Inches extends Units {
 	 */
 	@Override
 	protected double getNumberOfUnitsInOneInch() {
-		return 1.0;
+		return 25.4;
 	}
 }

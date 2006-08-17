@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.units;
 
 /**
@@ -10,23 +7,28 @@ package edu.stanford.hci.r3.units;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * 
+ * The Meters unit is useful for scientists and people who are not American. =)
  */
-public class Inches extends Units {
+public class Meters extends Units {
 
 	/**
-	 * Identity Element, representing one inch.
+	 * Identity Element, representing one meter.
 	 */
-	public static final Units ONE = new Inches(1.0);
+	public static final Units ONE = new Meters(1.0);
 
-	public Inches() {
+	/**
+	 * 
+	 */
+	public Meters() {
 		value = 1;
 	}
 
 	/**
-	 * @param d
+	 * @param m
 	 */
-	public Inches(double inches) {
-		value = inches;
+	public Meters(double m) {
+		value = m;
 	}
 
 	/**
@@ -34,6 +36,7 @@ public class Inches extends Units {
 	 */
 	@Override
 	protected double getNumberOfUnitsInOneInch() {
-		return 1.0;
+		return .0254;
 	}
+
 }

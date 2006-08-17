@@ -42,13 +42,11 @@ public class PatternDots extends Units {
 		value = dots;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.stanford.hci.diamondsedge.printing.api.units.Units#getNumberOfUnitsInOneInch()
+	/**
+	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
 	@Override
-	public double getNumberOfUnitsInOneInch() {
+	protected double getNumberOfUnitsInOneInch() {
 		return PATTERN_UNITS_PER_INCH;
 	}
 

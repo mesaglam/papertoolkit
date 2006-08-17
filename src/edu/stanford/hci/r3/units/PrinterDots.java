@@ -47,7 +47,7 @@ public class PrinterDots extends Units {
 	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
 	@Override
-	public double getNumberOfUnitsInOneInch() {
+	protected double getNumberOfUnitsInOneInch() {
 		return printer.getDPI();
 	}
 }

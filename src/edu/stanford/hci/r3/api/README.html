@@ -4,11 +4,15 @@
 
 <p class="Title">The R3 API</p>
 <p class="Normal">This is where you can start exploring the R3 API. While you can feel free to dive in and use the individual packages, it is easier to use these packaged methods until you are more familiar with the toolkit.</p>
-<p><span class="Header1">Augmented Sheet</span><br>
-<span class="Normal"> The AugmentedSheet class represents a sheet of paper that is augmented with interactive capabilities. Add child objects to this class to build up a sheet that includes images, shapes, and dot pattern. The sheet can later be printed to PostScript, PDF, or straight to a Java2D printer (with different advantages to each printing technique, unfortunately). </span></p>
-<p><span class="Header1">Augmented Document (<a href="AugmentedDocument.java" type="text/plain">AugmentedDocument.java</a>) <br>
-  </span><span class="Normal">You can bundle a set of AugmentedSheets into a document. If you want to prototype a notebook interaction (like in ButterflyNet), you would want to create an AugmentedDocument.</span></p>
-<p>&nbsp;</p>
+<p><span class="Header1">Sheet (<a href="Sheet.java" type="text/plain">Sheet.java</a>)</span><br>
+<span class="Normal"> The Sheet class represents a sheet of paper that is augmented with interactive capabilities. Add child objects to this class to build up a sheet that includes images, shapes, and dot pattern. The sheet can later be printed to PostScript, PDF, or straight to a Java2D printer (with different advantages to each printing technique, unfortunately). </span></p>
+<p><span class="Header1">Bundle (<a href="Bundle.java" type="text/plain">Bundle.java</a>) <br>
+  </span><span class="Normal">You can group a set of Sheets into a Bundle. If you want to prototype a notebook interaction (like in ButterflyNet), you would want to create a Bundle.</span></p>
+<p><span class="Header1">Region (<a href="Region.java" type="text/plain">Region.java</a>) <br>
+  </span><span class="Normal">Each Sheet has multiple Regions that represent visible data (such as Images) or active regions with event handlers (such as Buttons).</span></p>
+
+<p></p>
+<hr noshade size=1/>
 <p class="Author">Ron B. Yeh<br>
 Stanford University </p>
 </body>
