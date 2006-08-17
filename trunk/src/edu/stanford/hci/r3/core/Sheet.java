@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.api;
+package edu.stanford.hci.r3.core;
 
 import java.util.ArrayList;
 import java.util.List;
