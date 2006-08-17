@@ -21,7 +21,7 @@ import edu.stanford.hci.r3.units.Units;
  * these options has different advantages/disadvantages. For example, when rendering to the screen
  * or Java2D, no dot pattern is drawn by default. This is because doing so would be inefficient.
  */
-public class AugmentedSheet {
+public class Sheet {
 
 	/**
 	 * The Height of this Augmented Sheet.
@@ -36,12 +36,12 @@ public class AugmentedSheet {
 	/**
 	 * A list of all the regions contained on this sheet.
 	 */
-	private List<AugmentedRegion> regions = new ArrayList<AugmentedRegion>();
+	private List<Region> regions = new ArrayList<Region>();
 
 	/**
 	 * Defaults to US Letter.
 	 */
-	public AugmentedSheet() {
+	public Sheet() {
 		this(8.5, 11.0);
 	}
 
@@ -51,7 +51,7 @@ public class AugmentedSheet {
 	 * @param widthInches
 	 * @param heightInches
 	 */
-	public AugmentedSheet(double widthInches, double heightInches) {
+	public Sheet(double widthInches, double heightInches) {
 		widthInInches = widthInches;
 		heightInInches = heightInches;
 	}
@@ -62,7 +62,7 @@ public class AugmentedSheet {
 	 * @param width
 	 * @param height
 	 */
-	public AugmentedSheet(Units width, Units height) {
+	public Sheet(Units width, Units height) {
 		this(width.getValueInInches(), height.getValueInInches());
 	}
 }

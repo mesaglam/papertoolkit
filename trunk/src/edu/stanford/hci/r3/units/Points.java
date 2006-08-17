@@ -18,6 +18,9 @@ public class Points extends Units {
 	 */
 	public static final Units ONE = new Points(1);
 
+	/**
+	 * 
+	 */
 	public Points() {
 		value = 1;
 	}
@@ -33,15 +36,7 @@ public class Points extends Units {
 	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
 	@Override
-	public double getNumberOfUnitsInOneInch() {
+	protected double getNumberOfUnitsInOneInch() {
 		return 72;
 	}
-
-	/**
-	 * @return
-	 */
-	public Inches toInches() {
-		return new Inches(value / POINTS_PER_INCH);
-	}
-
 }

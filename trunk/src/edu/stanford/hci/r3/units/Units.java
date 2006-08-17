@@ -24,6 +24,19 @@ public abstract class Units {
 	 */
 	protected double value;
 
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Units) {
+			Units other = (Units) o;
+			
+			// if we get our value in the other units, is it equal to the value of the other unit?
+			return this.getValueIn(other) == other.getValue();
+		}
+		
+		// not a units object!
+		return false;
+	}
+
 	/**
 	 * @param destUnits
 	 * @return the number of destination Units that fit into this Unit. Alternatively, the number n
@@ -40,7 +53,7 @@ public abstract class Units {
 	/**
 	 * @return how many of these units fit in one inch.
 	 */
-	public abstract double getNumberOfUnitsInOneInch();
+	protected abstract double getNumberOfUnitsInOneInch();
 
 	/**
 	 * @return Inches, Points, Pixels...
@@ -83,6 +96,14 @@ public abstract class Units {
 	public double getValueIn(Units destUnits) {
 		return value * getConversionTo(destUnits);
 	}
+	
+	/**
+	 * @return
+	 */
+	public double getValueInCentimeters() {
+		return getValueIn(Centimeters.ONE);
+	}
+
 
 	/**
 	 * This is a CONVENIENCE method. Yes, Yes... it's probably poor programming style to have the
@@ -94,6 +115,13 @@ public abstract class Units {
 	 */
 	public double getValueInInches() {
 		return getValueIn(Inches.ONE);
+	}
+
+	/**
+	 * @return
+	 */
+	public double getValueInMillimeters() {
+		return getValueIn(Millimeters.ONE);
 	}
 
 	/**
@@ -112,6 +140,24 @@ public abstract class Units {
 	 */
 	public double getValueInPoints() {
 		return getValueIn(Points.ONE);
+	}
+
+	/**
+	 * Get an Inches object representing the same physical length.
+	 * 
+	 * @return
+	 */
+	public Inches toInches() {
+		return new Inches(getValueInInches());
+	}
+
+	/**
+	 * Get a Points object representing the same physical length.
+	 * 
+	 * @return
+	 */
+	public Points toPoints() {
+		return new Points(getValueInPoints());
 	}
 
 	/**
