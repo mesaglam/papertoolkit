@@ -20,19 +20,31 @@ public abstract class Units {
 	public static final double POINTS_PER_INCH = 72;
 
 	/**
-	 * All subclasses can access the value of this unit.
+	 * The Unit is immutable. To protect it, we will prevent access to the value. You can only set
+	 * it upon construction of the object.
 	 */
-	protected double value;
+	private double value;
 
+	/**
+	 * The only time you can set the value. A Units object should be immutable.
+	 * 
+	 * @param val
+	 */
+	public Units(double val) {
+		value = val;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Units) {
-			Units other = (Units) o;
-			
+			final Units other = (Units) o;
+
 			// if we get our value in the other units, is it equal to the value of the other unit?
-			return this.getValueIn(other) == other.getValue();
+			return getValueIn(other) == other.getValue();
 		}
-		
 		// not a units object!
 		return false;
 	}
@@ -96,14 +108,13 @@ public abstract class Units {
 	public double getValueIn(Units destUnits) {
 		return value * getConversionTo(destUnits);
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public double getValueInCentimeters() {
 		return getValueIn(Centimeters.ONE);
 	}
-
 
 	/**
 	 * This is a CONVENIENCE method. Yes, Yes... it's probably poor programming style to have the
@@ -134,6 +145,15 @@ public abstract class Units {
 	}
 
 	/**
+	 * CONVENIENCE method for converting to Pixels.
+	 * 
+	 * @return the value after converting to pixels.
+	 */
+	private double getValueInPixels() {
+		return getValueIn(Pixels.ONE);
+	}
+
+	/**
 	 * CONVENIENCE method for converting this unit to Points.
 	 * 
 	 * @return
@@ -149,6 +169,14 @@ public abstract class Units {
 	 */
 	public Inches toInches() {
 		return new Inches(getValueInInches());
+	}
+
+	/**
+	 * @return
+	 * 
+	 */
+	public Pixels toPixels() {
+		return new Pixels(getValueInPixels());
 	}
 
 	/**

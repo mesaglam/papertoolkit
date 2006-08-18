@@ -3,6 +3,12 @@
  */
 package edu.stanford.hci.r3.units;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Properties;
+
 /**
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
@@ -16,33 +22,60 @@ package edu.stanford.hci.r3.units;
 public class Pixels extends Units {
 
 	/**
+	 * Used for writing out the XML file.
+	 */
+	private static final String COMMENT = "Defines the Monitor Resolution to Physical Size Relationship";
+
+	private static final String CONFIG_FILE = "config/PixelsPerInch.xml";
+
+	private static final double DEFAULT_PIXELS_PER_INCH = readPixelsPerInchFromConfigFile();
+
+	/**
 	 * The Identity Element representing one Pixel on a "default" screen at a default pixelsPerInch.
 	 */
 	public static final Units ONE = new Pixels(1);
 
-	// on the HCI Group Laptops, we have 900 Pixels for 8.5 Inches (PPI = 105.88)
-	// on the DiamondTouch Table, we have 413 pixels for 11 Inches (PPI = 37.545)
-	private double pixelsPerInch = 105.88;
+	private static final String PROPERTY_NAME = "pixelsPerInch";
 
 	/**
+	 * The interpretation of distance varies depending on the specifications of your monitor. We
+	 * store the value in an XML file that you can customize.
 	 * 
+	 * @return
+	 */
+	private static double readPixelsPerInchFromConfigFile() {
+		final Properties props = new Properties();
+		try {
+			props.loadFromXML(new FileInputStream(CONFIG_FILE));
+		} catch (InvalidPropertiesFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		final String property = props.getProperty(PROPERTY_NAME);
+		final double ppi = Double.parseDouble(property);
+		return ppi;
+	}
+
+	/**
+	 * How many pixels (in this environment) equals one physical inch?
+	 */
+	private double pixelsPerInch = DEFAULT_PIXELS_PER_INCH;
+
+	/**
+	 * One little square on your monitor, containing a color. =)
 	 */
 	public Pixels() {
-		value = 0;
+		super(1);
 	}
 
 	/**
 	 * @param numPixels
 	 */
 	public Pixels(double numPixels) {
-		value = numPixels;
-	}
-
-	/**
-	 * @param ppi
-	 */
-	public void setPixelsPerInch(double ppi) {
-		pixelsPerInch = ppi;
+		super(numPixels);
 	}
 
 	/**
@@ -51,6 +84,13 @@ public class Pixels extends Units {
 	@Override
 	protected double getNumberOfUnitsInOneInch() {
 		return pixelsPerInch;
+	}
+
+	/**
+	 * @param ppi
+	 */
+	public void setPixelsPerInch(double ppi) {
+		pixelsPerInch = ppi;
 	}
 
 }

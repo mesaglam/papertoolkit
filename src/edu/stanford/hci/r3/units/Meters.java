@@ -18,17 +18,17 @@ public class Meters extends Units {
 	public static final Units ONE = new Meters(1.0);
 
 	/**
-	 * 
+	 * One Meter.
 	 */
 	public Meters() {
-		value = 1;
+		super(1);
 	}
 
 	/**
 	 * @param m
 	 */
 	public Meters(double m) {
-		value = m;
+		super(m);
 	}
 
 	/**
