@@ -15,8 +15,15 @@ public class SheetTest {
 	/**
 	 * 
 	 */
-	@Test
+	//@Test
 	public void printingTest() {
 		System.out.println(new Sheet());
+	}
+
+	@Test
+	public void addRegions() {
+		Sheet sheet = new Sheet();
+		sheet.addRegion(new Region(0, 0, 8.5, 11));
+		System.out.println(sheet);
 	}
 }

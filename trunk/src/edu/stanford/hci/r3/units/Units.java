@@ -25,13 +25,28 @@ public abstract class Units {
 	 */
 	private double value;
 
+	private String unitName;
+
 	/**
 	 * The only time you can set the value. A Units object should be immutable.
 	 * 
 	 * @param val
 	 */
-	public Units(double val) {
+	protected Units(double val) {
 		value = val;
+		unitName = getClass().getSimpleName(); // use the java name for the units name
+	}
+
+	/**
+	 * Used when you want to create (and name) an anonymous unit. This is useful in situations where
+	 * you need a temporary unit.
+	 * 
+	 * @param val
+	 * @param name
+	 */
+	public Units(double val, String name) {
+		value = val;
+		unitName = name; // use the custom units name
 	}
 
 	/**
@@ -71,7 +86,7 @@ public abstract class Units {
 	 * @return Inches, Points, Pixels...
 	 */
 	public String getUnitName() {
-		return getClass().getSimpleName();
+		return unitName;
 	}
 
 	/**
