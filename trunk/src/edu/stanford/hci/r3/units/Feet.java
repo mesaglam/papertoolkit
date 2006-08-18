@@ -21,14 +21,14 @@ public class Feet extends Units {
 	 * 
 	 */
 	public Feet() {
-		value = 1;
+		super(1);
 	}
 
 	/**
 	 * @param ft
 	 */
 	public Feet(double ft) {
-		value = ft;
+		super(ft);
 	}
 
 	/**

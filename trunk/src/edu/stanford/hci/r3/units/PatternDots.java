@@ -32,14 +32,14 @@ public class PatternDots extends Units {
 	 * Default Constructor for Doing unit conversions, etc...
 	 */
 	public PatternDots() {
-		value = 0;
+		super(1);
 	}
 
 	/**
 	 * @param dots
 	 */
 	public PatternDots(double dots) {
-		value = dots;
+		super(dots);
 	}
 
 	/**

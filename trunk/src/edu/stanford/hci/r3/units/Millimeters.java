@@ -16,17 +16,19 @@ public class Millimeters extends Units {
 	public static final Units ONE = new Millimeters(1.0);
 
 	/**
-	 * 
+	 * One Millimeter (quite short, you see).
 	 */
 	public Millimeters() {
-		value = 1;
+		super(1);
 	}
 
 	/**
+	 * Specify your own length in millimeters.
+	 * 
 	 * @param mm
 	 */
 	public Millimeters(double mm) {
-		value = mm;
+		super(mm);
 	}
 
 	/**

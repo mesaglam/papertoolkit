@@ -22,14 +22,14 @@ public class Points extends Units {
 	 * 
 	 */
 	public Points() {
-		value = 1;
+		super(1);
 	}
 
 	/**
 	 * @param pts
 	 */
 	public Points(double pts) {
-		value = pts;
+		super(pts);
 	}
 
 	/**

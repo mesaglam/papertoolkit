@@ -19,14 +19,14 @@ public class Centimeters extends Units {
 	 * 
 	 */
 	public Centimeters() {
-		value = 1;
+		super(1);
 	}
 
 	/**
 	 * @param cm
 	 */
 	public Centimeters(double cm) {
-		value = cm;
+		super(cm);
 	}
 
 	/**

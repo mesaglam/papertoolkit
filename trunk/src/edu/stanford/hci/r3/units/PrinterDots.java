@@ -22,13 +22,17 @@ public class PrinterDots extends Units {
 	 */
 	public static final Units ONE = new PrinterDots(1.0);
 
+	/**
+	 * The interpretation of this value depends on the printer to which it is bound. If the printer
+	 * prints at 300DPI, then 300 printer dots will equate to one inch.
+	 */
 	private Printer printer;
 
 	/**
 	 * Create it for the current printer.
 	 */
 	public PrinterDots(double val) {
-		value = val;
+		super(val);
 		printer = Printers.getDefaultPrinter();
 	}
 
@@ -39,7 +43,7 @@ public class PrinterDots extends Units {
 	 *            printer's DPI
 	 */
 	public PrinterDots(Printer p, double val) {
-		value = val;
+		super(val);
 		printer = p;
 	}
 

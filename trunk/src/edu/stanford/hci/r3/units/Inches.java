@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.units;
 
 /**
@@ -18,15 +15,18 @@ public class Inches extends Units {
 	 */
 	public static final Units ONE = new Inches(1.0);
 
+	/**
+	 * One Inch.
+	 */
 	public Inches() {
-		value = 1;
+		super(1);
 	}
 
 	/**
 	 * @param d
 	 */
 	public Inches(double inches) {
-		value = inches;
+		super(inches);
 	}
 
 	/**

@@ -3,6 +3,9 @@ package edu.stanford.hci.r3.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.Size;
 import edu.stanford.hci.r3.units.Units;
 
 /**
@@ -20,40 +23,38 @@ import edu.stanford.hci.r3.units.Units;
  * printed to a Java2D printer. It can also be rendered to the screen for a quick preview. Each of
  * these options has different advantages/disadvantages. For example, when rendering to the screen
  * or Java2D, no dot pattern is drawn by default. This is because doing so would be inefficient.
+ * 
+ * The dimensions of the sheet is kept in Units objects, and is only normalized (usually to Points)
+ * when necessary (i.e., when rendering a PDF).
  */
 public class Sheet {
 
 	/**
-	 * The Height of this Augmented Sheet.
-	 */
-	private double heightInInches;
-
-	/**
-	 * The Width of this Augmented Sheet.
-	 */
-	private double widthInInches;
-
-	/**
-	 * A list of all the regions contained on this sheet.
+	 * A list of all the regions contained on this sheet. This is the master list. We may keep other
+	 * lists for convenience or efficiency.
 	 */
 	private List<Region> regions = new ArrayList<Region>();
+
+	/**
+	 * Represents the rectangular size of this Sheet.
+	 */
+	private Size size = new Size();
 
 	/**
 	 * Defaults to US Letter.
 	 */
 	public Sheet() {
-		this(8.5, 11.0);
+		this(new Inches(8.5), new Inches(11.0));
 	}
 
 	/**
-	 * The main constructor.
+	 * A convenience method for our American friends. =)
 	 * 
 	 * @param widthInches
 	 * @param heightInches
 	 */
 	public Sheet(double widthInches, double heightInches) {
-		widthInInches = widthInches;
-		heightInInches = heightInches;
+		this(new Inches(widthInches), new Inches(heightInches));
 	}
 
 	/**
@@ -62,7 +63,35 @@ public class Sheet {
 	 * @param width
 	 * @param height
 	 */
-	public Sheet(Units width, Units height) {
-		this(width.getValueInInches(), height.getValueInInches());
+	public Sheet(Units w, Units h) {
+		size.setSize(w, h);
+	}
+
+	/**
+	 * @param r
+	 */
+	public void addRegion(Region r) {
+		regions.add(r);
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getHeight() {
+		return size.getHeight();
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getWidth() {
+		return size.getWidth();
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return PaperToolkit.toXML(this);
 	}
 }
