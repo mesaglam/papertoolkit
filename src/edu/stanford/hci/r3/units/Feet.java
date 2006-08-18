@@ -36,7 +36,7 @@ public class Feet extends Units {
 	 */
 	@Override
 	protected double getNumberOfUnitsInOneInch() {
-		return 1 / 12;
+		return 1 / 12.0;
 	}
 
 }

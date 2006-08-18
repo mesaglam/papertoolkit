@@ -37,6 +37,6 @@ public class Points extends Units {
 	 */
 	@Override
 	protected double getNumberOfUnitsInOneInch() {
-		return 72;
+		return 72.0;
 	}
 }

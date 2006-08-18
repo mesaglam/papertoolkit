@@ -89,9 +89,18 @@ public class Sheet {
 	}
 
 	/**
+	 * @return
+	 */
+	public String toXML() {
+		return PaperToolkit.toXML(this);
+	}
+
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return PaperToolkit.toXML(this);
+		return "Sheet {\n" + //
+				"\t" + "Regions: " + regions.size() + "\n" + //
+				"}";
 	}
 }
