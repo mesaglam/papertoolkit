@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.core;
 
 import java.awt.Shape;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 
 import edu.stanford.hci.r3.units.Inches;
@@ -16,6 +17,15 @@ import edu.stanford.hci.r3.units.Units;
  * 
  * A region is defined by a Shape that outlines the region. Internally, the region remembers the
  * Units that it is represented in. Thus, you may use whatever units pleases you.
+ * 
+ * Also, a region can be INPUT(REALTIME|BATCH), OUTPUT(REALTIME|INTERMITTENT), or STATIC. This is
+ * entirely determined by the type(s) of attachments (input event handlers, input filters, realtime
+ * outputs, print output) you add to a region. If you do not add anything, it is by default a STATIC
+ * region. For example, if you add an input event handler for a streaming pen, it becomes an
+ * INPUT(REALTIME) region. Regions that handle interactive input will automatically be overlaid with
+ * pattern when rendered to PDF or to a printer.
+ * 
+ * Regardless of whether the Shape is closed or not, we assume that all regions are closed Shapes.
  */
 public class Region {
 
@@ -30,10 +40,22 @@ public class Region {
 	private Units units;
 
 	/**
-	 * Bye default, regions are visible (they tend to be images, pattern, etc). However, if you
-	 * would like to create an invisible region, go ahead. We're not gonna stop you.=)
+	 * By default, regions are visible (they tend to be images, pattern, etc). However, if you would
+	 * like to create an invisible region, go ahead. We're not gonna stop you.=)
 	 */
 	private boolean visible = true;
+
+	/**
+	 * For our American friends.
+	 * 
+	 * @param xInches
+	 * @param yInches
+	 * @param wInches
+	 * @param hInches
+	 */
+	public Region(double xInches, double yInches, double wInches, double hInches) {
+		this(new Rectangle2D.Double(xInches, yInches, wInches, hInches), Inches.ONE);
+	}
 
 	/**
 	 * 
@@ -43,6 +65,15 @@ public class Region {
 	 */
 	public Region(Shape s, Units u) {
 		shape = s;
+		units = u;
+	}
+
+	/**
+	 * A protected constructor so subclasses can assign the shape whichever way they please.
+	 * 
+	 * @param u
+	 */
+	protected Region(Units u) {
 		units = u;
 	}
 
@@ -62,15 +93,33 @@ public class Region {
 	}
 
 	/**
-	 * For our American friends.
+	 * Subclasses can modify the internal shape object.
 	 * 
-	 * @param xInches
-	 * @param yInches
-	 * @param wInches
-	 * @param hInches
+	 * @return the internal shape, at your peril.
 	 */
-	public Region(double xInches, double yInches, double wInches, double hInches) {
-		this(new Rectangle2D.Double(xInches, yInches, wInches, hInches), Inches.ONE);
+	protected Shape getShape() {
+		return shape;
+	}
+
+	/**
+	 * @return a copy of the internal shape as a Java2D GeneralPath.
+	 */
+	public Shape getShapeCopy() {
+		return new GeneralPath(shape);
+	}
+
+	/**
+	 * @return
+	 */
+	protected Units getUnits() {
+		return units;
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getUnitsCopy() {
+		return units.getCopy();
 	}
 
 	/**
@@ -81,6 +130,15 @@ public class Region {
 	}
 
 	/**
+	 * Subclasses can use this method to set the shape after constructing the object.
+	 * 
+	 * @param s
+	 */
+	protected void setShape(Shape s) {
+		shape = s;
+	}
+
+	/**
 	 * @param v
 	 */
 	public void setVisible(boolean v) {
@@ -88,6 +146,8 @@ public class Region {
 	}
 
 	/**
+	 * Please override for more interesting output.
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {

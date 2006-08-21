@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.stanford.hci.r3.util;
+package edu.stanford.hci.r3.util.graphics;
 
 import java.io.File;
 

@@ -99,8 +99,18 @@ public class Sheet {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Sheet {\n" + //
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Sheet {\n" + //
 				"\t" + "Regions: " + regions.size() + "\n" + //
-				"}";
+				"}\n");
+
+		sb.append("Regions {\n");
+		for (Region r : regions) {
+			sb.append("\t" + r.toString() + "\n");
+		}
+		sb.append("}\n");
+
+		return sb.toString();
 	}
 }

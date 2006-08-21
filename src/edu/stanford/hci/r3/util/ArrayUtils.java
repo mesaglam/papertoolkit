@@ -59,4 +59,21 @@ public class ArrayUtils {
 		System.out.println("]");
 	}
 
+	/**
+	 * @param array
+	 *            turns an array of ints into a String
+	 */
+	public static String toString(int[] array) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		for (int i : array) {
+			sb.append(i + ", ");
+		}
+		if (sb.length() > 1) {
+			sb.delete(sb.length() - 2, sb.length());
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
 }

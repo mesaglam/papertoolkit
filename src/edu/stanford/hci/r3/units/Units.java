@@ -19,13 +19,13 @@ public abstract class Units {
 	 */
 	public static final double POINTS_PER_INCH = 72;
 
+	private String unitName;
+
 	/**
 	 * The Unit is immutable. To protect it, we will prevent access to the value. You can only set
 	 * it upon construction of the object.
 	 */
 	private double value;
-
-	private String unitName;
 
 	/**
 	 * The only time you can set the value. A Units object should be immutable.
@@ -70,11 +70,24 @@ public abstract class Units {
 	 *         that we would need to multiply the current value to in order to achieve the same
 	 *         length in the destination unit. For example, if we are one inch, and the destination
 	 *         is Points, then the number we need is 72, because we would have to multiply our value
-	 *         (1) by 72 to achieve 72 points, which is the same length.
+	 *         (1) by 72 to achieve 72 points, which is the same physical length.
 	 * @note we flipped the definition of this from Diamond's Edge.
 	 */
 	public double getConversionTo(Units destUnits) {
 		return destUnits.getNumberOfUnitsInOneInch() / getNumberOfUnitsInOneInch();
+	}
+
+	/**
+	 * Returns a copy of this unit. WARNING: If you have a unit that depends on other factors, you
+	 * should override this method. This is particularly true for Screen Pixels and Printer Dots.
+	 * 
+	 * TODO (Implement override for Pixels and PrinterDots)
+	 * 
+	 * @return
+	 */
+	public Units getCopy() {
+		// tricky, huh? =)
+		return getUnitsObjectIn(this);
 	}
 
 	/**
