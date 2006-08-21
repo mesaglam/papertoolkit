@@ -23,5 +23,7 @@
 	<classpathentry path="lib/comm/comm.jar" kind="lib"/>
 	<classpathentry path="lib/junit-4.1.jar" kind="lib"/>
 	<classpathentry path="lib/metadata-extractor-2.3.1.jar" kind="lib"/>
+	<classpathentry path="/pjx-1.4.0" combineaccessrules="false" kind="src"/>
+	<classpathentry path="lib/pdfbox/PDFBox-0.7.3-dev-20060821.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
