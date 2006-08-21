@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import org.jibble.epsgraphics.EpsGraphics2D;
 
-import edu.stanford.hci.r3.util.ImageUtils;
+import edu.stanford.hci.r3.util.graphics.ImageUtils;
 
 /**
  * <p>
@@ -30,7 +30,7 @@ public class JPEGToEPS {
 		try {
 			final File file = new File("testData/dragon.eps");
 			EpsGraphics2D g = new EpsGraphics2D("JPEG Image", file, 0, 0, 144, 72);
-			BufferedImage img = ImageUtils.readImageFromFile(new File("testData/dragonSmall.png"));
+			BufferedImage img = ImageUtils.readImage(new File("testData/dragonSmall.png"));
 			g.drawImage(img, new AffineTransform(), null);
 			g.close();
 		} catch (IOException e) {

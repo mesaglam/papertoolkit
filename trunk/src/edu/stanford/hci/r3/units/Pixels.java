@@ -33,7 +33,11 @@ public class Pixels extends Units {
 	/**
 	 * The Identity Element representing one Pixel on a "default" screen at a default pixelsPerInch.
 	 */
-	public static final Units ONE = new Pixels(1);
+	public static final Units ONE = new Pixels(1) {
+		public void setPixelsPerInch(double ppi) {
+			System.err.println("Warning: You cannot modify Pixels.ONE");
+		}
+	};
 
 	private static final String PROPERTY_NAME = "pixelsPerInch";
 
@@ -76,6 +80,14 @@ public class Pixels extends Units {
 	 */
 	public Pixels(double numPixels) {
 		super(numPixels);
+	}
+
+	/**
+	 * @param numPixels
+	 */
+	public Pixels(double numPixels, double pixPerInch) {
+		super(numPixels);
+		setPixelsPerInch(pixPerInch);
 	}
 
 	/**
