@@ -22,6 +22,6 @@ public class SheetToPDF {
 		SheetRenderer renderer = new SheetRenderer(sheet);
 		renderer.setRenderActiveRegionsWithPattern(false);
 
-		renderer.renderToPDF(new File("testData/Test.pdf"));
+		renderer.renderToPDFWithIText(new File("testData/Test.pdf"));
 	}
 }

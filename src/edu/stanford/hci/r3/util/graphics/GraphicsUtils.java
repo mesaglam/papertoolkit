@@ -4,7 +4,6 @@ import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
 import edu.stanford.hci.r3.units.Units;
-import edu.stanford.hci.r3.util.ArrayUtils;
 
 /**
  * <p>
