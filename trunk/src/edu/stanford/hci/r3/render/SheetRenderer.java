@@ -40,8 +40,11 @@ import edu.stanford.hci.r3.units.Units;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
  * This class will render a Sheet into a JPEG, PDF, or Java2D graphics context.
+ * 
+ * For individual regions, it will use specific region renderers (e.g., ImageRenderer,
+ * PolygonRenderer, and TextRenderer).
  */
-public class Renderer {
+public class SheetRenderer {
 
 	/**
 	 * By Default, any active regions will be overlaid with pattern (unique to at least this sheet,
@@ -53,7 +56,7 @@ public class Renderer {
 
 	private boolean debugRegions = true;
 
-	public Renderer(Sheet s) {
+	public SheetRenderer(Sheet s) {
 		sheet = s;
 	}
 
@@ -144,13 +147,26 @@ public class Renderer {
 
 			if (r instanceof TextRegion) {
 				TextRegion tr = (TextRegion) r;
-				tr.getHeight();
+				tr.getHeightInPoints();
 
 				Font oldFont = g2d.getFont();
 				g2d.setFont(tr.getFont());
-				g2d.drawString(tr.getText(), (int) Math.round(tr.getX().getValueInPoints()),
-						(int) Math.round(tr.getY().getValueInPoints() + tr.getHeight().getValue()));
+
+				double offset = tr.getAscentInPoints().getValue();
+				double textLineHeight = tr.getLineHeightInPoints().getValue();
+
+				// handle multiple lines
+				String[] linesOfText = tr.getLinesOfText();
+				int xOffset = (int) Math.round(tr.getX().getValueInPoints());
+				double yOffset = tr.getY().getValueInPoints() + offset;
+				for (String line : linesOfText) {
+					g2d.drawString(line, xOffset, (int) Math.round(yOffset));
+					yOffset += textLineHeight;
+				}
+
 				g2d.setFont(oldFont);
+
+				tr.printLineMetrics();
 			} else {
 				// call r's custom renderer?
 				// how will we handle custom renderers?
