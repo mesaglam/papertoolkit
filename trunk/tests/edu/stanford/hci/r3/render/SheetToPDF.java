@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.render;
 
+import java.io.File;
+
 import edu.stanford.hci.r3.core.Sheet;
 import edu.stanford.hci.r3.core.SheetTest;
 
@@ -15,9 +17,11 @@ import edu.stanford.hci.r3.core.SheetTest;
  */
 public class SheetToPDF {
 	public static void main(String[] args) {
-		Sheet sheet = SheetTest.createSheet();
-		
-		
-		
+		Sheet sheet = SheetTest.createAndPopulateSheet();
+
+		Renderer renderer = new Renderer(sheet);
+		renderer.setRenderActiveRegionsWithPattern(false);
+
+		renderer.renderToPDF(new File("testData/Test.pdf"));
 	}
 }
