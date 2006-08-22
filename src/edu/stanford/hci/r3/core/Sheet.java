@@ -29,6 +29,8 @@ import edu.stanford.hci.r3.units.Units;
  */
 public class Sheet {
 
+	private static final String INDENT = "   ";
+
 	/**
 	 * A list of all the regions contained on this sheet. This is the master list. We may keep other
 	 * lists for convenience or efficiency.
@@ -89,28 +91,37 @@ public class Sheet {
 	}
 
 	/**
-	 * @return
-	 */
-	public String toXML() {
-		return PaperToolkit.toXML(this);
-	}
-
-	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Sheet {\n" + //
-				"\t" + "Regions: " + regions.size() + "\n" + //
-				"}\n");
+		// the indent
+		String i = INDENT;
 
-		sb.append("Regions {\n");
+		sb.append("Sheet {\n");
+		sb.append(i + "Size: " + getWidth() + " x " + getHeight() + "\n");
+
+		sb.append(i + "Regions: " + regions.size() + " {\n");
+
+		// indent twice
+		i = INDENT + INDENT;
+
 		for (Region r : regions) {
-			sb.append("\t" + r.toString() + "\n");
+			sb.append(i + r.toString() + "\n");
 		}
-		sb.append("}\n");
 
+		i = INDENT;
+
+		sb.append(i + "}\n");
+		sb.append("}\n");
 		return sb.toString();
+	}
+
+	/**
+	 * @return
+	 */
+	public String toXML() {
+		return PaperToolkit.toXML(this);
 	}
 }

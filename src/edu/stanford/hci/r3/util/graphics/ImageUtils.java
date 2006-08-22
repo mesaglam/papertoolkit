@@ -5,7 +5,11 @@ package edu.stanford.hci.r3.util.graphics;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.media.jai.PlanarImage;
 
@@ -15,6 +19,10 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.jpeg.JpegDirectory;
+import com.sun.image.codec.jpeg.ImageFormatException;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * <p>
@@ -80,6 +88,45 @@ public class ImageUtils {
 	public static Dimension readSizeByLoading(File imageFile) {
 		final PlanarImage planarImage = ImageCache.getInstance().getPlanarImage(imageFile);
 		return new Dimension(planarImage.getWidth(), planarImage.getHeight());
+	}
+
+	/**
+	 * This method is generally BETTER than ImageIO.write(...) as that produces low quality output.
+	 * 
+	 * @param buffImage
+	 * @param quality
+	 *            goes from 0 to 100
+	 * @param outputFile
+	 * @created Jun 21, 2006
+	 * @author Ron Yeh
+	 */
+	public static void writeImageToJPEG(BufferedImage buffImage, int quality, File outputFile) {
+		BufferedOutputStream out;
+
+		// bounds check on quality parameter
+		if (quality < 0) {
+			quality = 0;
+		}
+		if (quality > 100) {
+			quality = 100;
+		}
+
+		try {
+			out = new BufferedOutputStream(new FileOutputStream(outputFile));
+			final JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+			final JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(buffImage);
+			quality = Math.max(0, Math.min(quality, 100));
+			param.setQuality(quality / 100.0f, false);
+			encoder.setJPEGEncodeParam(param);
+			encoder.encode(buffImage);
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (ImageFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
