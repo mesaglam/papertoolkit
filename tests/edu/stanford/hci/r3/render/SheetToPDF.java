@@ -19,7 +19,7 @@ public class SheetToPDF {
 	public static void main(String[] args) {
 		Sheet sheet = SheetTest.createAndPopulateSheet();
 
-		Renderer renderer = new Renderer(sheet);
+		SheetRenderer renderer = new SheetRenderer(sheet);
 		renderer.setRenderActiveRegionsWithPattern(false);
 
 		renderer.renderToPDF(new File("testData/Test.pdf"));
