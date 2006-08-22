@@ -144,10 +144,12 @@ public class Renderer {
 
 			if (r instanceof TextRegion) {
 				TextRegion tr = (TextRegion) r;
+				tr.getHeight();
+
 				Font oldFont = g2d.getFont();
 				g2d.setFont(tr.getFont());
 				g2d.drawString(tr.getText(), (int) Math.round(tr.getX().getValueInPoints()),
-						(int) Math.round(tr.getY().getValueInPoints()));
+						(int) Math.round(tr.getY().getValueInPoints() + tr.getHeight().getValue()));
 				g2d.setFont(oldFont);
 			} else {
 				// call r's custom renderer?

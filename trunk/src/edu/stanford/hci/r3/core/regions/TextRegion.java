@@ -25,6 +25,8 @@ public class TextRegion extends Region {
 
 	private Font font;
 
+	private Points heightInPoints;
+
 	private Units originX;
 
 	private Units originY;
@@ -53,9 +55,10 @@ public class TextRegion extends Region {
 		// determine the font's boundaries
 		// represent it as a Rectangle (x, y, w, h)
 		final Dimension stringSize = StringUtils.getStringSize(text, font);
+		heightInPoints = new Points(stringSize.getHeight());
 		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY.getValueIn(units),
-				new Points(stringSize.getWidth()).getValueIn(units), new Points(stringSize
-						.getHeight()).getValueIn(units));
+				new Points(stringSize.getWidth()).getValueIn(units), heightInPoints
+						.getValueIn(units));
 		bounds = rect;
 		setShape(rect);
 	}
@@ -65,6 +68,13 @@ public class TextRegion extends Region {
 	 */
 	public Font getFont() {
 		return font;
+	}
+
+	/**
+	 * @return
+	 */
+	public Points getHeight() {
+		return heightInPoints;
 	}
 
 	/**
