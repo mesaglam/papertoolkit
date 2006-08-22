@@ -1,6 +1,7 @@
-package edu.stanford.hci.r3.printing.pdf;
+package edu.stanford.hci.r3.render;
 
-import java.io.File;
+import edu.stanford.hci.r3.core.Sheet;
+import edu.stanford.hci.r3.core.SheetTest;
 
 /**
  * <p>
@@ -10,12 +11,13 @@ import java.io.File;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
- * This is really bad. Replace it with a better GUI?
+ * Turns a Sheet object into a PDF file.
  */
-public class PDFPreviewTest {
-
+public class SheetToPDF {
 	public static void main(String[] args) {
-		final PDFPreview pdf = new PDFPreview(new File("testData/ButterflyNetCHI2006.pdf"));
-		pdf.setExitApplicationOnClose();
+		Sheet sheet = SheetTest.createSheet();
+		
+		
+		
 	}
 }
