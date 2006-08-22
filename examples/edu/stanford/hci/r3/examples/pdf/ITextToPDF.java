@@ -10,8 +10,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 
 import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.*;
 
 /**
  * <p>
@@ -23,7 +22,6 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ITextToPDF {
 
-	
 	public static final Font TAHOMA_BOLD = new Font("Tahoma", Font.BOLD, 21);
 
 	/**
@@ -38,16 +36,17 @@ public class ITextToPDF {
 			String dot = "•";
 			// top layer for pattern
 			PdfContentByte cb = writer.getDirectContent();
-			Graphics2D g2d = cb.createGraphicsShapes(customPageSize8x8.width(), customPageSize8x8.height());
+			Graphics2D g2d = cb.createGraphicsShapes(customPageSize8x8.width(), customPageSize8x8
+					.height());
 
 			AffineTransform transform = g2d.getTransform();
-			transform.scale(600/2540.0/72, 600/2540.0/72);
+			transform.scale(600 / 2540.0 / 72, 600 / 2540.0 / 72);
 			g2d.setTransform(transform);
-			
+
 			g2d.setFont(TAHOMA_BOLD);
-			for (int i=0; i<6000; i+=30) {
-				for (int j = 0; j<6000; j+=30) {
-					g2d.drawString(dot, 600+i, 600+j);
+			for (int i = 0; i < 6000; i += 30) {
+				for (int j = 0; j < 6000; j += 30) {
+					g2d.drawString(dot, 600 + i, 600 + j);
 				}
 			}
 			g2d.dispose();
@@ -59,15 +58,29 @@ public class ITextToPDF {
 		}
 	}
 
-	/**
-	 * Aug 14, 2006
-	 */
 	public static void main(String[] args) {
+		PdfReader reader;
+		try {
+			reader = new PdfReader(new FileInputStream(new File("testData/ButterflyNetCHI2006.pdf")));
+			System.out.println(reader.getNumberOfPages());
+
+		
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	/**
+	 * @deprecated because it does not work, likely because the ps file is too complicated?
+	 */
+	private static void psToPDF() {
 		Document doc = new Document(PageSize.LETTER, 50, 50, 50, 50);
 		System.out.println("EPS");
 		try {
-			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(
-					"testData/8x8.pdf"));
+			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("testData/8x8.pdf"));
 			doc.open();
 			Image img = Image.getInstance("testData/8x8.ps");
 			img.setAbsolutePosition(0, 0);
