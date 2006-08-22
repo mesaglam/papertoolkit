@@ -32,6 +32,11 @@ import edu.stanford.hci.r3.units.Units;
 public class Region {
 
 	/**
+	 * If the region is active (i.e., NOT STATIC), we will overlay pattern over it.
+	 */
+	private boolean active = false;
+
+	/**
 	 * Internal horizontal scale of the region. When rendering, we will multiply the shape by this
 	 * scale.
 	 */
@@ -164,6 +169,14 @@ public class Region {
 	}
 
 	/**
+	 * @return if this region is an active (NON-STATIC) region. This means that upon rendering to
+	 *         PDF/Printer, pattern will be displayed over this region.
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
 	 * @return
 	 */
 	public boolean isVisible() {
@@ -197,6 +210,14 @@ public class Region {
 	 */
 	public void scaleRegionUniformly(double scale) {
 		scaleRegion(scale, scale);
+	}
+
+	/**
+	 * @param activeRegion
+	 *            determines whether this will be an active region or not
+	 */
+	public void setActive(boolean activeRegion) {
+		active = activeRegion;
 	}
 
 	/**
@@ -265,6 +286,11 @@ public class Region {
 			}
 		}
 		sb.append("} in " + units.getUnitName());
+		sb.append(getIsActiveString());
 		return sb.toString();
+	}
+
+	public String getIsActiveString() {
+		return " [" + (isActive() ? "ACTIVE" : "STATIC") + "]";
 	}
 }

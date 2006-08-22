@@ -2,13 +2,12 @@ package edu.stanford.hci.r3.core.regions;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.StringUtils;
 
 /**
  * <p>
@@ -18,8 +17,7 @@ import edu.stanford.hci.r3.units.Units;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
- * 
- * 
+ * Represents some text that can be drawn on a page.
  */
 public class TextRegion extends Region {
 
@@ -54,36 +52,12 @@ public class TextRegion extends Region {
 
 		// determine the font's boundaries
 		// represent it as a Rectangle (x, y, w, h)
-		final Dimension stringSize = getStringSize(text);
+		final Dimension stringSize = StringUtils.getStringSize(text, font);
 		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY.getValueIn(units),
 				new Points(stringSize.getWidth()).getValueIn(units), new Points(stringSize
 						.getHeight()).getValueIn(units));
 		bounds = rect;
 		setShape(rect);
-	}
-
-	/**
-	 * @return
-	 */
-	private Dimension getStringSize(String textToMeasure) {
-		FontRenderContext fontRenderContext = new FontRenderContext(null, true, true);
-
-		// break it up by lines (in case there are newlines "\n")
-		String[] strings = textToMeasure.split("\n");
-
-		double totalHeight = 0;
-		double maxWidth = 0;
-
-		for (String s : strings) {
-			Rectangle2D stringBounds = font.getStringBounds(s, fontRenderContext);
-			maxWidth = Math.max(maxWidth, stringBounds.getWidth());
-			totalHeight += stringBounds.getHeight();
-			System.out.println("Bounds: " + stringBounds);
-		}
-
-		Dimension dimension = new Dimension();
-		dimension.setSize(maxWidth, totalHeight);
-		return dimension;
 	}
 
 	/**
