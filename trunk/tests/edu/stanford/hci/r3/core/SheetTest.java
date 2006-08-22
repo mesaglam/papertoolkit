@@ -48,11 +48,11 @@ public class SheetTest {
 				new Inches(1), new Inches(2));
 
 		// add regions to the sheet
-		// sheet.addRegion(reg0);
+		sheet.addRegion(reg0);
 		sheet.addRegion(reg1);
-		// sheet.addRegion(poly);
-		// sheet.addRegion(img);
-		// sheet.addRegion(text);
+		sheet.addRegion(poly);
+		sheet.addRegion(img);
+		sheet.addRegion(text);
 
 		return sheet;
 	}
