@@ -1,12 +1,10 @@
 package edu.stanford.hci.r3.core.regions;
 
 import java.awt.Polygon;
-import java.awt.Shape;
 import java.awt.geom.Point2D;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.units.Units;
-import edu.stanford.hci.r3.util.ArrayUtils;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
@@ -33,8 +31,6 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  */
 public class PolygonalRegion extends Region {
 
-	private Polygon poly;
-
 	/**
 	 * Creates a PolygonalRegion with the designated Units u.
 	 * 
@@ -44,7 +40,6 @@ public class PolygonalRegion extends Region {
 	 */
 	public PolygonalRegion(Units u, Point2D... points) {
 		super(GraphicsUtils.createPolygon(points), u);
-		poly = (Polygon) getShape();
 	}
 
 	/**
@@ -61,6 +56,13 @@ public class PolygonalRegion extends Region {
 	}
 
 	/**
+	 * @return the internal polygon (unscaled).
+	 */
+	protected Polygon getPolygon() {
+		return (Polygon) getShape();
+	}
+
+	/**
 	 * Please override for more interesting output.
 	 * 
 	 * @see java.lang.Object#toString()
@@ -68,8 +70,12 @@ public class PolygonalRegion extends Region {
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Polygon: {");
+		final Polygon poly = getPolygon();
+		final double sX = getScaleX();
+		final double sY = getScaleY();
+
 		for (int i = 0; i < poly.npoints; i++) {
-			sb.append("(" + poly.xpoints[i] + ", " + poly.ypoints[i] + ")");
+			sb.append("(" + poly.xpoints[i] * sX + ", " + poly.ypoints[i] * sY + ")");
 		}
 		sb.append("} in " + getUnits().getUnitName());
 		return sb.toString();

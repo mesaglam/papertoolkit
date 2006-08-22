@@ -18,7 +18,6 @@ import edu.stanford.hci.r3.pattern.PatternJitter;
 import edu.stanford.hci.r3.pattern.PatternPackage;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.PatternDots;
 
 /**
  * <p>
