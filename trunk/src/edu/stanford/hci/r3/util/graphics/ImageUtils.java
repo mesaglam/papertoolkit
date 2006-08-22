@@ -5,12 +5,14 @@ package edu.stanford.hci.r3.util.graphics;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.media.jai.PlanarImage;
 
 import com.drew.imaging.jpeg.JpegMetadataReader;
@@ -33,6 +35,15 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class ImageUtils {
+
+	/**
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public static BufferedImage createWritableBuffer(int width, int height) {
+		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+	}
 
 	/**
 	 * @return whether or not a file is a JPEG (just based on file extensions of .jpeg or .jpg) =]
@@ -91,7 +102,17 @@ public class ImageUtils {
 	}
 
 	/**
+	 * @param asBufferedImage
+	 * @param file
+	 */
+	public static void writeImageToJPEG(BufferedImage asBufferedImage, File file) {
+		writeImageToJPEG(asBufferedImage, 100, file);
+	}
+
+	/**
 	 * This method is generally BETTER than ImageIO.write(...) as that produces low quality output.
+	 * This method will not work for a 4-banded image. The colors will look incorrect. Use the PNG
+	 * version instead.
 	 * 
 	 * @param buffImage
 	 * @param quality
@@ -124,6 +145,18 @@ public class ImageUtils {
 			e.printStackTrace();
 		} catch (ImageFormatException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param rImage
+	 * @param outputFile
+	 */
+	public static void writeImageToPNG(RenderedImage rImage, File outputFile) {
+		try {
+			ImageIO.write(rImage, "png", outputFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
