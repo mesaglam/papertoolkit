@@ -1,7 +1,11 @@
 package edu.stanford.hci.r3.render;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineMetrics;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,8 +19,15 @@ import org.pdfbox.pdmodel.PDPage;
 import org.pdfbox.pdmodel.common.PDRectangle;
 import org.pdfbox.pdmodel.edit.PDPageContentStream;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
+
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.core.Sheet;
+import edu.stanford.hci.r3.core.regions.TextRegion;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
 
@@ -39,6 +50,8 @@ public class Renderer {
 	private boolean renderActiveRegionsWithPattern = true;
 
 	private Sheet sheet;
+
+	private boolean debugRegions = true;
 
 	public Renderer(Sheet s) {
 		sheet = s;
@@ -64,6 +77,96 @@ public class Renderer {
 	public void renderToPDF(File destPDFFile) {
 		final Units width = sheet.getWidth();
 		final Units height = sheet.getHeight();
+		final List<Region> regions = sheet.getRegions();
+		FileOutputStream fileOutputStream = null;
+		try {
+			fileOutputStream = new FileOutputStream(destPDFFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		final Rectangle pageSize = new Rectangle(0, 0, (int) Math.round(width.getValueInPoints()),
+				(int) Math.round(height.getValueInPoints()));
+
+		// create a document with these margins (worry about margins later)
+		final Document doc = new Document(pageSize, 0, 0, 0, 0);
+		PdfWriter writer = null;
+		try {
+			writer = PdfWriter.getInstance(doc, fileOutputStream);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		doc.open();
+
+		// top layer for pattern
+		PdfContentByte cb = writer.getDirectContent();
+		Graphics2D g2d = cb.createGraphicsShapes(pageSize.width(), pageSize.height());
+
+		// by default, the transforms works at 72 dots per inch
+		AffineTransform transform = g2d.getTransform();
+
+		Color regionColor = new Color(123, 123, 123, 30);
+		Color fontColor = Color.BLACK;
+
+		Font f = new Font("Trebuchet MS", Font.PLAIN, 8);
+		LineMetrics lineMetrics = f.getLineMetrics("Height of Line", new FontRenderContext(null,
+				true, true));
+		float lineHeight = lineMetrics.getHeight();
+		g2d.setFont(f);
+
+		for (Region r : regions) {
+
+			Rectangle2D b = r.getUnscaledBounds2D();
+
+			float scaleX = (float) r.getScaleX();
+			float scaleY = (float) r.getScaleY();
+
+			Units units = r.getUnits();
+			double scale = units.getConversionTo(Points.ONE);
+
+			float xPts = (float) Math.round(scale * b.getX());
+			float yPts = (float) Math.round(scale * b.getY());
+			float wPts = (float) Math.round(scale * b.getWidth());
+			float hPts = (float) Math.round(scale * b.getHeight());
+
+			int finalX = (int) Math.round(xPts * scaleX);
+			int finalY = (int) Math.round(yPts * scaleY);
+			int finalW = (int) Math.round(wPts * scaleX);
+			int finalH = (int) Math.round(hPts * scaleY);
+
+			// handle different regions differently
+			if (debugRegions) {
+				g2d.setColor(regionColor);
+				g2d.fillRect(finalX, finalY, finalW, finalH);
+				g2d.setColor(fontColor);
+				g2d.drawString(r.toString(), finalX, finalY + lineHeight);
+			}
+
+			if (r instanceof TextRegion) {
+				TextRegion tr = (TextRegion) r;
+				Font oldFont = g2d.getFont();
+				g2d.setFont(tr.getFont());
+				g2d.drawString(tr.getText(), (int) Math.round(tr.getX().getValueInPoints()),
+						(int) Math.round(tr.getY().getValueInPoints()));
+				g2d.setFont(oldFont);
+			} else {
+				// call r's custom renderer?
+				// how will we handle custom renderers?
+				// todo =)
+			}
+
+		}
+
+		g2d.dispose();
+		doc.close();
+	}
+
+	/**
+	 * @param destPDFFile
+	 */
+	public void renderToPDFWithPDFBox(File destPDFFile) {
+		final Units width = sheet.getWidth();
+		final Units height = sheet.getHeight();
 		List<Region> regions = sheet.getRegions();
 
 		PDDocument document = null;
@@ -81,7 +184,7 @@ public class Renderer {
 
 			// render all the regions to this page
 			Color fillColor = Color.ORANGE;
-			
+
 			for (Region r : regions) {
 
 				// first fill the entire background with cyan

@@ -26,6 +26,12 @@ import edu.stanford.hci.r3.units.Units;
  * 
  * The dimensions of the sheet is kept in Units objects, and is only normalized (usually to Points)
  * when necessary (i.e., when rendering a PDF).
+ * 
+ * On Coordinate Systems: To maintain the analogue with GUI development, we will choose the origin
+ * (0,0) to be the top-left corner of the document (I can hear the screams of PDF/Postscript
+ * enthusiasts already--I'm sorry). We will make it easy to flip the coordinate systems to a more
+ * Postscript-friendly way later. Possibly, we'll have a call like setCoordinateSystem(GUI |
+ * POSTSCRIPT). Happy?
  */
 public class Sheet {
 

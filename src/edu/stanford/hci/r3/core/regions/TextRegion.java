@@ -21,15 +21,15 @@ import edu.stanford.hci.r3.util.StringUtils;
  */
 public class TextRegion extends Region {
 
+	private Rectangle2D bounds;
+
 	private Font font;
-
-	private String text;
-
-	private Units originY;
 
 	private Units originX;
 
-	private Rectangle2D bounds;
+	private Units originY;
+
+	private String text;
 
 	/**
 	 * 
@@ -58,6 +58,34 @@ public class TextRegion extends Region {
 						.getHeight()).getValueIn(units));
 		bounds = rect;
 		setShape(rect);
+	}
+
+	/**
+	 * @return
+	 */
+	public Font getFont() {
+		return font;
+	}
+
+	/**
+	 * @return the internal text to be rendered.
+	 */
+	public String getText() {
+		return text;
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getX() {
+		return originX;
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getY() {
+		return originY;
 	}
 
 	/**
