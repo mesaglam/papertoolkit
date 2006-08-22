@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.geom.Point2D;
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.stanford.hci.r3.core.regions.ImageRegion;
@@ -22,9 +23,10 @@ import edu.stanford.hci.r3.units.Inches;
 public class SheetTest {
 
 	/**
-	 * @return a test sheet.
+	 * @return a test sheet with a few regions of different types.
 	 */
-	public static Sheet createSheet() {
+	@Ignore
+	public static Sheet createAndPopulateSheet() {
 		Sheet sheet = new Sheet();
 
 		// define some regions
@@ -46,26 +48,26 @@ public class SheetTest {
 				new Inches(1), new Inches(2));
 
 		// add regions to the sheet
-		sheet.addRegion(reg0);
+		// sheet.addRegion(reg0);
 		sheet.addRegion(reg1);
-		sheet.addRegion(poly);
-		sheet.addRegion(img);
-		sheet.addRegion(text);
+		// sheet.addRegion(poly);
+		// sheet.addRegion(img);
+		// sheet.addRegion(text);
 
 		return sheet;
 	}
 
 	/**
-	 * Add and print out some regions
+	 * Prints a test sheet (with regions) to the console.
 	 */
 	@Test
 	public void addRegions() {
-		Sheet sheet = createSheet();
+		Sheet sheet = createAndPopulateSheet();
 		System.out.println(sheet);
 	}
 
 	/**
-	 * 
+	 * Prints an empty test sheet to the console.
 	 */
 	@Test
 	public void printingTest() {

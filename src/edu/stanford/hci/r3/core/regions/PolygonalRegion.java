@@ -77,7 +77,7 @@ public class PolygonalRegion extends Region {
 		for (int i = 0; i < poly.npoints; i++) {
 			sb.append("(" + poly.xpoints[i] * sX + ", " + poly.ypoints[i] * sY + ")");
 		}
-		sb.append("} in " + getUnits().getUnitName());
+		sb.append("} in " + getUnitsReference().getUnitName());
 		return sb.toString();
 	}
 }

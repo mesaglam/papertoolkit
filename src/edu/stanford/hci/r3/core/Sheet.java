@@ -84,6 +84,13 @@ public class Sheet {
 	}
 
 	/**
+	 * @return the internal list of regions
+	 */
+	public List<Region> getRegions() {
+		return regions;
+	}
+
+	/**
 	 * @return
 	 */
 	public Units getWidth() {

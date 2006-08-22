@@ -115,6 +115,17 @@ public class Region {
 	}
 
 	/**
+	 * @return a bounds object that represents the UNSCALED internal shape.
+	 */
+	public Rectangle2D getUnscaledBounds2D() {
+		return shape.getBounds2D();
+	}
+
+	public String getIsActiveString() {
+		return " [" + (isActive() ? "ACTIVE" : "STATIC") + "]";
+	}
+
+	/**
 	 * @return a scaled copy of the internal shape.
 	 */
 	public Shape getScaledShapeCopy() {
@@ -149,14 +160,14 @@ public class Region {
 	/**
 	 * @return
 	 */
-	protected Units getUnits() {
+	protected Units getUnitsReference() {
 		return units;
 	}
 
 	/**
-	 * @return
+	 * @return a copy of the units object.
 	 */
-	public Units getUnitsCopy() {
+	public Units getUnits() {
 		return units.getCopy();
 	}
 
@@ -288,9 +299,5 @@ public class Region {
 		sb.append("} in " + units.getUnitName());
 		sb.append(getIsActiveString());
 		return sb.toString();
-	}
-
-	public String getIsActiveString() {
-		return " [" + (isActive() ? "ACTIVE" : "STATIC") + "]";
 	}
 }
