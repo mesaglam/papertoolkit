@@ -15,8 +15,22 @@ import edu.stanford.hci.r3.core.SheetTest;
  * 
  * Turns a Sheet object into a PDF file.
  */
-public class SheetToPDF {
+public class SheetRendererTest {
 	public static void main(String[] args) {
+		sheetToJPEG();
+		// sheetToPDF();
+	}
+
+	private static void sheetToJPEG() {
+		Sheet sheet = SheetTest.createAndPopulateSheet();
+
+		SheetRenderer renderer = new SheetRenderer(sheet);
+		renderer.setRenderActiveRegionsWithPattern(false);
+
+		renderer.renderToJPEG(new File("testData/Test.jpg"));
+	}
+
+	private static void sheetToPDF() {
 		Sheet sheet = SheetTest.createAndPopulateSheet();
 
 		SheetRenderer renderer = new SheetRenderer(sheet);

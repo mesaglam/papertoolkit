@@ -5,6 +5,8 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 
 import edu.stanford.hci.r3.core.Region;
+import edu.stanford.hci.r3.render.RegionRenderer;
+import edu.stanford.hci.r3.render.types.ImageRenderer;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.graphics.ImageUtils;
@@ -35,11 +37,22 @@ public class ImageRegion extends Region {
 	 * @param originY
 	 */
 	public ImageRegion(File imgFile, Units originX, Units originY) {
+		this(imgFile, originX, originY, new Pixels(1, 72));
+	}
+
+	/**
+	 * @param imgFile
+	 * @param originX
+	 * @param originY
+	 * @param pixelConversion
+	 */
+	public ImageRegion(File imgFile, Units originX, Units originY, Pixels pixelConversion) {
 		super(originX); // initialize units
 
-		// figure out the shape of this image, by loading it and determining the dimensions of the
-		// image
+		// figure out the shape of this image, by loading it and determining the dimensions
 		final Dimension dimension = ImageUtils.readSize(imgFile);
+
+		double ppi = pixelConversion.getPixelsPerInch();
 
 		imageFile = imgFile;
 
@@ -48,10 +61,18 @@ public class ImageRegion extends Region {
 
 		// create a Rectangle from origin X, Y, with the correct dimensions (72 pixels per inch)
 		final Rectangle2D.Double rect = new Rectangle2D.Double(originX.getValue(), originY
-				.getValueIn(u), new Pixels(dimension.getWidth(), 72).getValueIn(u), new Pixels(
-				dimension.getHeight(), 72).getValueIn(u));
+				.getValueIn(u), new Pixels(dimension.getWidth(), ppi).getValueIn(u), new Pixels(
+				dimension.getHeight(), ppi).getValueIn(u));
+		System.out.println(rect);
 		setShape(rect);
 		imageRect = rect;
+	}
+
+	/**
+	 * @return
+	 */
+	public File getFile() {
+		return imageFile;
 	}
 
 	/**
@@ -62,6 +83,13 @@ public class ImageRegion extends Region {
 	}
 
 	/**
+	 * @see edu.stanford.hci.r3.core.Region#getRenderer()
+	 */
+	public RegionRenderer getRenderer() {
+		return new ImageRenderer(this);
+	}
+
+	/**
 	 * @return
 	 */
 	public double getWidth() {
@@ -69,24 +97,29 @@ public class ImageRegion extends Region {
 	}
 
 	/**
+	 * While the scale factors affect the size of the image, they do not affect the user-specified
+	 * origins.
+	 * 
 	 * @return
 	 */
 	public double getX() {
-		return imageRect.getX() * scaleX;
+		return imageRect.getX();
 	}
 
 	/**
+	 * While the scale factors affect the size of the image, they do not affect the user-specified
+	 * origins.
+	 * 
 	 * @return
 	 */
 	public double getY() {
-		return imageRect.getY() * scaleY;
+		return imageRect.getY();
 	}
 
 	/**
 	 * @see edu.stanford.hci.r3.core.Region#toString()
 	 */
 	public String toString() {
-
 		return "Image: {" + getX() + ", " + getY() + ", " + getWidth() + ", " + getHeight()
 				+ "} in " + getUnitsReference().getUnitName();
 	}

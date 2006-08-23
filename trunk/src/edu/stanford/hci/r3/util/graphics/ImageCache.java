@@ -21,19 +21,6 @@ import javax.media.jai.PlanarImage;
  */
 public class ImageCache {
 
-	// cache for images
-	private WeakHashMap<File, ImageObject> cache = new WeakHashMap<File, ImageObject>();
-
-	private static ImageCache instance = new ImageCache();
-
-	public static ImageCache getInstance() {
-		return instance;
-	}
-
-	private ImageCache() {
-		// nothing
-	}
-
 	/**
 	 * 
 	 */
@@ -43,6 +30,29 @@ public class ImageCache {
 		private SoftReference<PlanarImage> pImgSoft;
 
 		public ImageObject() {
+		}
+
+		/**
+		 * @return
+		 */
+		public BufferedImage getBufferedImage(File imagePath) {
+			if (bImgSoft != null) {
+				final BufferedImage cachedImg = bImgSoft.get();
+				if (cachedImg != null) {
+					// System.out.println("Cache Hit!");
+					return cachedImg;
+				}
+			}
+
+			// System.out.println("Cache Miss =(");
+			// released by the Garbage Collector
+			// OR, never loaded
+			try {
+				bImgSoft = new SoftReference<BufferedImage>(ImageIO.read(imagePath));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return bImgSoft.get();
 		}
 
 		/**
@@ -72,42 +82,35 @@ public class ImageCache {
 		public void setBufferedImage(BufferedImage bImg) {
 			bImgSoft = new SoftReference<BufferedImage>(bImg);
 		}
+	}
 
-		/**
-		 * @return
-		 */
-		public BufferedImage getBufferedImage(File imagePath) {
-			if (bImgSoft != null) {
-				final BufferedImage cachedImg = bImgSoft.get();
-				if (cachedImg != null) {
-					// System.out.println("Cache Hit!");
-					return cachedImg;
-				}
-			}
+	private static ImageCache instance = new ImageCache();
 
-			// System.out.println("Cache Miss =(");
-			// released by the Garbage Collector
-			// OR, never loaded
-			try {
-				bImgSoft = new SoftReference<BufferedImage>(ImageIO.read(imagePath));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return bImgSoft.get();
-		}
+	public static ImageCache getInstance() {
+		return instance;
 	}
 
 	/**
-	 * @param pathToImage
+	 * @param path
 	 * @return
 	 */
-	private ImageObject get(final File pathToImage) {
-		ImageObject image = cache.get(pathToImage);
-		if (image == null) { // evicted, or never loaded
-			image = new ImageObject();
-			cache.put(pathToImage, image);
-		}
-		return image;
+	public static BufferedImage loadBufferedImage(File path) {
+		return getInstance().getBufferedImage(path);
+	}
+
+	/**
+	 * @param path
+	 * @return
+	 */
+	public static PlanarImage loadPlanarImage(File path) {
+		return getInstance().getPlanarImage(path);
+	}
+
+	// cache for images
+	private WeakHashMap<File, ImageObject> cache = new WeakHashMap<File, ImageObject>();
+
+	private ImageCache() {
+		// nothing
 	}
 
 	/**
@@ -130,11 +133,13 @@ public class ImageCache {
 	 * @param pathToImage
 	 * @return
 	 */
-	public PlanarImage getPlanarImage(File pathToImage) {
-		if (pathToImage == null) {
-			return null;
+	private ImageObject get(final File pathToImage) {
+		ImageObject image = cache.get(pathToImage);
+		if (image == null) { // evicted, or never loaded
+			image = new ImageObject();
+			cache.put(pathToImage, image);
 		}
-		return get(pathToImage).getPlanarImage(pathToImage);
+		return image;
 	}
 
 	/**
@@ -146,5 +151,16 @@ public class ImageCache {
 	 */
 	public BufferedImage getBufferedImage(File pathToImage) {
 		return get(pathToImage).getBufferedImage(pathToImage);
+	}
+
+	/**
+	 * @param pathToImage
+	 * @return
+	 */
+	public PlanarImage getPlanarImage(File pathToImage) {
+		if (pathToImage == null) {
+			return null;
+		}
+		return get(pathToImage).getPlanarImage(pathToImage);
 	}
 }

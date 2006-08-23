@@ -21,11 +21,6 @@ import java.util.Properties;
  */
 public class Pixels extends Units {
 
-	/**
-	 * Used for writing out the XML file.
-	 */
-	private static final String COMMENT = "Defines the Monitor Resolution to Physical Size Relationship";
-
 	private static final String CONFIG_FILE = "config/PixelsPerInch.xml";
 
 	private static final double DEFAULT_PIXELS_PER_INCH = readPixelsPerInchFromConfigFile();
@@ -33,12 +28,11 @@ public class Pixels extends Units {
 	/**
 	 * The Identity Element representing one Pixel on a "default" screen at a default pixelsPerInch.
 	 */
-	public static final Units ONE = new Pixels(1) {
-		public void setPixelsPerInch(double ppi) {
-			System.err.println("Warning: You cannot modify Pixels.ONE");
-		}
-	};
+	public static final Pixels ONE = new Pixels(1);
 
+	/**
+	 * The key as stored in the xml file.
+	 */
 	private static final String PROPERTY_NAME = "pixelsPerInch";
 
 	/**
@@ -87,7 +81,7 @@ public class Pixels extends Units {
 	 */
 	public Pixels(double numPixels, double pixPerInch) {
 		super(numPixels);
-		setPixelsPerInch(pixPerInch);
+		pixelsPerInch = pixPerInch;
 	}
 
 	/**
@@ -99,10 +93,10 @@ public class Pixels extends Units {
 	}
 
 	/**
-	 * @param ppi
+	 * @return 
+	 * 
 	 */
-	public void setPixelsPerInch(double ppi) {
-		pixelsPerInch = ppi;
+	public double getPixelsPerInch() {
+		return pixelsPerInch;
 	}
-
 }

@@ -2,11 +2,12 @@ package edu.stanford.hci.r3.core.regions;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
 
 import edu.stanford.hci.r3.core.Region;
+import edu.stanford.hci.r3.render.RegionRenderer;
+import edu.stanford.hci.r3.render.types.PolygonRenderer;
+import edu.stanford.hci.r3.render.types.TextRenderer;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.StringUtils;
@@ -29,18 +30,18 @@ public class TextRegion extends Region {
 
 	private Points heightInPoints;
 
+	/**
+	 * In case the 'text' variable is multiline, we store each individual line in this array.
+	 */
+	private String[] lines;
+
 	private Units originX;
 
 	private Units originY;
 
 	private String text;
 
-	private LineMetrics lineMetrics;
-
-	/**
-	 * In case the 'text' variable is multiline, we store each individual line in this array.
-	 */
-	private String[] lines;
+	private Points widthInPoints;
 
 	/**
 	 * 
@@ -67,12 +68,18 @@ public class TextRegion extends Region {
 		// represent it as a Rectangle (x, y, w, h)
 		final Dimension stringSize = StringUtils.getStringSize(text, font);
 		heightInPoints = new Points(stringSize.getHeight());
-		lineMetrics = font.getLineMetrics(text, new FontRenderContext(null, true, true));
+		widthInPoints = new Points(stringSize.getWidth());
 		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY.getValueIn(units),
-				new Points(stringSize.getWidth()).getValueIn(units), heightInPoints
-						.getValueIn(units));
+				widthInPoints.getValueIn(units), heightInPoints.getValueIn(units));
 		bounds = rect;
 		setShape(rect);
+	}
+
+	/**
+	 * @see edu.stanford.hci.r3.core.Region#getRenderer()
+	 */
+	public RegionRenderer getRenderer() {
+		return new TextRenderer(this);
 	}
 
 	/**
@@ -85,28 +92,8 @@ public class TextRegion extends Region {
 	/**
 	 * @return
 	 */
-	public Points getHeightInPoints() {
-		return heightInPoints;
-	}
-
-	public Points getDescentInPoints() {
-		return new Points(lineMetrics.getDescent());
-	}
-
-	public Points getLeadingInPoints() {
-		return new Points(lineMetrics.getLeading());
-	}
-
-	/**
-	 * @return
-	 */
 	public String[] getLinesOfText() {
 		return lines;
-	}
-
-	public void printLineMetrics() {
-		System.out.println(lineMetrics.getHeight() + " == " + lineMetrics.getLeading() + "+"
-				+ lineMetrics.getAscent() + "+" + lineMetrics.getDescent());
 	}
 
 	/**
@@ -137,13 +124,5 @@ public class TextRegion extends Region {
 		return "Text: {" + text + "} " + font.getSize() + "pt " + font.getName()
 				+ " at Bounds: [x=" + originX.getValue() + " y=" + originY.getValue() + " w="
 				+ bounds.getWidth() + " h=" + bounds.getHeight() + "] in " + units.getUnitName();
-	}
-
-	public Points getLineHeightInPoints() {
-		return new Points(lineMetrics.getHeight());
-	}
-
-	public Units getAscentInPoints() {
-		return new Points(lineMetrics.getAscent());
 	}
 }

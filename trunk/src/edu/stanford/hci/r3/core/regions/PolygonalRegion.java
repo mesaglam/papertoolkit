@@ -2,8 +2,12 @@ package edu.stanford.hci.r3.core.regions;
 
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 
 import edu.stanford.hci.r3.core.Region;
+import edu.stanford.hci.r3.render.RegionRenderer;
+import edu.stanford.hci.r3.render.types.PolygonRenderer;
+import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
@@ -31,15 +35,19 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  */
 public class PolygonalRegion extends Region {
 
+	private Units offsetX;
+
+	private Units offsetY;
+
 	/**
-	 * Creates a PolygonalRegion with the designated Units u.
+	 * Creates a polygon with origin at the first point that was passed in.
 	 * 
 	 * @param u
-	 *            the units object we use to interpret the Point2D objects.
 	 * @param points
 	 */
 	public PolygonalRegion(Units u, Point2D... points) {
-		super(GraphicsUtils.createPolygon(points), u);
+		this(u, u.getUnitsObjectOfSameTypeWithValue(points[0].getX()), u
+				.getUnitsObjectOfSameTypeWithValue(points[0].getY()), points);
 	}
 
 	/**
@@ -47,19 +55,58 @@ public class PolygonalRegion extends Region {
 	 * anything really big). For destinationUnits, choose something fine, like Millimeters, Points,
 	 * or your desired Screen Pixel or PrinterDPI conversion.
 	 * 
-	 * @param currentUnits
-	 * @param destinationUnits
+	 * @param currUnits
+	 * @param destUnits
+	 * @param pts
+	 */
+	public PolygonalRegion(Units currUnits, Units destUnits, Point2D... pts) {
+		this(destUnits, GraphicsUtils.getPointsWithConvertedUnits(currUnits, destUnits, pts));
+	}
+
+	/**
+	 * Creates a PolygonalRegion with the designated Units u.
+	 * 
+	 * @param u
+	 *            the units object we use to interpret the Point2D objects.
+	 * @param originX
+	 *            The origins are used ONLY when rendering. They serve as offsets for the polygon.
+	 * @param originY
 	 * @param points
 	 */
-	public PolygonalRegion(Units currentUnits, Units destinationUnits, Point2D... points) {
-		this(destinationUnits, GraphicsUtils.convertUnits(currentUnits, destinationUnits, points));
+	public PolygonalRegion(Units u, Units originX, Units originY, Point2D... points) {
+		super(GraphicsUtils.createPolygon(points), u);
+
+		// save these around for later
+		offsetX = originX;
+		offsetY = originX;
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getOffsetX() {
+		return offsetX;
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getOffsetY() {
+		return offsetY;
 	}
 
 	/**
 	 * @return the internal polygon (unscaled).
 	 */
-	protected Polygon getPolygon() {
+	public Polygon getPolygonReference() {
 		return (Polygon) getShape();
+	}
+
+	/**
+	 * @see edu.stanford.hci.r3.core.Region#getRenderer()
+	 */
+	public RegionRenderer getRenderer() {
+		return new PolygonRenderer(this);
 	}
 
 	/**
@@ -70,7 +117,7 @@ public class PolygonalRegion extends Region {
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Polygon: {");
-		final Polygon poly = getPolygon();
+		final Polygon poly = getPolygonReference();
 		final double sX = getScaleX();
 		final double sY = getScaleY();
 

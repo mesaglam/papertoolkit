@@ -102,11 +102,11 @@ public class ImageUtils {
 	}
 
 	/**
-	 * @param asBufferedImage
+	 * @param bufferedImage
 	 * @param file
 	 */
-	public static void writeImageToJPEG(BufferedImage asBufferedImage, File file) {
-		writeImageToJPEG(asBufferedImage, 100, file);
+	public static void writeImageToJPEG(BufferedImage bufferedImage, File file) {
+		writeImageToJPEG(bufferedImage, 100, file);
 	}
 
 	/**

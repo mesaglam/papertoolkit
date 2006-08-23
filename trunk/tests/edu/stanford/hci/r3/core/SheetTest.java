@@ -46,7 +46,6 @@ public class SheetTest {
 
 		TextRegion text = new TextRegion("The Dragon is\nHERRREEEE!", new Font("Tahoma",
 				Font.PLAIN, 72), new Inches(1), new Inches(2));
-		System.out.println(text.getText());
 
 		// add regions to the sheet
 		sheet.addRegion(reg0);

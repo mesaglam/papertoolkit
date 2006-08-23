@@ -6,8 +6,10 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 
+import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
@@ -114,24 +116,19 @@ public class Region {
 				w.getValueIn(x), h.getValueIn(x)), x);
 	}
 
-	/**
-	 * @return a bounds object that represents the UNSCALED internal shape.
-	 */
-	public Rectangle2D getUnscaledBounds2D() {
-		return shape.getBounds2D();
-	}
-
 	public String getIsActiveString() {
 		return " [" + (isActive() ? "ACTIVE" : "STATIC") + "]";
 	}
 
 	/**
-	 * @return a scaled copy of the internal shape.
+	 * Subclasses should override this, to customize rendering. Otherwise, you'll just get gray
+	 * boxes, which is what RegionRenderer does.
+	 * 
+	 * @return the renderer for this region
 	 */
-	public Shape getScaledShapeCopy() {
-		final GeneralPath gp = new GeneralPath();
-		gp.append(shape.getPathIterator(AffineTransform.getScaleInstance(scaleX, scaleY)), false);
-		return gp;
+	public RegionRenderer getRenderer() {
+		System.out.println("WARNING: Using Default Renderer for " + this + " (see Region.java)");
+		return new RegionRenderer(this);
 	}
 
 	/**
@@ -153,8 +150,15 @@ public class Region {
 	 * 
 	 * @return the internal shape, at your peril.
 	 */
-	protected Shape getShape() {
+	public Shape getShape() {
 		return shape;
+	}
+
+	/**
+	 * @return a copy of the units object.
+	 */
+	public Units getUnits() {
+		return units.getCopy();
 	}
 
 	/**
@@ -165,10 +169,10 @@ public class Region {
 	}
 
 	/**
-	 * @return a copy of the units object.
+	 * @return a bounds object that represents the UNSCALED internal shape.
 	 */
-	public Units getUnits() {
-		return units.getCopy();
+	public Rectangle2D getUnscaledBounds2D() {
+		return shape.getBounds2D();
 	}
 
 	/**
@@ -267,37 +271,15 @@ public class Region {
 		StringBuilder sb = new StringBuilder();
 		String className = shape.getClass().getName();
 		sb.append(className.substring(className.lastIndexOf(".") + 1) + ": {");
+
 		PathIterator pathIterator = shape.getPathIterator(AffineTransform.getScaleInstance(scaleX,
 				scaleY));
-		double[] points = new double[6];
-		while (!pathIterator.isDone()) {
-			int type = pathIterator.currentSegment(points);
-			switch (type) {
-			case PathIterator.SEG_CLOSE:
-				sb.append("Close");
-				break;
-			case PathIterator.SEG_CUBICTO:
-				sb.append("CubicTo: (" + points[0] + "," + points[1] + ") (" + points[2] + ","
-						+ points[3] + ") (" + points[4] + "," + points[5] + ")");
-				break;
-			case PathIterator.SEG_LINETO:
-				sb.append("LineTo: (" + points[0] + "," + points[1] + ")");
-				break;
-			case PathIterator.SEG_MOVETO:
-				sb.append("Move: (" + points[0] + "," + points[1] + ")");
-				break;
-			case PathIterator.SEG_QUADTO:
-				sb.append("QuadTo: (" + points[0] + "," + points[1] + ") (" + points[2] + ","
-						+ points[3] + ")");
-				break;
-			}
-			pathIterator.next();
-			if (!pathIterator.isDone()) {
-				sb.append(", ");
-			}
-		}
+
+		sb.append(GraphicsUtils.getPathAsString(pathIterator));
+
 		sb.append("} in " + units.getUnitName());
 		sb.append(getIsActiveString());
 		return sb.toString();
 	}
+
 }
