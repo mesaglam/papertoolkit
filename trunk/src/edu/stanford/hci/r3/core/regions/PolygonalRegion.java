@@ -2,12 +2,10 @@ package edu.stanford.hci.r3.core.regions;
 
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.render.types.PolygonRenderer;
-import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
@@ -35,6 +33,22 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  */
 public class PolygonalRegion extends Region {
 
+	private static double getMinX(Point2D[] points) {
+		double minX = Double.MAX_VALUE;
+		for (Point2D p : points) {
+			minX = Math.min(minX, p.getX());
+		}
+		return minX;
+	}
+
+	private static double getMinY(Point2D[] points) {
+		double minY = Double.MAX_VALUE;
+		for (Point2D p : points) {
+			minY = Math.min(minY, p.getY());
+		}
+		return minY;
+	}
+
 	private Units offsetX;
 
 	private Units offsetY;
@@ -46,8 +60,8 @@ public class PolygonalRegion extends Region {
 	 * @param points
 	 */
 	public PolygonalRegion(Units u, Point2D... points) {
-		this(u, u.getUnitsObjectOfSameTypeWithValue(points[0].getX()), u
-				.getUnitsObjectOfSameTypeWithValue(points[0].getY()), points);
+		this(u, u.getUnitsObjectOfSameTypeWithValue(getMinX(points)), u
+				.getUnitsObjectOfSameTypeWithValue(getMinY(points)), points);
 	}
 
 	/**
@@ -64,7 +78,10 @@ public class PolygonalRegion extends Region {
 	}
 
 	/**
-	 * Creates a PolygonalRegion with the designated Units u.
+	 * Creates a PolygonalRegion with the designated Units u. Note that WEIRD things can happen if
+	 * you set your origin (i.e., center of scaling) at a different place than the upper left corner
+	 * of the bounding box of your polygon. Thus, we reserve this constructor to be used only
+	 * internally.
 	 * 
 	 * @param u
 	 *            the units object we use to interpret the Point2D objects.
@@ -73,12 +90,12 @@ public class PolygonalRegion extends Region {
 	 * @param originY
 	 * @param points
 	 */
-	public PolygonalRegion(Units u, Units originX, Units originY, Point2D... points) {
+	private PolygonalRegion(Units u, Units originX, Units originY, Point2D... points) {
 		super(GraphicsUtils.createPolygon(points), u);
 
 		// save these around for later
 		offsetX = originX;
-		offsetY = originX;
+		offsetY = originY;
 	}
 
 	/**

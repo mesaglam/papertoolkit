@@ -36,21 +36,26 @@ public class SheetTest {
 		Region reg1 = new Region(1, 1, 2, 3);
 		reg1.scaleRegionUniformly(0.75);
 
-		PolygonalRegion poly = new PolygonalRegion(new Inches(), new Point2D.Double(1, 1),
-				new Point2D.Double(2, 2), new Point2D.Double(3, 1));
-		poly.scaleRegionUniformly(.5);
+		PolygonalRegion poly = new PolygonalRegion(new Inches(), new Point2D.Double(1, 7),
+				new Point2D.Double(2, 8), new Point2D.Double(3, 7));
+		poly.scaleRegionUniformly(.33);
 
-		ImageRegion img = new ImageRegion(new File("testData/dragon.jpg"), new Inches(3),
+		PolygonalRegion poly2 = new PolygonalRegion(new Inches(), new Point2D.Double(4, 10),
+				new Point2D.Double(6, 10), new Point2D.Double(5, 7), new Point2D.Double(3, 6));
+		poly2.scaleRegionUniformly(.66);
+
+		ImageRegion img = new ImageRegion(new File("testData/dragon.jpg"), new Inches(3.5),
 				new Inches(4));
 		img.scaleRegionUniformly(.25);
 
-		TextRegion text = new TextRegion("The Dragon is\nHERRREEEE!", new Font("Tahoma",
-				Font.PLAIN, 72), new Inches(1), new Inches(2));
+		TextRegion text = new TextRegion("The Dragon is\nHERRREEEE!", new Font("Neutra Text TF",
+				Font.BOLD, 72), new Inches(1), new Inches(2));
 
 		// add regions to the sheet
 		sheet.addRegion(reg0);
 		sheet.addRegion(reg1);
 		sheet.addRegion(poly);
+		sheet.addRegion(poly2);
 		sheet.addRegion(img);
 		sheet.addRegion(text);
 

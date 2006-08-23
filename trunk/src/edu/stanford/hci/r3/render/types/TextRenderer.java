@@ -61,6 +61,7 @@ public class TextRenderer extends RegionRenderer {
 		// so that we can reset it later
 		final Font oldFont = g2d.getFont();
 		g2d.setFont(tr.getFont());
+		System.out.println(tr.getFont());
 
 		final double offset = getAscentInPoints().getValue();
 		final double textLineHeight = getLineHeightInPoints().getValue();
