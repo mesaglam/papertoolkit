@@ -13,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import javax.media.jai.TiledImage;
+
 import org.pdfbox.exceptions.COSVisitorException;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDPage;
@@ -28,8 +30,14 @@ import com.lowagie.text.pdf.PdfWriter;
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.core.Sheet;
 import edu.stanford.hci.r3.core.regions.TextRegion;
+import edu.stanford.hci.r3.render.types.TextRenderer;
+import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.MathUtils;
+import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
+import edu.stanford.hci.r3.util.graphics.ImageUtils;
+import edu.stanford.hci.r3.util.graphics.JAIUtils;
 
 /**
  * <p>
@@ -63,87 +71,60 @@ public class SheetRenderer {
 	/**
 	 * We assume the g2d is big enough for us to draw this Sheet to.
 	 * 
+	 * By default, the transforms works at 72 dots per inch. Scale the transform beforehand if you
+	 * would like better or worse rendering.
+	 * 
 	 * @param g2d
 	 */
 	public void renderToG2D(Graphics2D g2d) {
 		final List<Region> regions = sheet.getRegions();
-
-		// by default, the transforms works at 72 dots per inch
-		AffineTransform transform = g2d.getTransform();
-
-		Color regionColor = new Color(123, 123, 123, 30);
-		Color fontColor = Color.BLACK;
-
-		Font f = new Font("Trebuchet MS", Font.PLAIN, 8);
-		LineMetrics lineMetrics = f.getLineMetrics("Height of Line", new FontRenderContext(null,
-				true, true));
-		float lineHeight = lineMetrics.getHeight();
-		g2d.setFont(f);
-
+		// render each region
 		for (Region r : regions) {
-
-			Rectangle2D b = r.getUnscaledBounds2D();
-
-			float scaleX = (float) r.getScaleX();
-			float scaleY = (float) r.getScaleY();
-
-			Units units = r.getUnits();
-			double scale = units.getConversionTo(Points.ONE);
-
-			float xPts = (float) Math.round(scale * b.getX());
-			float yPts = (float) Math.round(scale * b.getY());
-			float wPts = (float) Math.round(scale * b.getWidth());
-			float hPts = (float) Math.round(scale * b.getHeight());
-
-			int finalX = (int) Math.round(xPts * scaleX);
-			int finalY = (int) Math.round(yPts * scaleY);
-			int finalW = (int) Math.round(wPts * scaleX);
-			int finalH = (int) Math.round(hPts * scaleY);
-
-			// handle different regions differently
-			if (debugRegions) {
-				g2d.setColor(regionColor);
-				g2d.fillRect(finalX, finalY, finalW, finalH);
-				g2d.setColor(fontColor);
-				g2d.drawString(r.toString(), finalX, finalY + lineHeight);
-			}
-
-			if (r instanceof TextRegion) {
-				TextRegion tr = (TextRegion) r;
-				tr.getHeightInPoints();
-
-				Font oldFont = g2d.getFont();
-				g2d.setFont(tr.getFont());
-
-				double offset = tr.getAscentInPoints().getValue();
-				double textLineHeight = tr.getLineHeightInPoints().getValue();
-
-				// handle multiple lines
-				String[] linesOfText = tr.getLinesOfText();
-				int xOffset = (int) Math.round(tr.getX().getValueInPoints());
-				double yOffset = tr.getY().getValueInPoints() + offset;
-				for (String line : linesOfText) {
-					g2d.drawString(line, xOffset, (int) Math.round(yOffset));
-					yOffset += textLineHeight;
-				}
-
-				g2d.setFont(oldFont);
-
-				tr.printLineMetrics();
-			} else {
-				// call r's custom G2D renderer?
-				// how will we handle custom renderers?
-				// todo =)
-			}
-
+			r.getRenderer().renderToG2D(g2d);
 		}
 	}
 
 	/**
-	 * @param destFile
+	 * Use the default pixels per inch. Specified in our configuration file.
+	 * 
+	 * @param file
 	 */
-	public void renderToJPEG(File destJPEGFile) {
+	public void renderToJPEG(File file) {
+		renderToJPEG(file, Pixels.ONE);
+	}
 
+	/**
+	 * @param destJPEGFile
+	 * @param destUnits
+	 *            Converts the graphics2D object into a new coordinate space based on the
+	 *            destination units' pixels per inch. This is for the purposes of rendering the
+	 *            document to screen, where Graphics2D's default 72ppi isn't always the right way to
+	 *            do it.
+	 */
+	public void renderToJPEG(File destJPEGFile, Pixels destUnits) {
+		final Units width = sheet.getWidth();
+		final Units height = sheet.getHeight();
+
+		final double scale = Points.ONE.getConversionTo(destUnits);
+
+		final int w = MathUtils.rint(width.getValueIn(destUnits));
+		final int h = MathUtils.rint(height.getValueIn(destUnits));
+		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(w, h);
+		final Graphics2D graphics2D = image.createGraphics();
+		graphics2D.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+
+		// transform the graphics such that we are in destUnits' pixels per inch, so that when we
+		// draw 72 Graphics2D pixels from now on, it will equal the correct number of output pixels
+		// in the JPEG.
+		graphics2D.setTransform(AffineTransform.getScaleInstance(scale, scale));
+
+		// render a white canvas
+		graphics2D.setColor(Color.WHITE);
+		graphics2D.fillRect(0, 0, w, h);
+
+		renderToG2D(graphics2D);
+		graphics2D.dispose();
+		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destJPEGFile);
 	}
 
 	/**

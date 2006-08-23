@@ -11,7 +11,7 @@ package edu.stanford.hci.r3.units;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class Units {
+public abstract class Units implements Cloneable {
 
 	/**
 	 * Java handles everything in 1/72nd of an inch (1 point). We should do the same to be
@@ -47,6 +47,18 @@ public abstract class Units {
 	public Units(double val, String name) {
 		value = val;
 		unitName = name; // use the custom units name
+	}
+
+	/**
+	 * @see java.lang.Object#clone()
+	 */
+	protected Units clone() {
+		try {
+			return (Units) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
@@ -87,7 +99,7 @@ public abstract class Units {
 	 */
 	public Units getCopy() {
 		// tricky, huh? =)
-		return getUnitsObjectIn(this);
+		return getUnitsObjectOfSameLengthIn(this);
 	}
 
 	/**
@@ -103,20 +115,28 @@ public abstract class Units {
 	}
 
 	/**
+	 * Gets a new Units object of the same type as destUnits, with the same physical length as this
+	 * object.
+	 * 
 	 * @param destUnits
 	 * @return
 	 */
-	public Units getUnitsObjectIn(Units destUnits) {
-		Units units = null;
-		try {
-			units = destUnits.getClass().newInstance();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		units.value = getValueIn(destUnits);
-		return units;
+	public Units getUnitsObjectOfSameLengthIn(Units destUnits) {
+		final Units dest = destUnits.clone();
+		dest.value = getValueIn(dest);
+		return dest;
+	}
+
+	/**
+	 * Gets a new Units object of the same type as this unit, but with a new value.
+	 * 
+	 * @param val
+	 * @return
+	 */
+	public Units getUnitsObjectOfSameTypeWithValue(double val) {
+		final Units dest = this.clone();
+		dest.value = val;
+		return dest;
 	}
 
 	/**
