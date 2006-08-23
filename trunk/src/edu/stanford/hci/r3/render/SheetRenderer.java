@@ -163,6 +163,14 @@ public class SheetRenderer {
 			e.printStackTrace();
 		}
 	}
+	
+	public void renderToPDF(File destPDFFile) {
+		// TODO
+	}
+	
+	public void renderToExistingPDF(File sourcePDF, File destPDF) {
+		// TODO
+	}
 
 	/**
 	 * @param destPDFFile

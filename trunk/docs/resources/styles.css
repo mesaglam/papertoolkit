@@ -39,4 +39,19 @@ a:visited {
 
 li {
 	margin-bottom: 20px;
+}.Heading2 {
+	font-family: "Trebuchet MS", Verdana, Helvetica, sans-serif;
+	font-size: large;
+	font-weight: normal;
+	line-height: normal;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	border-bottom-width: thin;
+	border-top-width: thin;
+	border-right-width: thin;
+	border-left-width: thin;
+	margin-top: 35px;
+	margin-bottom: -10px;
 }

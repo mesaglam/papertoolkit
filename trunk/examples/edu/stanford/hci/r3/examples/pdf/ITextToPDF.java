@@ -1,16 +1,25 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.examples.pdf;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * <p>
@@ -31,7 +40,8 @@ public class ITextToPDF {
 		Rectangle customPageSize8x8 = new Rectangle(0, 0, 576, 576);
 		Document doc = new Document(customPageSize8x8, 50, 50, 50, 50);
 		try {
-			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("testData/dots.pdf"));
+			PdfWriter writer = PdfWriter
+					.getInstance(doc, new FileOutputStream("testData/dots.pdf"));
 			doc.open();
 			String dot = "•";
 			// top layer for pattern
@@ -58,43 +68,69 @@ public class ITextToPDF {
 		}
 	}
 
-	public static void main(String[] args) {
-		PdfReader reader;
+	/**
+	 * 
+	 */
+	private static void drawOnExistingPDF() {
 		try {
-			reader = new PdfReader(new FileInputStream(new File("testData/ButterflyNetCHI2006.pdf")));
-			System.out.println(reader.getNumberOfPages());
+			// reader = new PdfReader(new FileInputStream(new
+			// File("testData/ButterflyNetCHI2006.pdf")));
+			PdfReader reader = new PdfReader(new FileInputStream(new File(
+					"testData/BobHorn-AvianFlu.pdf")));
+			System.out.println("NumPages: " + reader.getNumberOfPages());
 
-		
+			PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(new File(
+					"testData/Test.pdf")));
+
+			// change the content beneath page 1
+			// PdfContentByte under = stamp.getUnderContent(1);
+			// Graphics2D g2Under = under.createGraphics(1024, 768);
+			// g2Under.fillOval(10, 10, 60, 60);
+			// g2Under.dispose();
+
+			// change the content on top of page 1
+			PdfContentByte over = stamp.getOverContent(1);
+			int height = 36 * 72;
+			int width = 120 * 72;
+			Graphics2D g2Over = over.createGraphics(width, height);
+			g2Over.setTransform(AffineTransform.getTranslateInstance(200, 200));
+			g2Over.fillOval(20, 20, 300, 300);
+			g2Over.setColor(new Color(200, 200, 100, 90));
+			g2Over.fillRect(0, 0, width, height);
+			g2Over.setColor(Color.BLUE);
+			g2Over.drawRect(1, 1, width - 1, height - 1);
+			g2Over.dispose();
+
+			// the graphics is placed on the lower left corner of the page, in accordance w/
+			// postscript
+			Graphics2D g2Over2 = over.createGraphics(1024, 1024);
+			g2Over2.setTransform(AffineTransform.getTranslateInstance(10, 100));
+			g2Over2.setColor(Color.ORANGE);
+			g2Over2.fillOval(0, 0, 1000, 1000);
+			g2Over2.setColor(Color.BLUE);
+			g2Over2.drawRect(1, 1, width - 1, height - 1);
+			g2Over2.dispose();
+
+			stamp.close();
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-
-	/**
-	 * @deprecated because it does not work, likely because the ps file is too complicated?
-	 */
-	private static void psToPDF() {
-		Document doc = new Document(PageSize.LETTER, 50, 50, 50, 50);
-		System.out.println("EPS");
-		try {
-			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("testData/8x8.pdf"));
-			doc.open();
-			Image img = Image.getInstance("testData/8x8.ps");
-			img.setAbsolutePosition(0, 0);
-			doc.add(img);
-			doc.close();
-		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+		PdfReader reader = new PdfReader(new FileInputStream(new File(
+				"testData/BobHorn-AvianFlu.pdf")));
+		System.out.println("NumPages: " + reader.getNumberOfPages());
+
 	}
 
 	/**
@@ -121,4 +157,5 @@ public class ITextToPDF {
 			e.printStackTrace();
 		}
 	}
+
 }
