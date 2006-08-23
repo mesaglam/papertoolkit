@@ -1,17 +1,3 @@
-/**
- * version 0.1 -- Created for the FlowVis project (Winter 2004). ronyeh
- * version 0.2 -- Added Desktop location stuff (Summer 2004). ronyeh
- * version 0.3 -- Added Screen Size for BNet (Summer 2005). ronyeh
- * 
- * <p>
- * This software is distributed under the <a
- * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
- * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron Yeh</a> (
- *         ronyeh(AT)cs.stanford.edu )
- */
-
 package edu.stanford.hci.r3.util;
 
 import java.awt.*;
@@ -20,10 +6,18 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 /**
- * @author Ron B Yeh <ronyeh(AT)cs.stanford.edu>
+ * <p>
+ * This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron Yeh</a> ( ronyeh(AT)cs.stanford.edu )
  * @comment This class contains useful methods for positioning, sizing, and manipulating JFrames and
  *          other Window-like elements.
  */
+// version 0.1 -- Created for the FlowVis project (Winter 2004). ronyeh
+// version 0.2 -- Added Desktop location stuff (Summer 2004). ronyeh
+// version 0.3 -- Added Screen Size for BNet (Summer 2005). ronyeh
 public class WindowUtils {
 
 	// defaults for screen width and height are very small
@@ -103,7 +97,7 @@ public class WindowUtils {
 
 	/**
 	 * @param mainAppFrame
-	 *           window to be made full screen.
+	 *            window to be made full screen.
 	 */
 	public static void enterFullScreenIfPossible(JFrame mainAppFrame) {
 		final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -306,9 +300,9 @@ public class WindowUtils {
 	/**
 	 * Given a size (width, height) of a window, and an intended location on the desktop, it returns
 	 * the x, y location of where the origin should reside. This method will be pretty resilient to
-	 * the user changing his/her interface (taskbar locations, etc). If you want a faster method, but
-	 * would sacrifice a (little) bit of assurances... then use getCachedWindowOrigin(...) directly
-	 * (after calling initCachedWindowState() once)
+	 * the user changing his/her interface (taskbar locations, etc). If you want a faster method,
+	 * but would sacrifice a (little) bit of assurances... then use getCachedWindowOrigin(...)
+	 * directly (after calling initCachedWindowState() once)
 	 * 
 	 * @param windowWidth
 	 * @param windowHeight
@@ -331,8 +325,8 @@ public class WindowUtils {
 
 	/**
 	 * Call this before calling getCachedWindowOrigin(...) to get the current state of the user's
-	 * screen and desktop size. The user may have changed it since the last call. This is called once
-	 * when WindowUtils is first accessed.
+	 * screen and desktop size. The user may have changed it since the last call. This is called
+	 * once when WindowUtils is first accessed.
 	 */
 	public static void initCachedWindowState() {
 		// get the current Screen Size
@@ -467,8 +461,9 @@ public class WindowUtils {
 	 */
 	public static void fitToDesktop(final JFrame frame) {
 		final int minWidth = (int) Math.min(frame.getBounds().getWidth(), desktopBounds.getWidth());
-		final int minHeight = (int) Math.min(frame.getBounds().getHeight(), desktopBounds.getHeight());
-		
+		final int minHeight = (int) Math.min(frame.getBounds().getHeight(), desktopBounds
+				.getHeight());
+
 		frame.setSize(minWidth, minHeight);
 	}
 }

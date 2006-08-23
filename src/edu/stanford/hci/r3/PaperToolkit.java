@@ -15,6 +15,8 @@ import edu.stanford.hci.r3.util.WindowUtils;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * 
+ * 
  */
 public class PaperToolkit {
 
@@ -29,7 +31,7 @@ public class PaperToolkit {
 	private static synchronized XStream getXMLEngine() {
 		if (xmlEngine == null) {
 			xmlEngine = new XStream();
-			
+
 			// Add Aliases Here (for more concise XML)
 			xmlEngine.alias("Sheet", Sheet.class);
 			xmlEngine.alias("Inches", Inches.class);
