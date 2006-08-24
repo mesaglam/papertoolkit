@@ -46,7 +46,7 @@ public class ImageRenderer extends RegionRenderer {
 		final PlanarImage image = ImageCache.loadPlanarImage(file);
 		final AffineTransform transform = new AffineTransform();
 
-		System.out.println(imgRegion);
+		// System.out.println(imgRegion);
 
 		// translate to the origin first!
 		transform.translate(imgRegion.getX() * conv, imgRegion.getY() * conv);

@@ -57,7 +57,7 @@ public class FlashControlServer {
 			incoming = socket.accept();
 			readerIn = new BufferedReader(new InputStreamReader(incoming.getInputStream()));
 			printOut = new PrintStream(incoming.getOutputStream());
-//			out("Enter EXIT to exit.\r");
+			// out("Enter EXIT to exit.\r");
 			out("[[Show Map]]");
 			boolean done = false;
 			while (!done) {
@@ -65,7 +65,7 @@ public class FlashControlServer {
 				if (str == null) {
 					done = true;
 				} else {
-//					out("Echo: " + str + "\r");
+					// out("Echo: " + str + "\r");
 					if (str.trim().equals("EXIT")) {
 						done = true;
 						incoming.close();

@@ -37,121 +37,53 @@ import edu.stanford.hci.r3.units.Inches;
  */
 public class PDFPatternGenerator {
 
+	// font creation
+	private static final BaseFont BFONT = createBaseFont();
+
 	private static final int DEFAULT_JITTER = 5;
 
 	private static final int DEFAULT_PADDING = 30;
 
 	private static final String DOT_SYMBOL = "•";
 
+	private static final float FONT_SIZE = 29;
+
 	private static final int X_FONT_OFFSET = -2;
 
 	private static final int Y_FONT_OFFSET = 9;
 
-	private static final float FONT_SIZE = 29;
+	/**
+	 * @return
+	 */
+	private static BaseFont createBaseFont() {
+		try {
+			return BaseFont.createFont("data/tahoma.ttf", BaseFont.CP1252, BaseFont.EMBEDDED);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static void main(String[] args) {
 		TiledPatternGenerator generator = new TiledPatternGenerator();
 		PatternPackage pkg = generator.getCurrentPatternPackage();
-		String[] pattern = pkg.readPatternFromFile(0, 
-				new Inches(.5), new Inches(1),
+		String[] pattern = pkg.readPatternFromFile(0, new Inches(.5), new Inches(1),
 				new Inches(.5), new Inches(5));
 
 		try {
-			
-			System.out.println(PageSize.LETTER);
-			
-			Document document = new Document(PageSize.LETTER, 50, 50, 50, 50);
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
-					"testData/test.pdf"));
-
-			// font creation
-			BaseFont bfont = BaseFont.createFont("data/tahoma.ttf", BaseFont.CP1252,
-					BaseFont.EMBEDDED);
-
+			// System.out.println(PageSize.LETTER);
+			final Document document = new Document(PageSize.LETTER, 50, 50, 50, 50);
+			final PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
+					"testData/Test.pdf"));
 			// access the document
 			document.open();
-
-			
 			// write direct content
-			PdfContentByte cb = writer.getDirectContent();
+			final PdfContentByte cb = writer.getDirectContent();
 
-			cb.beginText();
-			cb.setFontAndSize(bfont, 12);
-
-			// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
-			cb.setColorFill(Color.BLACK);
-
-			cb.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tahoma " + FONT_SIZE + " Padding: "
-					+ DEFAULT_PADDING, 288, 288, 0);
-			cb.endText();
-
-			// convert from points (72 in an inch, to 1/100 of a millimeter)
-			cb.concatCTM(1f, 0f, 0f, -1f, 0f, PageSize.LETTER.height());
-			cb.transform(AffineTransform.getScaleInstance(72 / 2540.0, 72 / 2540.0));
-
-			cb.beginText();
-			cb.setFontAndSize(bfont, FONT_SIZE);
-
-			final int initX = 72;
-
-			int gridXPosition = initX;
-			int gridYPosition = 72;
-
-			int xJitter = 0;
-			int yJitter = 0;
-			char currentJitterDirection;
-
-			for (String patternRow : pattern) {
-				int rowLength = patternRow.length();
-				for (int i = 0; i < rowLength; i++) {
-
-					// read the direction
-					currentJitterDirection = patternRow.charAt(i);
-
-					// reset the jitters (this is key!)
-					xJitter = 0;
-					yJitter = 0;
-
-					switch (currentJitterDirection) {
-					case PatternJitter.DOWN:
-						// System.out.print("d");
-						yJitter = DEFAULT_JITTER;
-						break;
-					case PatternJitter.UP:
-						// System.out.print("u");
-						yJitter = -DEFAULT_JITTER;
-						break;
-					case PatternJitter.LEFT:
-						// System.out.print("l");
-						xJitter = -DEFAULT_JITTER;
-						break;
-					case PatternJitter.RIGHT:
-						// System.out.print("r");
-						xJitter = DEFAULT_JITTER;
-						break;
-					}
-
-					cb.showTextAligned(PdfContentByte.ALIGN_CENTER, DOT_SYMBOL,
-
-					gridXPosition + xJitter + X_FONT_OFFSET,
-
-					gridYPosition + yJitter + Y_FONT_OFFSET, 0);
-
-					gridXPosition += DEFAULT_PADDING;
-				}
-				gridXPosition = initX;
-				gridYPosition += DEFAULT_PADDING;
-				// System.out.println();
-			}
-
-			cb.endText();
-
-			// add images here
-			Image dragon = Image.getInstance("testData/dragon.jpg");
-			dragon.scalePercent(50f);
-			dragon.setAbsolutePosition(0, 0);
-			System.out.println(dragon.isDeflated());
-			document.add(dragon);
+			PDFPatternGenerator pgen = new PDFPatternGenerator(cb, pattern);
+			pgen.renderPattern();
 
 			document.close();
 		} catch (FileNotFoundException e) {
@@ -162,5 +94,93 @@ public class PDFPatternGenerator {
 			e.printStackTrace();
 		}
 
+	}
+
+	private PdfContentByte content;
+
+	private String[] pattern;
+
+	/**
+	 * 
+	 */
+	public PDFPatternGenerator(PdfContentByte cb, String[] dotPattern) {
+		content = cb;
+		pattern = dotPattern;
+	}
+
+	/**
+	 * 
+	 */
+	public void renderPattern() {
+		content.beginText();
+		content.setFontAndSize(BFONT, 12);
+
+		// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
+		content.setColorFill(Color.BLACK);
+
+		content.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tahoma " + FONT_SIZE + " Padding: "
+				+ DEFAULT_PADDING, 288, 288, 0);
+		content.endText();
+
+		// convert from points (72 in an inch, to 1/100 of a millimeter)
+		content.concatCTM(1f, 0f, 0f, -1f, 0f, PageSize.LETTER.height());
+		content.transform(AffineTransform.getScaleInstance(72 / 2540.0, 72 / 2540.0));
+
+		content.beginText();
+		content.setFontAndSize(BFONT, FONT_SIZE);
+
+		final int initX = 72;
+
+		int gridXPosition = initX;
+		int gridYPosition = 72;
+
+		int xJitter = 0;
+		int yJitter = 0;
+		char currentJitterDirection;
+
+		for (String patternRow : pattern) {
+			int rowLength = patternRow.length();
+			for (int i = 0; i < rowLength; i++) {
+
+				// read the direction
+				currentJitterDirection = patternRow.charAt(i);
+
+				// reset the jitters (this is key!)
+				xJitter = 0;
+				yJitter = 0;
+
+				switch (currentJitterDirection) {
+				case PatternJitter.DOWN:
+					// System.out.print("d");
+					yJitter = DEFAULT_JITTER;
+					break;
+				case PatternJitter.UP:
+					// System.out.print("u");
+					yJitter = -DEFAULT_JITTER;
+					break;
+				case PatternJitter.LEFT:
+					// System.out.print("l");
+					xJitter = -DEFAULT_JITTER;
+					break;
+				case PatternJitter.RIGHT:
+					// System.out.print("r");
+					xJitter = DEFAULT_JITTER;
+					break;
+				}
+
+				content.showTextAligned(PdfContentByte.ALIGN_CENTER, DOT_SYMBOL,
+
+				gridXPosition + xJitter + X_FONT_OFFSET,
+
+				gridYPosition + yJitter + Y_FONT_OFFSET, 0);
+
+				gridXPosition += DEFAULT_PADDING;
+			}
+			gridXPosition = initX;
+			gridYPosition += DEFAULT_PADDING;
+			// System.out.println();
+		}
+
+		content.endText();
 	}
 }

@@ -17,8 +17,8 @@ import edu.stanford.hci.r3.core.SheetTest;
  */
 public class SheetRendererTest {
 	public static void main(String[] args) {
-		sheetToJPEG();
-		// sheetToPDF();
+//		sheetToJPEG();
+		sheetToPDF();
 	}
 
 	private static void sheetToJPEG() {
@@ -34,8 +34,8 @@ public class SheetRendererTest {
 		Sheet sheet = SheetTest.createAndPopulateSheet();
 
 		SheetRenderer renderer = new SheetRenderer(sheet);
-		renderer.setRenderActiveRegionsWithPattern(false);
+		// renderer.setRenderActiveRegionsWithPattern(false);
 
-		renderer.renderToPDFWithIText(new File("testData/Test.pdf"));
+		renderer.renderToPDF(new File("testData/Test.pdf"));
 	}
 }

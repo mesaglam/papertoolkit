@@ -31,6 +31,6 @@ public class PDFSheetTest {
 				new Centimeters(3)));
 
 		SheetRenderer sr = new SheetRenderer(sheet);
-		sr.renderToPDFWithIText(new File("testData/Test.pdf"));
+		sr.renderToPDF(new File("testData/Test.pdf"));
 	}
 }
