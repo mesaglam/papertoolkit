@@ -63,7 +63,7 @@ public class ImageRegion extends Region {
 		final Rectangle2D.Double rect = new Rectangle2D.Double(originX.getValue(), originY
 				.getValueIn(u), new Pixels(dimension.getWidth(), ppi).getValueIn(u), new Pixels(
 				dimension.getHeight(), ppi).getValueIn(u));
-		System.out.println(rect);
+		// System.out.println(rect);
 		setShape(rect);
 		imageRect = rect;
 	}

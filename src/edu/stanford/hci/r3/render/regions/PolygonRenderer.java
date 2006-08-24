@@ -57,19 +57,19 @@ public class PolygonRenderer extends RegionRenderer {
 		// this has to be first, so we are operating in Java2D points
 		transform.scale(conv, conv);
 
-		System.out.println("Conversion: " + conv);
-		
+		// System.out.println("Conversion: " + conv);
+
 		// scale the width and height of the polygon, and also the offsets =(
 		transform.scale(sX, sY);
 
-		System.out.println("ScaleX: " + sX + " ScaleY: " + sY);
-		
-		double tX = x / sX - x;
-		double tY = y / sY - y;
-		
-		System.out.println("Original Offsets: " + x + " " + y);
-		System.out.println("Translations: " + tX + " " + tY);
-		
+		// System.out.println("ScaleX: " + sX + " ScaleY: " + sY);
+
+		final double tX = x / sX - x;
+		final double tY = y / sY - y;
+
+		// System.out.println("Original Offsets: " + x + " " + y);
+		// System.out.println("Translations: " + tX + " " + tY);
+
 		// this line's tricky
 		// since we scaled everything (including the polygon's offsets)
 		// we now need to compensate for the shrunken (or larger) offsets
@@ -79,7 +79,7 @@ public class PolygonRenderer extends RegionRenderer {
 		final GeneralPath gp = new GeneralPath();
 		gp.append(polyRegion.getShape().getPathIterator(transform), false);
 		g2d.draw(gp);
-		
-		System.out.println(g2d.getTransform());
+
+		// System.out.println(g2d.getTransform());
 	}
 }

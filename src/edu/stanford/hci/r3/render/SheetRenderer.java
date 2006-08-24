@@ -121,17 +121,13 @@ public class SheetRenderer {
 		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destJPEGFile);
 	}
 
-	public void renderToPDF(File destPDFFile) {
-		// TODO
-	}
-
 	/**
 	 * Uses the iText package to render a PDF file. iText is nice because we can write to a
-	 * Graphics2D context.
+	 * Graphics2D context. Alternatively, we can use PDF-like commands.
 	 * 
 	 * @param destPDFFile
 	 */
-	public void renderToPDFWithIText(File destPDFFile) {
+	public void renderToPDF(File destPDFFile) {
 		try {
 			final Units width = sheet.getWidth();
 			final Units height = sheet.getHeight();
@@ -154,11 +150,34 @@ public class SheetRenderer {
 
 			// an efficient dispose, because we are not within a Java paint() method
 			g2d.dispose();
+
+			if (renderActiveRegionsWithPattern) {
+				// after rendering everything, we still need to overlay the pattern on top of active
+				// regions; This is only for PDF rendering.
+				renderPattern(cb);
+			}
+
 			doc.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param content
+	 */
+	private void renderPattern(PdfContentByte content) {
+		// for each region, overlay pattern if it is an active region
+		final List<Region> regions = sheet.getRegions();
+		// render each region
+		for (Region r : regions) {
+			if (r.isActive()) {
+				System.out.println("SheetRenderer: Rendering Pattern!");
+
+				System.out.println("SheetRenderer: " + r.getShape());
+			}
 		}
 	}
 

@@ -48,7 +48,7 @@ public class SheetTest {
 				new Inches(4));
 		img.scaleRegionUniformly(.25);
 
-		TextRegion text = new TextRegion("The Dragon is\nHERRREEEE!", new Font("Neutra Text TF",
+		TextRegion text = new TextRegion("The Dragon is\nHERRREEEE!", new Font("Trebuchet MS",
 				Font.BOLD, 72), new Inches(1), new Inches(2));
 
 		// add regions to the sheet

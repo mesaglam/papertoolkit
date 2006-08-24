@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
