@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.render.types;
+package edu.stanford.hci.r3.render.regions;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

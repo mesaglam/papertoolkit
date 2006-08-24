@@ -1,5 +1,8 @@
 package edu.stanford.hci.r3.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * <p>
@@ -14,4 +17,16 @@ package edu.stanford.hci.r3.core;
  */
 public class Bundle {
 
+	private List<Sheet> sheets = new ArrayList<Sheet>();
+
+	public Bundle() {
+
+	}
+
+	/**
+	 * @param s
+	 */
+	public void addSheet(Sheet s) {
+		sheets.add(s);
+	}
 }

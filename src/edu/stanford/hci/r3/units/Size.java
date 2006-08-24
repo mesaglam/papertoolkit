@@ -8,10 +8,10 @@ package edu.stanford.hci.r3.units;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
- * Represents a rectangular size.
+ * Represents a rectangular size, whose width and height are in arbitrary units.
  */
-public class Size {
-	
+public class Size implements Cloneable {
+
 	/**
 	 * The Height of this Sheet.
 	 */
@@ -21,6 +21,30 @@ public class Size {
 	 * The Width of this Sheet.
 	 */
 	private Units width;
+
+	/**
+	 * 
+	 */
+	public Size() {
+		width = Inches.ONE;
+		height = Inches.ONE;
+	}
+
+	/**
+	 * @param w
+	 * @param h
+	 */
+	public Size(Units w, Units h) {
+		width = w;
+		height = h;
+	}
+
+	/**
+	 * @see java.lang.Object#clone()
+	 */
+	public Size clone() {
+		return new Size(width.clone(), height.clone());
+	}
 
 	/**
 	 * @return
@@ -43,5 +67,12 @@ public class Size {
 	public void setSize(Units w, Units h) {
 		width = w;
 		height = h;
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "[" + width + " x " + height + "]";
 	}
 }

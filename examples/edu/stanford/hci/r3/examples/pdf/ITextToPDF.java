@@ -127,9 +127,22 @@ public class ITextToPDF {
 	 */
 	public static void main(String[] args) {
 
-		PdfReader reader = new PdfReader(new FileInputStream(new File(
-				"testData/BobHorn-AvianFlu.pdf")));
-		System.out.println("NumPages: " + reader.getNumberOfPages());
+		try {
+			PdfReader reader = new PdfReader(new FileInputStream(new File(
+					"testData/BobHorn-AvianFlu.pdf")));
+			int numPages = reader.getNumberOfPages();
+			System.out.println("NumPages: " + numPages);
+
+			// WARNING! Page Counts start from 1, not 0.
+			for (int i = 1; i < numPages + 1; i++) {
+				System.out.println(reader.getPageSize(i));
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 

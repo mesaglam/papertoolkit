@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
-import edu.stanford.hci.r3.render.types.PolygonRenderer;
+import edu.stanford.hci.r3.render.regions.PolygonRenderer;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
