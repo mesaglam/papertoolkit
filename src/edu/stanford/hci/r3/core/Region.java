@@ -29,9 +29,14 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  * INPUT(REALTIME) region. Regions that handle interactive input will automatically be overlaid with
  * pattern when rendered to PDF or to a printer.
  * 
- * Regardless of whether the Shape is closed or not, we assume that all regions are closed Shapes.
+ * Regardless of whether the Shape is closed or not, we assume that all regions are closed Shapes. A
+ * rectangular region is represented using this class's Region(4 args) constructors.
  */
 public class Region {
+
+	private static final String WARNING_POST = " (see Region.java)";
+
+	private static final String WARNING_PRE = "WARNING: Using Default Renderer for ";
 
 	/**
 	 * If the region is active (i.e., NOT STATIC), we will overlay pattern over it.
@@ -116,8 +121,19 @@ public class Region {
 				w.getValueIn(x), h.getValueIn(x)), x);
 	}
 
+	/**
+	 * @return
+	 */
 	public String getIsActiveString() {
 		return " [" + (isActive() ? "ACTIVE" : "STATIC") + "]";
+	}
+
+	public Units getOriginX() {
+		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getX());
+	}
+
+	public Units getOriginY() {
+		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getY());
 	}
 
 	/**
@@ -127,7 +143,11 @@ public class Region {
 	 * @return the renderer for this region
 	 */
 	public RegionRenderer getRenderer() {
-		System.out.println("WARNING: Using Default Renderer for " + this + " (see Region.java)");
+		// subclasses should override this method
+		// otherwise, you will get a warning
+		if (!getClass().getSimpleName().equals("Region")) {
+			System.out.println(WARNING_PRE + this + WARNING_POST);
+		}
 		return new RegionRenderer(this);
 	}
 
@@ -176,6 +196,20 @@ public class Region {
 	}
 
 	/**
+	 * @return
+	 */
+	public Units getUnscaledBoundsHeight() {
+		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight());
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getUnscaledBoundsWidth() {
+		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getWidth());
+	}
+
+	/**
 	 * @return a copy of the internal shape as a Java2D GeneralPath. You should use this with
 	 *         getScaleX/Y to determine the true shape. Alternatively, use getScaledShapeCopy()
 	 */
@@ -192,7 +226,7 @@ public class Region {
 	}
 
 	/**
-	 * @return
+	 * @return whether the region will be visible. TODO: The renderer SHOULD respect this flag.
 	 */
 	public boolean isVisible() {
 		return visible;
@@ -257,23 +291,26 @@ public class Region {
 
 	/**
 	 * @param v
+	 *            whether the region will be visible
 	 */
 	public void setVisible(boolean v) {
 		visible = v;
 	}
 
 	/**
-	 * Please override for more interesting output.
+	 * Please override for more interesting output. This will print the name of the class along with
+	 * all the segments of the shape.
 	 * 
 	 * @see java.lang.Object#toString()
+	 * @return the String representation of this Region
 	 */
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		String className = shape.getClass().getName();
+		final StringBuilder sb = new StringBuilder();
+		final String className = shape.getClass().getName();
 		sb.append(className.substring(className.lastIndexOf(".") + 1) + ": {");
 
-		PathIterator pathIterator = shape.getPathIterator(AffineTransform.getScaleInstance(scaleX,
-				scaleY));
+		final PathIterator pathIterator = shape.getPathIterator(AffineTransform.getScaleInstance(
+				scaleX, scaleY));
 
 		sb.append(GraphicsUtils.getPathAsString(pathIterator));
 

@@ -10,11 +10,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
+import java.util.List;
 import java.util.Properties;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.MathUtils;
+import edu.stanford.hci.r3.util.StringUtils;
 
 /**
  * <p>
@@ -34,6 +37,8 @@ public class RegionRenderer {
 	 * The font for printing the object during screen-based debugging.
 	 */
 	private static final Font FONT = new Font("Trebuchet MS", Font.PLAIN, 8);
+
+	private static final BasicStroke OUTLINE = new BasicStroke(1);
 
 	/**
 	 * The key as stored in the xml config file.
@@ -69,8 +74,6 @@ public class RegionRenderer {
 		region = r;
 	}
 
-	private static final BasicStroke OUTLINE = new BasicStroke(1);
-
 	/**
 	 * @param g2d
 	 *            Draw some boxes to the Graphics context to show where the regions lie.
@@ -104,8 +107,30 @@ public class RegionRenderer {
 		g2d.setColor(REGION_COLOR);
 		g2d.fillRect(finalX, finalY, finalW, finalH);
 		g2d.setColor(TEXT_COLOR);
-		final float lineHeight = FONT.getLineMetrics(region.toString(),
-				new FontRenderContext(null, true, true)).getHeight();
-		g2d.drawString(region.toString(), finalX, finalY + lineHeight);
+		String regionString = region.toString();
+
+		Rectangle2D stringBounds = FONT.getStringBounds(regionString, new FontRenderContext(null,
+				true, true));
+		final double lineWidth = stringBounds.getWidth();
+		final int lineHeight = MathUtils.rint(stringBounds.getHeight());
+		final int lengthOfString = regionString.length();
+
+		if (finalW > lineWidth) {
+			g2d.drawString(regionString, finalX, finalY + lineHeight);
+		} else {
+
+			// the box is not wide enough
+			final double fraction = finalW / lineWidth;
+			final int maxCharsPerLine = (int) (fraction * lengthOfString);
+
+			// split the string so it's more readable
+			final List<String> lines = StringUtils.splitString(regionString, maxCharsPerLine);
+			double yOffset = finalY + lineHeight;
+			final int xOffset = finalX + 3;
+			for (String line : lines) {
+				g2d.drawString(line, xOffset, (int) Math.round(yOffset));
+				yOffset += lineHeight;
+			}
+		}
 	}
 }

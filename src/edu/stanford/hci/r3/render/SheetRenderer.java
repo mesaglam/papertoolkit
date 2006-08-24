@@ -18,6 +18,10 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.core.Sheet;
+import edu.stanford.hci.r3.pattern.PatternPackage;
+import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
+import edu.stanford.hci.r3.pattern.output.PDFPatternGenerator;
+import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
@@ -41,8 +45,6 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
  */
 public class SheetRenderer {
 
-	private boolean debugRegions = true;
-
 	/**
 	 * By Default, any active regions will be overlaid with pattern (unique to at least this sheet,
 	 * unless otherwise specified).
@@ -58,8 +60,41 @@ public class SheetRenderer {
 		sheet = s;
 	}
 
-	public void renderToExistingPDF(File sourcePDF, File destPDF) {
-		// TODO
+	/**
+	 * We will render pattern when outputting PDFs. Rendering pattern to screen is a waste of time,
+	 * since dots are not resolvable on screen. Perhaps for screen display (i.e., anything < 600
+	 * dpi), we should render pattern as a faint dotted overlay?
+	 * 
+	 * @param cb
+	 *            a content layer returned by iText
+	 */
+	private void renderPattern(PdfContentByte cb) {
+		// for each region, overlay pattern if it is an active region
+		final List<Region> regions = sheet.getRegions();
+
+		// TEMP
+		TiledPatternGenerator generator = new TiledPatternGenerator();
+		PatternPackage pkg = generator.getCurrentPatternPackage();
+		// END TEMP
+
+		final PDFPatternGenerator pgen = new PDFPatternGenerator(cb, sheet.getWidth(), sheet
+				.getHeight());
+
+		// render each region
+		for (Region r : regions) {
+			if (r.isActive()) {
+				System.out.println("SheetRenderer: Rendering Pattern!");
+
+				System.out.println("SheetRenderer: " + r.getShape());
+				Units unscaledWidth = r.getUnscaledBoundsWidth();
+				Units unscaledHeight = r.getUnscaledBoundsHeight();
+
+				String[] pattern = pkg.readPatternFromFile(0, new Inches(0), new Inches(0),
+						unscaledWidth, unscaledHeight);
+
+				pgen.renderPattern(pattern, r.getOriginX(), r.getOriginY());
+			}
+		}
 	}
 
 	/**
@@ -141,8 +176,8 @@ public class SheetRenderer {
 			final PdfWriter writer = PdfWriter.getInstance(doc, fileOutputStream);
 			doc.open();
 
-			// top layer for pattern
-			final PdfContentByte cb = writer.getDirectContent();
+			// bottom layer for regions
+			final PdfContentByte cb = writer.getDirectContentUnder();
 			final Graphics2D g2d = cb.createGraphicsShapes(pageSize.width(), pageSize.height());
 
 			// now that we have a G2D, we can just use our other G2D rendering method
@@ -154,7 +189,8 @@ public class SheetRenderer {
 			if (renderActiveRegionsWithPattern) {
 				// after rendering everything, we still need to overlay the pattern on top of active
 				// regions; This is only for PDF rendering.
-				renderPattern(cb);
+				// top layer for pattern
+				renderPattern(writer.getDirectContent());
 			}
 
 			doc.close();
@@ -162,22 +198,6 @@ public class SheetRenderer {
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * @param content
-	 */
-	private void renderPattern(PdfContentByte content) {
-		// for each region, overlay pattern if it is an active region
-		final List<Region> regions = sheet.getRegions();
-		// render each region
-		for (Region r : regions) {
-			if (r.isActive()) {
-				System.out.println("SheetRenderer: Rendering Pattern!");
-
-				System.out.println("SheetRenderer: " + r.getShape());
-			}
 		}
 	}
 

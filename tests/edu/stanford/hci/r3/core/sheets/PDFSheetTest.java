@@ -2,11 +2,12 @@ package edu.stanford.hci.r3.core.sheets;
 
 import java.io.File;
 
+import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.core.Sheet;
 import edu.stanford.hci.r3.core.regions.ImageRegion;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Centimeters;
-import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.Meters;
 
 /**
  * <p>
@@ -24,12 +25,19 @@ public class PDFSheetTest {
 
 	public static void main(String[] args) {
 		// a 13 foot long PDF!
-		File pdfFile = new File("testData/BobHorn-AvianFlu.pdf");
+		File pdfFile = new File("testData/private/BobHorn-AvianFlu.pdf");
 		Sheet sheet = new PDFSheet(pdfFile);
-		System.out.println(sheet.getSize());
-		sheet.addRegion(new ImageRegion(new File("testData/dragon.jpg"), new Inches(1),
-				new Centimeters(3)));
+		System.out.println("PDF Size: " + sheet.getSize());
 
+		ImageRegion imageRegion = new ImageRegion(new File("testData/dragon.jpg"), new Meters(1),
+				new Centimeters(30));
+		sheet.addRegion(imageRegion);
+
+		Region rectRegion = new Region(1, 1, 2, 2);
+		sheet.addRegion(rectRegion);
+		rectRegion.setActive(true);
+
+		// sheet renderers do not know about PDFSheets
 		SheetRenderer sr = new SheetRenderer(sheet);
 		sr.renderToPDF(new File("testData/Test.pdf"));
 	}
