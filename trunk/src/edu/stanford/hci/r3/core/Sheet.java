@@ -13,25 +13,29 @@ import edu.stanford.hci.r3.units.Units;
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
  * BSD License</a>.
  * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
+ * <p>
  * Represents one sheet of interactive/augmented paper. This sheet can be large (like a GIGAprint)
  * or it can be smaller, like an 8.5x11" print.
- * 
+ * </p>
+ * <p>
  * The Sheet can be rendered in many different contexts. It can be rendered to a PDF/PS file, or
  * printed to a Java2D printer. It can also be rendered to the screen for a quick preview. Each of
  * these options has different advantages/disadvantages. For example, when rendering to the screen
  * or Java2D, no dot pattern is drawn by default. This is because doing so would be inefficient.
- * 
+ * </p>
+ * <p>
  * The dimensions of the sheet is kept in Units objects, and is only normalized (usually to Points)
  * when necessary (i.e., when rendering a PDF).
- * 
+ * </p>
+ * <p>
  * On Coordinate Systems: To maintain the analogue with GUI development, we will choose the origin
  * (0,0) to be the top-left corner of the document (I can hear the screams of PDF/Postscript
  * enthusiasts already--I'm sorry). We will make it easy to flip the coordinate systems to a more
  * Postscript-friendly way later. Possibly, we'll have a call like setCoordinateSystem(GUI |
  * POSTSCRIPT). Happy?
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class Sheet {
 
