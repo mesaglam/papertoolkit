@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.render.types;
+package edu.stanford.hci.r3.render.regions;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;

@@ -6,8 +6,8 @@ import java.awt.geom.Rectangle2D;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
-import edu.stanford.hci.r3.render.types.PolygonRenderer;
-import edu.stanford.hci.r3.render.types.TextRenderer;
+import edu.stanford.hci.r3.render.regions.PolygonRenderer;
+import edu.stanford.hci.r3.render.regions.TextRenderer;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.StringUtils;

@@ -72,7 +72,7 @@ public class Sheet {
 	 * @param height
 	 */
 	public Sheet(Units w, Units h) {
-		size.setSize(w, h);
+		setSize(w, h);
 	}
 
 	/**
@@ -97,10 +97,25 @@ public class Sheet {
 	}
 
 	/**
+	 * @return a copy of the Size object (so you can't modify the size of this sheet)
+	 */
+	public Size getSize() {
+		return size.clone();
+	}
+
+	/**
 	 * @return
 	 */
 	public Units getWidth() {
 		return size.getWidth();
+	}
+
+	/**
+	 * @param width
+	 * @param height
+	 */
+	protected void setSize(Units width, Units height) {
+		size.setSize(width, height);
 	}
 
 	/**

@@ -1,10 +1,7 @@
 package edu.stanford.hci.r3.render;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
@@ -29,8 +26,6 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.core.Sheet;
-import edu.stanford.hci.r3.core.regions.TextRegion;
-import edu.stanford.hci.r3.render.types.TextRenderer;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
@@ -62,10 +57,17 @@ public class SheetRenderer {
 	 */
 	private boolean renderActiveRegionsWithPattern = true;
 
-	private Sheet sheet;
+	protected Sheet sheet;
 
+	/**
+	 * @param s
+	 */
 	public SheetRenderer(Sheet s) {
 		sheet = s;
+	}
+
+	public void renderToExistingPDF(File sourcePDF, File destPDF) {
+		// TODO
 	}
 
 	/**
@@ -127,6 +129,10 @@ public class SheetRenderer {
 		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destJPEGFile);
 	}
 
+	public void renderToPDF(File destPDFFile) {
+		// TODO
+	}
+
 	/**
 	 * Uses the iText package to render a PDF file. iText is nice because we can write to a
 	 * Graphics2D context.
@@ -162,14 +168,6 @@ public class SheetRenderer {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void renderToPDF(File destPDFFile) {
-		// TODO
-	}
-	
-	public void renderToExistingPDF(File sourcePDF, File destPDF) {
-		// TODO
 	}
 
 	/**

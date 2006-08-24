@@ -6,7 +6,7 @@ import java.io.File;
 
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
-import edu.stanford.hci.r3.render.types.ImageRenderer;
+import edu.stanford.hci.r3.render.regions.ImageRenderer;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.graphics.ImageUtils;
