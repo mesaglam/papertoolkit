@@ -2,22 +2,16 @@ package edu.stanford.hci.r3.pattern.output;
 
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
 
 import edu.stanford.hci.r3.pattern.PatternJitter;
-import edu.stanford.hci.r3.pattern.PatternPackage;
-import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
-import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
@@ -39,6 +33,11 @@ public class PDFPatternGenerator {
 
 	// font creation
 	private static final BaseFont BFONT = createBaseFont();
+
+	/**
+	 * Render some information about the pattern.
+	 */
+	private static final boolean DEBUG_PATTERN = false;
 
 	private static final int DEFAULT_JITTER = 5;
 
@@ -66,73 +65,73 @@ public class PDFPatternGenerator {
 		return null;
 	}
 
-	public static void main(String[] args) {
-		TiledPatternGenerator generator = new TiledPatternGenerator();
-		PatternPackage pkg = generator.getCurrentPatternPackage();
-		String[] pattern = pkg.readPatternFromFile(0, new Inches(.5), new Inches(1),
-				new Inches(.5), new Inches(5));
-
-		try {
-			// System.out.println(PageSize.LETTER);
-			final Document document = new Document(PageSize.LETTER, 50, 50, 50, 50);
-			final PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
-					"testData/Test.pdf"));
-			// access the document
-			document.open();
-			// write direct content
-			final PdfContentByte cb = writer.getDirectContent();
-
-			PDFPatternGenerator pgen = new PDFPatternGenerator(cb, pattern);
-			pgen.renderPattern();
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
 	private PdfContentByte content;
 
-	private String[] pattern;
+	private Units width;
+
+	private Units height;
 
 	/**
-	 * 
+	 * @param cb
+	 * @param w
+	 * @param h
 	 */
-	public PDFPatternGenerator(PdfContentByte cb, String[] dotPattern) {
+	public PDFPatternGenerator(PdfContentByte cb, Units w, Units h) {
 		content = cb;
-		pattern = dotPattern;
+		width = w;
+		height = h;
 	}
 
 	/**
+	 * Rend the given pattern starting at the designated origin.
 	 * 
+	 * @param pattern
+	 * @param xOrigin
+	 * @param yOrigin
 	 */
-	public void renderPattern() {
-		content.beginText();
-		content.setFontAndSize(BFONT, 12);
+	public void renderPattern(String[] pattern, Units xOrigin, Units yOrigin) {
+		// flip the transform so that the top left of the page is 0,0
+		float heightOfPDF = (float) height.getValueInPoints();
 
-		// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
-		content.setColorFill(Color.BLACK);
+		// convert the origins to Points
+		final double xOrigInPoints = xOrigin.getValueInPoints();
+		final double yOrigInPoints = yOrigin.getValueInPoints();
 
-		content.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tahoma " + FONT_SIZE + " Padding: "
-				+ DEFAULT_PADDING, 288, 288, 0);
-		content.endText();
+		if (DEBUG_PATTERN) {
+			// write debug output
+			content.beginText();
+			content.setFontAndSize(BFONT, 10);
+			// ArrayUtils.printMatrix(BFONT.getFamilyFontName());
+			content.setColorFill(new Color(128, 128, 255, 128));
+			content.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tahoma " + (int) FONT_SIZE
+					+ " Padding: " + DEFAULT_PADDING, (float) xOrigInPoints, heightOfPDF
+					- (float) yOrigInPoints + 2, 0);
+			content.endText();
+		}
 
 		// convert from points (72 in an inch, to 1/100 of a millimeter)
-		content.concatCTM(1f, 0f, 0f, -1f, 0f, PageSize.LETTER.height());
-		content.transform(AffineTransform.getScaleInstance(72 / 2540.0, 72 / 2540.0));
+		// this actually mirrors everything
+		// text will display upside down!
+		// this doesn't matter for symmetrical dots, though
+		// content.concatCTM(1f, 0f, 0f, -1f, 0f, heightOfPDF);
+
+		// work in hundredths of a millimeter
+		final double convPointsToHundredthsOfMM = 72 / 2540.0;
+		content.transform(AffineTransform.getScaleInstance(convPointsToHundredthsOfMM,
+				convPointsToHundredthsOfMM));
+		final float heightInHundredths = (float) (heightOfPDF / convPointsToHundredthsOfMM);
 
 		content.beginText();
+		// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
+		content.setColorFill(Color.BLACK);
 		content.setFontAndSize(BFONT, FONT_SIZE);
 
-		final int initX = 72;
+		final int initX = MathUtils.rint(xOrigInPoints / convPointsToHundredthsOfMM);
 
 		int gridXPosition = initX;
-		int gridYPosition = 72;
+		int gridYPosition = MathUtils.rint(yOrigInPoints / convPointsToHundredthsOfMM);
+
+		System.out.println("PDFPatternGenerator: " + gridXPosition + " " + gridYPosition);
 
 		int xJitter = 0;
 		int yJitter = 0;
@@ -172,7 +171,7 @@ public class PDFPatternGenerator {
 
 				gridXPosition + xJitter + X_FONT_OFFSET,
 
-				gridYPosition + yJitter + Y_FONT_OFFSET, 0);
+				heightInHundredths - (gridYPosition + yJitter + Y_FONT_OFFSET), 0);
 
 				gridXPosition += DEFAULT_PADDING;
 			}

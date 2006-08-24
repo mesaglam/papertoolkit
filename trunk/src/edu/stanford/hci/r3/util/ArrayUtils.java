@@ -60,6 +60,28 @@ public class ArrayUtils {
 	}
 
 	/**
+	 * Displays a matrix of Objects.
+	 * 
+	 * @param matrix
+	 */
+	public static void printMatrix(Object[][] matrix) {
+		int numRows = matrix[0].length;
+		int numCols = matrix.length;
+		System.out.println("Matrix of " + matrix[0][0].getClass().getSimpleName() + ": [");
+		for (int y = 0; y < numRows; y++) {
+			System.out.print("    row " + y + ": [");
+			for (int x = 0; x < numCols; x++) {
+				System.out.print(matrix[x][y]);
+				if (x != numCols - 1) {
+					System.out.print(", ");
+				}
+			}
+			System.out.println("]");
+		}
+		System.out.println("]");
+	}
+
+	/**
 	 * @param array
 	 *            turns an array of ints into a String
 	 */
@@ -75,5 +97,4 @@ public class ArrayUtils {
 		sb.append("]");
 		return sb.toString();
 	}
-
 }
