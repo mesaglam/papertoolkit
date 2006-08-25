@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.core.bundles;
+package edu.stanford.hci.r3.paper.bundles;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import com.lowagie.text.pdf.PdfReader;
 
-import edu.stanford.hci.r3.core.sheets.PDFSheet;
 import edu.stanford.hci.r3.paper.Bundle;
+import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 
 /**
  * <p>

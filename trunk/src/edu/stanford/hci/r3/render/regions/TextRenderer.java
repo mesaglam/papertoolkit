@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 
-import edu.stanford.hci.r3.core.regions.TextRegion;
+import edu.stanford.hci.r3.paper.regions.TextRegion;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;

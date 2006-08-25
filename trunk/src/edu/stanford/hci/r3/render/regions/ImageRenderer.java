@@ -6,7 +6,7 @@ import java.io.File;
 
 import javax.media.jai.PlanarImage;
 
-import edu.stanford.hci.r3.core.regions.ImageRegion;
+import edu.stanford.hci.r3.paper.regions.ImageRegion;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;

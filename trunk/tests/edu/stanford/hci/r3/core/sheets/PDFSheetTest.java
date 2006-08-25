@@ -2,9 +2,10 @@ package edu.stanford.hci.r3.core.sheets;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.core.regions.ImageRegion;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.paper.regions.ImageRegion;
+import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Meters;

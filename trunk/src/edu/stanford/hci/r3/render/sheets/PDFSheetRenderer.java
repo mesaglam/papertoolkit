@@ -1,6 +1,6 @@
 package edu.stanford.hci.r3.render.sheets;
 
-import edu.stanford.hci.r3.core.sheets.PDFSheet;
+import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.render.SheetRenderer;
 
 /**

@@ -2,6 +2,7 @@ package edu.stanford.hci.r3.core.regions;
 
 import java.awt.Font;
 
+import edu.stanford.hci.r3.paper.regions.TextRegion;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 
