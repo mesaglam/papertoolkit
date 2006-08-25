@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3;
 
+import java.net.URL;
+
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.core.Sheet;
@@ -52,6 +54,9 @@ public class PaperToolkit {
 	 */
 	public PaperToolkit() {
 		initializeJavaSwing();
+		
+		URL resource = PaperToolkit.class.getResource("/config/PixelsPerInch.README");
+		System.out.println(resource);
 	}
 
 	/**
