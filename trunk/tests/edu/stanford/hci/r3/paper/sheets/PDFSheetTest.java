@@ -26,15 +26,15 @@ public class PDFSheetTest {
 
 	public static void main(String[] args) {
 		// a 13 foot long PDF!
-		File pdfFile = new File("testData/private/BobHorn-AvianFlu.pdf");
+		File pdfFile = new File("data/testFiles/private/BobHorn-AvianFlu.pdf");
 		Sheet sheet = new PDFSheet(pdfFile);
 		System.out.println("PDF Size: " + sheet.getSize());
 
-		ImageRegion imageRegion = new ImageRegion(new File("testData/dragon.jpg"), new Meters(1),
+		ImageRegion imageRegion = new ImageRegion(new File("data/testFiles/dragon.jpg"), new Meters(1),
 				new Centimeters(30));
 		sheet.addRegion(imageRegion);
 
-		Region rectRegion = new Region(1, 1, 15, 15);
+		Region rectRegion = new Region(1, 1, 5, 5);
 		sheet.addRegion(rectRegion);
 		rectRegion.setActive(true);
 		
@@ -46,6 +46,6 @@ public class PDFSheetTest {
 
 		// sheet renderers do not know about PDFSheets
 		SheetRenderer sr = new SheetRenderer(sheet);
-		sr.renderToPDF(new File("testData/Test.pdf"));
+		sr.renderToPDF(new File("data/testFiles/Test.pdf"));
 	}
 }
