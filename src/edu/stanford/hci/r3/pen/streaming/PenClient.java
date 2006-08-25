@@ -158,7 +158,7 @@ public class PenClient {
 	 * @throws IOException
 	 */
 	private BufferedReader setupSocketAndReader() throws UnknownHostException, IOException {
-		System.out.println("Trying to connect to " + machineName + "::" + portNumber);
+		System.out.println("PenClient: Trying to connect to " + machineName + ":" + portNumber);
 		clientSocket = new Socket(machineName, portNumber);
 		final InputStream inputStream = clientSocket.getInputStream();
 		final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));

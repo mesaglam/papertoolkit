@@ -1,7 +1,11 @@
 package edu.stanford.hci.r3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thoughtworks.xstream.XStream;
 
+import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
@@ -55,10 +59,23 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * A list of all applications running in this system.
+	 */
+	private List<Application> applications = new ArrayList<Application>();
+
+	/**
+	 * The engine that processes all pen events, producing the correct outputs and calling the right
+	 * event handlers.
+	 */
+	private EventEngine eventEngine;
+
+	/**
 	 * Start up a paper toolkit.
 	 */
 	public PaperToolkit() {
+		printInitializationMessages();
 		initializeJavaSwing();
+		eventEngine = new EventEngine();
 	}
 
 	/**
@@ -66,5 +83,27 @@ public class PaperToolkit {
 	 */
 	private void initializeJavaSwing() {
 		WindowUtils.setNativeLookAndFeel();
+	}
+
+	/**
+	 * @param sheet
+	 */
+	public void print(Sheet sheet) {
+
+	}
+
+	/**
+	 * 
+	 */
+	private void printInitializationMessages() {
+		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit");
+	}
+
+	/**
+	 * @param paperApp
+	 */
+	public void runApplication(Application paperApp) {
+		applications.add(paperApp);
+		paperApp.setApplicationEventListener(eventEngine);
 	}
 }

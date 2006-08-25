@@ -61,7 +61,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 	/**
 	 * @param port
-	 *           if port is null, use the default port (COM5)
+	 *            if port is null, use the default port (COM5)
 	 */
 	public static PenStreamingConnection getInstance(String port) {
 
@@ -76,21 +76,20 @@ public class PenStreamingConnection implements SerialPortEventListener {
 			port = DEFAULT_PORT;
 		}
 
-		System.out.println("Testing for Ports");
+		System.out.print("PenStreamingConnection: Looking for " + port + ". Found {");
 
 		portList = CommPortIdentifier.getPortIdentifiers();
 		while (portList.hasMoreElements()) {
 			portID = (CommPortIdentifier) portList.nextElement();
-			System.out.println(portID.getName() + " is available.");
 			if (portID.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (portID.getName().equals(port)) {
-					System.out.println("Found port: " + port);
+					System.out.println(port + "}");
 					instance = new PenStreamingConnection();
 					return instance;
 				}
 			}
 		}
-
+		System.out.println("}");
 		System.out.println("Port " + port + " not found.");
 		return null;
 	}
@@ -200,7 +199,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 				for (PenListener pl : listeners) {
 					final PenSample penSample = new PenSample(timestamp, 0, 0, 0, true);
 					// on June 12, 2006, I changed the behavior so that a .sample event is NOT
-					// generated on pen up. It simply passes the pen up event with the timestamp along...
+					// generated on pen up. It simply passes the pen up event with the timestamp
+					// along...
 					// thus, .sample is NEVER called with isPenUp() == true
 					// pl.sample(penSample);
 					pl.penUp(penSample);
@@ -252,8 +252,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 			// done with the whole streaming sample, so output it!
 			if (DEBUG) {
-				System.out.println("(" + (x + xFraction * 0.125) + ", " + (y + yFraction * 0.125) + ")"
-						+ " f: " + force + " t: " + timestamp);
+				System.out.println("(" + (x + xFraction * 0.125) + ", " + (y + yFraction * 0.125)
+						+ ")" + " f: " + force + " t: " + timestamp);
 				System.out.flush();
 			}
 

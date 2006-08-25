@@ -46,6 +46,7 @@ public class Pen {
 			DebugUtils.println("Pen is not in Live Mode.");
 			return;
 		}
+		
 		livePenClient.addPenListener(penListener);
 	}
 
