@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3;
 
 import java.io.File;
+import java.net.URL;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -56,7 +57,9 @@ public class PaperToolkit {
 	 */
 	public PaperToolkit() {
 		System.out.println(new File(".").getAbsolutePath());
-		PaperToolkit.class.getResource();
+		URL resource = PaperToolkit.class.getResource("/PixelsPerInch.xml");
+		
+		System.out.println("Resource: " + resource);
 		initializeJavaSwing();
 	}
 
