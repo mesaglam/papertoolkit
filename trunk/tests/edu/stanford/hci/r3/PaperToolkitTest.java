@@ -1,5 +1,10 @@
 package edu.stanford.hci.r3;
 
+import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.units.Inches;
+
 /**
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
@@ -10,9 +15,44 @@ package edu.stanford.hci.r3;
  */
 public class PaperToolkitTest {
 	/**
-	 * Aug 25, 2006
+	 * @return
 	 */
-	public static void main(String[] args) {
-		new PaperToolkit();
+	private static Application constructApplication() {
+		// a new paper application
+		Application paperApp = new Application("Handwriting Recognition");
+
+		// handle one sheet
+		paperApp.addSheet(constructSheet());
+
+		// a single live pen
+		paperApp.addPen(constructPen());
+
+		return paperApp;
 	}
+
+	private static Pen constructPen() {
+		Pen pen = new Pen();
+		pen.startLiveMode();
+		return pen;
+	}
+
+	private static Sheet constructSheet() {
+		Sheet sheet = new Sheet(new Inches(5), new Inches(4));
+
+		// define some regions
+		Region region = new Region(0, 0, 5, 4);
+		region.setActive(true);
+		// region.addEventListener(getPenTapListener());
+
+		sheet.addRegion(region);
+		return sheet;
+	}
+
+	public static void main(String[] args) {
+		PaperToolkit toolkit = new PaperToolkit();
+
+		// toolkit.print(constructSheet());
+		toolkit.runApplication(constructApplication());
+	}
+
 }

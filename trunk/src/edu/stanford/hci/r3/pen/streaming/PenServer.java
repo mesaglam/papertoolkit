@@ -21,6 +21,52 @@ import edu.stanford.hci.r3.pen.streaming.data.ServerOutputPlainText;
  */
 public class PenServer implements PenListener {
 
+	private class ServerThread extends Thread {
+		public void run() {
+			while (true) {
+				Socket s = null;
+
+				if (exitFlag) {
+					log("PenServer: Closing Pen Server.");
+					break;
+				}
+
+				try {
+					if (serverType == ClientServerType.PLAINTEXT) {
+						log("PenServer: Waiting for a plain text connection on port "
+								+ serverSocket.getLocalPort() + "...");
+					} else { // serverType == Java Server
+						log("PenServer: Waiting for a java connection on port "
+								+ serverSocket.getLocalPort() + "...");
+					}
+					s = serverSocket.accept();
+					log("PenServer: Got a connection on port " + serverSocket.getLocalPort()
+							+ "...");
+				} catch (IOException ioe) {
+					log("PenServer: Error with server socket: " + ioe.getLocalizedMessage());
+				}
+				if (s != null) {
+					try {
+						if (serverType == ClientServerType.PLAINTEXT) {
+							outputs.add(new ServerOutputPlainText(s));
+						} else { // serverType == Java Server
+							outputs.add(new ServerOutputJavaObjectXML(s));
+						}
+					} catch (IOException ioe) {
+						try {
+							s.close();
+						} catch (IOException ioe2) {
+							log("PenServer: Error with server socket: "
+									+ ioe2.getLocalizedMessage());
+						}
+						log("PenServer: Error creating output: " + ioe.getLocalizedMessage());
+					}
+				}
+
+			}
+		}
+	}
+
 	public static final int DEFAULT_JAVA_PORT = 11025;
 
 	public static final int DEFAULT_PLAINTEXT_PORT = 11026;
@@ -36,6 +82,10 @@ public class PenServer implements PenListener {
 	 */
 	public static boolean javaServerStarted() {
 		return javaPenServer != null;
+	}
+
+	private static void log(String msg) {
+		System.out.println(msg);
 	}
 
 	/**
@@ -98,7 +148,7 @@ public class PenServer implements PenListener {
 			javaPenServer = new PenServer(javaServer, ClientServerType.JAVA);
 			penConnection.addPenListener(javaPenServer);
 		} catch (IOException ioe) {
-			System.out.println("Error with server socket: " + ioe.getLocalizedMessage());
+			log("Error with server socket: " + ioe.getLocalizedMessage());
 		}
 	}
 
@@ -120,7 +170,7 @@ public class PenServer implements PenListener {
 			textPenServer = new PenServer(textServer, ClientServerType.PLAINTEXT);
 			penConnection.addPenListener(textPenServer);
 		} catch (IOException ioe) {
-			System.out.println("Error with server socket: " + ioe.getLocalizedMessage());
+			log("Error with server socket: " + ioe.getLocalizedMessage());
 		}
 	}
 
@@ -155,61 +205,17 @@ public class PenServer implements PenListener {
 	 */
 	private boolean penUp = true;
 
+	private ServerSocket serverSocket;
+
 	private ClientServerType serverType;
 
-	private ServerSocket ss;
-
 	public PenServer(ServerSocket ss, ClientServerType type) {
-		this.ss = ss;
-		this.serverType = type;
+		serverSocket = ss;
+		serverType = type;
 		outputs = new ArrayList<PenServerOutput>();
 
 		// start thread to accept connections
-		new Thread() {
-			public void run() {
-				while (true) {
-					Socket s = null;
-
-					if (exitFlag) {
-						System.out.println("Closing Pen Server.");
-						break;
-					}
-
-					try {
-						if (PenServer.this.serverType == ClientServerType.PLAINTEXT) {
-							System.out.println("Waiting for a plain text connection on port "
-									+ PenServer.this.ss.getLocalPort() + "...");
-						} else { // serverType == Java Server
-							System.out.println("Waiting for a java connection on port "
-									+ PenServer.this.ss.getLocalPort() + "...");
-						}
-						s = PenServer.this.ss.accept();
-						System.out.println("Got a connection on port " + PenServer.this.ss.getLocalPort()
-								+ "...");
-					} catch (IOException ioe) {
-						System.out.println("Error with server socket: " + ioe.getLocalizedMessage());
-					}
-					if (s != null) {
-						try {
-							if (PenServer.this.serverType == ClientServerType.PLAINTEXT) {
-								outputs.add(new ServerOutputPlainText(s));
-							} else { // serverType == Java Server
-								outputs.add(new ServerOutputJavaObjectXML(s));
-							}
-						} catch (IOException ioe) {
-							try {
-								s.close();
-							} catch (IOException ioe2) {
-								System.out.println("Error with server socket: "
-										+ ioe2.getLocalizedMessage());
-							}
-							System.out.println("Error creating output: " + ioe.getLocalizedMessage());
-						}
-					}
-
-				}
-			}
-		}.start();
+		new ServerThread().start();
 
 	}
 
@@ -237,7 +243,7 @@ public class PenServer implements PenListener {
 	 */
 	public void penUp(PenSample s) {
 		penUp = true;
-		// System.out.println("Pen UP Detected by Server " + serverType);
+		// log("Pen UP Detected by Server " + serverType);
 		sample(s);
 	}
 
@@ -251,8 +257,7 @@ public class PenServer implements PenListener {
 			try {
 				out.sendSample(sample);
 			} catch (IOException ioe) {
-				System.out
-						.println("Error sending sample, removing output " + ioe.getLocalizedMessage());
+				log("Error sending sample, removing output " + ioe.getLocalizedMessage());
 				toRemove.add(out);
 			}
 		}
@@ -269,10 +274,10 @@ public class PenServer implements PenListener {
 	 */
 	private void stopServer() {
 		try {
-			System.out.println("PenServer::" + serverType + " on port " + ss.getLocalPort()
+			log("PenServer::" + serverType + " on port " + serverSocket.getLocalPort()
 					+ " is stopping...");
 			exitFlag = true;
-			ss.close();
+			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
