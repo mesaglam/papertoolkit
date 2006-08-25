@@ -61,6 +61,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 	/**
 	 * @param port
+	 *           if port is null, use the default port (COM5)
 	 */
 	public static PenStreamingConnection getInstance(String port) {
 

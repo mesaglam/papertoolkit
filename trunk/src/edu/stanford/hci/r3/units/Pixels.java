@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
+import edu.stanford.hci.r3.config.Configuration;
+
 /**
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
@@ -21,7 +23,10 @@ import java.util.Properties;
  */
 public class Pixels extends Units {
 
-	private static final String CONFIG_FILE = "config/PixelsPerInch.xml";
+	/**
+	 * The Key to access the configuration file for Pixels.
+	 */
+	public static final String CONFIG_FILE_KEY = "pixels.pixelsperinch.file";
 
 	private static final double DEFAULT_PIXELS_PER_INCH = readPixelsPerInchFromConfigFile();
 
@@ -44,7 +49,7 @@ public class Pixels extends Units {
 	private static double readPixelsPerInchFromConfigFile() {
 		final Properties props = new Properties();
 		try {
-			props.loadFromXML(new FileInputStream(CONFIG_FILE));
+			props.loadFromXML(Configuration.getConfigFileStream(CONFIG_FILE_KEY));
 		} catch (InvalidPropertiesFormatException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -93,7 +98,7 @@ public class Pixels extends Units {
 	}
 
 	/**
-	 * @return 
+	 * @return
 	 * 
 	 */
 	public double getPixelsPerInch() {

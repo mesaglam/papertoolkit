@@ -3,6 +3,7 @@
 	<classpathentry path="src" kind="src"/>
 	<classpathentry path="examples" kind="src"/>
 	<classpathentry path="tests" kind="src"/>
+	<classpathentry path="data" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
 	<classpathentry path="lib/epsgraphics.jar" kind="lib">
 		<attributes>
