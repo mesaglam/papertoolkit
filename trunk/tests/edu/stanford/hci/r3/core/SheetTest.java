@@ -27,7 +27,7 @@ public class SheetTest {
 	 */
 	@Ignore
 	public static Sheet createAndPopulateSheet() {
-		Sheet sheet = new Sheet();
+		Sheet sheet = new Sheet(new Inches(5), new Inches(4));
 
 		// define some regions
 		Region reg0 = new Region(0, 0, 8.5, 11);

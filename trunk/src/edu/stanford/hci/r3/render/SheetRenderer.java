@@ -25,6 +25,7 @@ import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 import edu.stanford.hci.r3.util.graphics.ImageUtils;
@@ -91,6 +92,8 @@ public class SheetRenderer {
 
 				String[] pattern = pkg.readPatternFromFile(0, new Inches(0), new Inches(0),
 						unscaledWidth, unscaledHeight);
+
+				DebugUtils.println(r.getOriginX() + " " + r.getOriginY());
 
 				pgen.renderPattern(pattern, r.getOriginX(), r.getOriginY());
 			}
@@ -186,6 +189,7 @@ public class SheetRenderer {
 			// an efficient dispose, because we are not within a Java paint() method
 			g2d.dispose();
 
+			// should this be moved to regions???
 			if (renderActiveRegionsWithPattern) {
 				// after rendering everything, we still need to overlay the pattern on top of active
 				// regions; This is only for PDF rendering.

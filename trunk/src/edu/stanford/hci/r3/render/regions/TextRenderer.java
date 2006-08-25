@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.render.regions;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
@@ -25,6 +26,9 @@ public class TextRenderer extends RegionRenderer {
 	private LineMetrics lineMetrics;
 
 	private String text;
+
+	private Color textColor = new Color(100, 100, 100, 128);
+	
 
 	/**
 	 * @param tr
@@ -63,6 +67,8 @@ public class TextRenderer extends RegionRenderer {
 		g2d.setFont(tr.getFont());
 		// System.out.println(tr.getFont());
 
+		g2d.setColor(textColor);
+		
 		final double offset = getAscentInPoints().getValue();
 		final double textLineHeight = getLineHeightInPoints().getValue();
 

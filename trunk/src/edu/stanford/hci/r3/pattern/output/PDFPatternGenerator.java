@@ -5,7 +5,6 @@ import java.awt.geom.AffineTransform;
 import java.io.IOException;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 
@@ -45,14 +44,26 @@ public class PDFPatternGenerator {
 
 	private static final String DOT_SYMBOL = "•";
 
-	private static final float FONT_SIZE = 29;
+//	private static final float FONT_SIZE = 29;
+	private static final float FONT_SIZE = 28;
 
 	private static final int X_FONT_OFFSET = -2;
 
 	private static final int Y_FONT_OFFSET = 9;
 
 	/**
-	 * @return
+	 * Given a value in Hundredths of a millimeter (1/2540 inches) convert it to the same length in
+	 * Points (1/72 of an inch). So, 2540 hundredths of mm == 72 points.
+	 */
+	private static final double convertHundredthsOfMMToPoints = 72 / 2540.0;
+
+	/**
+	 * Convert from Points to 1/100 mm.
+	 */
+	private static final double convertPointsToHundredthsOfMM = 2540.0 / 72;
+
+	/**
+	 * @return loads a font from disk.
 	 */
 	private static BaseFont createBaseFont() {
 		try {
@@ -65,21 +76,43 @@ public class PDFPatternGenerator {
 		return null;
 	}
 
+	/**
+	 * Represents the content layer of the PDF Document.
+	 */
 	private PdfContentByte content;
 
-	private Units width;
-
+	/**
+	 * The height of the PDF document.
+	 */
 	private Units height;
 
 	/**
+	 * The width of the PDFdocument.
+	 */
+	private Units width;
+
+	/**
 	 * @param cb
+	 *            The content byte that you pass into this object will be transformed! Beware if you
+	 *            want to use it later on for another purpose. Probably, it would be good to
+	 *            dedicate a content layer for this pattern generator.
 	 * @param w
+	 *            Width of the PDF Document.
 	 * @param h
+	 *            Height of the PDF Document.
 	 */
 	public PDFPatternGenerator(PdfContentByte cb, Units w, Units h) {
 		content = cb;
 		width = w;
 		height = h;
+
+		// transforms the content layer ONCE
+		// instead of specifying stuff in points (72 in an inch), we can now
+		// specify in 1/100 of a millimeter
+		// we need to scale down the numbers so when we specify something at 2540, 
+		// we get only 72 points...
+		content.transform(AffineTransform.getScaleInstance(convertHundredthsOfMMToPoints,
+				convertHundredthsOfMMToPoints));
 	}
 
 	/**
@@ -109,27 +142,23 @@ public class PDFPatternGenerator {
 			content.endText();
 		}
 
-		// convert from points (72 in an inch, to 1/100 of a millimeter)
 		// this actually mirrors everything
 		// text will display upside down!
 		// this doesn't matter for symmetrical dots, though
 		// content.concatCTM(1f, 0f, 0f, -1f, 0f, heightOfPDF);
 
 		// work in hundredths of a millimeter
-		final double convPointsToHundredthsOfMM = 72 / 2540.0;
-		content.transform(AffineTransform.getScaleInstance(convPointsToHundredthsOfMM,
-				convPointsToHundredthsOfMM));
-		final float heightInHundredths = (float) (heightOfPDF / convPointsToHundredthsOfMM);
+		final float heightInHundredths = (float) (heightOfPDF * convertPointsToHundredthsOfMM);
 
 		content.beginText();
 		// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
 		content.setColorFill(Color.BLACK);
 		content.setFontAndSize(BFONT, FONT_SIZE);
 
-		final int initX = MathUtils.rint(xOrigInPoints / convPointsToHundredthsOfMM);
+		final int initX = MathUtils.rint(xOrigInPoints * convertPointsToHundredthsOfMM);
 
 		int gridXPosition = initX;
-		int gridYPosition = MathUtils.rint(yOrigInPoints / convPointsToHundredthsOfMM);
+		int gridYPosition = MathUtils.rint(yOrigInPoints * convertPointsToHundredthsOfMM);
 
 		System.out.println("PDFPatternGenerator: " + gridXPosition + " " + gridYPosition);
 
