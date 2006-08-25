@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3;
 
+import java.io.File;
+
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.core.Sheet;
@@ -53,6 +55,8 @@ public class PaperToolkit {
 	 * 
 	 */
 	public PaperToolkit() {
+		System.out.println(new File(".").getAbsolutePath());
+		PaperToolkit.class.getResource();
 		initializeJavaSwing();
 	}
 
