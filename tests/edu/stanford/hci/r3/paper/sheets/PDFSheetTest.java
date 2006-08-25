@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.core.sheets;
+package edu.stanford.hci.r3.paper.sheets;
 
 import java.io.File;
 
