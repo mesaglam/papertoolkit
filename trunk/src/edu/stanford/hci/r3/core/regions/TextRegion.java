@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 
-import edu.stanford.hci.r3.core.Region;
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.render.regions.PolygonRenderer;
 import edu.stanford.hci.r3.render.regions.TextRenderer;
@@ -76,7 +76,7 @@ public class TextRegion extends Region {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.core.Region#getRenderer()
+	 * @see edu.stanford.hci.r3.paper.Region#getRenderer()
 	 */
 	public RegionRenderer getRenderer() {
 		return new TextRenderer(this);
@@ -118,7 +118,7 @@ public class TextRegion extends Region {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.core.Region#toString()
+	 * @see edu.stanford.hci.r3.paper.Region#toString()
 	 */
 	public String toString() {
 		return "Text: {" + text + "} " + font.getSize() + "pt " + font.getName()

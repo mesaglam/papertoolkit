@@ -8,7 +8,7 @@ import java.io.IOException;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
 
-import edu.stanford.hci.r3.core.Sheet;
+import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.units.Points;
 
 /**

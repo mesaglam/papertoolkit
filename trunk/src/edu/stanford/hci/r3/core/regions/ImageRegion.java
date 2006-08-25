@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 
-import edu.stanford.hci.r3.core.Region;
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.render.regions.ImageRenderer;
 import edu.stanford.hci.r3.units.Pixels;
@@ -83,7 +83,7 @@ public class ImageRegion extends Region {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.core.Region#getRenderer()
+	 * @see edu.stanford.hci.r3.paper.Region#getRenderer()
 	 */
 	public RegionRenderer getRenderer() {
 		return new ImageRenderer(this);
@@ -117,7 +117,7 @@ public class ImageRegion extends Region {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.core.Region#toString()
+	 * @see edu.stanford.hci.r3.paper.Region#toString()
 	 */
 	public String toString() {
 		return "Image: {" + getX() + ", " + getY() + ", " + getWidth() + ", " + getHeight()

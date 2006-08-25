@@ -3,7 +3,7 @@ package edu.stanford.hci.r3.core.regions;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
-import edu.stanford.hci.r3.core.Region;
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.render.regions.PolygonRenderer;
 import edu.stanford.hci.r3.units.Units;
@@ -120,7 +120,7 @@ public class PolygonalRegion extends Region {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.core.Region#getRenderer()
+	 * @see edu.stanford.hci.r3.paper.Region#getRenderer()
 	 */
 	public RegionRenderer getRenderer() {
 		return new PolygonRenderer(this);

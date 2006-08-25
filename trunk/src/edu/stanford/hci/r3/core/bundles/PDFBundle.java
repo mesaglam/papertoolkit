@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import com.lowagie.text.pdf.PdfReader;
 
-import edu.stanford.hci.r3.core.Bundle;
 import edu.stanford.hci.r3.core.sheets.PDFSheet;
+import edu.stanford.hci.r3.paper.Bundle;
 
 /**
  * <p>

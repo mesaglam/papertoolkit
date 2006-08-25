@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import edu.stanford.hci.r3.config.Configuration;
-import edu.stanford.hci.r3.core.Region;
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.MathUtils;
