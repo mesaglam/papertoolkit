@@ -33,9 +33,15 @@ public class PDFSheetTest {
 				new Centimeters(30));
 		sheet.addRegion(imageRegion);
 
-		Region rectRegion = new Region(1, 1, 2, 2);
+		Region rectRegion = new Region(1, 1, 15, 15);
 		sheet.addRegion(rectRegion);
 		rectRegion.setActive(true);
+		
+		
+		Region rectRegion2 = new Region(2, 2, 2, 2);
+		sheet.addRegion(rectRegion2);
+		rectRegion2.setActive(true);
+		
 
 		// sheet renderers do not know about PDFSheets
 		SheetRenderer sr = new SheetRenderer(sheet);

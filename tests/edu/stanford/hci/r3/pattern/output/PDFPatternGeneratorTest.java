@@ -6,12 +6,14 @@ import java.io.FileOutputStream;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
 import edu.stanford.hci.r3.pattern.PatternPackage;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.Points;
 
 /**
  * <p>
@@ -30,8 +32,9 @@ public class PDFPatternGeneratorTest {
 				new Inches(1.5), new Inches(3.5));
 
 		try {
+			final Rectangle pageRect = PageSize.LETTER;
 			// System.out.println(PageSize.LETTER);
-			final Document document = new Document(PageSize.LETTER, 50, 50, 50, 50);
+			final Document document = new Document(pageRect, 50, 50, 50, 50);
 			final PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
 					"testData/Test.pdf"));
 			// access the document
@@ -39,7 +42,8 @@ public class PDFPatternGeneratorTest {
 			// write direct content
 			final PdfContentByte cb = writer.getDirectContent();
 
-			final PDFPatternGenerator pgen = new PDFPatternGenerator(cb);
+			final PDFPatternGenerator pgen = new PDFPatternGenerator(cb, new Points(pageRect
+					.width()), new Points(pageRect.height()));
 			pgen.renderPattern(pattern, new Inches(3), new Inches(4));
 
 			document.close();

@@ -17,7 +17,7 @@ import edu.stanford.hci.r3.core.SheetTest;
  */
 public class SheetRendererTest {
 	public static void main(String[] args) {
-//		sheetToJPEG();
+		// sheetToJPEG();
 		sheetToPDF();
 	}
 
