@@ -6,13 +6,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Properties;
 
+import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.core.Region;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
@@ -29,7 +25,7 @@ import edu.stanford.hci.r3.util.StringUtils;
  */
 public class RegionRenderer {
 
-	private static final String CONFIG_FILE = "config/RegionRenderer.xml";
+	public static final String CONFIG_FILE = "regionrenderer.debugregions.file";
 
 	public static final boolean DEBUG_REGIONS = readDebugFlagFromConfigFile();
 
@@ -49,18 +45,12 @@ public class RegionRenderer {
 
 	private static final Color TEXT_COLOR = Color.BLACK;
 
+	/**
+	 * @return whether or not the debug flag is set to TRUE
+	 */
 	private static boolean readDebugFlagFromConfigFile() {
-		final Properties props = new Properties();
-		try {
-			props.loadFromXML(new FileInputStream(CONFIG_FILE));
-		} catch (InvalidPropertiesFormatException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		final String property = props.getProperty(PROPERTY_NAME);
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
+				CONFIG_FILE);
 		final boolean debug = Boolean.parseBoolean(property);
 		return debug;
 	}

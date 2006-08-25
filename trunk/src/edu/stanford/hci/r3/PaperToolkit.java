@@ -54,9 +54,6 @@ public class PaperToolkit {
 	 */
 	public PaperToolkit() {
 		initializeJavaSwing();
-		
-		URL resource = PaperToolkit.class.getResource("/config/PixelsPerInch.README");
-		System.out.println(resource);
 	}
 
 	/**

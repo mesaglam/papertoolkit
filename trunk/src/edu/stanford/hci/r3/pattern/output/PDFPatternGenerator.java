@@ -44,7 +44,7 @@ public class PDFPatternGenerator {
 
 	private static final String DOT_SYMBOL = "•";
 
-//	private static final float FONT_SIZE = 29;
+	// private static final float FONT_SIZE = 29;
 	private static final float FONT_SIZE = 28;
 
 	private static final int X_FONT_OFFSET = -2;
@@ -67,7 +67,7 @@ public class PDFPatternGenerator {
 	 */
 	private static BaseFont createBaseFont() {
 		try {
-			return BaseFont.createFont("data/tahoma.ttf", BaseFont.CP1252, BaseFont.EMBEDDED);
+			return BaseFont.createFont("/fonts/tahoma.ttf", BaseFont.CP1252, BaseFont.EMBEDDED);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -109,7 +109,7 @@ public class PDFPatternGenerator {
 		// transforms the content layer ONCE
 		// instead of specifying stuff in points (72 in an inch), we can now
 		// specify in 1/100 of a millimeter
-		// we need to scale down the numbers so when we specify something at 2540, 
+		// we need to scale down the numbers so when we specify something at 2540,
 		// we get only 72 points...
 		content.transform(AffineTransform.getScaleInstance(convertHundredthsOfMMToPoints,
 				convertHundredthsOfMMToPoints));

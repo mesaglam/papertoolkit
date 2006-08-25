@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -20,6 +21,8 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class TiledPatternGenerator {
 
+	public static final String CONFIG_PATH = "tiledpatterngenerator.patternpath";
+
 	/**
 	 * The name of the default pattern package (stored in pattern/default/).
 	 */
@@ -28,7 +31,14 @@ public class TiledPatternGenerator {
 	/**
 	 * Where to find the directories that store our pattern definition files.
 	 */
-	public static final File PATTERN_PATH = new File("pattern");
+	public static final File PATTERN_PATH = getPatternPath();
+
+	/**
+	 * @return
+	 */
+	private static File getPatternPath() {
+		return Configuration.getConfigFile(CONFIG_PATH);
+	}
 
 	/**
 	 * Packages indexed by name.
@@ -61,6 +71,99 @@ public class TiledPatternGenerator {
 		patternPath = patternPathLocation;
 		availablePackages = getAvailablePatternPackages();
 		setPackage(DEFAULT_PATTERN_PACKAGE_NAME);
+	}
+
+	/**
+	 * @param horizontal
+	 * @param vertical
+	 */
+	public TiledPattern createTiledPattern(Units horizontal, Units vertical) {
+
+		// TODO
+		// Finish This
+
+		long numDotsX = Math.round(horizontal.getValueInPatternDots());
+		long numDotsY = Math.round(vertical.getValueInPatternDots());
+
+		// System.out.println(numDotsX + " " + numDotsY);
+
+		int numTilesNeededX = 0;
+		int numTilesNeededY = 0;
+
+		int numDotsRemainingX = (int) numDotsX;
+		int numDotsRemainingY = (int) numDotsY;
+
+		final int numPatternColsPerFile = patternPackage.getNumPatternColsPerFile();
+		final int numPatternRowsPerFile = patternPackage.getNumPatternRowsPerFile();
+
+		while (numDotsRemainingX > 0) {
+			// use up one tile, and subtract an appropriate number of columns...
+			numDotsRemainingX -= numPatternColsPerFile;
+			numTilesNeededX++;
+		}
+		final int numDotsXFromRightMostTiles = numDotsRemainingX + numPatternColsPerFile;
+
+		while (numDotsRemainingY > 0) {
+			// use up one tile, and subtract an appropriate number of rows...
+			numDotsRemainingY -= numPatternRowsPerFile;
+			numTilesNeededY++;
+		}
+		final int numDotsYFromBottomMostTiles = numDotsRemainingY + numPatternRowsPerFile;
+
+		// the tiling is...
+		// numTilesNeededX, numTilesNeededY
+		// numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles
+		System.out.println("Tiling Information (" + horizontal + ", " + vertical + ") {");
+		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with "
+				+ numDotsXFromRightMostTiles + " horizontal dots from the rightmost tiles.");
+		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with "
+				+ numDotsYFromBottomMostTiles + " vertical dots from the bottommost tiles.");
+		System.out.println("}");
+
+		return new TiledPattern();
+	}
+
+	/**
+	 * Prints out some information on the tiling...
+	 */
+	public void displayTilingInformation(Units horizontal, Units vertical) {
+		long numDotsX = Math.round(horizontal.getValueInPatternDots());
+		long numDotsY = Math.round(vertical.getValueInPatternDots());
+
+		// System.out.println(numDotsX + " " + numDotsY);
+
+		int numTilesNeededX = 0;
+		int numTilesNeededY = 0;
+
+		int numDotsRemainingX = (int) numDotsX;
+		int numDotsRemainingY = (int) numDotsY;
+
+		final int numPatternColsPerFile = patternPackage.getNumPatternColsPerFile();
+		final int numPatternRowsPerFile = patternPackage.getNumPatternRowsPerFile();
+
+		while (numDotsRemainingX > 0) {
+			// use up one tile, and subtract an appropriate number of columns...
+			numDotsRemainingX -= numPatternColsPerFile;
+			numTilesNeededX++;
+		}
+		final int numDotsXFromRightMostTiles = numDotsRemainingX + numPatternColsPerFile;
+
+		while (numDotsRemainingY > 0) {
+			// use up one tile, and subtract an appropriate number of rows...
+			numDotsRemainingY -= numPatternRowsPerFile;
+			numTilesNeededY++;
+		}
+		final int numDotsYFromBottomMostTiles = numDotsRemainingY + numPatternRowsPerFile;
+
+		// the tiling is...
+		// numTilesNeededX, numTilesNeededY
+		// numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles
+		System.out.println("Tiling Information (" + horizontal + ", " + vertical + ") {");
+		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with "
+				+ numDotsXFromRightMostTiles + " horizontal dots from the rightmost tiles.");
+		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with "
+				+ numDotsYFromBottomMostTiles + " vertical dots from the bottommost tiles.");
+		System.out.println("}");
 	}
 
 	/**
@@ -120,99 +223,6 @@ public class TiledPatternGenerator {
 					+ pkg.getName() + ").");
 		}
 		patternPackage = pkg;
-	}
-
-	/**
-	 * Prints out some information on the tiling...
-	 */
-	public void displayTilingInformation(Units horizontal, Units vertical) {
-		long numDotsX = Math.round(horizontal.getValueInPatternDots());
-		long numDotsY = Math.round(vertical.getValueInPatternDots());
-
-		// System.out.println(numDotsX + " " + numDotsY);
-
-		int numTilesNeededX = 0;
-		int numTilesNeededY = 0;
-
-		int numDotsRemainingX = (int) numDotsX;
-		int numDotsRemainingY = (int) numDotsY;
-
-		final int numPatternColsPerFile = patternPackage.getNumPatternColsPerFile();
-		final int numPatternRowsPerFile = patternPackage.getNumPatternRowsPerFile();
-
-		while (numDotsRemainingX > 0) {
-			// use up one tile, and subtract an appropriate number of columns...
-			numDotsRemainingX -= numPatternColsPerFile;
-			numTilesNeededX++;
-		}
-		final int numDotsXFromRightMostTiles = numDotsRemainingX + numPatternColsPerFile;
-
-		while (numDotsRemainingY > 0) {
-			// use up one tile, and subtract an appropriate number of rows...
-			numDotsRemainingY -= numPatternRowsPerFile;
-			numTilesNeededY++;
-		}
-		final int numDotsYFromBottomMostTiles = numDotsRemainingY + numPatternRowsPerFile;
-
-		// the tiling is...
-		// numTilesNeededX, numTilesNeededY
-		// numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles
-		System.out.println("Tiling Information (" + horizontal + ", " + vertical + ") {");
-		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with "
-				+ numDotsXFromRightMostTiles + " horizontal dots from the rightmost tiles.");
-		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with "
-				+ numDotsYFromBottomMostTiles + " vertical dots from the bottommost tiles.");
-		System.out.println("}");
-	}
-
-	/**
-	 * @param horizontal
-	 * @param vertical
-	 */
-	public TiledPattern createTiledPattern(Units horizontal, Units vertical) {
-
-		// TODO
-		// Finish This
-
-		long numDotsX = Math.round(horizontal.getValueInPatternDots());
-		long numDotsY = Math.round(vertical.getValueInPatternDots());
-
-		// System.out.println(numDotsX + " " + numDotsY);
-
-		int numTilesNeededX = 0;
-		int numTilesNeededY = 0;
-
-		int numDotsRemainingX = (int) numDotsX;
-		int numDotsRemainingY = (int) numDotsY;
-
-		final int numPatternColsPerFile = patternPackage.getNumPatternColsPerFile();
-		final int numPatternRowsPerFile = patternPackage.getNumPatternRowsPerFile();
-
-		while (numDotsRemainingX > 0) {
-			// use up one tile, and subtract an appropriate number of columns...
-			numDotsRemainingX -= numPatternColsPerFile;
-			numTilesNeededX++;
-		}
-		final int numDotsXFromRightMostTiles = numDotsRemainingX + numPatternColsPerFile;
-
-		while (numDotsRemainingY > 0) {
-			// use up one tile, and subtract an appropriate number of rows...
-			numDotsRemainingY -= numPatternRowsPerFile;
-			numTilesNeededY++;
-		}
-		final int numDotsYFromBottomMostTiles = numDotsRemainingY + numPatternRowsPerFile;
-
-		// the tiling is...
-		// numTilesNeededX, numTilesNeededY
-		// numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles
-		System.out.println("Tiling Information (" + horizontal + ", " + vertical + ") {");
-		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with "
-				+ numDotsXFromRightMostTiles + " horizontal dots from the rightmost tiles.");
-		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with "
-				+ numDotsYFromBottomMostTiles + " vertical dots from the bottommost tiles.");
-		System.out.println("}");
-
-		return new TiledPattern();
 	}
 
 }
