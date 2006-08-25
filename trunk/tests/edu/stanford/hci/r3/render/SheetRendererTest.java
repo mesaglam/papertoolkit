@@ -2,8 +2,8 @@ package edu.stanford.hci.r3.render;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.core.SheetTest;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.paper.SheetTest;
 
 /**
  * <p>

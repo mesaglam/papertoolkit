@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.core;
+package edu.stanford.hci.r3.paper;
 
 import java.awt.Font;
 import java.awt.geom.Point2D;
