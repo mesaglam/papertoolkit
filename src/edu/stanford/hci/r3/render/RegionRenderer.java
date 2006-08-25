@@ -69,10 +69,10 @@ public class RegionRenderer {
 	 *            Draw some boxes to the Graphics context to show where the regions lie.
 	 */
 	public void renderToG2D(Graphics2D g2d) {
-		if (true) {
-			System.out.println("RegionRenderer.java: Skipping RenderToG2D");
-			return;
-		}
+//		if (true) {
+//			System.out.println("RegionRenderer.java: Skipping RenderToG2D");
+//			return;
+//		}
 
 		g2d.setFont(FONT);
 

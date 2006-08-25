@@ -191,6 +191,7 @@ public class SheetRenderer {
 
 			// should this be moved to regions???
 			if (renderActiveRegionsWithPattern) {
+				System.out.println("Rendering Pattern");
 				// after rendering everything, we still need to overlay the pattern on top of active
 				// regions; This is only for PDF rendering.
 				// top layer for pattern

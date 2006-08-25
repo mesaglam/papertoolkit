@@ -7,11 +7,10 @@ import java.io.File;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ImageRegion;
 import edu.stanford.hci.r3.paper.regions.PolygonalRegion;
 import edu.stanford.hci.r3.paper.regions.TextRegion;
+import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 
 /**
@@ -29,10 +28,10 @@ public class SheetTest {
 	 */
 	@Ignore
 	public static Sheet createAndPopulateSheet() {
-		Sheet sheet = new Sheet(new Inches(5), new Inches(4));
+		Sheet sheet = new Sheet(new Inches(8.5), new Centimeters(27));
 
 		// define some regions
-		Region reg0 = new Region(0, 0, 8.5, 11);
+		Region reg0 = new Region(0, 0, 1.5, 1.5);
 		reg0.setActive(true);
 
 		Region reg1 = new Region(1, 1, 2, 3);
