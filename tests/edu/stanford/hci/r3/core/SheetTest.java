@@ -44,11 +44,11 @@ public class SheetTest {
 				new Point2D.Double(6, 10), new Point2D.Double(5, 7), new Point2D.Double(3, 6));
 		poly2.scaleRegionUniformly(.66);
 
-		ImageRegion img = new ImageRegion(new File("testData/dragon.jpg"), new Inches(3.5),
+		ImageRegion img = new ImageRegion(new File("data/testFiles/dragon.jpg"), new Inches(3.5),
 				new Inches(4));
 		img.scaleRegionUniformly(.25);
 
-		TextRegion text = new TextRegion("The Dragon is\nHERRREEEE!", new Font("Trebuchet MS",
+		TextRegion text = new TextRegion("The Dragon is\nGreeeen!", new Font("Trebuchet MS",
 				Font.BOLD, 72), new Inches(1), new Inches(2));
 
 		// add regions to the sheet

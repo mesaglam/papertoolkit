@@ -11,7 +11,6 @@ import edu.stanford.hci.r3.pen.streaming.data.ServerOutputJavaObjectXML;
 import edu.stanford.hci.r3.pen.streaming.data.ServerOutputPlainText;
 
 /**
- * 
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
  * BSD License</a>.
@@ -32,6 +31,16 @@ public class PenServer implements PenListener {
 
 	private static PenServer textPenServer;
 
+	/**
+	 * @return
+	 */
+	public static boolean javaServerStarted() {
+		return javaPenServer != null;
+	}
+
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// default to COM5, ports 11025 and 11026
 		// you can specify these numbers through the arguments
@@ -56,39 +65,62 @@ public class PenServer implements PenListener {
 			tcpipPortPlainText = Integer.parseInt(args[2]);
 		}
 
-		startServer(serialPortName, tcpipPortJava, tcpipPortPlainText);
+		startBothServers(serialPortName, tcpipPortJava, tcpipPortPlainText);
 	}
 
 	/**
-	 * Provides default implementation.
+	 * Provides default implementation. It's unclear we want two servers going at the same time.
+	 * Won't performance be better if we only send one stream of data? Also, what about Multicast?
+	 * Then, multiple clients can listen in very easily. However, we'd need a server that will dole
+	 * out the multicast address... This is simpler for now.
 	 */
-	public static void startServer() {
-		startServer(DEFAULT_SERIAL_PORT, DEFAULT_JAVA_PORT, DEFAULT_PLAINTEXT_PORT);
+	public static void startBothServers(String serialPortName, int tcpipPortJava,
+			int tcpipPortPlainText) {
+		startJavaServer(serialPortName, tcpipPortJava);
+		startTextServer(serialPortName, tcpipPortPlainText);
 	}
 
 	/**
-	 * Provides default implementation.
+	 * Provides default implementation. Only start the Java Server.
 	 */
-	public static void startServer(String serialPortName, int tcpipPortJava, int tcpipPortPlainText) {
-		final PenStreamingConnection penConnection = PenStreamingConnection
-				.getInstance(serialPortName);
+	public static void startJavaServer() {
+		startJavaServer(DEFAULT_SERIAL_PORT, DEFAULT_JAVA_PORT);
+	}
 
+	/**
+	 * @param tcpipPort
+	 */
+	public static void startJavaServer(String serialPortName, int tcpipPort) {
 		try {
-			final ServerSocket javaServer = new ServerSocket(tcpipPortJava);
+			final PenStreamingConnection penConnection = PenStreamingConnection
+					.getInstance(serialPortName);
+			final ServerSocket javaServer = new ServerSocket(tcpipPort);
 			javaPenServer = new PenServer(javaServer, ClientServerType.JAVA);
 			penConnection.addPenListener(javaPenServer);
 		} catch (IOException ioe) {
 			System.out.println("Error with server socket: " + ioe.getLocalizedMessage());
-			System.exit(-1);
 		}
+	}
 
+	/**
+	 * 
+	 */
+	public static void startTextServer() {
+		startTextServer(DEFAULT_SERIAL_PORT, DEFAULT_PLAINTEXT_PORT);
+	}
+
+	/**
+	 * @param tcpipPort
+	 */
+	public static void startTextServer(String serialPortName, int tcpipPort) {
 		try {
-			final ServerSocket textServer = new ServerSocket(tcpipPortPlainText);
+			final PenStreamingConnection penConnection = PenStreamingConnection
+					.getInstance(serialPortName);
+			final ServerSocket textServer = new ServerSocket(tcpipPort);
 			textPenServer = new PenServer(textServer, ClientServerType.PLAINTEXT);
 			penConnection.addPenListener(textPenServer);
 		} catch (IOException ioe) {
 			System.out.println("Error with server socket: " + ioe.getLocalizedMessage());
-			System.exit(-1);
 		}
 	}
 
@@ -105,6 +137,13 @@ public class PenServer implements PenListener {
 			textPenServer.stopServer();
 			textPenServer = null;
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	public static boolean textServerStarted() {
+		return textPenServer != null;
 	}
 
 	private boolean exitFlag = false;
@@ -145,11 +184,10 @@ public class PenServer implements PenListener {
 									+ PenServer.this.ss.getLocalPort() + "...");
 						}
 						s = PenServer.this.ss.accept();
-						System.out.println("Got a connection on port "
-								+ PenServer.this.ss.getLocalPort() + "...");
+						System.out.println("Got a connection on port " + PenServer.this.ss.getLocalPort()
+								+ "...");
 					} catch (IOException ioe) {
-						System.out
-								.println("Error with server socket: " + ioe.getLocalizedMessage());
+						System.out.println("Error with server socket: " + ioe.getLocalizedMessage());
 					}
 					if (s != null) {
 						try {
@@ -165,8 +203,7 @@ public class PenServer implements PenListener {
 								System.out.println("Error with server socket: "
 										+ ioe2.getLocalizedMessage());
 							}
-							System.out.println("Error creating output: "
-									+ ioe.getLocalizedMessage());
+							System.out.println("Error creating output: " + ioe.getLocalizedMessage());
 						}
 					}
 
@@ -214,8 +251,8 @@ public class PenServer implements PenListener {
 			try {
 				out.sendSample(sample);
 			} catch (IOException ioe) {
-				System.out.println("Error sending sample, removing output "
-						+ ioe.getLocalizedMessage());
+				System.out
+						.println("Error sending sample, removing output " + ioe.getLocalizedMessage());
 				toRemove.add(out);
 			}
 		}

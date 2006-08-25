@@ -1,10 +1,7 @@
 package edu.stanford.hci.r3.pen;
 
-import edu.stanford.hci.r3.pen.streaming.ClientServerType;
-import edu.stanford.hci.r3.pen.streaming.PenClient;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
-import edu.stanford.hci.r3.pen.streaming.PenServer;
 
 /**
  * <p>
@@ -22,13 +19,9 @@ public class PenCoordinateDebugger {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PenServer.startServer();
-
-		// listen to the server on the local host
-		PenClient clientJava = new PenClient("localhost", PenServer.DEFAULT_JAVA_PORT,
-				ClientServerType.JAVA);
-		clientJava.connect();
-		clientJava.addPenListener(getDebugPenListener());
+		Pen pen = new Pen();
+		pen.startLiveMode();
+		pen.addLivePenListener(getDebugPenListener());
 	}
 
 	/**
