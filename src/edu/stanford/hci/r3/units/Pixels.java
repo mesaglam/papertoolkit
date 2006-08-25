@@ -3,12 +3,6 @@
  */
 package edu.stanford.hci.r3.units;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.InvalidPropertiesFormatException;
-import java.util.Properties;
-
 import edu.stanford.hci.r3.config.Configuration;
 
 /**
@@ -26,7 +20,7 @@ public class Pixels extends Units {
 	/**
 	 * The Key to access the configuration file for Pixels.
 	 */
-	public static final String CONFIG_FILE_KEY = "pixels.pixelsperinch.file";
+	public static final String CONFIG_FILE = "pixels.pixelsperinch.file";
 
 	private static final double DEFAULT_PIXELS_PER_INCH = readPixelsPerInchFromConfigFile();
 
@@ -47,17 +41,7 @@ public class Pixels extends Units {
 	 * @return
 	 */
 	private static double readPixelsPerInchFromConfigFile() {
-		final Properties props = new Properties();
-		try {
-			props.loadFromXML(Configuration.getConfigFileStream(CONFIG_FILE_KEY));
-		} catch (InvalidPropertiesFormatException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		final String property = props.getProperty(PROPERTY_NAME);
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE);
 		final double ppi = Double.parseDouble(property);
 		return ppi;
 	}
