@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.core.regions;
+package edu.stanford.hci.r3.paper.regions;
 
 import java.awt.Dimension;
 import java.awt.Font;

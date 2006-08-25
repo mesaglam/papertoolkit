@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 
-import edu.stanford.hci.r3.core.regions.PolygonalRegion;
+import edu.stanford.hci.r3.paper.regions.PolygonalRegion;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
