@@ -10,6 +10,8 @@ import org.junit.Test;
 import edu.stanford.hci.r3.core.regions.ImageRegion;
 import edu.stanford.hci.r3.core.regions.PolygonalRegion;
 import edu.stanford.hci.r3.core.regions.TextRegion;
+import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.units.Inches;
 
 /**

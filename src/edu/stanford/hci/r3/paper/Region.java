@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.core;
+package edu.stanford.hci.r3.paper;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
