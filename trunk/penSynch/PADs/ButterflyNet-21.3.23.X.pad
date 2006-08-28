@@ -286,7 +286,7 @@
 
   <pages>
 	<application_info name="pattern_page_type" value="unique"/>
-	<application_info name="paper_category" value="fieldtools::ButterflyNet"/>
+	<application_info name="paper_category" value="fieldtools::R3"/>
 
     <page address="21.3.23.0" name="FieldToolsNotebookA5-final-upright_1">
       <layout height="931" image="FieldToolsNotebookA5-final-upright_1_85.png" width="720">
