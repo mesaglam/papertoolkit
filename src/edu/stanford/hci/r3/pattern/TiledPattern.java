@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.pattern;
 
 import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -117,6 +118,7 @@ public class TiledPattern {
 				}
 
 				// if we are on the rightmost or bottommost tile, we need to use alternate bounds
+				DebugUtils.println("PatternFileNumber: " + patternFileNumber);
 				String[] patternTile = patternPackage.readPatternFromFile(patternFileNumber, origX,
 						origY, width, height);
 
@@ -140,7 +142,9 @@ public class TiledPattern {
 	 */
 	public String toString() {
 		return "Tiling Information {\n" //
-				+ "\t" + numTilesX
+				+ "\tDotsX: " + numTotalColumns + " DotsY: " + numTotalRows + "\n"
+				+ "\t"
+				+ numTilesX
 				+ " Tile(s) in X, with "
 				+ numDotsXRightMost
 				+ " horizontal dots from the rightmost tiles.\n" //
