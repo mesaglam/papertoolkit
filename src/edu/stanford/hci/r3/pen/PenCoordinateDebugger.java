@@ -9,9 +9,10 @@ import edu.stanford.hci.r3.pen.streaming.PenSample;
  * BSD License</a>.
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * Use this to display Pen Coordinates to the console. Useful for debugging. If you get a message
+ * like: Port COM5 not found, You may want to make sure that you have JavaCOMM installed.
  * 
- * Use this to display Pen Coordinates to the console. Useful for debugging.
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PenCoordinateDebugger {
 

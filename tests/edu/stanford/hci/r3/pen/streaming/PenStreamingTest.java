@@ -11,8 +11,12 @@ package edu.stanford.hci.r3.pen.streaming;
 public class PenStreamingTest {
 
 	public static void main(String[] args) {
+		localhost();
 	}
 
+	/**
+	 * 
+	 */
 	private static void localhost() {
 		System.out.println("Connecting to Text and Java Ports on Localhost");
 		

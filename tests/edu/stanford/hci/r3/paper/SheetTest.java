@@ -28,7 +28,7 @@ public class SheetTest {
 	 */
 	@Ignore
 	public static Sheet createAndPopulateSheet() {
-		Sheet sheet = new Sheet(new Inches(8.5), new Centimeters(27));
+		Sheet sheet = new Sheet(new Inches(15), new Centimeters(15));
 
 		// define some regions
 		Region reg0 = new Region(0, 0, 1.5, 1.5);
@@ -70,6 +70,11 @@ public class SheetTest {
 	public void addRegions() {
 		Sheet sheet = createAndPopulateSheet();
 		System.out.println(sheet);
+	}
+
+	@Test
+	public void createSheet() {
+		createAndPopulateSheet();
 	}
 
 	/**
