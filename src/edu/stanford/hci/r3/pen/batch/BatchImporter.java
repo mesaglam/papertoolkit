@@ -2,8 +2,6 @@ package edu.stanford.hci.r3.pen.batch;
 
 import java.io.*;
 
-import javax.swing.JFrame;
-
 /**
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
@@ -22,16 +20,11 @@ public class BatchImporter {
 	public static void main(String[] args) {
 		try {
 			System.setOut(new PrintStream(new FileOutputStream("BatchImporter.log")));
-			System.out.println("Running Pen Data Importer v1.0");
+			System.out.println("Running the Batched Pen Data Importer");
 			for (String arg : args) {
 				System.out.println("Argument: " + arg);
 			}
-			
-			JFrame f = new JFrame("Text");
-			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			f.setSize(640, 480);
-			f.setVisible(true);
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
