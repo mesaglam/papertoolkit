@@ -79,11 +79,11 @@ namespace PenMonitor {
             form.appendLine("Pen Synchronization Complete! Closing this window...");
 
 
-            // Run ButterflyNet to import the new strokes into the correct pages...
-            string R3ImportApp = Directory.GetParent(penRequestDir).Parent.Parent.FullName;
-            form.appendLine("Starting " + R3ImportApp + @"\R3Import.exe");
+            // Run R3 to import the new strokes...
+            string R3ImportAppPath = Directory.GetParent(penRequestDir).Parent.Parent.FullName;
+            form.appendLine("Starting " + R3ImportAppPath + @"\R3Import.exe");
             // pass along the request file, and tell BNet to redirect the console to console.log
-            Process.Start(R3ImportApp + @"\R3Import.exe", '"' + "RequestFilePath::" + requestXMLFilePath + '"' + " RedirectStandardOut");
+            Process.Start(R3ImportAppPath + @"\R3Import.exe", '"' + requestXMLFilePath + '"');
         }
 
         /// <summary>
