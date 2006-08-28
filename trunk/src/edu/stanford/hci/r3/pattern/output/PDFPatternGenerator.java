@@ -9,6 +9,7 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 
 import edu.stanford.hci.r3.pattern.PatternJitter;
+import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.MathUtils;
 
@@ -122,7 +123,7 @@ public class PDFPatternGenerator {
 	 * @param xOrigin
 	 * @param yOrigin
 	 */
-	public void renderPattern(String[] pattern, Units xOrigin, Units yOrigin) {
+	public void renderPattern(TiledPattern pattern, Units xOrigin, Units yOrigin) {
 		// flip the transform so that the top left of the page is 0,0
 		float heightOfPDF = (float) height.getValueInPoints();
 
@@ -166,8 +167,10 @@ public class PDFPatternGenerator {
 		int yJitter = 0;
 		char currentJitterDirection;
 
-		for (String patternRow : pattern) {
-			int rowLength = patternRow.length();
+		for (int row = 0; row < pattern.getNumRows(); row++) {
+			final String patternRow = pattern.getPatternOnRow(row);
+			final int rowLength = patternRow.length();
+
 			for (int i = 0; i < rowLength; i++) {
 
 				// read the direction

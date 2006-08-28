@@ -64,6 +64,9 @@ public class PatternPackage {
 	 */
 	private File patternDefinitionPath;
 
+	/**
+	 * A list of all the files that store pattern definition.
+	 */
 	private List<File> patternFiles;
 
 	/**
@@ -251,5 +254,12 @@ public class PatternPackage {
 			e.printStackTrace();
 		}
 		return pattern;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "PatternPackage: {" + patternDefinitionPath + "}";
 	}
 }

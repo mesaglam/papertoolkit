@@ -10,7 +10,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
-import edu.stanford.hci.r3.pattern.PatternPackage;
+import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Points;
@@ -27,16 +27,15 @@ public class PDFPatternGeneratorTest {
 
 	public static void main(String[] args) {
 		TiledPatternGenerator generator = new TiledPatternGenerator();
-		PatternPackage pkg = generator.getCurrentPatternPackage();
-		String[] pattern = pkg.readPatternFromFile(0, new Inches(.5), new Inches(1),
-				new Inches(1.5), new Inches(3.5));
+		TiledPattern pattern = generator.getPattern(new Inches(0), new Inches(0), new Inches(1),
+				new Inches(2));
 
 		try {
 			final Rectangle pageRect = PageSize.LETTER;
 			// System.out.println(PageSize.LETTER);
 			final Document document = new Document(pageRect, 50, 50, 50, 50);
 			final PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
-					"testData/Test.pdf"));
+					"data/testFiles/output/PDFPatternGenerator.pdf"));
 			// access the document
 			document.open();
 			// write direct content

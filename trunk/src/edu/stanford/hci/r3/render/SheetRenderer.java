@@ -19,6 +19,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.PatternPackage;
+import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.pattern.output.PDFPatternGenerator;
 import edu.stanford.hci.r3.units.Inches;
@@ -73,30 +74,33 @@ public class SheetRenderer {
 		// for each region, overlay pattern if it is an active region
 		final List<Region> regions = sheet.getRegions();
 
-		// TEMP
-		TiledPatternGenerator generator = new TiledPatternGenerator();
-		PatternPackage pkg = generator.getCurrentPatternPackage();
-		// END TEMP
+		// for now, get a tiled pattern generator
+		// later on, we might want to pass this in
+		final TiledPatternGenerator generator = new TiledPatternGenerator();
 
+		// this object will generate the right PDF (itext) calls to create pattern
 		final PDFPatternGenerator pgen = new PDFPatternGenerator(cb, sheet.getWidth(), sheet
 				.getHeight());
 
 		// render each region
 		for (Region r : regions) {
-			if (r.isActive()) {
-				System.out.println("SheetRenderer: Rendering Pattern!");
-
-				System.out.println("SheetRenderer: " + r.getShape());
-				Units unscaledWidth = r.getUnscaledBoundsWidth();
-				Units unscaledHeight = r.getUnscaledBoundsHeight();
-
-				String[] pattern = pkg.readPatternFromFile(0, new Inches(0), new Inches(0),
-						unscaledWidth, unscaledHeight);
-
-				DebugUtils.println(r.getOriginX() + " " + r.getOriginY());
-
-				pgen.renderPattern(pattern, r.getOriginX(), r.getOriginY());
+			if (!r.isActive()) {
+				continue;
 			}
+
+			System.out.println("SheetRenderer: Rendering Pattern!");
+			System.out.println("SheetRenderer: " + r.getShape());
+
+			// TODO: later on, figure out the real width and height....
+			final Units unscaledWidth = r.getUnscaledBoundsWidth();
+			final Units unscaledHeight = r.getUnscaledBoundsHeight();
+
+			final TiledPattern pattern = generator.getPattern(new Inches(0), new Inches(0),
+					unscaledWidth, unscaledHeight);
+
+			DebugUtils.println(r.getOriginX() + " " + r.getOriginY());
+
+			pgen.renderPattern(pattern, r.getOriginX(), r.getOriginY());
 		}
 	}
 

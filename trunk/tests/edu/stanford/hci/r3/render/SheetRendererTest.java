@@ -2,8 +2,9 @@ package edu.stanford.hci.r3.render;
 
 import java.io.File;
 
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.SheetTest;
+import edu.stanford.hci.r3.units.Inches;
 
 /**
  * <p>
@@ -16,13 +17,40 @@ import edu.stanford.hci.r3.paper.SheetTest;
  * Turns a Sheet object into a PDF file.
  */
 public class SheetRendererTest {
+
+	/**
+	 * Creates a Sheet object and populates it with some Regions.
+	 * 
+	 * @return
+	 */
+	public static Sheet createSheet() {
+		Sheet sheet = new Sheet(new Inches(15), new Inches(15));
+
+		// define some regions
+		Region reg = new Region(0, 0, 15, 15);
+		reg.setActive(true);
+
+		// add regions to the sheet
+		sheet.addRegion(reg);
+
+		return sheet;
+
+	}
+
+	/**
+	 * Runs the test.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		// sheetToJPEG();
 		sheetToPDF();
 	}
 
+	/**
+	 * Renders a sheet to a JPEG file.
+	 */
 	private static void sheetToJPEG() {
-		Sheet sheet = SheetTest.createAndPopulateSheet();
+		Sheet sheet = createSheet();
 
 		SheetRenderer renderer = new SheetRenderer(sheet);
 		renderer.setRenderActiveRegionsWithPattern(false);
@@ -30,12 +58,12 @@ public class SheetRendererTest {
 		renderer.renderToJPEG(new File("data/testFiles/Test.jpg"));
 	}
 
+	/**
+	 * Renders a sheet to a PDF file.
+	 */
 	private static void sheetToPDF() {
-		Sheet sheet = SheetTest.createAndPopulateSheet();
-
+		Sheet sheet = createSheet();
 		SheetRenderer renderer = new SheetRenderer(sheet);
-		// renderer.setRenderActiveRegionsWithPattern(false);
-
 		renderer.renderToPDF(new File("data/testFiles/Test.pdf"));
 	}
 }
