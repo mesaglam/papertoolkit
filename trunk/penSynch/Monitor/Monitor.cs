@@ -80,10 +80,10 @@ namespace PenMonitor {
 
 
             // Run R3 to import the new strokes...
-            string R3ImportAppPath = Directory.GetParent(penRequestDir).Parent.Parent.FullName;
-            form.appendLine("Starting " + R3ImportAppPath + @"\R3Import.exe");
+            string R3ImportAppPath = Directory.GetParent(penRequestDir).Parent.FullName + @"\bin\BatchImporter.exe";
+            form.appendLine("Starting " + R3ImportAppPath + " " + requestXMLFilePath);
             // pass along the request file, and tell BNet to redirect the console to console.log
-            Process.Start(R3ImportAppPath + @"\R3Import.exe", '"' + requestXMLFilePath + '"');
+            Process.Start(R3ImportAppPath, '"' + requestXMLFilePath + '"');
         }
 
         /// <summary>
