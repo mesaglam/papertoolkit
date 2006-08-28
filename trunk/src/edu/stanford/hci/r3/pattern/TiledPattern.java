@@ -32,8 +32,15 @@ public class TiledPattern {
 
 	private int numTotalRows;
 
+	/**
+	 * Stores the pattern in strings. One String per row. We use StringBuilder because it is useful
+	 * for reading in the pattern from disk.
+	 */
 	private StringBuilder[] pattern;
 
+	/**
+	 * Where we get our pattern from.
+	 */
 	private PatternPackage patternPackage;
 
 	/**

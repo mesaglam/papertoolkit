@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -228,6 +229,13 @@ public class PatternPackage {
 		// create a data structure large enough to store however many dots we need
 		final String[] pattern = new String[numDotsDown];
 
+		// we are asking for pattern from an invalid file.
+		if (numPatternFile < 0 || numPatternFile >= numPatternFiles) {
+			DebugUtils.println("Pattern File " + numPatternFile
+					+ " does not exist in this package.");
+			return pattern;
+		}
+
 		// read the file and populate the array with jitter directions
 		// open up file numPatternFile
 		final File patternFile = numToPatternFile.get(numPatternFile);
@@ -255,8 +263,10 @@ public class PatternPackage {
 		}
 		return pattern;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {

@@ -55,7 +55,7 @@ public class SheetRendererTest {
 		SheetRenderer renderer = new SheetRenderer(sheet);
 		renderer.setRenderActiveRegionsWithPattern(false);
 
-		renderer.renderToJPEG(new File("data/testFiles/Test.jpg"));
+		renderer.renderToJPEG(new File("data/testFiles/output/Test.jpg"));
 	}
 
 	/**
@@ -64,6 +64,6 @@ public class SheetRendererTest {
 	private static void sheetToPDF() {
 		Sheet sheet = createSheet();
 		SheetRenderer renderer = new SheetRenderer(sheet);
-		renderer.renderToPDF(new File("data/testFiles/Test.pdf"));
+		renderer.renderToPDF(new File("data/testFiles/output/Test.pdf"));
 	}
 }
