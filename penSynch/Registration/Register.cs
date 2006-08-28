@@ -23,6 +23,8 @@ namespace PenMonitor {
         /// </summary>
         private static string rootDir = @"..\..\..\";
 
+        private static string APP_NAME = "BNetPenMonitor";
+
         /// <summary>
         /// Run this reg file to register the monitor DLL.
         /// </summary>
@@ -91,7 +93,7 @@ namespace PenMonitor {
             RegistrationManager2 reg = null;
             try {
                 reg = new RegistrationManager2();
-                reg.RegisterApplication("BNetPenMonitor");
+                reg.RegisterApplication(APP_NAME);
             }
             catch (COMException e) {
                 Console.WriteLine("Handling COM Exception.");
