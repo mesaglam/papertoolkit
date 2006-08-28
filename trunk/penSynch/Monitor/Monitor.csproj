@@ -111,7 +111,6 @@
     <Compile Include="Monitor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Content Include="Readme.txt" />
     <Content Include="Monitor.ico" />
   </ItemGroup>
   <ItemGroup>
