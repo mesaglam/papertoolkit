@@ -1,39 +1,39 @@
 <html>
 <head><title>Get R3!</title>
-<link href="../resources/styles.css" rel="stylesheet" type="text/css">
+<link href="../../resources/styles.css" rel="stylesheet" type="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <body>
 <script language="javascript" type="text/javascript" 
-  src="../resources/header.js"></script>
+  src="../../resources/header.js"></script>
 <p class="Heading"> Get R3 and Compile it </p>
 <ol>
   <li>Go to <a href="http://code.google.com/p/papertoolkit/">http://code.google.com/p/papertoolkit/</a>. That is where the R3 open-source project is hosted.</li>
   <li>Create a directory for R3. For convenience, I tend to put all my projects in subdirectories of my Eclipse Workspace. You can set the workspace path under <span class="Code">File &gt; Switch Workspace...</span><br>
     <br>
-    <img src="GetR3/Workspace.png" alt="Workspace" width="491" height="244"><br>
+    <img src="Workspace.png" alt="Workspace" width="491" height="244"><br>
     <br>
   With the above Workspace path, I would create a new directory at <span class="Code">C:\Documents and Settings\Ron Yeh\My Documents\Projects\R3</span>. Some of my colleagues like shorter paths, and will use something like <span class="Code">C:\Dev\R3</span>. It's your call. </li>
   <li>In the google hosting page, you can find the SVN URL for downloading R3.<br>
     <br>
-  <img src="GetR3/GoogleCode.png" alt="Google Code" width="775" height="380"><br>
+  <img src="GoogleCode.png" alt="Google Code" width="775" height="380"><br>
   <br>
   You will need to enter this URL into TortoiseSVN's checkout panel. Alternatively, if you have command-line subversion, you can just type in the command as displayed on the google web page. </li>
   <li>Right Click the empty R3 folder, and choose SVN Checkout. Type in the URL of the repository. The other settings should be left at their defaults. <br>
     <br>
-  <img src="GetR3/Checkout0.png" alt="Checkout" width="456" height="320"> <img src="GetR3/Checkout1.png" alt="Checkout Progress" width="554" height="302"></li>
+  <img src="Checkout0.png" alt="Checkout" width="456" height="320"> <img src="Checkout1.png" alt="Checkout Progress" width="554" height="302"></li>
   <li>Once the Checkout is done, you will need to import the project into Eclipse. There are multiple ways to do this. I tend to use the New Java Project command.<br>
     <br>
-    <img src="GetR3/NewJavaProject.png" alt="NewProject" width="500" height="576"> <img src="GetR3/PackageExp.png" alt="Package Explorer" width="420" height="535"><br>
+    <img src="NewJavaProject.png" alt="NewProject" width="500" height="576"> <img src="PackageExp.png" alt="Package Explorer" width="420" height="535"><br>
     <br>
   For the Project Name, you should use the name of the folder that contains R3. The above figure is misleading because I actually renamed my Projects\R3 folder to Projects\PaperToolkit. =) In any case, once you type the name, Eclipse will recognize that this folder already exists. You can just click Finish and Eclipse will import the project. </li>
   <li>You will probably want to create your own Eclipse project that references R3. That way, you can leverage any of the services that the toolkit provides. Use the New Java Project command again. This time, type the name of your project. I like to choose the option &quot;Create separate source and output folders.&quot; Click Next.<br>
-      <img src="GetR3/NewMyProj.png" alt="My Project" width="500" height="601"> <img src="GetR3/RefR3.png" alt="Reference R3" width="500" height="455"><br>
+    <br>
+      <img src="NewMyProj.png" alt="My Project" width="500" height="601"> <img src="RefR3.png" alt="Reference R3" width="500" height="455"><br>
   </li>
   <li>Navigate to the Projects tab, and Click Add...  Select R3 and Click OK. Click Finish. </li>
-  <li>Now, you should see both your project and R3 in the same Package Explorer.</li>
-  <li>XXXX You're Done! </li>
-  <li>From here on out, feel free to explore R3 and use it as you see fit. If you have a question about functionality, post it to the User's Newsgroup (<a href="http://groups.google.com/group/papertoolkit">http://groups.google.com/group/papertoolkit</a>). I will field questions there, and hopefully other users can chime in if they know the answer to something. R3 itself is an experiment, so I will guarantee now that it is NOT bug-free software. If you are interested, you can also join the open-source project. =)</li>
+  <li>Now, you should see both your project and R3 in the same Package Explorer. You can now proceed to use R3's API in your own project.</li>
+  <li>From here on out, feel free to explore R3 and use it as you see fit. If you have a question about functionality, post it to the User's Newsgroup (<a href="http://groups.google.com/group/papertoolkit">http://groups.google.com/group/papertoolkit</a>). I will field questions there, and hopefully other users can chime in if they know the answer to something. R3 itself is an experiment, so I will guarantee  that it is NOT bug-free software. If you are interested, you can also join the open-source project. =)</li>
 </ol>
 <p>&nbsp;</p>
 <p>Ron B. Yeh </p>
