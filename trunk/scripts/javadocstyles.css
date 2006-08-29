@@ -25,6 +25,13 @@ a:visited {
 /* Headings */
 h1 { font-size: 145% }
 
+
+table {
+	border-collapse:collapse;
+	border-style:solid;
+}
+
+
 /* Table colors */
 .TableHeadingColor     { background: #404040; color:#DFDFDF }
 .TableSubHeadingColor  { background: #404040; color:#DFDFDF }
@@ -38,6 +45,7 @@ h1 { font-size: 145% }
 
 /* Navigation bar fonts and colors */
 .NavBarCell1    { background-color:#333333; color:#DFDFDF}
+
 .NavBarCell1Rev { background-color:#00338B; color:#FFFFFF}
 .NavBarFont1    { font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; color:#DFDFDF; }
 .NavBarFont1Rev { font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; color:#DFDFDF; }

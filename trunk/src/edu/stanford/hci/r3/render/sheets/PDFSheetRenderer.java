@@ -5,12 +5,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Units;
@@ -36,6 +39,24 @@ public class PDFSheetRenderer extends SheetRenderer {
 	public PDFSheetRenderer(PDFSheet s) {
 		super(s);
 		pdfSheet = s;
+	}
+
+	/**
+	 * We assume the g2d is big enough for us to draw this Sheet to.
+	 * 
+	 * By default, the transforms works at 72 dots per inch. Scale the transform beforehand if you
+	 * would like better (more dots per inch) or worse rendering (fewer dots per inch).
+	 * 
+	 * @param g2d
+	 */
+	public void renderToG2D(Graphics2D g2d) {
+		// render the PDF to the g2d's background
+		PdfReader reader = pdfSheet.getReader();
+//		reader.get;
+//		PdfImportedPage p = new PdfImportedPage();
+		
+		// call the super's renderToG2D to paint all the other regions
+		super.renderToG2D(g2d);
 	}
 
 	/**
