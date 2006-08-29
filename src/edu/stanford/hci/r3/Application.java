@@ -1,11 +1,13 @@
 package edu.stanford.hci.r3;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -54,6 +56,22 @@ public class Application {
 	}
 
 	/**
+	 * @return
+	 */
+	public List<Pen> getPens() {
+		return pens;
+	}
+
+	/**
+	 * Serializes an application to disk.
+	 * 
+	 * @param appDirectory
+	 */
+	public void saveToDisk(File appDirectory) {
+		DebugUtils.println("Unimplemented Method");
+	}
+
+	/**
 	 * @param eventEngine
 	 */
 	public void setApplicationEventListener(EventEngine eventEngine) {
@@ -64,12 +82,5 @@ public class Application {
 				eventEngine.register(pen);
 			}
 		}
-	}
-	
-	/**
-	 * @return
-	 */
-	public List<Pen> getPens() {
-		return pens;
 	}
 }

@@ -72,4 +72,11 @@ public class PDFSheet extends Sheet {
 		final Rectangle pageSize = pdfReader.getPageSize(pageNum);
 		setSize(new Points(pageSize.width()), new Points(pageSize.height()));
 	}
+
+	/**
+	 * @return
+	 */
+	public PdfReader getReader() {
+		return pdfReader;
+	}
 }
