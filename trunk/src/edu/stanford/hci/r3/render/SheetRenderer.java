@@ -50,7 +50,7 @@ public class SheetRenderer {
 	 * By Default, any active regions will be overlaid with pattern (unique to at least this sheet,
 	 * unless otherwise specified).
 	 */
-	private boolean renderActiveRegionsWithPattern = true;
+	protected boolean renderActiveRegionsWithPattern = true;
 
 	protected Sheet sheet;
 
@@ -69,7 +69,7 @@ public class SheetRenderer {
 	 * @param cb
 	 *            a content layer returned by iText
 	 */
-	private void renderPattern(PdfContentByte cb) {
+	protected void renderPattern(PdfContentByte cb) {
 		// for each region, overlay pattern if it is an active region
 		final List<Region> regions = sheet.getRegions();
 
