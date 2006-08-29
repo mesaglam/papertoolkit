@@ -24,10 +24,10 @@ public class SheetRendererTest {
 	 * @return
 	 */
 	public static Sheet createSheet() {
-		Sheet sheet = new Sheet(new Inches(15), new Inches(15));
+		Sheet sheet = new Sheet(new Inches(3), new Inches(3));
 
 		// define some regions
-		Region reg = new Region(0, 0, 15, 15);
+		Region reg = new Region(0, 0, 3, 3);
 		reg.setActive(true);
 
 		// add regions to the sheet
@@ -64,6 +64,6 @@ public class SheetRendererTest {
 	private static void sheetToPDF() {
 		Sheet sheet = createSheet();
 		SheetRenderer renderer = new SheetRenderer(sheet);
-		renderer.renderToPDF(new File("data/testFiles/output/Test.pdf"));
+		renderer.renderToPDF(new File("data/testFiles/output/Test2.pdf"));
 	}
 }

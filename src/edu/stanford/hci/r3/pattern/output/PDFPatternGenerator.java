@@ -28,29 +28,14 @@ import edu.stanford.hci.r3.util.MathUtils;
  * 
  * So far, printing dots with the bullet point • in Tahoma works decently. We will also try drawing
  * circles, or using some sort of stamping pattern if possible.
+ * 
+ * setFontSize(...) is an important method, as you will need to adjust it based on your printer. We
+ * picked a decent default (21 pt Tahoma) since it works for both of our printers.
  */
 public class PDFPatternGenerator {
 
 	// font creation
 	private static final BaseFont BFONT = createBaseFont();
-
-	/**
-	 * Render some information about the pattern.
-	 */
-	private static final boolean DEBUG_PATTERN = false;
-
-	private static final int DEFAULT_JITTER = 5;
-
-	private static final int DEFAULT_PADDING = 30;
-
-	private static final String DOT_SYMBOL = "•";
-
-	// private static final float FONT_SIZE = 29;
-	private static final float FONT_SIZE = 28;
-
-	private static final int X_FONT_OFFSET = -2;
-
-	private static final int Y_FONT_OFFSET = 9;
 
 	/**
 	 * Given a value in Hundredths of a millimeter (1/2540 inches) convert it to the same length in
@@ -62,6 +47,23 @@ public class PDFPatternGenerator {
 	 * Convert from Points to 1/100 mm.
 	 */
 	private static final double convertPointsToHundredthsOfMM = 2540.0 / 72;
+
+	/**
+	 * Render some information about the pattern.
+	 */
+	private static final boolean DEBUG_PATTERN = false;
+
+	private static final int DEFAULT_FONT_SIZE = 21;
+
+	private static final int DEFAULT_JITTER = 5;
+
+	private static final int DEFAULT_PADDING = 30;
+
+	private static final String DOT_SYMBOL = "•";
+
+	private static final int X_FONT_OFFSET = -2;
+
+	private static final int Y_FONT_OFFSET = 9;
 
 	/**
 	 * @return loads a font from disk.
@@ -81,6 +83,8 @@ public class PDFPatternGenerator {
 	 * Represents the content layer of the PDF Document.
 	 */
 	private PdfContentByte content;
+
+	private int fontSize;
 
 	/**
 	 * The height of the PDF document.
@@ -114,6 +118,7 @@ public class PDFPatternGenerator {
 		// we get only 72 points...
 		content.transform(AffineTransform.getScaleInstance(convertHundredthsOfMMToPoints,
 				convertHundredthsOfMMToPoints));
+		setFontSize((int) DEFAULT_FONT_SIZE);
 	}
 
 	/**
@@ -137,7 +142,7 @@ public class PDFPatternGenerator {
 			content.setFontAndSize(BFONT, 10);
 			// ArrayUtils.printMatrix(BFONT.getFamilyFontName());
 			content.setColorFill(new Color(128, 128, 255, 128));
-			content.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tahoma " + (int) FONT_SIZE
+			content.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tahoma " + (int) fontSize
 					+ " Padding: " + DEFAULT_PADDING, (float) xOrigInPoints, heightOfPDF
 					- (float) yOrigInPoints + 2, 0);
 			content.endText();
@@ -154,7 +159,7 @@ public class PDFPatternGenerator {
 		content.beginText();
 		// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
 		content.setColorFill(Color.BLACK);
-		content.setFontAndSize(BFONT, FONT_SIZE);
+		content.setFontAndSize(BFONT, fontSize);
 
 		final int initX = MathUtils.rint(xOrigInPoints * convertPointsToHundredthsOfMM);
 
@@ -206,6 +211,7 @@ public class PDFPatternGenerator {
 				heightInHundredths - (gridYPosition + yJitter + Y_FONT_OFFSET), 0);
 
 				gridXPosition += DEFAULT_PADDING;
+
 			}
 			gridXPosition = initX;
 			gridYPosition += DEFAULT_PADDING;
@@ -213,5 +219,15 @@ public class PDFPatternGenerator {
 		}
 
 		content.endText();
+	}
+
+	/**
+	 * You will need to customize the font size. Different sizes work for different printers at
+	 * different DPIs.
+	 * 
+	 * @param size
+	 */
+	public void setFontSize(int size) {
+		fontSize = size;
 	}
 }

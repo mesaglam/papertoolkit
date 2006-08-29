@@ -49,8 +49,7 @@ public class RegionRenderer {
 	 * @return whether or not the debug flag is set to TRUE
 	 */
 	private static boolean readDebugFlagFromConfigFile() {
-		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
-				CONFIG_FILE);
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE);
 		final boolean debug = Boolean.parseBoolean(property);
 		return debug;
 	}
@@ -69,11 +68,12 @@ public class RegionRenderer {
 	 *            Draw some boxes to the Graphics context to show where the regions lie.
 	 */
 	public void renderToG2D(Graphics2D g2d) {
-//		if (true) {
-//			System.out.println("RegionRenderer.java: Skipping RenderToG2D");
-//			return;
-//		}
-
+		if (DEBUG_REGIONS) {
+			System.out.println("Debugging!");
+			return;
+		}
+		
+		
 		g2d.setFont(FONT);
 
 		final Rectangle2D b = region.getUnscaledBounds2D();
