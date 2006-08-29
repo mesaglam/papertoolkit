@@ -18,12 +18,24 @@ import edu.stanford.hci.r3.units.Inches;
  */
 public class SheetRendererTest {
 
+	private static Sheet createLargeSheet() {
+		Sheet sheet = new Sheet(new Inches(42), new Inches(24));
+
+		// define some regions
+		Region reg = new Region(0, 0, 42, 24);
+		reg.setActive(true);
+
+		// add regions to the sheet
+		sheet.addRegion(reg);
+		return sheet;
+	}
+
 	/**
 	 * Creates a Sheet object and populates it with some Regions.
 	 * 
 	 * @return
 	 */
-	public static Sheet createSheet() {
+	public static Sheet createSmallSheet() {
 		Sheet sheet = new Sheet(new Inches(3), new Inches(3));
 
 		// define some regions
@@ -32,9 +44,7 @@ public class SheetRendererTest {
 
 		// add regions to the sheet
 		sheet.addRegion(reg);
-
 		return sheet;
-
 	}
 
 	/**
@@ -50,7 +60,7 @@ public class SheetRendererTest {
 	 * Renders a sheet to a JPEG file.
 	 */
 	private static void sheetToJPEG() {
-		Sheet sheet = createSheet();
+		Sheet sheet = createSmallSheet();
 
 		SheetRenderer renderer = new SheetRenderer(sheet);
 		renderer.setRenderActiveRegionsWithPattern(false);
@@ -62,8 +72,8 @@ public class SheetRendererTest {
 	 * Renders a sheet to a PDF file.
 	 */
 	private static void sheetToPDF() {
-		Sheet sheet = createSheet();
+		Sheet sheet = createSmallSheet();
 		SheetRenderer renderer = new SheetRenderer(sheet);
-		renderer.renderToPDF(new File("data/testFiles/output/Test2.pdf"));
+		renderer.renderToPDF(new File("data/testFiles/output/TestZapf.pdf"));
 	}
 }
