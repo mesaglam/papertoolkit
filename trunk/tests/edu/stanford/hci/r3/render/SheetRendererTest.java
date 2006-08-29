@@ -36,10 +36,10 @@ public class SheetRendererTest {
 	 * @return
 	 */
 	public static Sheet createSmallSheet() {
-		Sheet sheet = new Sheet(new Inches(3), new Inches(3));
+		Sheet sheet = new Sheet(new Inches(8.5), new Inches(11));
 
 		// define some regions
-		Region reg = new Region(0, 0, 3, 3);
+		Region reg = new Region(0, 0, 3.5, 4);
 		reg.setActive(true);
 
 		// add regions to the sheet
@@ -73,7 +73,8 @@ public class SheetRendererTest {
 	 */
 	private static void sheetToPDF() {
 		Sheet sheet = createSmallSheet();
+		// Sheet sheet = createLargeSheet();
 		SheetRenderer renderer = new SheetRenderer(sheet);
-		renderer.renderToPDF(new File("data/testFiles/output/TestZapf.pdf"));
+		renderer.renderToPDF(new File("data/testFiles/output/TestTemplateSmall.pdf"));
 	}
 }

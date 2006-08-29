@@ -7,6 +7,7 @@ import java.io.IOException;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfTemplate;
 
 import edu.stanford.hci.r3.pattern.PatternJitter;
 import edu.stanford.hci.r3.pattern.TiledPattern;
@@ -19,7 +20,6 @@ import edu.stanford.hci.r3.util.MathUtils;
  * BSD License</a>.
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
  * <p>
  * This sits on top of PatternPackage and/or TiledPattern to create PDFs that can be printed. It
@@ -31,6 +31,13 @@ import edu.stanford.hci.r3.util.MathUtils;
  * 
  * setFontSize(...) is an important method, as you will need to adjust it based on your printer. We
  * picked a decent default (21 pt Tahoma) since it works for both of our printers.
+ * 
+ * ZapfDingbats seems to work even better, as it is a built-in Adobe font. The 'l' lowercase L
+ * character looks like a dot. =)
+ * 
+ * We will try one more, template-based, approach.
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PDFPatternGenerator {
 
@@ -60,9 +67,6 @@ public class PDFPatternGenerator {
 	private static final int DEFAULT_JITTER = 5;
 
 	private static final int DEFAULT_PADDING = 30;
-
-	// private static final String DOT_SYMBOL = "•";
-	private static final String DOT_SYMBOL = "l";
 
 	private static final int X_FONT_OFFSET = -2;
 
@@ -104,6 +108,8 @@ public class PDFPatternGenerator {
 
 	private BaseFont debugFont;
 
+	private String dotSymbol;
+
 	private int fontSize;
 
 	/**
@@ -117,6 +123,13 @@ public class PDFPatternGenerator {
 	 * The width of the PDFdocument.
 	 */
 	private Units width;
+
+	private PdfTemplate template;
+
+	/**
+	 * Template-based drawing of dots seems better. Use this by default.
+	 */
+	private boolean useTemplateInsteadOfFont = true;
 
 	/**
 	 * @param cb
@@ -141,20 +154,36 @@ public class PDFPatternGenerator {
 		content.transform(AffineTransform.getScaleInstance(convertHundredthsOfMMToPoints,
 				convertHundredthsOfMMToPoints));
 
+		if (useTemplateInsteadOfFont) {
+			// the dot as a pdf template (a rubber stamp)
+			template = content.createTemplate(7, 7);
+			template.circle(3, 3, 3);
+			template.fill();
+		}
+
+		// even if we are using templates, initialize fonts... for debugging
 		// initializePatternFont_Tahoma();
-		initializePatternFont_Zapf();
+		initializePatternFont_Zapf(); // *slightly* smaller file due to built-in font
 	}
 
+	/**
+	 * 21 works for both laser and wide-format inkjet.
+	 */
 	private void initializePatternFont_Tahoma() {
-		setFontSize((int) 21);
+		setFontSize(21);
 		debugFont = BFONT_TAHOMA;
 		patternFont = BFONT_TAHOMA;
+		dotSymbol = "•";
 	}
 
+	/**
+	 * Font size 11 works for laser printers. Font size 7 works for Epson 9800 at 1440.
+	 */
 	private void initializePatternFont_Zapf() {
-		setFontSize((int) 12);
+		setFontSize(7);
 		debugFont = BFONT_TAHOMA;
 		patternFont = BFONT_ZAPF;
+		dotSymbol = "l";
 	}
 
 	/**
@@ -192,10 +221,12 @@ public class PDFPatternGenerator {
 		// work in hundredths of a millimeter
 		final float heightInHundredths = (float) (heightOfPDF * convertPointsToHundredthsOfMM);
 
-		content.beginText();
-		// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
-		content.setColorFill(Color.BLACK);
-		content.setFontAndSize(patternFont, fontSize);
+		if (!useTemplateInsteadOfFont) {
+			content.beginText();
+			// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
+			content.setColorFill(Color.BLACK);
+			content.setFontAndSize(patternFont, fontSize);
+		}
 
 		final int initX = MathUtils.rint(xOrigInPoints * convertPointsToHundredthsOfMM);
 
@@ -240,11 +271,14 @@ public class PDFPatternGenerator {
 					break;
 				}
 
-				content.showTextAligned(PdfContentByte.ALIGN_CENTER, DOT_SYMBOL,
-
-				gridXPosition + xJitter + X_FONT_OFFSET,
-
-				heightInHundredths - (gridYPosition + yJitter + Y_FONT_OFFSET), 0);
+				if (useTemplateInsteadOfFont) {
+					content.addTemplate(template, gridXPosition + xJitter, heightInHundredths
+							- (gridYPosition + yJitter));
+				} else {
+					content.showTextAligned(PdfContentByte.ALIGN_CENTER, dotSymbol, gridXPosition
+							+ xJitter + X_FONT_OFFSET, heightInHundredths
+							- (gridYPosition + yJitter + Y_FONT_OFFSET), 0);
+				}
 
 				gridXPosition += DEFAULT_PADDING;
 
@@ -254,7 +288,9 @@ public class PDFPatternGenerator {
 			// System.out.println();
 		}
 
-		content.endText();
+		if (!useTemplateInsteadOfFont) {
+			content.endText();
+		}
 	}
 
 	/**
