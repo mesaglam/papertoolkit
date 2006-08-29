@@ -1,17 +1,16 @@
 <html>
-<head><title>Printing Pattern</title></head>
+<head><title>Printing Pattern</title>
+<link href="../../../../../../../docs/resources/styles.css" rel="stylesheet" type="text/css">
+</head>
 <body>
-<p><font face="Trebuchet MS" size="+2">
-Printing Pattern</font>
-</p>
-<font face="Trebuchet MS">
-PDFPatternGenerator can create PDF files with embedded pattern. We have tested the printing the following printers and fonts:
-
-<h3>HP LaserJet 4250 PS</h3>
-<p>The pen buzzes while streaming, but it works with these fonts, sizes, and resolutions:</p>
+<p class="Heading">
+Printing Pattern</p>
+PDFPatternGenerator can create PDF files with embedded pattern. We have tested the printing the following printers and fonts... However,you may have to customize it to work with your own printer. We chose a default of Tahoma 21, since it works for both of our printers. </font>
+<h3 class="Heading2">HP LaserJet 4250 PS</h3>
+<p>The pen may buzz while streaming, but it works with these fonts, sizes, and resolutions:</p>
 <ul>
    <li>Tahoma 20 w/ ProRes 1200 but NOT with 600dpi</li>
-   <li>Tahoma 21 w/ 600dpi</li>
+   <li><span class="Warning">Tahoma 21 w/ 600dpi</span></li>
    <li>Tahoma 23 w/ 600dpi and ProRes 1200</li>
    <li>Tahoma 25 w/ 600dpi and ProRes 1200 (at 600dpi it looks too small to the eye)</li>
    <li>Tahoma 26 w/ ProRes1200</li>
@@ -20,7 +19,24 @@ PDFPatternGenerator can create PDF files with embedded pattern. We have tested t
    <li>Tahoma 29 w/ 600dpi (but dots seem too dark)</li>
    <li>Tahoma 30 w/ 600dpi (but dots seem too dark)</li>
 </ul>
-You may have to customize it to work with your own printer.
-</font>
+<p>The pen does NOT work at these settings:</p>
+<ul>
+  <li>At 12 pt, we don't even see the pattern. </li>
+</ul>
+<h3 class="Heading2">Epson Stylus Pro 9800 (44&quot; wide-format printer)</h3>
+<p>We print from Acrobat 7 to the Colorbust RIP, which in turn rasterizes to the Epson 9800. The pen does not buzz. These fonts, sizes, and resolutions work well:</p>
+<ul>
+  <li>Tahoma 28 at 720dpi. The dots seem too dark when compared with professional pattern.</li>
+  <li><span class="Warning">Tahoma 21 at 1400dpi</span> work well. Dots are a little dark... </li>
+  <li>Tahoma 20 at 1400dpi works well. The dots seem a little too dark.</li>
+  <li>Tahoma 15 at 1400dpi still works well! The dots are approaching the quality of professional pattern.</li>
+  <li>Tahoma 12 at 2800dpi works perfectly still! The dots are about the same size (if not smaller) than professional pattern.  </li>
+</ul>
+<p>If you know you will be printing to the Epson, drop it down to Tahoma 12-15 to save some ink! </p>
+<p>&nbsp;</p>
+<hr noshade size=1/>
+<p class="Author">Ron B. Yeh<br>
+  Stanford University</p>
+<p>&nbsp;</p>
 </body>
 </html>

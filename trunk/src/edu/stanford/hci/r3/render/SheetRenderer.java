@@ -183,6 +183,7 @@ public class SheetRenderer {
 			final PdfWriter writer = PdfWriter.getInstance(doc, fileOutputStream);
 			doc.open();
 
+			
 			// bottom layer for regions
 			final PdfContentByte cb = writer.getDirectContentUnder();
 			final Graphics2D g2d = cb.createGraphicsShapes(pageSize.width(), pageSize.height());

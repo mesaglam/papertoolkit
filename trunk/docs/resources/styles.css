@@ -63,3 +63,7 @@ li {
 .Warning {
 	color: #FF0000;
 }
+.Author {
+	font-size: small;
+	color: #999999;
+}
