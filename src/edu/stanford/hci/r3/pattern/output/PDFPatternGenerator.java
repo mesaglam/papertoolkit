@@ -35,7 +35,9 @@ import edu.stanford.hci.r3.util.MathUtils;
 public class PDFPatternGenerator {
 
 	// font creation
-	private static final BaseFont BFONT = createBaseFont();
+	private static final BaseFont BFONT_TAHOMA = createBaseFontTahoma();
+
+	private static final BaseFont BFONT_ZAPF = createBaseFontZapfDingbats();
 
 	/**
 	 * Given a value in Hundredths of a millimeter (1/2540 inches) convert it to the same length in
@@ -59,18 +61,34 @@ public class PDFPatternGenerator {
 
 	private static final int DEFAULT_PADDING = 30;
 
-	private static final String DOT_SYMBOL = "•";
+	// private static final String DOT_SYMBOL = "•";
+	private static final String DOT_SYMBOL = "l";
 
 	private static final int X_FONT_OFFSET = -2;
 
 	private static final int Y_FONT_OFFSET = 9;
 
 	/**
-	 * @return loads a font from disk.
+	 * @return the tahoma font from disk.
 	 */
-	private static BaseFont createBaseFont() {
+	private static BaseFont createBaseFontTahoma() {
 		try {
 			return BaseFont.createFont("/fonts/tahoma.ttf", BaseFont.CP1252, BaseFont.EMBEDDED);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * @return
+	 */
+	private static BaseFont createBaseFontZapfDingbats() {
+		try {
+			return BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.CP1252,
+					BaseFont.NOT_EMBEDDED);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -84,12 +102,16 @@ public class PDFPatternGenerator {
 	 */
 	private PdfContentByte content;
 
+	private BaseFont debugFont;
+
 	private int fontSize;
 
 	/**
 	 * The height of the PDF document.
 	 */
 	private Units height;
+
+	private BaseFont patternFont;
 
 	/**
 	 * The width of the PDFdocument.
@@ -118,7 +140,21 @@ public class PDFPatternGenerator {
 		// we get only 72 points...
 		content.transform(AffineTransform.getScaleInstance(convertHundredthsOfMMToPoints,
 				convertHundredthsOfMMToPoints));
-		setFontSize((int) DEFAULT_FONT_SIZE);
+
+		// initializePatternFont_Tahoma();
+		initializePatternFont_Zapf();
+	}
+
+	private void initializePatternFont_Tahoma() {
+		setFontSize((int) 21);
+		debugFont = BFONT_TAHOMA;
+		patternFont = BFONT_TAHOMA;
+	}
+
+	private void initializePatternFont_Zapf() {
+		setFontSize((int) 12);
+		debugFont = BFONT_TAHOMA;
+		patternFont = BFONT_ZAPF;
 	}
 
 	/**
@@ -139,7 +175,7 @@ public class PDFPatternGenerator {
 		if (DEBUG_PATTERN) {
 			// write debug output
 			content.beginText();
-			content.setFontAndSize(BFONT, 10);
+			content.setFontAndSize(debugFont, 10);
 			// ArrayUtils.printMatrix(BFONT.getFamilyFontName());
 			content.setColorFill(new Color(128, 128, 255, 128));
 			content.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tahoma " + (int) fontSize
@@ -159,7 +195,7 @@ public class PDFPatternGenerator {
 		content.beginText();
 		// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
 		content.setColorFill(Color.BLACK);
-		content.setFontAndSize(BFONT, fontSize);
+		content.setFontAndSize(patternFont, fontSize);
 
 		final int initX = MathUtils.rint(xOrigInPoints * convertPointsToHundredthsOfMM);
 
