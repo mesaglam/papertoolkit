@@ -51,6 +51,13 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Sets up parameters for any Java Swing UI we need.
+	 */
+	public static void initializeLookAndFeel() {
+		WindowUtils.setNativeLookAndFeel();
+	}
+
+	/**
 	 * @param o
 	 * @return a string representing o translated into XML
 	 */
@@ -74,15 +81,8 @@ public class PaperToolkit {
 	 */
 	public PaperToolkit() {
 		printInitializationMessages();
-		initializeJavaSwing();
+		initializeLookAndFeel();
 		eventEngine = new EventEngine();
-	}
-
-	/**
-	 * Sets up parameters for any Java Swing UI we need.
-	 */
-	private void initializeJavaSwing() {
-		WindowUtils.setNativeLookAndFeel();
 	}
 
 	/**
