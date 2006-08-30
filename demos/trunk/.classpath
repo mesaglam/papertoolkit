@@ -3,5 +3,9 @@
 	<classpathentry path="src" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
 	<classpathentry path="/PaperToolkit" combineaccessrules="false" kind="src"/>
+	<classpathentry path="/PaperToolkit/lib/jfreechart/gnujaxp.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/itext-1.4.3.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jfreechart/jcommon-1.0.5.jar" kind="lib"/>
+	<classpathentry path="/JFreeChart" combineaccessrules="false" kind="src"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
