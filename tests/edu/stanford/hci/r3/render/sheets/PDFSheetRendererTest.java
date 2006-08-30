@@ -43,18 +43,13 @@ public class PDFSheetRendererTest {
 			reg.setActive(true);
 			sheet.addRegion(reg);
 		}
-		
-		Region reg = new Region(19.09, 3.19-.090/*~half of height*/, 11.11, .22);
+
+		Region reg = new Region(19.09, 3.19 - .085/* ~half of height */, 11.11, .22);
 		reg.setActive(true);
 		sheet.addRegion(reg);
 
-		
 		PDFSheetRenderer renderer = new PDFSheetRenderer(sheet);
 		renderer.renderToPDF(new File("data/testFiles/output/ProgrammingLanguages_Patterned.pdf"));
-	}
-
-	public static void main(String[] args) {
-		addRegionToExistingPDF2();
 	}
 
 	private static void createJPEGFromPDF() {
@@ -69,5 +64,9 @@ public class PDFSheetRendererTest {
 		PDFSheetRenderer renderer = new PDFSheetRenderer(sheet);
 		renderer.renderToPDF(new File("data/testFiles/output/AvianFluMessMap.pdf"));
 		renderer.renderToJPEG(new File("data/testFiles/output/AvianFluMessMap.jpg"));
+	}
+
+	public static void main(String[] args) {
+		addRegionToExistingPDF2();
 	}
 }
