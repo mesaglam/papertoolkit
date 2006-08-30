@@ -29,8 +29,32 @@ public class PDFSheetRendererTest {
 		renderer.renderToPDF(new File("data/testFiles/output/AvianFluTimeline.pdf"));
 	}
 
+	private static void addRegionToExistingPDF2() {
+		final File file = new File("data/testFiles/private/ProgrammingLanguages.pdf");
+		// PDFSheet sheet = new PDFSheet(new File("data/testFiles/ButterflyNetCHI2006.pdf"));
+		System.out.println(file.getAbsolutePath());
+		PDFSheet sheet = new PDFSheet(file);
+
+		double delta = 1.42;
+
+		// define some regions
+		for (int i = 0; i < 18; i++) {
+			Region reg = new Region(13.34 + (i * delta), 15.43, 0.8, 1.2);
+			reg.setActive(true);
+			sheet.addRegion(reg);
+		}
+		
+		Region reg = new Region(19.09, 3.19-.090/*~half of height*/, 11.11, .22);
+		reg.setActive(true);
+		sheet.addRegion(reg);
+
+		
+		PDFSheetRenderer renderer = new PDFSheetRenderer(sheet);
+		renderer.renderToPDF(new File("data/testFiles/output/ProgrammingLanguages_Patterned.pdf"));
+	}
+
 	public static void main(String[] args) {
-		addRegionToExistingPDF();
+		addRegionToExistingPDF2();
 	}
 
 	private static void createJPEGFromPDF() {

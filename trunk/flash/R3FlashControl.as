@@ -9,6 +9,7 @@
 		
 		public function R3FlashControl() {
 			trace("R3 Flash Control Created.");
+			startListening();
 		}
 		
 		public function startListening() {
@@ -17,24 +18,25 @@
 			sock = new Socket();
 			sock.addEventListener(ProgressEvent.SOCKET_DATA, socketDataHandler);			
 			sock.connect("localhost", 6543);
-			sock.writeUTFBytes("Hello");
+			sock.writeUTFBytes("Hello, Server!");
 		}
 
 		// callback
 		private function socketDataHandler(event:ProgressEvent):void {
-			trace("[" + event + "]");
 			var str:String = sock.readUTFBytes(sock.bytesAvailable);
+			trace("Incoming Message: [" + str + "]");
+			
+			if (str.length < 4 || str.indexOf("[[") == -1 || str.indexOf("]]") == -1) {
+				trace("Invalid Message: " + str);
+				return;
+			}
 			
 			// where to move the main timeline to
 			var destinationFrameLabel:String = str.substring(str.indexOf("[[")+2, str.indexOf("]]"));
 			
 			// moves the document to the frame with label == str
-			trace("[" + destinationFrameLabel + "]");
-			trace(destinationFrameLabel.length);
+			trace("Destination Frame: [" + destinationFrameLabel + "]");
 			MainController.getInstance().gotoAndPlay(destinationFrameLabel);
-			MainController.getInstance().gotoAndPlay("Show Map");
-			
-			
 		}
 	}
 }

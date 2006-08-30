@@ -1,11 +1,12 @@
 ﻿package {
 	import flash.display.MovieClip;
 
+	// We instantiate a movie clip so that it can control the timeline.
 	public class MainController extends MovieClip {
 		private static var instance:MainController = null;
 
 		public function MainController() {
-			trace("Hello World");
+			trace("MainController created");
 			instance = this;
 		}
 
