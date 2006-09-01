@@ -16,7 +16,7 @@ import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ProgrammingLanguages {
+public class ProgrammingLanguagesGIGAprint {
 
 	public static void main(String[] args) {
 		final File file = new File("data/testFiles/private/ProgrammingLanguages.pdf");
