@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3demos.proglangtimeline;
+package edu.stanford.hci.r3.demos.proglangtimeline;
 
 import java.io.File;
 
