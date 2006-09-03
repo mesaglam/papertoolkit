@@ -12,14 +12,15 @@ import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
  * BSD License</a>.
  * </p>
  * 
- * A GIGAprint with a Programming Languages timeline by O'Reilly.
+ * A GIGAprint with a Programming Languages timeline by O'Reilly. See <a
+ * href="http://www.oreilly.com/pub/a/oreilly/news/languageposter_0504.html">the O'Reilly Poster</a>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class ProgrammingLanguagesGIGAprint {
 
 	public static void main(String[] args) {
-		final File file = new File("data/testFiles/private/ProgrammingLanguages.pdf");
+		final File file = new File("data/O'Reilly/ProgrammingLanguages.pdf");
 		PDFSheet sheet = new PDFSheet(file);
 
 		final double delta = 1.42;
@@ -36,7 +37,7 @@ public class ProgrammingLanguagesGIGAprint {
 		sheet.addRegion(reg);
 
 		PDFSheetRenderer renderer = new PDFSheetRenderer(sheet);
-		renderer.renderToPDF(new File("data/testFiles/output/ProgrammingLanguages_Patterned.pdf"));
+		renderer.renderToPDF(new File("data/O'Reilly/ProgrammingLanguages_Patterned.pdf"));
 
 	}
 }
