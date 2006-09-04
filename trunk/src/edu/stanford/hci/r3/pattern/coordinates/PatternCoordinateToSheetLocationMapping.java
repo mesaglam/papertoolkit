@@ -27,6 +27,9 @@ import edu.stanford.hci.r3.paper.Sheet;
  */
 public class PatternCoordinateToSheetLocationMapping {
 
+	/**
+	 * The mapping is bound to one sheet.
+	 */
 	private Sheet sheet;
 
 	/**
