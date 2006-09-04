@@ -1,7 +1,7 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
 import edu.stanford.hci.r3.units.PatternDots;
-import edu.stanford.hci.r3.units.coordinates.StreamedPatternLocation;
+import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 
 /**
  * <p>
@@ -46,7 +46,7 @@ public class StreamedPatternBounds {
 	 * For performance, we precompute the boundaries and store just those numbers.
 	 * </p>
 	 */
-	public StreamedPatternBounds(StreamedPatternLocation theOrigin, PatternDots w, PatternDots h) {
+	public StreamedPatternBounds(StreamedPatternCoordinates theOrigin, PatternDots w, PatternDots h) {
 		setBoundaries(theOrigin, w, h);
 	}
 
@@ -74,7 +74,7 @@ public class StreamedPatternBounds {
 	 * @param location
 	 * @return whether the bounds contains this location
 	 */
-	public boolean contains(StreamedPatternLocation location) {
+	public boolean contains(StreamedPatternCoordinates location) {
 		final double xTestVal = location.getXVal();
 		final double yTestVal = location.getYVal();
 		return contains(xTestVal, yTestVal);
@@ -100,7 +100,7 @@ public class StreamedPatternBounds {
 	 * @param w
 	 * @param h
 	 */
-	private void setBoundaries(StreamedPatternLocation theOrigin, PatternDots w, PatternDots h) {
+	private void setBoundaries(StreamedPatternCoordinates theOrigin, PatternDots w, PatternDots h) {
 		setBoundaries(theOrigin.getXVal(), theOrigin.getYVal(), xOrigin + w.getValue(), yOrigin
 				+ h.getValue());
 	}
