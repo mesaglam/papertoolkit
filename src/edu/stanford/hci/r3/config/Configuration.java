@@ -1,11 +1,9 @@
 package edu.stanford.hci.r3.config;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -40,8 +38,8 @@ public class Configuration extends Properties {
 	 */
 	public static String get(String propertyName) {
 		final String property = config.getProperty(propertyName);
-		System.out.println("Configuration.java: Retrieved Property " + propertyName + " --> "
-				+ property);
+		// System.out.println("Configuration.java: Retrieved Property " + propertyName + " --> "
+		// + property);
 		return property;
 	}
 
@@ -52,7 +50,7 @@ public class Configuration extends Properties {
 	 */
 	private static InputStream getConfigFileStream(String propertyName) throws IOException {
 		final String resourceName = get(propertyName);
-		System.out.println("Configuration.java: Resource is " + resourceName);
+		// System.out.println("Configuration.java: Resource is " + resourceName);
 		final URL resource = Configuration.class.getResource(resourceName);
 		return resource.openStream();
 	}
@@ -65,13 +63,11 @@ public class Configuration extends Properties {
 	 */
 	public static File getConfigFile(String propertyName) {
 		try {
-			System.out.println("Configuration.java: Property Name: " + propertyName);
-			URL resource = Configuration.class.getResource(get(propertyName));
-			System.out.println("Configuration.java: URL: " + resource);
-			URI uri = resource.toURI();
-			System.out.println(uri);
-			File file = new File(uri);
-			System.out.println(file.getAbsolutePath());
+			// System.out.println("Configuration.java: Property Name: " + propertyName);
+			final URL resource = Configuration.class.getResource(get(propertyName));
+			// System.out.println("Configuration.java: URL: " + resource);
+			final URI uri = resource.toURI();
+			final File file = new File(uri);
 			return file;
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -87,9 +83,9 @@ public class Configuration extends Properties {
 	public static String getPropertyFromConfigFile(String propertyName, String configFileKey) {
 		final Properties props = new Properties();
 		try {
-			System.out.println("Configuration.java: Config File Key is " + propertyName + " --> "
-					+ configFileKey);
-			InputStream configFileStream = Configuration.getConfigFileStream(configFileKey);
+			// System.out.println("Configuration.java: Config File Key is " + propertyName + " --> "
+			// + configFileKey);
+			final InputStream configFileStream = Configuration.getConfigFileStream(configFileKey);
 
 			// Just for debugging...
 			// BufferedReader br = new BufferedReader(new InputStreamReader(configFileStream));
@@ -97,7 +93,7 @@ public class Configuration extends Properties {
 			// while ((line = br.readLine()) != null) {
 			// System.out.println(line);
 			// }
-			
+
 			props.loadFromXML(configFileStream);
 		} catch (InvalidPropertiesFormatException e) {
 			e.printStackTrace();
