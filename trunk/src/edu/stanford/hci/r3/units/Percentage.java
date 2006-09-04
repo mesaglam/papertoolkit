@@ -45,6 +45,20 @@ public class Percentage extends Units {
 	}
 
 	/**
+	 * @return
+	 */
+	public Units getActualValue() {
+		return actualValue;
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getMaximumValue() {
+		return maximumValue;
+	}
+
+	/**
 	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
 	@Override

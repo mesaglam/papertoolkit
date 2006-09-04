@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pattern.coordinates;
+package edu.stanford.hci.r3.units.coordinates;
 
 import edu.stanford.hci.r3.units.Percentage;
 
@@ -15,7 +15,7 @@ import edu.stanford.hci.r3.units.Percentage;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PercentageCoordinates {
+public class PercentageCoordinates extends Coordinates {
 
 	private Percentage x;
 
@@ -26,15 +26,22 @@ public class PercentageCoordinates {
 	 * @param y
 	 */
 	public PercentageCoordinates(Percentage pctInX, Percentage pctInY) {
+		super(pctInX, pctInY);
 		x = pctInX;
 		y = pctInY;
 	}
-	
-	public Percentage getX() {
-		return x;
+
+	/**
+	 * @return
+	 */
+	public double getPctInXDirection() {
+		return x.getValue();
 	}
-	
-	public Percentage getY() {
-		return y;
+
+	/**
+	 * @return
+	 */
+	public double getPctInYDirection() {
+		return y.getValue();
 	}
 }
