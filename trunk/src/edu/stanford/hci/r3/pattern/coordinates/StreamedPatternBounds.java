@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
 import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.units.coordinates.StreamedPatternLocation;
 
 /**
  * <p>

@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pattern.coordinates;
+package edu.stanford.hci.r3.units.coordinates;
 
 import edu.stanford.hci.r3.units.PatternDots;
 
