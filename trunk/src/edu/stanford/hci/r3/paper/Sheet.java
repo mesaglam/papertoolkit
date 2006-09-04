@@ -81,13 +81,14 @@ public class Sheet {
 
 	/**
 	 * @param r
+	 *            a region to be added to this sheet.
 	 */
 	public void addRegion(Region r) {
 		regions.add(r);
 	}
 
 	/**
-	 * @return
+	 * @return the height of this sheet.
 	 */
 	public Units getHeight() {
 		return size.getHeight();
