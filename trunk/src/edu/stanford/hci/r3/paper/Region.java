@@ -44,6 +44,12 @@ public class Region {
 	private boolean active = false;
 
 	/**
+	 * The name of the region (e.g., Public/Private Button). Useful for debugging. Initialized with
+	 * a simple default.
+	 */
+	private String name = "A Region";
+
+	/**
 	 * Internal horizontal scale of the region. When rendering, we will multiply the shape by this
 	 * scale.
 	 */
@@ -126,6 +132,13 @@ public class Region {
 	 */
 	public String getIsActiveString() {
 		return " [" + (isActive() ? "ACTIVE" : "STATIC") + "]";
+	}
+
+	/**
+	 * @return
+	 */
+	public String getName() {
+		return name;
 	}
 
 	public Units getOriginX() {
@@ -267,6 +280,15 @@ public class Region {
 	 */
 	public void setActive(boolean activeRegion) {
 		active = activeRegion;
+	}
+
+	/**
+	 * @param n
+	 *            the name of the region. Name it something useful, like "Blue Button for Changing
+	 *            Pen Colors"
+	 */
+	public void setName(String n) {
+		name = n;
 	}
 
 	/**

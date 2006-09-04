@@ -25,12 +25,7 @@ import edu.stanford.hci.r3.paper.Sheet;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PatternCoordinateToSheetLocationMapping {
-
-	/**
-	 * The mapping is bound to one sheet.
-	 */
-	private Sheet sheet;
+public class PatternLocationToSheetLocationMapping {
 
 	/**
 	 * Binds regions to pattern bounds, specified in logical (batched) and physical (streamed)
@@ -39,15 +34,28 @@ public class PatternCoordinateToSheetLocationMapping {
 	private HashMap<Region, StreamedPatternBounds> regionToPatternBounds = new HashMap<Region, StreamedPatternBounds>();
 
 	/**
+	 * The mapping is bound to one sheet.
+	 */
+	private Sheet sheet;
+
+	/**
 	 * One mapping object per sheet. Create this object after you have added all the regions that
 	 * you need to the sheet. This class will maintain a mapping of Regions to physical (stremaing)
 	 * and logical (batched) pen coordinates.
 	 * 
 	 * @param s
 	 */
-	public PatternCoordinateToSheetLocationMapping(Sheet s) {
+	public PatternLocationToSheetLocationMapping(Sheet s) {
 		sheet = s;
 		initializeMap(s.getRegions());
+	}
+
+	/**
+	 * @param r
+	 * @return
+	 */
+	public StreamedPatternBounds getPatternBoundsOfRegion(Region r) {
+		return regionToPatternBounds.get(r);
 	}
 
 	/**
@@ -55,8 +63,33 @@ public class PatternCoordinateToSheetLocationMapping {
 	 */
 	private void initializeMap(List<Region> regions) {
 		for (Region r : regions) {
-			regionToPatternBounds.put(r, null);
+			regionToPatternBounds.put(r, new StreamedPatternBounds());
 		}
 	}
 
+	/**
+	 * 
+	 */
+	public void printMapping() {
+		for (Region r : regionToPatternBounds.keySet()) {
+			System.out.print(r.getName() + " --> ");
+			StreamedPatternBounds bounds = regionToPatternBounds.get(r);
+			System.out.println(bounds);
+		}
+	}
+
+	/**
+	 * @param r
+	 * @param bounds
+	 */
+	public void setPatternBoundsOfRegion(Region r, StreamedPatternBounds bounds) {
+		if (regionToPatternBounds.containsKey(r) || sheet.containsRegion(r)) {
+			// updating a known region OR
+			// adding a new region (probably added to the sheet after this object was constructed)
+			regionToPatternBounds.put(r, bounds);
+		} else {
+			System.err.println("PatternLocationToSheetLocationMapping.java: Region unknown. "
+					+ "Please add it to the sheet before updating this mapping.");
+		}
+	}
 }

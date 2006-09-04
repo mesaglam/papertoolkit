@@ -31,6 +31,10 @@ table {
 	border-style:solid;
 }
 
+.BSDLicense {
+	color:#777777;
+}
+
 
 /* Table colors */
 .TableHeadingColor     { background: #404040; color:#DFDFDF }
