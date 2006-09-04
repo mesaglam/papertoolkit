@@ -29,10 +29,10 @@ public class PenSample implements Serializable {
 	// timestamp of server when received
 	public long timestamp;
 
-	// x location of the point, in Anoto coordinates
+	// x location of the point, in physical Anoto coordinates
 	public double x;
 
-	// y location of the point, in Anoto coordinates
+	// y location of the point, in physical Anoto coordinates
 	public double y;
 
 	/**
