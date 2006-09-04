@@ -5,14 +5,15 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * A TiledPatternGenerator can create a TiledPattern object, which allows you to iterate through the
+ * object to find the dot pattern.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * A TiledPatternGenerator can create a TiledPattern object, which allows you to iterate through the
- * object to find the dot pattern.
  */
 public class TiledPattern {
 
@@ -24,8 +25,14 @@ public class TiledPattern {
 
 	private int numDotsYPerFullTile;
 
+	/**
+	 * The number of horizontal tiles.
+	 */
 	private int numTilesX;
 
+	/**
+	 * The number of vertical tiles.
+	 */
 	private int numTilesY;
 
 	private int numTotalColumns;
