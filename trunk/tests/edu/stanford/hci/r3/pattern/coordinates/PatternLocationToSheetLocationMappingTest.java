@@ -59,8 +59,12 @@ public class PatternLocationToSheetLocationMappingTest {
 
 	}
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(createSheet());
-		System.out.println(mapping);
+		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
+				createSheet());
+		mapping.printMapping();
 	}
 }

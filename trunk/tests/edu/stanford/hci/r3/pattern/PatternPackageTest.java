@@ -2,6 +2,8 @@ package edu.stanford.hci.r3.pattern;
 
 import java.util.List;
 
+import org.junit.Test;
+
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.util.ArrayUtils;
@@ -21,22 +23,23 @@ public class PatternPackageTest {
 	 * 
 	 * @return
 	 */
-	private static TiledPatternGenerator displayTiling() {
+	@Test
+	public void displayTiling() {
 		TiledPatternGenerator generator = new TiledPatternGenerator();
 		List<String> availablePatternPackages = generator.listAvailablePatternPackageNames();
-		System.out.println(availablePatternPackages);
+		System.out.println("Available Pattern Packages: " + availablePatternPackages);
 		PatternPackage pkg = generator.getPatternPackageByName("default");
-		System.out.println(pkg.getNumPatternRowsPerFile());
-		System.out.println(pkg.getNumPatternColsPerFile());
+		System.out.println("Num Rows: " + pkg.getNumPatternRowsPerFile());
+		System.out.println("Num Cols: " + pkg.getNumPatternColsPerFile());
 		generator.displayTilingInformation(new Inches(8.5), new Inches(11));
 		generator.displayTilingInformation(new Inches(8), new Inches(8));
-		return generator;
 	}
 
 	/**
 	 * Get pattern from a file.
 	 */
-	private static void getPattern() {
+	@Test
+	public void getPattern() {
 		TiledPatternGenerator generator = new TiledPatternGenerator();
 		PatternPackage pkg = generator.getCurrentPatternPackage();
 		System.out.println(pkg.getNumPatternRowsPerFile());
@@ -53,10 +56,4 @@ public class PatternPackageTest {
 		System.out.println(pattern[2].length());
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		getPattern();
-	}
 }

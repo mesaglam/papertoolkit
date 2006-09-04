@@ -2,13 +2,16 @@ package edu.stanford.hci.r3.pattern;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.HashMap;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.DebugUtils;
@@ -30,12 +33,24 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class PatternPackage {
 
+	private static final String MIN_PATTERN_X = "minPatternX";
+
+	private static final String MIN_PATTERN_Y = "minPatternY";
+
+	private static final String NUM_HORIZ_DOTS_BETWEEN_PAGES = "numHorizontalDotsBetweenOriginOfPages";
+
 	/**
 	 * All pattern files' names look like N.pattern, where N is the page number.
 	 */
 	private static final String PATTERN_FILE_EXTENSION = ".pattern";
 
+	private double minPatternX;
+
+	private double minPatternY;
+
 	private String name;
+
+	private double numHorizontalDotsBetweenOriginOfPages;
 
 	/**
 	 * The width of a pattern file, in num dots.
@@ -72,6 +87,9 @@ public class PatternPackage {
 
 	/**
 	 * @param location
+	 *            this directory contains .pattern files (text files that contain the pattern as
+	 *            described by Anoto) and a config.xml file, which describes the physical
+	 *            coordinates, among other things.
 	 */
 	public PatternPackage(File location) {
 		patternDefinitionPath = location;
@@ -80,7 +98,7 @@ public class PatternPackage {
 
 		// look at the directory to see how many pattern files are available
 		// System.out.println(patternDefinitionPath.getAbsolutePath());
-		List<File> visibleFiles = FileUtils.listVisibleFiles(patternDefinitionPath,
+		final List<File> visibleFiles = FileUtils.listVisibleFiles(patternDefinitionPath,
 				new String[] { "pattern" });
 
 		numPatternFiles = visibleFiles.size();
@@ -135,6 +153,13 @@ public class PatternPackage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		// read in the config.xml file
+		// parse the entries that look like this:
+		// <entry key="minPatternX">184022418.0</entry>
+		// <entry key="minPatternY">7187.0</entry>
+		// <entry key="numHorizontalDotsBetweenOriginOfPages">1330</entry>
+		readPropertiesFromConfigFile(new File(patternDefinitionPath, "config.xml"));
 	}
 
 	/**
@@ -262,6 +287,32 @@ public class PatternPackage {
 			e.printStackTrace();
 		}
 		return pattern;
+	}
+
+	/**
+	 * Reads information from the config.xml file.
+	 * 
+	 * @param configFile
+	 */
+	private void readPropertiesFromConfigFile(File configFile) {
+		Properties props = new Properties();
+		try {
+			props.loadFromXML(new FileInputStream(configFile));
+		} catch (InvalidPropertiesFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		minPatternX = Double.parseDouble(props.getProperty(MIN_PATTERN_X));
+		minPatternY = Double.parseDouble(props.getProperty(MIN_PATTERN_Y));
+		numHorizontalDotsBetweenOriginOfPages = Double.parseDouble(props
+				.getProperty(NUM_HORIZ_DOTS_BETWEEN_PAGES));
+
+		// System.out.println("PatternPackage: minPatternX=" + minPatternX + " minPatternY="
+		// + minPatternY + " numHorizDotsBetweenPages="
+		// + numHorizontalDotsBetweenOriginOfPages);
 	}
 
 	/*
