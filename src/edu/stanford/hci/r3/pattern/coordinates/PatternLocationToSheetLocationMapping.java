@@ -31,7 +31,7 @@ public class PatternLocationToSheetLocationMapping {
 	 * Binds regions to pattern bounds, specified in logical (batched) and physical (streamed)
 	 * coordinates.
 	 */
-	private HashMap<Region, StreamedPatternBounds> regionToPatternBounds = new HashMap<Region, StreamedPatternBounds>();
+	private HashMap<Region, TiledPatternCoordinateConverter> regionToPatternBounds = new HashMap<Region, TiledPatternCoordinateConverter>();
 
 	/**
 	 * The mapping is bound to one sheet.
@@ -54,7 +54,7 @@ public class PatternLocationToSheetLocationMapping {
 	 * @param r
 	 * @return
 	 */
-	public StreamedPatternBounds getPatternBoundsOfRegion(Region r) {
+	public TiledPatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
 		return regionToPatternBounds.get(r);
 	}
 
@@ -63,7 +63,7 @@ public class PatternLocationToSheetLocationMapping {
 	 */
 	private void initializeMap(List<Region> regions) {
 		for (Region r : regions) {
-			regionToPatternBounds.put(r, new StreamedPatternBounds());
+			regionToPatternBounds.put(r, null /* new TiledPatternCoordinateConverter() */);
 		}
 	}
 
@@ -73,7 +73,7 @@ public class PatternLocationToSheetLocationMapping {
 	public void printMapping() {
 		for (Region r : regionToPatternBounds.keySet()) {
 			System.out.print(r.getName() + " --> ");
-			StreamedPatternBounds bounds = regionToPatternBounds.get(r);
+			TiledPatternCoordinateConverter bounds = regionToPatternBounds.get(r);
 			System.out.println(bounds);
 		}
 	}
@@ -82,7 +82,7 @@ public class PatternLocationToSheetLocationMapping {
 	 * @param r
 	 * @param bounds
 	 */
-	public void setPatternBoundsOfRegion(Region r, StreamedPatternBounds bounds) {
+	public void setPatternBoundsOfRegion(Region r, TiledPatternCoordinateConverter bounds) {
 		if (regionToPatternBounds.containsKey(r) || sheet.containsRegion(r)) {
 			// updating a known region OR
 			// adding a new region (probably added to the sheet after this object was constructed)

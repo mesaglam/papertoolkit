@@ -14,7 +14,7 @@ import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class StreamedPatternBounds {
+public class TiledPatternCoordinateConverter {
 
 	private double bottomBoundary;
 
@@ -24,12 +24,23 @@ public class StreamedPatternBounds {
 
 	private double yOrigin;
 
-	/**
-	 * For when you need to set values later.
-	 */
-	public StreamedPatternBounds() {
-		setBoundaries(0, 0, 0, 0);
-	}
+	private int startingTile;
+
+	private int numTilesAcross;
+
+	private int numTilesDown;
+
+	private int dotsPerTileHorizontal;
+
+	private int dotsPerTileVertical;
+
+	private int numTilesOwned;
+
+	private double numTotalDotsAcross;
+
+	private double numTotalDotsDown;
+
+	private double numHorizontalDotsBetweenTiles;
 
 	/**
 	 * <p>
@@ -45,9 +56,61 @@ public class StreamedPatternBounds {
 	 * <p>
 	 * For performance, we precompute the boundaries and store just those numbers.
 	 * </p>
+	 * 
+	 * TODO: Update this Method to handle tiling...
 	 */
-	public StreamedPatternBounds(StreamedPatternCoordinates theOrigin, PatternDots w, PatternDots h) {
+	private TiledPatternCoordinateConverter(StreamedPatternCoordinates theOrigin, PatternDots w,
+			PatternDots h) {
 		setBoundaries(theOrigin, w, h);
+	}
+
+	/**
+	 * @param startTile
+	 * @param numTilesHoriz
+	 * @param numTilesVert
+	 * @param dotsPerTileHoriz
+	 * @param dotsPerTileVert
+	 * @param leftMostPatternX
+	 * @param topMostPatternY
+	 * @param tilesOwned
+	 * @param numDotsAcross
+	 * @param numDotsDown
+	 * @param numHorizDotsBetweenTiles
+	 */
+	public TiledPatternCoordinateConverter(int startTile, int numTilesHoriz, int numTilesVert,
+			int dotsPerTileHoriz, int dotsPerTileVert, double leftMostPatternX,
+			double topMostPatternY, int tilesOwned, double numDotsAcross, double numDotsDown,
+			double numHorizDotsBetweenTiles) {
+		// the number of the first (top-left) tile; this is largely arbitrary, but _may_ correlate
+		// with a pattern file number N.pattern --> N as a starting tile number. This makes
+		// calculations easier for certain operations, such as finding out which page of a notebook
+		// your user has written on.
+		startingTile = startTile;
+
+		// the number of tiles owned by this converter. Usually, this converter will map to a region
+		// on a sheet. This means that the tiledPatternConverter will need to know how many tiles of
+		// pattern the region contains. It will then help us find out where on the region we are.
+		numTilesAcross = numTilesHoriz;
+		numTilesDown = numTilesVert;
+
+		// how wide and tall are these tiles? We assume uniform tiles (except for the rightmost and
+		// bottommost tiles)
+		dotsPerTileHorizontal = dotsPerTileHoriz;
+		dotsPerTileVertical = dotsPerTileVert;
+
+		// what is the physical coordinate of the top-left corner of the top-left tile?
+		xOrigin = leftMostPatternX;
+		yOrigin = topMostPatternY;
+
+		// how many tiles do we own in total?
+		numTilesOwned = tilesOwned;
+
+		// how wide and tall is the whole region?
+		numTotalDotsAcross = numDotsAcross;
+		numTotalDotsDown = numDotsDown;
+
+		// what is the x offset between the origins of two adjacent tiles?
+		numHorizontalDotsBetweenTiles = numHorizDotsBetweenTiles;
 	}
 
 	/**
@@ -113,4 +176,27 @@ public class StreamedPatternBounds {
 	public String toString() {
 		return "[" + xOrigin + "," + yOrigin + " --> " + rightBoundary + "," + bottomBoundary + "]";
 	}
+
+	/**
+	 * @param coord
+	 * @return the tile number of this coordinate.
+	 * 
+	 * <blockquote><code>
+	 *  [0][1][2]<br>
+	 *  [3][4][5]
+	 * </code></blockquote>
+	 * 
+	 * This assumes that the pattern space is wide (depends only on the X coordinate) and squat
+	 * (same y coordinate for each page).
+	 */
+	public int getTileNumber(StreamedPatternCoordinates coord) {
+		
+		// START FROM HERE:
+		// IS SHORTCUT THIS VALID?
+		// Do we need a **good** contains method?
+		
+		// truncate/floor it, so we can get the tile number counting from our initial offset
+		return (int) ((coord.getXVal() - xOrigin) / numHorizontalDotsBetweenTiles);
+	}
+
 }
