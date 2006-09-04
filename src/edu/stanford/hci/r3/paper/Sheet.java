@@ -88,6 +88,14 @@ public class Sheet {
 	}
 
 	/**
+	 * @param r
+	 * @return whether this sheet contains a given region r.
+	 */
+	public boolean containsRegion(Region r) {
+		return regions.contains(r);
+	}
+
+	/**
 	 * @return the height of this sheet.
 	 */
 	public Units getHeight() {

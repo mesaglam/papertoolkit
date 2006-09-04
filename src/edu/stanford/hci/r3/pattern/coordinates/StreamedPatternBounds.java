@@ -15,13 +15,20 @@ import edu.stanford.hci.r3.units.PatternDots;
  */
 public class StreamedPatternBounds {
 
-	private PatternDots xOrigin;
+	private double bottomBoundary;
 
-	private PatternDots yOrigin;
+	private double rightBoundary;
 
-	private PatternDots width;
+	private double xOrigin;
 
-	private PatternDots height;
+	private double yOrigin;
+
+	/**
+	 * For when you need to set values later.
+	 */
+	public StreamedPatternBounds() {
+		setBoundaries(0, 0, 0, 0);
+	}
 
 	/**
 	 * <p>
@@ -34,15 +41,75 @@ public class StreamedPatternBounds {
 	 * sense, as the dots are specified in the world of Anoto's gargantuan pattern space. For
 	 * example, if you converted the xOrigin to inches, you would get a beast of a number.
 	 * </p>
+	 * <p>
+	 * For performance, we precompute the boundaries and store just those numbers.
+	 * </p>
 	 */
-	public StreamedPatternBounds(PatternDots x, PatternDots y, PatternDots w, PatternDots h) {
-		xOrigin = x;
-		yOrigin = y;
-		width = w;
-		height = h;
+	public StreamedPatternBounds(StreamedPatternLocation theOrigin, PatternDots w, PatternDots h) {
+		setBoundaries(theOrigin, w, h);
 	}
-	
-	public boolean contains(PatternLocation location) {
-		
+
+	/**
+	 * For performance, we precompute the boundaries and store just those numbers. This method's
+	 * likely faster than the other contains test, especially if you already have the x and y values
+	 * and do not need to create a StreamedPatternLocation object.
+	 * 
+	 * @param xValPatternDots
+	 *            x value of the location, in PatternDots (physical/streamed coordinates)
+	 * @param yValPatternDots
+	 *            y value of the location, in PatternDots (physical/streamed coordinates)
+	 * @return
+	 */
+	private boolean contains(final double xValPatternDots, final double yValPatternDots) {
+		return xValPatternDots >= xOrigin // to the right of leftmost boundary
+				&& xValPatternDots < rightBoundary // to the left of rightmost boundary
+				&& yValPatternDots >= yOrigin // below top boundary
+				&& yValPatternDots < bottomBoundary; // above bottom boundary
+	}
+
+	/**
+	 * For performance, we precompute the boundaries and store just those numbers.
+	 * 
+	 * @param location
+	 * @return whether the bounds contains this location
+	 */
+	public boolean contains(StreamedPatternLocation location) {
+		final double xTestVal = location.getXVal();
+		final double yTestVal = location.getYVal();
+		return contains(xTestVal, yTestVal);
+	}
+
+	/**
+	 * @param xVal
+	 * @param yVal
+	 * @param rightVal
+	 * @param bottomVal
+	 */
+	private void setBoundaries(double xVal, double yVal, double rightVal, double bottomVal) {
+		xOrigin = xVal;
+		yOrigin = yVal;
+		rightBoundary = rightVal;
+		bottomBoundary = bottomVal;
+	}
+
+	/**
+	 * Sets the origin, width, and height of the pattern bounds.
+	 * 
+	 * @param theOrigin
+	 * @param w
+	 * @param h
+	 */
+	private void setBoundaries(StreamedPatternLocation theOrigin, PatternDots w, PatternDots h) {
+		setBoundaries(theOrigin.getXVal(), theOrigin.getYVal(), xOrigin + w.getValue(), yOrigin
+				+ h.getValue());
+	}
+
+	/**
+	 * Returns the Left, Top, Right, Bottom Boundaries.
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "[" + xOrigin + "," + yOrigin + " --> " + rightBoundary + "," + bottomBoundary + "]";
 	}
 }
