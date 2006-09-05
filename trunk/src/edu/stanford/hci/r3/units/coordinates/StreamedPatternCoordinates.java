@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.units.coordinates;
 
+import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.units.PatternDots;
 
 /**
@@ -28,6 +29,16 @@ public class StreamedPatternCoordinates {
 	public StreamedPatternCoordinates(PatternDots xCoord, PatternDots yCoord) {
 		x = xCoord;
 		y = yCoord;
+	}
+
+	/**
+	 * Constructs one of these from the streaming pen sample.
+	 * 
+	 * @param sample
+	 */
+	public StreamedPatternCoordinates(PenSample sample) {
+		x = new PatternDots(sample.getX());
+		y = new PatternDots(sample.getY());
 	}
 
 	/**

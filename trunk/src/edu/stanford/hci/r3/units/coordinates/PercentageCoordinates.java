@@ -44,4 +44,13 @@ public class PercentageCoordinates extends Coordinates {
 	public double getPctInYDirection() {
 		return y.getValue();
 	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "PercentageCoordinates { \n"//
+				+ "\t" + x.toString() + ", \n" //
+				+ "\t" + y.toString() + "\n}";
+	}
 }
