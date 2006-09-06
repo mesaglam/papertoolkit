@@ -21,6 +21,9 @@ import edu.stanford.hci.r3.pen.streaming.data.ServerOutputPlainText;
  */
 public class PenServer implements PenListener {
 
+	/**
+	 * 
+	 */
 	private class ServerThread extends Thread {
 		public void run() {
 			while (true) {
@@ -40,8 +43,8 @@ public class PenServer implements PenListener {
 								+ serverSocket.getLocalPort() + "...");
 					}
 					s = serverSocket.accept();
-					log("PenServer: Got a connection on port " + serverSocket.getLocalPort()
-							+ "...");
+					log("PenServer: Got a connection on port " + serverSocket.getLocalPort() + "...");
+					System.out.println("PenServer: Client IP Addr is " + s.getRemoteSocketAddress());
 				} catch (IOException ioe) {
 					log("PenServer: Error with server socket: " + ioe.getLocalizedMessage());
 				}
@@ -56,8 +59,7 @@ public class PenServer implements PenListener {
 						try {
 							s.close();
 						} catch (IOException ioe2) {
-							log("PenServer: Error with server socket: "
-									+ ioe2.getLocalizedMessage());
+							log("PenServer: Error with server socket: " + ioe2.getLocalizedMessage());
 						}
 						log("PenServer: Error creating output: " + ioe.getLocalizedMessage());
 					}
@@ -84,6 +86,9 @@ public class PenServer implements PenListener {
 		return javaPenServer != null;
 	}
 
+	/**
+	 * @param msg
+	 */
 	private static void log(String msg) {
 		System.out.println(msg);
 	}
@@ -138,6 +143,9 @@ public class PenServer implements PenListener {
 	}
 
 	/**
+	 * Start a Java server on this machine at the corresponding TCP/IP port. Add the java server as a
+	 * listener to the local pen connection (at the specified COM port).
+	 * 
 	 * @param tcpipPort
 	 */
 	public static void startJavaServer(String serialPortName, int tcpipPort) {

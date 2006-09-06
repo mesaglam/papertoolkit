@@ -136,3 +136,6 @@ var annot=this.addAnnot({
     strokeColor: ["RGB", 0.2, 0.2, 0.2],
     type: "Square",
 });
+
+// sends info w/ the annotations to the server
+this.submitForm({cURL: "http://localhost:8888/", cSubmitAs: "XFDF", bAnnotations: true});
