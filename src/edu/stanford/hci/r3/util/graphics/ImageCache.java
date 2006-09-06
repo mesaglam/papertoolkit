@@ -1,9 +1,12 @@
 package edu.stanford.hci.r3.util.graphics;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.WeakHashMap;
 
 import javax.imageio.ImageIO;
@@ -12,12 +15,11 @@ import javax.media.jai.PlanarImage;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> ( ronyeh(AT)cs.stanford.edu )
- * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class ImageCache {
 
@@ -96,6 +98,19 @@ public class ImageCache {
 	 */
 	public static BufferedImage loadBufferedImage(File path) {
 		return getInstance().getBufferedImage(path);
+	}
+
+	/**
+	 * @param resource
+	 * @return
+	 */
+	public static Image loadBufferedImage(URL resource) {
+		try {
+			return getInstance().getBufferedImage(new File(resource.toURI()));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**

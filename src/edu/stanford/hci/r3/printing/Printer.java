@@ -9,8 +9,8 @@ import edu.stanford.hci.r3.util.ArrayUtils;
 
 /**
  * <p>
- * This software is distributed under the <a
- * href="http://hci.stanford.edu/research/copyright.txt"> BSD License</a>.
+ * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
+ * BSD License</a>.
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -26,8 +26,9 @@ public class Printer {
 				+ " Height: " + new Points(pageFormat.getHeight()).toInches());
 		System.out.println("\tImageable X: " + new Points(pageFormat.getImageableX()).toInches()
 				+ " Y: " + new Points(pageFormat.getImageableY()).toInches());
-		System.out.println("\tImageable W: " + new Points(pageFormat.getImageableWidth()).toInches()
-				+ " H: " + new Points(pageFormat.getImageableHeight()).toInches());
+		System.out.println("\tImageable W: "
+				+ new Points(pageFormat.getImageableWidth()).toInches() + " H: "
+				+ new Points(pageFormat.getImageableHeight()).toInches());
 		System.out.print("\tMatrix: ");
 		ArrayUtils.printArray(pageFormat.getMatrix());
 		System.out.println("} End Page Format");
