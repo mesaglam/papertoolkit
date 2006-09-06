@@ -1,17 +1,8 @@
 package edu.stanford.hci.r3.pen.streaming;
 
-import java.awt.AWTException;
-import java.awt.Image;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
-import javax.imageio.ImageIO;
 
 import edu.stanford.hci.r3.util.graphics.ImageCache;
 
@@ -29,11 +20,19 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
  */
 public class PenServerTrayApp {
 
-	private interface IconListener extends ActionListener, MouseListener {
+	private static ActionListener iconListener;
 
-	}
+	private static Image imageOFF;
 
-	private static IconListener iconListener;
+	private static Image imageON;
+
+	private static MenuItem onOffItem;
+
+	private static boolean serverRunning;
+
+	private static final String START_PEN_SERVER_MSG = "Start the Pen Server";
+
+	private static final String STOP_PEN_SERVER_MSG = "Stop the Pen Server";
 
 	private static TrayIcon trayIcon;
 
@@ -49,32 +48,28 @@ public class PenServerTrayApp {
 		};
 	}
 
-	private static IconListener getIconListener() {
+	/**
+	 * @return
+	 */
+	private static ActionListener getIconListener() {
 		if (iconListener == null) {
-			iconListener = new IconListener() {
+			iconListener = new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
-					trayIcon.displayMessage("Action Event", "An Action Event Has Been Performed",
-							TrayIcon.MessageType.INFO);
-				}
-
-				public void mouseClicked(MouseEvent arg0) {
-					System.out.println("Mouse Clicked");
-				}
-
-				public void mouseEntered(MouseEvent arg0) {
-					System.out.println("Mouse Entered");
-				}
-
-				public void mouseExited(MouseEvent arg0) {
-					System.out.println("Mouse Exited");
-				}
-
-				public void mousePressed(MouseEvent arg0) {
-					System.out.println("Mouse Pressed");
-				}
-
-				public void mouseReleased(MouseEvent arg0) {
-					System.out.println("Mouse Released");
+					if (serverRunning) {
+						trayIcon.displayMessage("Pen is Offline", "Pen Server stopped.",
+								TrayIcon.MessageType.INFO);
+						PenServer.stopServers();
+						trayIcon.setImage(imageOFF);
+						onOffItem.setLabel(START_PEN_SERVER_MSG);
+						serverRunning = false;
+					} else {
+						trayIcon.displayMessage("Pen is Online",
+								"Server started. The pen is now in live mode.", TrayIcon.MessageType.INFO);
+						PenServer.startJavaServer();
+						trayIcon.setImage(imageON);
+						onOffItem.setLabel(STOP_PEN_SERVER_MSG);
+						serverRunning = true;
+					}
 				}
 			};
 		}
@@ -83,29 +78,34 @@ public class PenServerTrayApp {
 
 	public static void main(String[] args) {
 		if (!SystemTray.isSupported()) {
-			System.err
-					.println("The System Tray is not supported. Exiting the Pen Server Tray App.");
+			System.err.println("The System Tray is not supported. Exiting the Pen Server Tray App.");
 			return;
 		}
 		SystemTray systemTray = SystemTray.getSystemTray();
-		Image image = ImageCache.loadBufferedImage(PenServerTrayApp.class
-				.getResource("/icons/sun.png"));
+		imageON = ImageCache.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sun.png"));
+		imageOFF = ImageCache.loadBufferedImage(PenServerTrayApp.class
+				.getResource("/icons/sunOff.png"));
+
 		PopupMenu popup = new PopupMenu();
 		MenuItem exitItem = new MenuItem("Exit");
 		exitItem.addActionListener(getExitListener());
+		onOffItem = new MenuItem(STOP_PEN_SERVER_MSG);
+		onOffItem.addActionListener(getIconListener());
 		popup.add(exitItem);
+		popup.add(onOffItem);
 
-		trayIcon = new TrayIcon(image, "Pen Server", popup);
+		trayIcon = new TrayIcon(imageON, "Pen Server (double-click to turn ON/OFF)", popup);
+		trayIcon.setImageAutoSize(true);
 		trayIcon.addActionListener(getIconListener());
-		trayIcon.addMouseListener(getIconListener());
-		
+
 		try {
 			systemTray.add(trayIcon);
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
-		
+
 		// start the pen server!
 		PenServer.startJavaServer();
+		serverRunning = true;
 	}
 }
