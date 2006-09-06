@@ -76,3 +76,63 @@ this.exportAsText({
 // false means do not append to current document
 this.getURL("http://www.yahoo.com/", false)
 
+
+
+// interacting with soap
+SOAP // is an object of type SOAP
+var cURL = "http://www.whitemesa.net/wsdl/r2/base.wsdl";
+var service = SOAP.connect(cURL);
+for (var prop in service) console.println(prop);
+service.echoString("bob");
+
+
+// beware of windows compressed file extraction wizard (it misses files!)
+
+// adds a ? box with a textual annotation
+var annot=this.addAnnot({
+    page:0,
+    type: "Text",
+    point: [400,500],
+    contents: "Call Smith to get help on this paragraph.",
+    popupRect: [400,400,550,500],
+    popupOpen: true,
+    noteIcon: "Help"
+});
+
+// use the annotations features to drag out the regions
+// then, save regions by iterating through the annotations and either
+// writing them to disk, 
+// sending this info to a SOAP server
+// or hitting a URL of a local java server with GET requests with embedded information! (this doesn't sound too bad)
+
+
+// prints out the annotation types
+var annots = this.getAnnots();
+console.println("\n");
+for (var i=0; i<annots.length; i++) {
+    var currAnnot = annots[i];
+    console.println(i + " ---------------");
+    console.println(currAnnot.type);
+    console.println(currAnnot.rect);
+    console.println(currAnnot.seqNum);
+    console.println(currAnnot.author);
+}
+
+
+// a square annotation
+var annot=this.addAnnot({
+    author: "R3 Designer",
+    fillColor: ["RGB", .5, .5, .65],
+    lock: true,
+    name: "Region_0",
+    opacity: 0.5,
+    page:0,
+    popupOpen: false,
+    popupRect: [0,0,200,150],
+    print: true,
+    readOnly: false,
+    rect: [0,0,200,150],
+    seqNum: 0,    
+    strokeColor: ["RGB", 0.2, 0.2, 0.2],
+    type: "Square",
+});
