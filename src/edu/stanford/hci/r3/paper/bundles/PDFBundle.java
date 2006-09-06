@@ -28,10 +28,16 @@ public class PDFBundle extends Bundle {
 	 */
 	private File file;
 
+	/**
+	 * 
+	 */
 	private int numSheets;
 
+	/**
+	 * @param pdfFile
+	 */
 	public PDFBundle(File pdfFile) {
-		super();
+		super("PDFSheet: " + pdfFile.getName());
 		file = pdfFile;
 		addPDFSheetsFromFile();
 	}
@@ -47,7 +53,7 @@ public class PDFBundle extends Bundle {
 			reader.close();
 			for (int i = 0; i < numSheets; i++) {
 				// (i+1) because Page Numbers start from 1
-				addSheet(new PDFSheet(file, i + 1));
+				addSheets(new PDFSheet(file, i + 1));
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

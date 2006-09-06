@@ -13,18 +13,18 @@ import com.thoughtworks.xstream.XStream;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> [ronyeh(AT)cs.stanford.edu]
- * @created Mar 31, 2006
  * 
  * Connects to the Pen Server and displays some output...
  * 
  * A client who connects to a server can also have local PenListeners to process the samples...
  * 
- * TODO: A multithreaded Client for listening to multiple servers...
+ * TODO: A multithreaded Client for listening to multiple servers... However, does this make sense?
+ * Why would we want to listen to multiple pens?
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> [ronyeh(AT)cs.stanford.edu]
  */
 public class PenClient {
 
@@ -34,24 +34,52 @@ public class PenClient {
 
 	private boolean exitFlag = false;
 
+	/**
+	 * Multiple listeners can attach themselves to this Pen Client.
+	 */
 	private List<PenListener> listeners = new ArrayList<PenListener>();
 
+	/**
+	 * The name of the machine which is running the pen server. This may be "localhost."
+	 */
 	private String machineName;
 
 	private int portNumber;
 
 	private Thread socketListenerThread;
 
-	public PenClient(String name, int port, ClientServerType type) {
-		machineName = name;
+	/**
+	 * @param serverName
+	 * @param port
+	 * @param type
+	 */
+	public PenClient(String serverName, int port, ClientServerType type) {
+		machineName = serverName;
 		portNumber = port;
 		clientType = type;
 	}
 
-	public void addPenListener(PenListener l) {
-		listeners.add(l);
+	/**
+	 * @param penListener
+	 * @return
+	 */
+	public boolean addPenListener(PenListener penListener) {
+		return listeners.add(penListener);
 	}
 
+	/**
+	 * If the pen listener is one of our listeners, detach it. That is, stop sending events to it.
+	 * 
+	 * @param penListener
+	 * @return
+	 */
+	public boolean removePenListener(PenListener penListener) {
+		return listeners.remove(penListener);
+	}
+
+	/**
+	 * 
+	 */
 	public void connect() {
 		socketListenerThread = getSocketListenerThreadBasedOnClientType();
 		socketListenerThread.start();
@@ -105,7 +133,8 @@ public class PenClient {
 							// modification as of June 12, 2006
 							// the behavior here is the same as in pen connection
 							// where a .sample event is NOT generated when penUp happens
-							// samples are only generated while the pen is down (even if it just came down)
+							// samples are only generated while the pen is down (even if it just
+							// came down)
 							if (penIsDown) {
 								for (PenListener pl : listeners) {
 									pl.sample(sample);

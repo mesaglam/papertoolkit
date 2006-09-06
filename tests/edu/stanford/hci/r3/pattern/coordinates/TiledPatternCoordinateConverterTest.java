@@ -15,24 +15,14 @@ import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
  */
 public class TiledPatternCoordinateConverterTest {
 
+	/**
+	 * 
+	 */
 	private static TiledPatternCoordinateConverter converter;
 
-	public static void main(String[] args) {
-		// test it with the JRBP map we created for GIGAprints
-		converter = new TiledPatternCoordinateConverter( // 
-				0, // start page
-				4 /* across */, 2 /* down */, // tile configuration
-				721, 932, // per tile info
-				1330, 0, // tile padding information
-				184022418, 7187, // physical coordinates information
-				2734.625, 1792.25); // region configuration
-
-		Pen pen = new Pen();
-		pen.startLiveMode();
-		pen.addLivePenListener(getPenListener());
-
-	}
-
+	/**
+	 * @return
+	 */
 	private static PenListener getPenListener() {
 		return new PenListener() {
 
@@ -53,5 +43,35 @@ public class TiledPatternCoordinateConverterTest {
 				}
 			}
 		};
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// test it with the JRBP map we created for GIGAprints
+		// converter = new TiledPatternCoordinateConverter( //
+		// 0, // start page
+		// 4 /* across */, 2 /* down */, // tile configuration
+		// 721, 932, // per tile info
+		// 1330, 0, // tile padding information
+		// 184022418, 7187, // physical coordinates information
+		// 2734.625, 1792.25); // region configuration
+
+		
+		// set the values after the fact, and do it in any order!
+		// as long as all the values are set, it will work in the end...
+		converter = new TiledPatternCoordinateConverter();
+		converter.setOriginInDots(184022418, 7187);
+		converter.setTotalSizeInDots(2734.625, 1792.25);
+		converter.setTileConfiguration(4, 2);
+		converter.setTileToTileOffsetInDots(1330, 0);
+		converter.setStartingTile(0);
+		converter.setTileSizeInDots(721, 932);
+
+		
+		Pen pen = new Pen();
+		pen.startLiveMode();
+		pen.addLivePenListener(getPenListener());
 	}
 }

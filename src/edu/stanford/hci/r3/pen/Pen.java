@@ -31,9 +31,18 @@ public class Pen {
 	 */
 	private boolean liveMode = false;
 
+	/**
+	 * A client listens to the Pen Server, which is the physical pen attached to SOME computer
+	 * SOMEWHERE in the world. The Pen Server can be in a remote location, as long as it is DNS
+	 * addressable.
+	 */
 	private PenClient livePenClient;
 
+	/**
+	 * 
+	 */
 	public Pen() {
+
 	}
 
 	/**
@@ -43,10 +52,9 @@ public class Pen {
 	 */
 	public void addLivePenListener(PenListener penListener) {
 		if (livePenClient == null) {
-			DebugUtils.println("Pen is not in Live Mode.");
+			DebugUtils.println("Cannot add this Listener. The Pen is not in Live Mode.");
 			return;
 		}
-		
 		livePenClient.addPenListener(penListener);
 	}
 
@@ -55,6 +63,18 @@ public class Pen {
 	 */
 	public boolean isLive() {
 		return liveMode;
+	}
+
+	/**
+	 * Removes the pen listener from the live pen.
+	 * 
+	 * @param penListener
+	 */
+	public void removeLivePenListener(PenListener penListener) {
+		if (livePenClient == null) {
+			DebugUtils.println("Cannot Remove the Listener. The Pen is not in Live Mode.");
+		}
+		livePenClient.removePenListener(penListener);
 	}
 
 	/**
