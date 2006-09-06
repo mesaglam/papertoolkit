@@ -63,7 +63,7 @@ public class PatternLocationToSheetLocationMapping {
 	 */
 	private void initializeMap(List<Region> regions) {
 		for (Region r : regions) {
-			regionToPatternBounds.put(r, null /* new TiledPatternCoordinateConverter() */);
+			regionToPatternBounds.put(r, new TiledPatternCoordinateConverter());
 		}
 	}
 

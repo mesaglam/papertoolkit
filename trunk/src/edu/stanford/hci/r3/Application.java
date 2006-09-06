@@ -11,27 +11,42 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  * An application will consist of Bundles and Sheets, and the actions that are bound to individual
  * regions. A PaperToolkit can load/run an Application. When an Application is running, all events
  * will go through the PaperToolkit's EventEngine.
+ * </p>
+ * <p>
+ * The Application will be able to dispatch events to the correct handlers. An application will also
+ * be able to handle pens, but these pens must be registered with the PaperToolkit to enable the
+ * event engine to do its work.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class Application {
 
 	/**
-	 * All of an application's events are sent to the eventListener.
+	 * The name of the application. Useful for debugging (e.g., when trying to figure out which
+	 * application generated which event).
 	 */
-	private EventEngine eventListener;
-
 	private String name;
 
+	/**
+	 * An application will own a number of pens.
+	 */
 	private List<Pen> pens = new ArrayList<Pen>();
 
+	/**
+	 * An application contains multiple bundles, which in turn contain multiple sheets. In the
+	 * simplest case, an application might contain one bundle which might be a single sheet (e.g., a
+	 * GIGAprint).
+	 * 
+	 * For simplicity, we expand out Bundles and place the sheets directly in this datastructure.
+	 */
 	private List<Sheet> sheets = new ArrayList<Sheet>();
 
 	/**
@@ -56,6 +71,13 @@ public class Application {
 	}
 
 	/**
+	 * @return the application's name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
 	 * @return
 	 */
 	public List<Pen> getPens() {
@@ -71,16 +93,4 @@ public class Application {
 		DebugUtils.println("Unimplemented Method");
 	}
 
-	/**
-	 * @param eventEngine
-	 */
-	public void setApplicationEventListener(EventEngine eventEngine) {
-		eventListener = eventEngine;
-		// add all the live pens to the eventEngine
-		for (Pen pen : pens) {
-			if (pen.isLive()) {
-				eventEngine.register(pen);
-			}
-		}
-	}
 }

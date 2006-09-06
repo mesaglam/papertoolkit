@@ -34,8 +34,14 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  */
 public class Region {
 
+	/**
+	 * String constant for a warning message.
+	 */
 	private static final String WARNING_POST = " (see Region.java)";
 
+	/**
+	 * String constant for a warning message.
+	 */
 	private static final String WARNING_PRE = "WARNING: Using Default Renderer for ";
 
 	/**
@@ -141,10 +147,16 @@ public class Region {
 		return name;
 	}
 
+	/**
+	 * @return
+	 */
 	public Units getOriginX() {
 		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getX());
 	}
 
+	/**
+	 * @return
+	 */
 	public Units getOriginY() {
 		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getY());
 	}

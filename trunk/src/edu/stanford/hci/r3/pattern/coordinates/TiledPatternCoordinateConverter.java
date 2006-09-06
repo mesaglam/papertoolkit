@@ -18,8 +18,14 @@ import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
  */
 public class TiledPatternCoordinateConverter {
 
+	/**
+	 * The Width of a Tile, in dots.
+	 */
 	private int dotsPerTileHorizontal;
 
+	/**
+	 * The Height of a Tile, in dots.
+	 */
 	private int dotsPerTileVertical;
 
 	/**
@@ -51,6 +57,8 @@ public class TiledPatternCoordinateConverter {
 	 * Difference in Y Values between subsequent tiles...
 	 */
 	private double numDotsVerticalBetweenTiles;
+
+	private int numTiles;
 
 	/**
 	 * <blockquote><code>
@@ -88,7 +96,12 @@ public class TiledPatternCoordinateConverter {
 
 	private double tileWidthIncludingPadding;
 
-	private int numTiles;
+	/**
+	 * A Dummy constructor for when you need to set the information later (The Lazy Approach).
+	 */
+	public TiledPatternCoordinateConverter() {
+		this(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	}
 
 	/**
 	 * <p>
@@ -130,46 +143,24 @@ public class TiledPatternCoordinateConverter {
 			int dotsPerTileHoriz, int dotsPerTileVert, double numHorizDotsBetweenTiles,
 			double numVertDotsBetweenTiles, double leftMostPatternX, double topMostPatternY,
 			double numDotsAcross, double numDotsDown) {
-		// the number of the first (top-left) tile; this is largely arbitrary, but _may_ correlate
-		// with a pattern file number N.pattern --> N as a starting tile number. This makes
-		// calculations easier for certain operations, such as finding out which page of a notebook
-		// your user has written on.
-		startingTile = startTile;
 
-		// the number of tiles owned by this converter. Usually, this converter will map to a region
-		// on a sheet. This means that the tiledPatternConverter will need to know how many tiles of
-		// pattern the region contains. It will then help us find out where on the region we are.
-		numTilesAcross = nTilesAcross;
-		numTilesDown = nTilesDown;
-		numTiles = numTilesAcross * numTilesDown;
+		setStartingTile(startTile);
+		setTileConfiguration(nTilesAcross, nTilesDown);
+		setTileSizeInDots(dotsPerTileHoriz, dotsPerTileVert);
+		setOriginInDots(leftMostPatternX, topMostPatternY);
+		setTotalSizeInDots(numDotsAcross, numDotsDown);
+		setTileToTileOffsetInDots(numHorizDotsBetweenTiles, numVertDotsBetweenTiles);
+	}
 
-		// how wide and tall are these tiles? We assume uniform tiles (except for the rightmost and
-		// bottommost tiles)
-		dotsPerTileHorizontal = dotsPerTileHoriz;
-		dotsPerTileVertical = dotsPerTileVert;
-
-		// what is the physical coordinate of the top-left corner of the top-left tile?
-		originX = leftMostPatternX;
-		originY = topMostPatternY;
-
-		// how wide and tall is the whole region?
-		numTotalDotsAcross = numDotsAcross;
-		numTotalDotsDown = numDotsDown;
-
-		// save this for later calculations
-		numTotalDotsAcrossObj = new PatternDots(numTotalDotsAcross);
-		numTotalDotsDownObj = new PatternDots(numTotalDotsDown);
-
-		// what is the x offset between the origins of two adjacent tiles?
-		// this is the width of a tile, plus a padding that anoto creates when you use the FDK to
-		// generate pattern
-		numDotsHorizontalBetweenTiles = numHorizDotsBetweenTiles;
-		// what is the y offset between the origins of two adjacent tiles?
-		// note that in the BNet pattern space, the y offset is 0
-		numDotsVerticalBetweenTiles = numVertDotsBetweenTiles;
-
-		// Save some values to make calculations easier later on
-		// 
+	/**
+	 * To make it easier to use this class, this method will be called EVERY TIME one of the input
+	 * values is updated, to keep internal state consistent.
+	 * 
+	 * Unfortunately, do to the flexible design, the main constructor will call this method a total
+	 * of three times. The values will be finally correct once the last call, to
+	 * setTileToTileOffsetInDots(...) is called.
+	 */
+	private void calculateCachedDimensions() {
 		// ASSUMPTION: Either the dots between tiles is larger than a single tile OR it is 0.
 		// Weird things can happen if the tiles are staggered, such that the dots between tiles is
 		// smaller than the width or height of a tile.
@@ -183,7 +174,7 @@ public class TiledPatternCoordinateConverter {
 
 		if (numDotsVerticalBetweenTiles < dotsPerTileVertical) { // dY = 0
 			tileHeightIncludingPadding = dotsPerTileVertical;
-			maxY = originY + dotsPerTileVertical; // only one vertical tile, like bnet's pattern space
+			maxY = originY + dotsPerTileVertical; // only one vertical tile, like bnet's pattern
 		} else { // bigger than the height
 			tileHeightIncludingPadding = numDotsVerticalBetweenTiles;
 			maxY = originY + numDotsVerticalBetweenTiles * numTiles;
@@ -309,6 +300,93 @@ public class TiledPatternCoordinateConverter {
 	 */
 	private int getTileNumVertical(StreamedPatternCoordinates coord) {
 		return (int) Math.floor((coord.getYVal() - originY) / tileHeightIncludingPadding);
+	}
+
+	/**
+	 * What is the physical coordinate of the top-left corner of the top-left tile?
+	 * 
+	 * @param leftMostPatternX
+	 * @param topMostPatternY
+	 */
+	public void setOriginInDots(double leftMostPatternX, double topMostPatternY) {
+		originX = leftMostPatternX;
+		originY = topMostPatternY;
+
+		// must update some internal state
+		calculateCachedDimensions();
+	}
+
+	/**
+	 * the number of the first (top-left) tile; this is largely arbitrary, but _may_ correlate with
+	 * a pattern file number N.pattern --> N as a starting tile number. This makes calculations
+	 * easier for certain operations, such as finding out which page of a notebook your user has
+	 * written on.
+	 * 
+	 * @param startTile
+	 */
+	public void setStartingTile(int startTile) {
+		startingTile = startTile;
+	}
+
+	/**
+	 * The number of tiles owned by this converter. Usually, this converter will map to a region on
+	 * a sheet. This means that the tiledPatternConverter will need to know how many tiles of
+	 * pattern the region contains. It will then help us find out where on the region we are.
+	 * 
+	 * @param nTilesAcross
+	 * @param nTilesDown
+	 */
+	public void setTileConfiguration(int nTilesAcross, int nTilesDown) {
+		numTilesAcross = nTilesAcross;
+		numTilesDown = nTilesDown;
+		numTiles = numTilesAcross * numTilesDown;
+	}
+
+	/**
+	 * How wide and tall are these tiles? We assume uniform tiles (except for the rightmost and
+	 * bottommost tiles)
+	 * 
+	 * @param dotsPerTileHoriz
+	 * @param dotsPerTileVert
+	 */
+	public void setTileSizeInDots(int dotsPerTileHoriz, int dotsPerTileVert) {
+		dotsPerTileHorizontal = dotsPerTileHoriz;
+		dotsPerTileVertical = dotsPerTileVert;
+
+		// must update some internal state
+		calculateCachedDimensions();
+	}
+
+	/**
+	 * @param numHorizDotsBetweenTiles
+	 * @param numVertDotsBetweenTiles
+	 */
+	public void setTileToTileOffsetInDots(double numHorizDotsBetweenTiles,
+			double numVertDotsBetweenTiles) {
+		// what is the x offset between the origins of two adjacent tiles?
+		// this is the width of a tile, plus a padding that anoto creates when you use the FDK to
+		// generate pattern
+		numDotsHorizontalBetweenTiles = numHorizDotsBetweenTiles;
+		// what is the y offset between the origins of two adjacent tiles?
+		// note that in the BNet pattern space, the y offset is 0
+		numDotsVerticalBetweenTiles = numVertDotsBetweenTiles;
+
+		// must update some internal state
+		calculateCachedDimensions();
+	}
+
+	/**
+	 * @param numDotsAcross
+	 * @param numDotsDown
+	 */
+	public void setTotalSizeInDots(double numDotsAcross, double numDotsDown) {
+		// how wide and tall is the whole region?
+		numTotalDotsAcross = numDotsAcross;
+		numTotalDotsDown = numDotsDown;
+
+		// save this for later calculations
+		numTotalDotsAcrossObj = new PatternDots(numTotalDotsAcross);
+		numTotalDotsDownObj = new PatternDots(numTotalDotsDown);
 	}
 
 	/**

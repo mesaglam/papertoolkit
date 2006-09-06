@@ -7,6 +7,7 @@ import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
@@ -77,7 +78,10 @@ public class PaperToolkit {
 	private EventEngine eventEngine;
 
 	/**
-	 * Start up a paper toolkit.
+	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
+	 * accordingly (and between applications, ideally). There will be one event engine in the paper
+	 * toolkit, and all events that applications generate will be fed through this single event
+	 * engine.
 	 */
 	public PaperToolkit() {
 		printInitializationMessages();
@@ -104,6 +108,29 @@ public class PaperToolkit {
 	 */
 	public void runApplication(Application paperApp) {
 		applications.add(paperApp);
-		paperApp.setApplicationEventListener(eventEngine);
+		List<Pen> pens = paperApp.getPens();
+
+		// add all the live pens to the eventEngine
+		for (Pen pen : pens) {
+			if (pen.isLive()) {
+				eventEngine.register(pen);
+			}
+		}
+	}
+
+	/**
+	 * Remove the application and stop receiving events from its pens....
+	 * 
+	 * @param paperApp
+	 */
+	public void stopApplication(Application paperApp) {
+		applications.remove(paperApp);
+		List<Pen> pens = paperApp.getPens();
+		
+		for (Pen pen : pens) {
+			if (pen.isLive()) {
+				eventEngine.unregisterPen(pen);
+			}
+		}
 	}
 }
