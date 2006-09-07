@@ -17,6 +17,11 @@ import java.util.List;
  * });
  * </code>
  * <p>
+ * When XML comes in, transform it such that we flip the heights (Adobe considers 0,0 the bottom
+ * left of a page; We consider it the top left, like in a GUI toolkit. Then, write the XML file to
+ * disk as a region configuration file.
+ * </p>
+ * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
  * BSD License</a>.
  * </p>
@@ -24,13 +29,14 @@ import java.util.List;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class AcrobatCommunicationServer {
+
 	/**
 	 * Sep 6, 2006
 	 */
 	public static void main(String[] args) {
 		try {
 			AcrobatCommunicationServer server = new AcrobatCommunicationServer(8888,
-					new FileOutputStream(new File("AcrobatCommunicationServer.log")));
+					new FileOutputStream(new File("data/designer/AcrobatCommunicationServer.log")));
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -182,7 +188,8 @@ public class AcrobatCommunicationServer {
 
 					logToConsoleAndFile("[Client " + id + "]");
 					// include the final character that adobe didn't send us
-					logToConsoleAndFile(sb.toString() + ">");
+					
+					processXML(sb.toString() + ">");
 
 					// tell the client to go away now
 					out.println("HTTP/1.1 200 OK");
@@ -190,7 +197,8 @@ public class AcrobatCommunicationServer {
 					out.println("Connection: close");
 					out.println("Content-Type: text/html; charset=UTF-8");
 					out.println();
-					out.println("<html><body>Your Paper UI regions have been sent to R3.</body></html>");
+					out
+							.println("<html><body>Your Paper UI regions have been sent to R3.</body></html>");
 					clientConn.close();
 				} catch (IOException e) {
 					logOutput.println("Failed reading a line from the client.");
@@ -198,9 +206,28 @@ public class AcrobatCommunicationServer {
 				}
 			}
 
+
 		});
 	}
 
+	private void processXML(String xml) {
+		logToConsoleAndFile(xml);
+
+		File xmlFile = new File("data/designer/TemporaryXML.xml");
+		FileWriter fw;
+		try {
+			fw = new FileWriter(xmlFile);
+			fw.append(xml);
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		RegionConfigurationWriter writer = new RegionConfigurationWriter(xmlFile);
+		writer.processXML();
+	}
+
+	
 	/**
 	 * @param msg
 	 */

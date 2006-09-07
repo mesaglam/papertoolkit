@@ -120,8 +120,18 @@ function addRectangularRegion() {
 	var height = mediaBox[1] - mediaBox[3];
 	var rname = "Region_" + numberOfRegions;
 	
-	this.addAnnot({
-	    author: rname,
+	// the first time we add a region
+	// we save the document width and height into fields
+	if (numberOfRegions == 0) {
+		var wField = this.addField("Width", "text", 0, [0,0,0,0]);
+		wField.display = display.hidden;
+		wField.value = width;
+		var hField = this.addField("Height", "text", 0, [0,0,0,0]);
+		hField.display = display.hidden;
+		hField.value = height;
+	}
+	
+	this.addAnnot({	    author: rname,
 	    fillColor: ["RGB", .5, .5, .6],
 	    lock: false,
 	    name: rname,
