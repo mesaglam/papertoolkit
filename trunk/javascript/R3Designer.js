@@ -25,16 +25,26 @@ var port = 8888;
 // loads this javascript whenever Adobe Acrobat loads
 console.println("Loading the R3 Tools...");
 
-// raise privileges for some functions
-trustedGetPath = app.trustedFunction(getJavaScriptPath);
-trustedImportIcons = app.trustedFunction(importIcons);
+if (app.viewerVariation == "Full") {
+	// raise privileges for some functions
+	trustedGetPath = app.trustedFunction(getJavaScriptPath);
+	trustedImportIcons = app.trustedFunction(importIcons);
+	
+	// get the r3 plugin path
+	getJavaScriptPath(userOrAppFlag);
+	
+	// load the icon resources and create the buttons
+	importIcons();
+	addButtons();
+} else {
+	var versionMessage = "The R3 Design Plugin does not support Acrobat Reader. Please install Acrobat Professional.";
+	console.println(versionMessage);
+	//	app.alert(versionMessage); // too annoying!
+}
 
-// get the r3 plugin path
-getJavaScriptPath(userOrAppFlag);
 
-// load the icon resources and create the buttons
-importIcons();
-addButtons();
+
+
 
 
 
