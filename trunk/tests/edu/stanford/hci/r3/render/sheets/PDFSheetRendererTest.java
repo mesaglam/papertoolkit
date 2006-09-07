@@ -19,14 +19,15 @@ public class PDFSheetRendererTest {
 	 */
 	private static void addRegionToExistingPDF() {
 		// PDFSheet sheet = new PDFSheet(new File("data/testFiles/ButterflyNetCHI2006.pdf"));
-		PDFSheet sheet = new PDFSheet(new File("data/testFiles/private/AvianFluTimeline.pdf"));
+		// PDFSheet sheet = new PDFSheet(new File("data/testFiles/private/AvianFluTimeline.pdf"));
+		PDFSheet sheet = new PDFSheet(new File("data/testFiles/private/AvianFluMessMap.pdf"));
 		// define some regions
-		Region reg = new Region(77, 26.3, 9, 7.3);
+		Region reg = new Region(36, 2, 9, 2);
 		reg.setActive(true);
 		sheet.addRegion(reg);
 
 		PDFSheetRenderer renderer = new PDFSheetRenderer(sheet);
-		renderer.renderToPDF(new File("data/testFiles/output/AvianFluTimeline.pdf"));
+		renderer.renderToPDF(new File("data/testFiles/private/AvianFluMessMapOutput.pdf"));
 	}
 
 	private static void addRegionToExistingPDF2() {
@@ -67,6 +68,6 @@ public class PDFSheetRendererTest {
 	}
 
 	public static void main(String[] args) {
-		addRegionToExistingPDF2();
+		addRegionToExistingPDF();
 	}
 }
