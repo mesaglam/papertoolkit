@@ -26,5 +26,8 @@
 	<classpathentry path="lib/jfreechart/jcommon-1.0.5.jar" kind="lib"/>
 	<classpathentry path="lib/jfreechart/jfreechart-1.0.2.jar" kind="lib"/>
 	<classpathentry path="lib/jfreechart/jfreechart-1.0.2-experimental.jar" kind="lib"/>
+	<classpathentry path="lib/BrowserLauncher2-10rc4.jar" kind="lib"/>
+	<classpathentry path="lib/jmf/jmf.jar" kind="lib"/>
+	<classpathentry path="lib/jmf/mp3plugin.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

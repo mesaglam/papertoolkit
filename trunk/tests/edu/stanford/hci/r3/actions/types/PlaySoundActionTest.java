@@ -11,17 +11,13 @@ import java.io.File;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class OpenFileActionTest {
+public class PlaySoundActionTest {
 	public static void main(String[] args) {
-		openLocalFile();
-	}
-
-	/**
-	 * 
-	 */
-	private static void openLocalFile() {
-		OpenFileAction oaction = new OpenFileAction(new File(
-				"data/testFiles/ButterflyNetCHI2006.pdf"));
-		oaction.invoke();
+		// PlaySoundAction action = new PlaySoundAction(new File("data/testFiles/Tweety.wav"));
+		PlaySoundAction action = new PlaySoundAction(new File(
+				"data/testFiles/CodeMonkey_MonoClip.mp3"));
+		action.invoke();
+		System.out.println("You should see this immediately, regardless of "
+				+ "how long the sound clip is.");
 	}
 }

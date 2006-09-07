@@ -1,5 +1,20 @@
 package edu.stanford.hci.r3.actions.types;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import javax.media.CannotRealizeException;
+import javax.media.ControllerEvent;
+import javax.media.ControllerListener;
+import javax.media.Manager;
+import javax.media.NoPlayerException;
+import javax.media.Player;
+import javax.media.StopEvent;
+import javax.media.TransitionEvent;
+
+import com.sun.media.codec.audio.mp3.JavaDecoder;
+
 import edu.stanford.hci.r3.actions.R3Action;
 
 /**
@@ -13,7 +28,50 @@ import edu.stanford.hci.r3.actions.R3Action;
  */
 public class PlaySoundAction implements R3Action {
 
-	public void invoke() {
+	static {
+		JavaDecoder.main(new String[] {});
+		System.out.println("Disregard the InvocationTargetException. "
+				+ "It is printed out by the JavaDecoder while registering the mp3 plugin.");
+	}
 
+	private File sound;
+
+	private Player player;
+
+	public PlaySoundAction(File soundFile) {
+		sound = soundFile;
+	}
+
+	public void invoke() {
+		// play it!
+		try {
+			player = Manager.createRealizedPlayer(sound.toURI().toURL());
+			player.addControllerListener(new ControllerListener() {
+				public void controllerUpdate(ControllerEvent ce) {
+					if (ce instanceof StopEvent) {
+						StopEvent se = (StopEvent) ce;
+						System.out.println("PlaySoundAction Stopped at: " + se.getMediaTime().getSeconds() + " seconds");
+						stop();
+					}
+				}
+			});
+			player.start();
+		} catch (NoPlayerException e) {
+			e.printStackTrace();
+		} catch (CannotRealizeException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	public void stop() {
+		player.stop();
+		player.close();
 	}
 }

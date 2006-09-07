@@ -97,4 +97,21 @@ public class ArrayUtils {
 		sb.append("]");
 		return sb.toString();
 	}
+
+	/**
+	 * @param array
+	 * @return
+	 */
+	public static String toString(Object[] array) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		for (Object o : array) {
+			sb.append(o + ", ");
+		}
+		if (sb.length() > 1) {
+			sb.delete(sb.length() - 2, sb.length());
+		}
+		sb.append("]");
+		return sb.toString();
+	}
 }
