@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <xfdf xmlns="http://ns.adobe.com/xfdf/" xml:space="preserve">
+      <annots>
+        <square rect="-0.500153,591.499878,300.500153,792.500122" creationdate="D:20060906213756-07'00'" opacity="0.300003" interior-color="#808099" color="#333333" flags="print" date="D:20060906213756-07'00'" title="Region_0" fringe="0.500153,0.500153,0.500153,0.500153" page="0">
+          <popup rect="612,672,792,792" flags="print,nozoom,norotate" open="no" page="0"/>
+        </square>
+        <square rect="116.572525,458.878479,417.572845,659.878662" creationdate="D:20060906213756-07'00'" opacity="0.300003" interior-color="#808099" color="#333333" flags="print" date="D:20060906213757-07'00'" title="Region_1" fringe="0.500153,0.500153,0.500153,0.500153" page="0">
+          <popup rect="612,672,792,792" flags="print,nozoom,norotate" open="no" page="0"/>
+        </square>
+        <square rect="53.463028,295.159668,354.463348,496.159912" creationdate="D:20060906213758-07'00'" opacity="0.300003" interior-color="#808099" color="#333333" flags="print" date="D:20060906213800-07'00'" title="Region_2" fringe="0.500153,0.500153,0.500153,0.500153" page="0">
+          <popup rect="612,672,792,792" flags="print,nozoom,norotate" open="no" page="0"/>
+        </square>
+      </annots>
+      <fields>
+        <field name="Height">
+          <value>
+792
+          </value>
+        </field>
+        <field name="Width">
+          <value>
+612
+          </value>
+        </field>
+      </fields>
+      <ids original="04AF7655066751D5E0E7794FF6BB17C3" modified="5179A71B4EFEA045BF781874C27691C3"/>
+      <f href="/C/Documents and Settings/Ron Yeh/Desktop/BlankJavaScriptTest.pdf"/>
+    </xfdf>
