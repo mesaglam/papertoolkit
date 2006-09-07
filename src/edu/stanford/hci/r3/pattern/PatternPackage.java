@@ -19,17 +19,19 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  * Represents a set of pattern files. One can tile these files, and create Postscript and PDF files
  * out of them. This package can load specific pattern files into byte[][] so that you can index
  * them for drawing on screen or into little graphics that represent pattern buttons.
  * 
  * All interaction with the specific pattern files should go in this class.
+ * </p>
+ * 
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PatternPackage {
 
@@ -297,6 +299,9 @@ public class PatternPackage {
 	private void readPropertiesFromConfigFile(File configFile) {
 		Properties props = new Properties();
 		try {
+			// NOTE: If this line fails, check to make sure gnujaxp.jar is not on your classpath
+			// With JFreeChart, and some other includes, gnujaxp will actually BREAK this line.
+			// Remove gnujaxp and you should be fine.
 			props.loadFromXML(new FileInputStream(configFile));
 		} catch (InvalidPropertiesFormatException e) {
 			e.printStackTrace();
@@ -315,9 +320,7 @@ public class PatternPackage {
 		// + numHorizontalDotsBetweenOriginOfPages);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
