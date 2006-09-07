@@ -1,7 +1,5 @@
 package edu.stanford.hci.r3.actions.types;
 
-import java.io.File;
-
 /**
  * 
  * <p>
@@ -11,17 +9,9 @@ import java.io.File;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class OpenFileActionTest {
+public class RunAppActionTest {
 	public static void main(String[] args) {
-		openLocalFile();
-	}
-
-	/**
-	 * 
-	 */
-	private static void openLocalFile() {
-		OpenFileAction oaction = new OpenFileAction(new File(
-				"data/testFiles/ButterflyNetCHI2006.pdf"));
-		oaction.invoke();
+		// loads Windows wordpad
+		new RunAppAction("write").invoke();
 	}
 }
