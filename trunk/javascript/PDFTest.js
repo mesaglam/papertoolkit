@@ -139,3 +139,5 @@ var annot=this.addAnnot({
 
 // sends info w/ the annotations to the server
 this.submitForm({cURL: "http://localhost:8888/", cSubmitAs: "XFDF", bAnnotations: true});
+
+
