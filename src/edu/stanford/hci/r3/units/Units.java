@@ -62,6 +62,8 @@ public abstract class Units implements Cloneable {
 	}
 
 	/**
+	 * Check if the lengths match.
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
