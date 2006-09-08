@@ -1,9 +1,11 @@
 package edu.stanford.hci.r3.paper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Size;
 import edu.stanford.hci.r3.units.Units;
@@ -85,6 +87,33 @@ public class Sheet {
 	 */
 	public void addRegion(Region r) {
 		regions.add(r);
+	}
+
+	/**
+	 * This file must be an XStream-serialized RegionConfiguration object. This can be produced by
+	 * hand, programmatically, or by the R3 Acrobat plugin.
+	 * 
+	 * @param regionConfigurationFile
+	 *            read in this file and add all the regions to this Sheet.
+	 */
+	public void addRegions(File regionConfigurationFile) {
+		final RegionConfiguration rc = (RegionConfiguration) PaperToolkit
+				.fromXML(regionConfigurationFile);
+
+		// make sure the size of the sheet matches this object...
+		// otherwise, raise a warning flag
+		if (!rc.getHeight().equals(getHeight()) || !rc.getWidth().equals(getWidth())) {
+			System.err.println("Sheet::addRegions(regionConfigurationFile): Warning! "
+					+ "This region configuration file was made for a sheet of a different size."
+					+ "RegionConfiguration: [" + rc.getWidth() + "," + rc.getHeight() + "] versus "
+					+ "This Sheet: [" + getWidth() + "," + getHeight() + "]");
+			System.err.println("We will proceed.... but you have been warned. =)");
+		}
+
+		final List<Region> theRegions = rc.getRegions();
+		for (Region r : theRegions) {
+			addRegion(r);
+		}
 	}
 
 	/**

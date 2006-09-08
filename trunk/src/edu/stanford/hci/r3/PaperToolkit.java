@@ -1,6 +1,9 @@
 package edu.stanford.hci.r3;
 
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,20 @@ public class PaperToolkit {
 	private static XStream xmlEngine;
 
 	/**
+	 * @param xmlFile
+	 * @return
+	 */
+	public static Object fromXML(File xmlFile) {
+		Object o = null;
+		try {
+			o = getXMLEngine().fromXML(new FileInputStream(xmlFile));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return o;
+	}
+
+	/**
 	 * @return the XStream processor that parses and creates XML.
 	 */
 	private static synchronized XStream getXMLEngine() {
@@ -53,10 +70,10 @@ public class PaperToolkit {
 			xmlEngine.alias("Centimeters", Centimeters.class);
 			xmlEngine.alias("Pixels", Pixels.class);
 			xmlEngine.alias("Points", Points.class);
-			
+
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
-			
+
 			xmlEngine.alias("Rectangle2D_Double", Rectangle2D.Double.class);
 		}
 		return xmlEngine;
@@ -79,7 +96,8 @@ public class PaperToolkit {
 
 	/**
 	 * @param object
-	 * @param stream write the xml to disk or another output stream.
+	 * @param stream
+	 *            write the xml to disk or another output stream.
 	 */
 	public static void toXML(Object object, OutputStream stream) {
 		getXMLEngine().toXML(object, stream);
