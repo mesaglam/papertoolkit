@@ -5,13 +5,13 @@
   </heightInPoints>
   <regions>
     <Region>
-      <active>false</active>
+      <active>true</active>
       <name>MainDrawingArea</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
-      <shape class="Rectangle2D_Double">
+      <shape class="Rectangle2DDouble">
         <x>58.874207</x>
-        <y>645.026001</y>
+        <y>127.62402299999985</y>
         <width>493.966796</width>
         <height>517.4019780000001</height>
       </shape>
@@ -22,13 +22,13 @@
       <visible>true</visible>
     </Region>
     <Region>
-      <active>false</active>
+      <active>true</active>
       <name>BlackPalette</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
-      <shape class="Rectangle2D_Double">
+      <shape class="Rectangle2DDouble">
         <x>68.467804</x>
-        <y>758.087692</y>
+        <y>675.054993</y>
         <width>78.346191</width>
         <height>83.03269900000001</height>
       </shape>
@@ -39,13 +39,13 @@
       <visible>true</visible>
     </Region>
     <Region>
-      <active>false</active>
+      <active>true</active>
       <name>PurplePalette</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
-      <shape class="Rectangle2D_Double">
+      <shape class="Rectangle2DDouble">
         <x>168.503006</x>
-        <y>756.995102</y>
+        <y>673.96199</y>
         <width>78.34599299999999</width>
         <height>83.033112</height>
       </shape>
@@ -56,13 +56,13 @@
       <visible>true</visible>
     </Region>
     <Region>
-      <active>false</active>
+      <active>true</active>
       <name>OrangePalette</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
-      <shape class="Rectangle2D_Double">
+      <shape class="Rectangle2DDouble">
         <x>267.04599</x>
-        <y>757.481705</y>
+        <y>674.4489900000001</y>
         <width>78.34600799999998</width>
         <height>83.032715</height>
       </shape>
@@ -73,13 +73,13 @@
       <visible>true</visible>
     </Region>
     <Region>
-      <active>false</active>
+      <active>true</active>
       <name>SendToScreen</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
-      <shape class="Rectangle2D_Double">
+      <shape class="Rectangle2DDouble">
         <x>460.575012</x>
-        <y>761.606598</y>
+        <y>669.9799959999999</y>
         <width>86.158997</width>
         <height>91.626602</height>
       </shape>
