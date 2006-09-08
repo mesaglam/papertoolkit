@@ -2,7 +2,7 @@
 // the Main Directory is C:\Program Files\Adobe\Acrobat 7.0\Acrobat\Javascripts
 // the User Directory is C:\Documents and Settings\<User Name>\Application Data\Adobe\Acrobat\7.0\JavaScripts
 // THEN, make sure the following line is correct (i.e., comment out the incorrect line)
-var userOrAppFlag = "user";  // installed in the User Directory
+var userOrAppFlag = "user";  // installed in the User Directory (recommended)
 //var userOrAppFlag = "app"; // installed in the Main Directory
 
 // how many regions are in this document

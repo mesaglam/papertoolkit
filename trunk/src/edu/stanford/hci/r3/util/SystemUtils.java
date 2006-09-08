@@ -16,4 +16,22 @@ public class SystemUtils {
 	public static final String LINE_SEPARATOR = System.getProperties()
 			.getProperty("line.separator");
 
+	/**
+	 * http://developer.apple.com/technotes/tn2002/tn2110.html
+	 * 
+	 * @return true if the jvm is running on mac os x
+	 */
+	public static boolean operatingSystemIsMacOSX() {
+		String lcOSName = System.getProperty("os.name").toLowerCase();
+		return lcOSName.startsWith("mac os x");
+	}
+
+	/**
+	 * @return if the jvm is running on windows 9x/NT/2000/XP/Vista
+	 */
+	public static boolean operatingSystemIsWindowsVariant() {
+		String lcOSName = System.getProperty("os.name").toLowerCase();
+		return lcOSName.startsWith("windows");
+	}
+
 }
