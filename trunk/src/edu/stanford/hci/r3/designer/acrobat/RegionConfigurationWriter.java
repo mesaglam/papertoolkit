@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.units.Points;
+import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
@@ -184,17 +186,25 @@ public class RegionConfigurationWriter extends DefaultHandler {
 			// correct all the y values stored in the region Configuration
 			for (Region r : temporaryRegionsList) {
 
-				Region correctedRegion = new Region(r.getOriginX(), new Points(heightInPoints
-						- r.getOriginY().getValue()), r.getUnscaledBoundsWidth(), r
-						.getUnscaledBoundsHeight());
+				final Units rh = r.getUnscaledBoundsHeight();
+				final Units rw = r.getUnscaledBoundsWidth();
+				final Region correctedRegion = new Region(r.getOriginX(), //
+						new Points(heightInPoints - r.getOriginY().getValue() - rh.getValue()), //
+						rw, rh);
 				correctedRegion.setName(r.getName());
+				// this region will be overlaid with pattern!
+				correctedRegion.setActive(true);
 				regionConfiguration.addRegion(correctedRegion);
 			}
 
 			// write it out to disk...
 			try {
-				PaperToolkit.toXML(regionConfiguration, new FileOutputStream(outputXMLFile));
+				final FileOutputStream fileOutputStream = new FileOutputStream(outputXMLFile);
+				PaperToolkit.toXML(regionConfiguration, fileOutputStream);
+				fileOutputStream.close();
 			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -318,6 +328,13 @@ public class RegionConfigurationWriter extends DefaultHandler {
 		if (handler != null) {
 			handlers.removeLast();
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	public File getOutputFile() {
+		return outputXMLFile;
 	}
 
 	/**

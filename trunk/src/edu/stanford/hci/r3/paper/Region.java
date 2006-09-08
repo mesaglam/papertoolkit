@@ -341,6 +341,7 @@ public class Region {
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		final String className = shape.getClass().getName();
+		sb.append(getName() + " of type ");
 		sb.append(className.substring(className.lastIndexOf(".") + 1) + ": {");
 
 		final PathIterator pathIterator = shape.getPathIterator(AffineTransform.getScaleInstance(

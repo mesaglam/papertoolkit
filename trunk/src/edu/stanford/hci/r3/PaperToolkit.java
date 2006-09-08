@@ -70,11 +70,9 @@ public class PaperToolkit {
 			xmlEngine.alias("Centimeters", Centimeters.class);
 			xmlEngine.alias("Pixels", Pixels.class);
 			xmlEngine.alias("Points", Points.class);
-
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
-
-			xmlEngine.alias("Rectangle2D_Double", Rectangle2D.Double.class);
+			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
 		}
 		return xmlEngine;
 	}
