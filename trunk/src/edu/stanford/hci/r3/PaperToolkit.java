@@ -1,16 +1,21 @@
 package edu.stanford.hci.r3;
 
+import java.awt.geom.Rectangle2D;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
 
+import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.events.EventEngine;
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
@@ -47,6 +52,12 @@ public class PaperToolkit {
 			xmlEngine.alias("Inches", Inches.class);
 			xmlEngine.alias("Centimeters", Centimeters.class);
 			xmlEngine.alias("Pixels", Pixels.class);
+			xmlEngine.alias("Points", Points.class);
+			
+			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
+			xmlEngine.alias("Region", Region.class);
+			
+			xmlEngine.alias("Rectangle2D_Double", Rectangle2D.Double.class);
 		}
 		return xmlEngine;
 	}
@@ -59,11 +70,19 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @param o
-	 * @return a string representing o translated into XML
+	 * @param obj
+	 * @return a string representing the object translated into XML
 	 */
-	public static String toXML(Object o) {
-		return getXMLEngine().toXML(o);
+	public static String toXML(Object obj) {
+		return getXMLEngine().toXML(obj);
+	}
+
+	/**
+	 * @param object
+	 * @param stream write the xml to disk or another output stream.
+	 */
+	public static void toXML(Object object, OutputStream stream) {
+		getXMLEngine().toXML(object, stream);
 	}
 
 	/**
@@ -126,7 +145,7 @@ public class PaperToolkit {
 	public void stopApplication(Application paperApp) {
 		applications.remove(paperApp);
 		List<Pen> pens = paperApp.getPens();
-		
+
 		for (Pen pen : pens) {
 			if (pen.isLive()) {
 				eventEngine.unregisterPen(pen);

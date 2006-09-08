@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,8 +18,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.thoughtworks.xstream.XStream;
-
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
@@ -42,7 +45,8 @@ public class RegionConfigurationWriter extends DefaultHandler {
 	private class FileNameHandler extends TagHandler {
 
 		public void handleStart(String qName, Attributes attributes) {
-			if (qName.equals("f") && attributes.getLength() == 1) {
+			if (outputXMLFile == null && qName.equals("f") && attributes.getLength() == 1) {
+				String thePath = null;
 				if (!SystemUtils.operatingSystemIsWindowsVariant()) {
 					System.err
 							.println("RegionConfigurationWriter: Sorry, we may not support "
@@ -67,24 +71,40 @@ public class RegionConfigurationWriter extends DefaultHandler {
 
 				// kill the extension
 				thePath = thePath.substring(0, thePath.lastIndexOf("."));
-				thePath = thePath + ".regions.xml";
-				System.out.println("Write the Regions out to "
-						+ new File(thePath).getAbsolutePath());
+				outputXMLFile = new File(thePath + ".regions.xml");
+				System.out.println("RegionConfigurationWriter :: Writing the Regions out to "
+						+ outputXMLFile.getAbsolutePath());
 			}
 		}
 	}
 
+	/**
+	 * Adds regions to the RegionConfiguration.
+	 * 
+	 * A rectangular PDF region looks like: <br>
+	 * <br>
+	 * <square rect="116.572525,458.878479,417.572845,659.878662"
+	 * creationdate="D:20060906213756-07'00'" opacity="0.300003" interior-color="#808099"
+	 * color="#333333" flags="print" date="D:20060906213757-07'00'" title="Region_1"
+	 * fringe="0.500153,0.500153,0.500153,0.500153" page="0">
+	 */
 	private class RegionHandler extends TagHandler {
-		public void handleEnd(String qName) {
-
-		}
 
 		public void handleStart(String qName, Attributes attributes) {
+			if (qName.equals("square")) {
+				String nameOfRegion = attributes.getValue("title");
+				String rectString = attributes.getValue("rect");
+				String[] rectValStrings = rectString.split(",");
 
-		}
-
-		public void handleValue(String value) {
-
+				final double x = Double.parseDouble(rectValStrings[0]);
+				final double y = Double.parseDouble(rectValStrings[1]); // correct this later
+				final double w = Double.parseDouble(rectValStrings[2]) - x;
+				final double h = Double.parseDouble(rectValStrings[3]) - y;
+				final Region r = new Region(new Points(x), new Points(y), new Points(w),
+						new Points(h));
+				r.setName(nameOfRegion);
+				temporaryRegionsList.add(r);
+			}
 		}
 	}
 
@@ -106,10 +126,6 @@ public class RegionConfigurationWriter extends DefaultHandler {
 		}
 	}
 
-	private double height;
-
-	private double width;
-
 	/**
 	 * <p>
 	 * </p>
@@ -120,10 +136,6 @@ public class RegionConfigurationWriter extends DefaultHandler {
 		private boolean lookingForHeight;
 
 		private boolean lookingForWidth;
-
-		public void handleEnd(String qName) {
-
-		}
 
 		public void handleStart(String qName, Attributes attributes) {
 			if (qName.equals("field") && (attributes.getLength() == 1)) {
@@ -140,12 +152,14 @@ public class RegionConfigurationWriter extends DefaultHandler {
 		public void handleValue(String value) {
 			if (captureNextValue) {
 				if (lookingForHeight) {
-					height = Double.parseDouble(value);
-					System.out.println("Setting Height to " + value);
+					heightInPoints = Double.parseDouble(value);
+					// System.out.println("Setting Height to " + value);
+					regionConfiguration.setDocumentHeight(heightInPoints);
 					resetFlags();
 				} else if (lookingForWidth) {
-					width = Double.parseDouble(value);
-					System.out.println("Setting Width to " + value);
+					widthInPoints = Double.parseDouble(value);
+					// System.out.println("Setting Width to " + value);
+					regionConfiguration.setDocumentWidth(widthInPoints);
 					resetFlags();
 				}
 			}
@@ -158,26 +172,53 @@ public class RegionConfigurationWriter extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * Handles the writing of the XML file once we finish parsing the XFDF information.
+	 */
 	private class XFDFHandler extends TagHandler {
 		public void handleEnd(String qName) {
 			if (!qName.equals("xfdf")) {
 				return;
 			}
+
+			// correct all the y values stored in the region Configuration
+			for (Region r : temporaryRegionsList) {
+
+				Region correctedRegion = new Region(r.getOriginX(), new Points(heightInPoints
+						- r.getOriginY().getValue()), r.getUnscaledBoundsWidth(), r
+						.getUnscaledBoundsHeight());
+				correctedRegion.setName(r.getName());
+				regionConfiguration.addRegion(correctedRegion);
+			}
+
 			// write it out to disk...
-			XStream x = new XStream();
 			try {
-				final FileOutputStream stream = new FileOutputStream(new File(thePath));
-				x.toXML(new Object(), stream);
-				stream.close();
+				PaperToolkit.toXML(regionConfiguration, new FileOutputStream(outputXMLFile));
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * Individual handlers for the different <tags></tags>
+	 */
 	private LinkedList<TagHandler> handlers = new LinkedList<TagHandler>();
+
+	/**
+	 * Height of the PDF in Points.
+	 */
+	private double heightInPoints;
+
+	/**
+	 * The XML file is generated by the R3 Acrobat plugin and the AcrobatCommunicationServer.
+	 */
+	private File inputXMLFile;
+
+	/**
+	 * Where should we write the XML file out to?
+	 */
+	private File outputXMLFile;
 
 	/**
 	 * Take the simple event-based SAX approach.
@@ -185,25 +226,32 @@ public class RegionConfigurationWriter extends DefaultHandler {
 	private SAXParser parser;
 
 	/**
+	 * Stores all the information we need until we write it out to an XML file.
+	 */
+	private RegionConfiguration regionConfiguration = new RegionConfiguration();
+
+	/**
 	 * For each tag, we will create an appropriate tag handler (only if we are interested in
 	 * processing the tag).
 	 */
 	private Map<String, TagHandler> tagToHandler = new HashMap<String, TagHandler>();
 
-	private String thePath = null;
-
-	private StringBuilder xml = new StringBuilder();
+	/**
+	 * Store the regions here for now. We need to correct the Y locations to make it more
+	 * GUI-toolkit friendly, i.e., (0,0) == top left.
+	 */
+	private List<Region> temporaryRegionsList = new ArrayList<Region>();
 
 	/**
-	 * The XML file is generated by the R3 Acrobat plugin and the AcrobatCommunicationServer.
+	 * Width of the whole PDF, in 1/72 of an inch (Points).
 	 */
-	private File xmlFile;
+	private double widthInPoints;
 
 	/**
-	 * @param xmlFile
+	 * @param inputXMLFile
 	 */
-	public RegionConfigurationWriter(File theXmlFile) {
-		xmlFile = theXmlFile;
+	public RegionConfigurationWriter(File theInputXmlFile) {
+		inputXMLFile = theInputXmlFile;
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		try {
 			parser = factory.newSAXParser();
@@ -220,11 +268,23 @@ public class RegionConfigurationWriter extends DefaultHandler {
 		tagToHandler.put("xfdf", new XFDFHandler());
 	}
 
+	/**
+	 * @param theInputXMLFile
+	 * @param theOutputXMLFile
+	 */
+	public RegionConfigurationWriter(File theInputXMLFile, File theOutputXMLFile) {
+		this(theInputXMLFile);
+		outputXMLFile = theOutputXMLFile;
+	}
+
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+	 */
 	@Override
 	public void characters(char[] chars, int start, int n) throws SAXException {
 		super.characters(chars, start, n);
 		final String trimmedValue = new String(chars, start, n).trim();
-		System.out.print(trimmedValue);
+		// System.out.println(trimmedValue);
 		// dispatch this information to all handlers
 		for (int i = handlers.size() - 1; i >= 0; i--) {
 			handlers.get(i).handleValue(trimmedValue);
@@ -246,7 +306,7 @@ public class RegionConfigurationWriter extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		super.endElement(uri, localName, qName);
-		System.out.println("</" + qName + ">");
+		// System.out.println("</" + qName + ">");
 
 		// dispatch this information to all handlers
 		for (int i = handlers.size() - 1; i >= 0; i--) {
@@ -265,7 +325,7 @@ public class RegionConfigurationWriter extends DefaultHandler {
 	 */
 	public void processXML() {
 		try {
-			parser.parse(xmlFile, this);
+			parser.parse(inputXMLFile, this);
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -289,15 +349,15 @@ public class RegionConfigurationWriter extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName, Attributes attributes)
 			throws SAXException {
 		super.startElement(uri, localName, qName, attributes);
-		System.out.print("<" + qName);
-		int numAttrs = attributes.getLength();
-		for (int i = 0; i < numAttrs; i++) {
-			System.out.print(" " + attributes.getQName(i) + "=" + attributes.getValue(i));
-			if (i != numAttrs - 1) {
-				System.out.print(",");
-			}
-		}
-		System.out.println(">");
+		// System.out.print("<" + qName);
+		// int numAttrs = attributes.getLength();
+		// for (int i = 0; i < numAttrs; i++) {
+		// System.out.print(" " + attributes.getQName(i) + "=" + attributes.getValue(i));
+		// if (i != numAttrs - 1) {
+		// System.out.print(",");
+		// }
+		// }
+		// System.out.println(">");
 
 		// get a handler if it exists
 		TagHandler handler = tagToHandler.get(qName);
