@@ -1,7 +1,12 @@
 package edu.stanford.hci.r3.util.files;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import edu.stanford.hci.r3.util.ArrayUtils;
@@ -49,5 +54,34 @@ public class FileUtils {
 		final File[] files = path.listFiles((FileFilter) new FilesOnlyFilter(extensionFilter,
 				Visibility.VISIBLE));
 		return ArrayUtils.convertArrayToList(files);
+	}
+
+	/**
+	 * @param f turn this file into a big string buffer (StringBuilder for efficiency)
+	 * @param separateWithNewLines
+	 * @return
+	 */
+	public static StringBuilder readFileIntoStringBuffer(File f, boolean separateWithNewLines) {
+		final StringBuilder returnVal = new StringBuilder();
+		final String endLine = separateWithNewLines ? "\n" : "";
+		try {
+			final BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
+					f)));
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				returnVal.append(line + endLine);
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (returnVal.length() > 0 && separateWithNewLines) {
+			// delete the last newline
+			return new StringBuilder(returnVal.substring(0, returnVal.length() - 1));
+		} else {
+			return returnVal;
+		}
 	}
 }

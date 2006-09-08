@@ -5,6 +5,10 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.org.apache.xml.internal.resolver.helpers.FileURL;
+
+import edu.stanford.hci.r3.util.files.FileUtils;
+
 /**
  * <p>
  * In Acrobat, run this javascript to send the annotations over to this server.
@@ -61,6 +65,8 @@ public class AcrobatCommunicationServer {
 	 * The socket that we open.
 	 */
 	private ServerSocket serverSocket;
+
+	private File outputFile;
 
 	/**
 	 * @param port
@@ -188,17 +194,25 @@ public class AcrobatCommunicationServer {
 
 					logToConsoleAndFile("[Client " + id + "]");
 					// include the final character that adobe didn't send us
-					
+
 					processXML(sb.toString() + ">");
+
+					final File parentDir = outputFile.getParentFile();
+					// fill in the correct URI of the parent directory
+					String confirmation = CONFIRMATION.toString().replace("__PARENTURI__",
+							parentDir.toURI().toString());
+					confirmation = confirmation.replace("__FOLDERNAME__", parentDir.getName());
+					confirmation = confirmation.replace("__FILEURI__", outputFile.toURI()
+							.toString());
+					confirmation = confirmation.replace("__FILENAME__", outputFile.getName());
 
 					// tell the client to go away now
 					out.println("HTTP/1.1 200 OK");
-					out.println("Content-Length: 69");
+					out.println("Content-Length: " + confirmation.length());
 					out.println("Connection: close");
 					out.println("Content-Type: text/html; charset=UTF-8");
 					out.println();
-					out
-							.println("<html><body>Your Paper UI regions have been sent to R3.</body></html>");
+					out.println(confirmation);
 					clientConn.close();
 				} catch (IOException e) {
 					logOutput.println("Failed reading a line from the client.");
@@ -206,10 +220,15 @@ public class AcrobatCommunicationServer {
 				}
 			}
 
-
 		});
 	}
 
+	private static final StringBuilder CONFIRMATION = FileUtils.readFileIntoStringBuffer(new File(
+			"data/designer/Confirmation.html"), false /* no new lines */);
+
+	/**
+	 * @param xml
+	 */
 	private void processXML(String xml) {
 		logToConsoleAndFile(xml);
 
@@ -222,12 +241,12 @@ public class AcrobatCommunicationServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		RegionConfigurationWriter writer = new RegionConfigurationWriter(xmlFile);
 		writer.processXML();
+		outputFile = writer.getOutputFile();
 	}
 
-	
 	/**
 	 * @param msg
 	 */
