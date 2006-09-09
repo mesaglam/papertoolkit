@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 import edu.stanford.hci.r3.util.ArrayUtils;
 
 /**
@@ -17,6 +18,15 @@ import edu.stanford.hci.r3.util.ArrayUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PatternPackageTest {
+
+	@Test
+	public void determineOrigin() {
+		int startingFile = 1;
+		TiledPatternGenerator generator = new TiledPatternGenerator();
+		PatternPackage pkg = generator.getCurrentPatternPackage();
+		StreamedPatternCoordinates coord = pkg.getPatternCoordinateOfOriginOfFile(startingFile);
+		System.out.println(coord);
+	}
 
 	/**
 	 * Display some tiling information.
