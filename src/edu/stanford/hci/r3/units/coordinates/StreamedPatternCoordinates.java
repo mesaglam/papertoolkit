@@ -68,4 +68,8 @@ public class StreamedPatternCoordinates {
 	public double getYVal() {
 		return y.getValue();
 	}
+	
+	public String toString() {
+		return "[" + x + ", " + y + "]";
+	}
 }

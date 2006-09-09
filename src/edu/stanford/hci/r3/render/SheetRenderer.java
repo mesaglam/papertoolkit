@@ -32,18 +32,24 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  * This class will render a Sheet into a JPEG, PDF, or Java2D graphics context.
  * 
  * For individual regions, it will use specific region renderers (e.g., ImageRenderer,
  * PolygonRenderer, and TextRenderer).
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class SheetRenderer {
+
+	/**
+	 * For now, get a tiled pattern generator. TODO: later on, we might want to pass this in
+	 */
+	private final TiledPatternGenerator generator = new TiledPatternGenerator();
 
 	/**
 	 * By Default, any active regions will be overlaid with pattern (unique to at least this sheet,
@@ -51,6 +57,9 @@ public class SheetRenderer {
 	 */
 	protected boolean renderActiveRegionsWithPattern = true;
 
+	/**
+	 * The sheet we are to render.
+	 */
 	protected Sheet sheet;
 
 	/**
@@ -72,9 +81,7 @@ public class SheetRenderer {
 		// for each region, overlay pattern if it is an active region
 		final List<Region> regions = sheet.getRegions();
 
-		// for now, get a tiled pattern generator
-		// later on, we might want to pass this in
-		final TiledPatternGenerator generator = new TiledPatternGenerator();
+		generator.resetUniquePatternTracker();
 
 		// this object will generate the right PDF (itext) calls to create pattern
 		final PDFPatternGenerator pgen = new PDFPatternGenerator(cb, sheet.getWidth(), sheet
@@ -101,8 +108,12 @@ public class SheetRenderer {
 
 			DebugUtils.println(r.getOriginX() + " " + r.getOriginY());
 
-			
+			// render the pattern starting at the region's origin
 			pgen.renderPattern(pattern, r.getOriginX(), r.getOriginY());
+			
+			// also, at this point, we know what pattern we have assigned to each region
+			// we should be able to assign a tile configuration to each region
+			// TODO: 
 		}
 	}
 

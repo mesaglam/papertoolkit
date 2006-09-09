@@ -215,6 +215,9 @@ public class PatternPackage {
 	}
 
 	/**
+	 * Given a starting pattern file, we can determine the origin (top left corner) based on our
+	 * knowledge of the origin of the first file, and the distance between each file.
+	 * 
 	 * @param patternFileNumber
 	 * @return
 	 */

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.hci.r3.config.Configuration;
-import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -47,6 +46,12 @@ public class TiledPatternGenerator {
 	private Map<String, PatternPackage> availablePackages;
 
 	/**
+	 * Where we should start getting our pattern from. This is incremented by some amount every time
+	 * we call getPattern(...), so that the pattern returned will be unique.
+	 */
+	private int patternFileNumber = 0;
+
+	/**
 	 * Currently selected pattern package.
 	 */
 	private PatternPackage patternPackage;
@@ -55,12 +60,6 @@ public class TiledPatternGenerator {
 	 * Customize this to reflect where you store your pattern definition files.
 	 */
 	private File patternPath;
-
-	/**
-	 * Where we should start getting our pattern from. This is incremented by some amount every time
-	 * we call getPattern(...), so that the pattern returned will be unique.
-	 */
-	private int patternFileNumber = 0;
 
 	/**
 	 * Default Pattern Path Location.
@@ -201,7 +200,7 @@ public class TiledPatternGenerator {
 
 		// next time, get new pattern from a new file!
 		patternFileNumber = pattern.getLastPatternFileUsed() + 1;
-		
+
 		return pattern;
 	}
 
@@ -219,6 +218,14 @@ public class TiledPatternGenerator {
 	 */
 	public List<String> listAvailablePatternPackageNames() {
 		return new ArrayList<String>(availablePackages.keySet());
+	}
+
+	/**
+	 * Resets the tracked history in this object. The next call to getPattern(...) will start over
+	 * at the default state after calling this function.
+	 */
+	public void resetUniquePatternTracker() {
+		patternFileNumber = 0;
 	}
 
 	/**
