@@ -9,6 +9,11 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * object to find the dot pattern.
  * </p>
  * <p>
+ * This class will also know the physical and logical coordinates of the pattern that it reads in.
+ * This allows other classes to determine this information later on, for coordinate transformations,
+ * etc.
+ * </p>
+ * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
