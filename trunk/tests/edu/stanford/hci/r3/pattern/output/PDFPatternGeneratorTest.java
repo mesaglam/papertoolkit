@@ -27,8 +27,7 @@ public class PDFPatternGeneratorTest {
 
 	public static void main(String[] args) {
 		TiledPatternGenerator generator = new TiledPatternGenerator();
-		TiledPattern pattern = generator.getPattern(new Inches(0), new Inches(0), new Inches(1),
-				new Inches(2));
+		TiledPattern pattern = generator.getPattern(new Inches(1), new Inches(2));
 
 		try {
 			final Rectangle pageRect = PageSize.LETTER;

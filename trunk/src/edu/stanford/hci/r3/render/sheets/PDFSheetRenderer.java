@@ -5,15 +5,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
-import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Units;
@@ -52,12 +49,12 @@ public class PDFSheetRenderer extends SheetRenderer {
 	public void renderToG2D(Graphics2D g2d) {
 		// render the PDF to the g2d's background
 		PdfReader reader = pdfSheet.getReader();
-//		reader.get;
-//		PdfImportedPage p = new PdfImportedPage();
-		
+
+		// deleted some code from here... about PDF Imported Page
+
 		// call the super's renderToG2D to paint all the other regions
 		DebugUtils.println("Commented Out Super.RenderToG2D");
-		//super.renderToG2D(g2d);
+		// super.renderToG2D(g2d);
 	}
 
 	/**

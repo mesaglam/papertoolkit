@@ -57,6 +57,12 @@ public class TiledPatternGenerator {
 	private File patternPath;
 
 	/**
+	 * Where we should start getting our pattern from. This is incremented by some amount every time
+	 * we call getPattern(...), so that the pattern returned will be unique.
+	 */
+	private int patternFileNumber = 0;
+
+	/**
 	 * Default Pattern Path Location.
 	 */
 	public TiledPatternGenerator() {
@@ -148,15 +154,15 @@ public class TiledPatternGenerator {
 
 	/**
 	 * Returned pattern that is tiled appropriately, and automatically selected from the pattern
-	 * package.
+	 * package. By default, this pattern generator class will keep track of which pattern it has
+	 * given you, and will give you unique pattern (if possible) every time you call this method.
 	 * 
-	 * @param origX
-	 * @param origY
 	 * @param width
 	 * @param height
+	 * 
 	 * @return
 	 */
-	public TiledPattern getPattern(Units origX, Units origY, Units width, Units height) {
+	public TiledPattern getPattern(Units width, Units height) {
 		final long numDotsX = Math.round(width.getValueInPatternDots());
 		final long numDotsY = Math.round(height.getValueInPatternDots());
 
@@ -171,6 +177,7 @@ public class TiledPatternGenerator {
 		final int numPatternColsPerFile = patternPackage.getNumPatternColsPerFile();
 		final int numPatternRowsPerFile = patternPackage.getNumPatternRowsPerFile();
 
+		// figure out how many horizontal dots we need
 		while (numDotsRemainingX > 0) {
 			// use up one tile, and subtract an appropriate number of columns...
 			numDotsRemainingX -= numPatternColsPerFile;
@@ -178,6 +185,7 @@ public class TiledPatternGenerator {
 		}
 		final int numDotsXFromRightMostTiles = numDotsRemainingX + numPatternColsPerFile;
 
+		// figure out how many vertical dots we need
 		while (numDotsRemainingY > 0) {
 			// use up one tile, and subtract an appropriate number of rows...
 			numDotsRemainingY -= numPatternRowsPerFile;
@@ -186,8 +194,14 @@ public class TiledPatternGenerator {
 		final int numDotsYFromBottomMostTiles = numDotsRemainingY + numPatternRowsPerFile;
 
 		// create and return the tiled pattern
-		final TiledPattern pattern = new TiledPattern(patternPackage, numTilesNeededX,
-				numTilesNeededY, numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles);
+		// for now, always increment the file number so that we get new pattern!
+		final TiledPattern pattern = new TiledPattern(patternPackage, patternFileNumber, 0, //
+				numTilesNeededX, numTilesNeededY, //
+				numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles); //
+
+		// next time, get new pattern from a new file!
+		patternFileNumber = pattern.getLastPatternFileUsed() + 1;
+		
 		return pattern;
 	}
 
