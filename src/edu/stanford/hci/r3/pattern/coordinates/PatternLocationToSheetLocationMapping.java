@@ -8,10 +8,6 @@ import edu.stanford.hci.r3.paper.Sheet;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * <p>
  * This class stores mappings from regions of pattern (and their coordinates in Anoto space) to
  * Sheets and locations on those sheets. This mapping works both ways. Given a location on the
  * sheet, we should be able to find the pattern coordinate. Given a coordinate, we should be able to
@@ -21,6 +17,10 @@ import edu.stanford.hci.r3.paper.Sheet;
  * An instance of this object should be built when a PDF is rendered with pattern. At that moment,
  * regions on a sheet are bound to specific physical coordinates. Each application should store this
  * mapping per sheet.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)

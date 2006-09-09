@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -35,24 +37,58 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class PatternPackage {
 
+	/**
+	 * The pattern X coordinate of the top left of page 0. This is the key for the config.xml file
+	 * (stored in the pattern package's directory, alongside the .pattern files).
+	 */
 	private static final String MIN_PATTERN_X = "minPatternX";
 
+	/**
+	 * The pattern Y coordinate of the top left of page 0. This is the key for the config.xml file.
+	 */
 	private static final String MIN_PATTERN_Y = "minPatternY";
 
+	/**
+	 * Horizontal offset in dots between adjacent pages' origins.
+	 */
 	private static final String NUM_HORIZ_DOTS_BETWEEN_PAGES = "numHorizontalDotsBetweenOriginOfPages";
+
+	/**
+	 * Vertical offset in dots between adjacent pages' origins.
+	 */
+	private static final String NUM_VERT_DOTS_BETWEEN_PAGES = "numVerticalDotsBetweenOriginOfPages";
 
 	/**
 	 * All pattern files' names look like N.pattern, where N is the page number.
 	 */
 	private static final String PATTERN_FILE_EXTENSION = ".pattern";
 
-	private double minPatternX;
+	/**
+	 * Specified in Anoto Dots.
+	 */
+	private PatternDots minPatternX;
 
-	private double minPatternY;
+	/**
+	 * Specified in Anoto Dots.
+	 */
+	private PatternDots minPatternY;
 
+	/**
+	 * Name of the pattern package.
+	 */
 	private String name;
 
-	private double numHorizontalDotsBetweenOriginOfPages;
+	/**
+	 * How many dots are between the left column of page N and the left column of page N+1?
+	 */
+	private double numDotsHorizontalBetweenOriginOfPages;
+
+	/**
+	 * How many dots are between the top row of page N and the top row of page N+1? In the
+	 * ButterflyNet pattern space allocated by Anoto, this value is 0. This also seems to be the
+	 * case for other pattern spaces, although this may change, of course.
+	 */
+	private double numDotsVerticalBetweenOriginOfPages;
 
 	/**
 	 * The width of a pattern file, in num dots.
@@ -165,16 +201,48 @@ public class PatternPackage {
 	}
 
 	/**
+	 * @return
+	 */
+	public PatternDots getMinPatternX() {
+		return minPatternX;
+	}
+
+	/**
+	 * @return
+	 */
+	public PatternDots getMinPatternY() {
+		return minPatternY;
+	}
+
+	/**
+	 * @param patternFileNumber
+	 * @return
+	 */
+	public StreamedPatternCoordinates getPatternCoordinateOfOriginOfFile(int patternFileNumber) {
+		final PatternDots x = new PatternDots(minPatternX.getValue() + patternFileNumber
+				* numDotsHorizontalBetweenOriginOfPages);
+		final PatternDots y = new PatternDots(minPatternY.getValue() + patternFileNumber
+				* numDotsVerticalBetweenOriginOfPages);
+		return new StreamedPatternCoordinates(x, y);
+	}
+
+	/**
 	 * @return the name of the package (same as the directory's name)
 	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getNumPatternColsPerFile() {
 		return numPatternColsPerFile;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getNumPatternRowsPerFile() {
 		return numPatternRowsPerFile;
 	}
@@ -310,10 +378,12 @@ public class PatternPackage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		minPatternX = Double.parseDouble(props.getProperty(MIN_PATTERN_X));
-		minPatternY = Double.parseDouble(props.getProperty(MIN_PATTERN_Y));
-		numHorizontalDotsBetweenOriginOfPages = Double.parseDouble(props
+		minPatternX = new PatternDots(Double.parseDouble(props.getProperty(MIN_PATTERN_X)));
+		minPatternY = new PatternDots(Double.parseDouble(props.getProperty(MIN_PATTERN_Y)));
+		numDotsHorizontalBetweenOriginOfPages = Double.parseDouble(props
 				.getProperty(NUM_HORIZ_DOTS_BETWEEN_PAGES));
+		numDotsVerticalBetweenOriginOfPages = Double.parseDouble(props
+				.getProperty(NUM_VERT_DOTS_BETWEEN_PAGES));
 
 		// System.out.println("PatternPackage: minPatternX=" + minPatternX + " minPatternY="
 		// + minPatternY + " numHorizDotsBetweenPages="
