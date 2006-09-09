@@ -21,7 +21,6 @@ import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.pattern.output.PDFPatternGenerator;
-import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
@@ -94,11 +93,15 @@ public class SheetRenderer {
 			final Units unscaledWidth = r.getUnscaledBoundsWidth();
 			final Units unscaledHeight = r.getUnscaledBoundsHeight();
 
-			final TiledPattern pattern = generator.getPattern(new Inches(0), new Inches(0),
-					unscaledWidth, unscaledHeight);
+			// get pattern of the given width and height
+			// by default, the pattern returned will be unique if possible (and a warning thrown
+			// otherwise). If you want to use the same pattern in different places, you will
+			// need to keep the returned pattern object around
+			final TiledPattern pattern = generator.getPattern(unscaledWidth, unscaledHeight);
 
 			DebugUtils.println(r.getOriginX() + " " + r.getOriginY());
 
+			
 			pgen.renderPattern(pattern, r.getOriginX(), r.getOriginY());
 		}
 	}
@@ -207,6 +210,20 @@ public class SheetRenderer {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * After Rendering Pattern, we now know
+	 * 
+	 * @param sheetConfigFile
+	 */
+	public void saveSheetConfiguration(File sheetConfigFile) {
+		// go through all my regions
+
+		// figure out what tile configurations were set to each sheet
+
+		// save it to disk as a nice XML File! =)
+
 	}
 
 	/**

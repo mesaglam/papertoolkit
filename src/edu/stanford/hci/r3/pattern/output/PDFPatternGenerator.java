@@ -187,7 +187,7 @@ public class PDFPatternGenerator {
 	}
 
 	/**
-	 * Rend the given pattern starting at the designated origin.
+	 * Render the given pattern starting at the designated origin.
 	 * 
 	 * @param pattern
 	 * @param xOrigin
