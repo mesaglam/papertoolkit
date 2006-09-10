@@ -1,10 +1,12 @@
 package edu.stanford.hci.r3.events;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
@@ -23,13 +25,19 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * TODO: Test if multiple pens work!
  * </p>
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class EventEngine {
+
+	/**
+	 * Lets us figure out which sheets and regions should handle which events. Interacting with this
+	 * list should be as efficient as possible, because many "events" may be thrown per second!
+	 */
+	private List<PatternLocationToSheetLocationMapping> patternToSheetMaps = new ArrayList<PatternLocationToSheetLocationMapping>();
 
 	/**
 	 * Keeps track of how many times a pen has been registered. If during an unregister, this count
@@ -40,7 +48,7 @@ public class EventEngine {
 	/**
 	 * Allows us to identify a pen by ID (the position of the pen in this list).
 	 */
-	private List<Pen> pens = new ArrayList<Pen>();
+	private List<Pen> pensCurrentlyMonitoring = new ArrayList<Pen>();
 
 	/**
 	 * Each pen gets one and only one event engine listener...
@@ -61,7 +69,6 @@ public class EventEngine {
 	private void addPenToInternalLists(Pen pen, PenListener listener) {
 		penToListener.put(pen, listener);
 		pen.addLivePenListener(listener);
-		pens.add(pen);
 	}
 
 	/**
@@ -91,22 +98,60 @@ public class EventEngine {
 	 *         interested in this data.
 	 */
 	private PenListener getNewPenListener(final Pen pen) {
+		pensCurrentlyMonitoring.add(pen);
+		final int penID = pensCurrentlyMonitoring.indexOf(pen);
+
 		return new PenListener() {
 			public void penDown(PenSample sample) {
-				System.out.println(sample);
+				handlePenDown(penID, sample);
 			}
 
 			public void penUp(PenSample sample) {
-				System.out.println(sample);
+				handlePenUp(penID, sample);
 			}
 
 			public void sample(PenSample sample) {
-				System.out.println(sample);
-				System.out.println("Dispatching Event for pen #" + pens.indexOf(pen));
-				
-				// interactors?
+				handlePenSample(penID, sample);
 			}
 		};
+	}
+
+	/**
+	 * @param penID
+	 * @param penDownSample
+	 */
+	private void handlePenDown(int penID, PenSample penDownSample) {
+		System.out.println("DOWN: " + penDownSample);
+	}
+
+	/**
+	 * @param penID
+	 * @param sample
+	 */
+	private void handlePenSample(int penID, PenSample sample) {
+		System.out.println("Dispatching Event for pen #" + penID + " " + sample);
+
+		// for each sample, we first have to convert it to a location on the sheet.
+		// THEN, we will be able to make more interesting events...
+		for (PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
+			if (pmap.contains(sample)) {
+				
+			}
+		}
+		
+		
+		
+		// Should the event engine know about a running applications sheets? YEAH!
+
+		// interactors?
+	}
+
+	/**
+	 * @param penID
+	 * @param penUpSample
+	 */
+	private void handlePenUp(int penID, PenSample penUpSample) {
+		System.out.println("UP: " + penUpSample);
 	}
 
 	/**
@@ -145,6 +190,15 @@ public class EventEngine {
 	}
 
 	/**
+	 * @param patternMaps
+	 */
+	public void registerEventHandlers(Collection<PatternLocationToSheetLocationMapping> patternMaps) {
+		for (PatternLocationToSheetLocationMapping map : patternMaps) {
+			patternToSheetMaps.add(map);
+		}
+	}
+
+	/**
 	 * @param pen
 	 *            removes this pen from our internal lists without updating the registration count.
 	 * @param listener
@@ -152,7 +206,17 @@ public class EventEngine {
 	private void removePenFromInternalLists(Pen pen, PenListener listener) {
 		penToListener.remove(pen);
 		pen.removeLivePenListener(listener);
-		pens.remove(pen);
+		pensCurrentlyMonitoring.remove(pen);
+	}
+
+	/**
+	 * @param patternMaps
+	 */
+	public void unregisterEventHandlers(
+			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
+		for (PatternLocationToSheetLocationMapping map : patternMaps) {
+			patternToSheetMaps.remove(map);
+		}
 	}
 
 	/**

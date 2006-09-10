@@ -11,8 +11,10 @@ import java.util.Set;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.units.Units;
-import edu.stanford.hci.r3.util.SystemUtils;
+import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -214,5 +216,20 @@ public class PatternLocationToSheetLocationMapping {
 			System.err.println("PatternLocationToSheetLocationMapping.java: Region unknown. "
 					+ "Please add it to the sheet before updating this mapping.");
 		}
+	}
+
+	/**
+	 * @param sample
+	 * @return
+	 */
+	public boolean contains(PenSample sample) {
+		for (Region r : regionToPatternBounds.keySet()) {
+			TiledPatternCoordinateConverter converter = regionToPatternBounds.get(r);
+			if (converter.contains(new StreamedPatternCoordinates(sample))) {
+				DebugUtils.println("Sample is on: " + r.getName());
+				return true;
+			}
+		}
+		return false;
 	}
 }
