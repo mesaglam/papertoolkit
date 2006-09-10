@@ -27,6 +27,7 @@ public class SystemUtils {
 	public static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
 	/**
+	 * This doesn't work. =\
 	 * 
 	 * TODO: See: http://www.velocityreviews.com/forums/t143553-dll-in-jar.html for a possible
 	 * solution to load dlls from the jar file. Alternate idea:
