@@ -52,7 +52,7 @@ public class PaperToolkitTest {
 		PaperToolkit toolkit = new PaperToolkit();
 
 		// toolkit.print(constructSheet());
-		toolkit.runApplication(constructApplication());
+		toolkit.startApplication(constructApplication());
 	}
 
 }

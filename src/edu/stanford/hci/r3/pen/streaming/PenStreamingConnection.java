@@ -9,6 +9,8 @@ import java.util.TooManyListenersException;
 
 import javax.comm.*;
 
+import edu.stanford.hci.r3.PaperToolkit;
+
 /**
  * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the
  * Nokia SU-1B pen and converts it according to the Nokia Document.
@@ -52,6 +54,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 	private static Enumeration portList;
 
+	
 	/**
 	 * @return use COM5
 	 */
@@ -65,6 +68,10 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	 */
 	public static PenStreamingConnection getInstance(String port) {
 
+		// allow the system to find our native libraries
+		PaperToolkit.setupNativeLibraryPath();
+
+		
 		if (instance != null) {
 			return instance;
 		}

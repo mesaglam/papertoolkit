@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
+ * Manipulate and analyze Strings.
+ * 
+ * <p><span class="BSDLicense">
+ * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
+ * </span></p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
@@ -40,6 +41,19 @@ public class StringUtils {
 		final Dimension dimension = new Dimension();
 		dimension.setSize(maxWidth, totalHeight);
 		return dimension;
+	}
+
+	/**
+	 * @param string
+	 * @param numTimes
+	 * @return stringstringstringstring.... numTimes over.
+	 */
+	public static String repeat(String string, int numTimes) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < numTimes; i++) {
+			sb.append(string);
+		}
+		return sb.toString();
 	}
 
 	/**

@@ -1,23 +1,29 @@
 package edu.stanford.hci.r3.pen;
 
-import edu.stanford.hci.r3.pen.streaming.*;
+import edu.stanford.hci.r3.pen.streaming.ClientServerType;
+import edu.stanford.hci.r3.pen.streaming.PenClient;
+import edu.stanford.hci.r3.pen.streaming.PenListener;
+import edu.stanford.hci.r3.pen.streaming.PenServer;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.communications.COMPort;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  * This class represents a single, physical pen. A pen has an identity, so you should be able to
  * distinguish them. Pens can batch data for later upload. Alternatively, they can stream live data
  * when connected in a streaming mode.
- * 
+ * </p>
+ * <p>
  * The Pen object abstracts the lower level connections with the streaming server/client, and
  * dealing with batched ink input. It also interfaces with event handling in the system.
+ * </p>
+ * 
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class Pen {
 
@@ -38,11 +44,16 @@ public class Pen {
 	 */
 	private PenClient livePenClient;
 
+	private String name = "A Pen";
+
 	/**
 	 * 
 	 */
 	public Pen() {
+	}
 
+	public Pen(String name) {
+		setName(name);
 	}
 
 	/**
@@ -56,6 +67,10 @@ public class Pen {
 			return;
 		}
 		livePenClient.addPenListener(penListener);
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -75,6 +90,10 @@ public class Pen {
 			DebugUtils.println("Cannot Remove the Listener. The Pen is not in Live Mode.");
 		}
 		livePenClient.removePenListener(penListener);
+	}
+
+	private void setName(String n) {
+		name = n;
 	}
 
 	/**

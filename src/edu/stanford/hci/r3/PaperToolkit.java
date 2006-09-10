@@ -21,6 +21,9 @@ import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
+import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.StringUtils;
+import edu.stanford.hci.r3.util.SystemUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
@@ -75,7 +78,8 @@ public class PaperToolkit {
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
 			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
-			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
+			xmlEngine.alias("TiledPatternCoordinateConverter",
+					TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 		}
 		return xmlEngine;
@@ -117,6 +121,11 @@ public class PaperToolkit {
 	private EventEngine eventEngine;
 
 	/**
+	 * The version of the PaperToolkit.
+	 */
+	private String versionString = "0.1";
+
+	/**
 	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
 	 * accordingly (and between applications, ideally). There will be one event engine in the paper
 	 * toolkit, and all events that applications generate will be fed through this single event
@@ -129,23 +138,45 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Call this if you need to load native libraries. Pen.java needs some native libs, so it should
+	 * call this.
+	 */
+	public static void setupNativeLibraryPath() {
+		// add the win32com.dll to the java.library.path
+		// it can be found in the papertoolkit main directory (TODO: Fix this later when we allow
+		// JARring of the toolkit)
+		SystemUtils.addToLibraryPath(PaperToolkit.class.getResource("/system"));
+	}
+
+	/**
+	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
+	 * printer.
+	 * 
 	 * @param sheet
 	 */
 	public void print(Sheet sheet) {
-
+		// Implement this...
+		DebugUtils.println("Unimplemented Method");
 	}
 
 	/**
-	 * 
+	 * A Welcome message.
 	 */
 	private void printInitializationMessages() {
-		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit");
+		final String dashes = StringUtils.repeat("-", versionString.length());
+		System.out.println("-----------------------------------------------------------" + dashes);
+		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. "
+				+ versionString);
+		System.out.println("-----------------------------------------------------------" + dashes);
 	}
 
 	/**
+	 * Start this application and register all live pens with the event engine. The event engine
+	 * will then start dispatching events for this application until the application is stopped.
+	 * 
 	 * @param paperApp
 	 */
-	public void runApplication(Application paperApp) {
+	public void startApplication(Application paperApp) {
 		applications.add(paperApp);
 		List<Pen> pens = paperApp.getPens();
 

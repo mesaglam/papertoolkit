@@ -92,7 +92,6 @@ public class EventEngine {
 	 */
 	private PenListener getNewPenListener(final Pen pen) {
 		return new PenListener() {
-
 			public void penDown(PenSample sample) {
 				System.out.println(sample);
 			}
@@ -104,6 +103,8 @@ public class EventEngine {
 			public void sample(PenSample sample) {
 				System.out.println(sample);
 				System.out.println("Dispatching Event for pen #" + pens.indexOf(pen));
+				
+				// interactors?
 			}
 		};
 	}
