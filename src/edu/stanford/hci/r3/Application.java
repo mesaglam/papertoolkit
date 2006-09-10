@@ -2,6 +2,7 @@ package edu.stanford.hci.r3;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,10 +80,7 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet) {
 		sheets.add(sheet);
-		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
-				sheet);
-		// mapping.printMapping();
-		sheetToPatternMap.put(sheet, mapping);
+		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet));
 	}
 
 	/**
@@ -90,6 +88,13 @@ public class Application {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return the information that maps a pattern location to a location on a sheet.
+	 */
+	public Collection<PatternLocationToSheetLocationMapping> getPatternMaps() {
+		return sheetToPatternMap.values();
 	}
 
 	/**

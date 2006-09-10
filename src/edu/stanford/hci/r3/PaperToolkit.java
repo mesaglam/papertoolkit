@@ -175,6 +175,8 @@ public class PaperToolkit {
 				eventEngine.register(pen);
 			}
 		}
+		
+		eventEngine.registerEventHandlers(paperApp.getPatternMaps());
 	}
 
 	/**
@@ -191,5 +193,7 @@ public class PaperToolkit {
 				eventEngine.unregisterPen(pen);
 			}
 		}
+		
+		eventEngine.unregisterEventHandlers(paperApp.getPatternMaps());
 	}
 }
