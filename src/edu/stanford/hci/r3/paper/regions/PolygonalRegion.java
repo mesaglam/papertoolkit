@@ -96,6 +96,8 @@ public class PolygonalRegion extends Region {
 		// save these around for later
 		offsetX = originX;
 		offsetY = originY;
+		
+		setName("A Polygonal Region");
 	}
 
 	/**

@@ -9,6 +9,7 @@ import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ImageRegion;
 import edu.stanford.hci.r3.paper.regions.PolygonalRegion;
 import edu.stanford.hci.r3.paper.regions.TextRegion;
+import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 
@@ -60,11 +61,54 @@ public class PatternLocationToSheetLocationMappingTest {
 	}
 
 	/**
+	 * This is an example of what NOT to do. We load a file that does not match the sheet. Ideally,
+	 * this would not affect the mapping at all!
+	 */
+	private static void loadIncorrectXMLFile() {
+		final Sheet theSheet = createSheet();
+		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
+				theSheet);
+		// all zeroes to begin with
+		mapping.printMapping();
+
+		// load it from a previously-saved xml file
+		// what happens if the xml file is not from you?
+		// who cares....? If the regions match up, then that's fine
+		// this means we have to implement a region equality test
+		// any region that doesn't match up will automatically be lost...
+		mapping.loadConfigurationFromXML(new File("data/testFiles/output/"
+				+ "TestSmall.patternInfo.xml"));
+		System.out.println();
+		mapping.printMapping();
+		System.err.println("This is a failed test, because we "
+				+ "loaded the wrong pattern information.");
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
-				createSheet());
+		saveAndLoadPart2();
+	}
+
+	private static void saveAndLoadPart2() {
+		final Sheet theSheet = createSheet();
+		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(theSheet);
+		mapping.printMapping();
+		mapping.loadConfigurationFromXML(new File("data/testFiles/output/PatternMapping.patternInfo.xml"));
+		System.out.println();
+		mapping.printMapping();
+	}
+
+	private static void saveAndLoadPart1() {
+		final Sheet theSheet = createSheet();
+		final SheetRenderer renderer = new SheetRenderer(theSheet);
+		PatternLocationToSheetLocationMapping mapping = renderer.getPatternInformation();
+		mapping.printMapping();
+
+		renderer.renderToPDF(new File("data/testFiles/output/PatternMapping.pdf"));
+		renderer.savePatternInformation();
+		mapping = renderer.getPatternInformation();
 		mapping.printMapping();
 	}
 }

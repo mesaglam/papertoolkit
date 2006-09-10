@@ -66,6 +66,8 @@ public class ImageRegion extends Region {
 		// System.out.println(rect);
 		setShape(rect);
 		imageRect = rect;
+		
+		setName("An Image Region");
 	}
 
 	/**

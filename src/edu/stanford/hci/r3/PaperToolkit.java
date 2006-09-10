@@ -14,6 +14,8 @@ import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
+import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping.RegionID;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
@@ -73,6 +75,8 @@ public class PaperToolkit {
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
 			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
+			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
+			xmlEngine.alias("RegionID", RegionID.class);
 		}
 		return xmlEngine;
 	}

@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
+import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Percentage;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
@@ -44,7 +45,7 @@ public class TiledPatternCoordinateConverter {
 	private double maxX;
 
 	/**
-	 * Left Boundary
+	 * Bottom Boundary in Physical coordinates.
 	 */
 	private double maxY;
 
@@ -303,6 +304,21 @@ public class TiledPatternCoordinateConverter {
 	}
 
 	/**
+	 * Reads in the information to define this coordinate converter.
+	 * 
+	 * @param p
+	 *            the tiled pattern object produced by sheet renderers.
+	 */
+	public void readPatternInformationFrom(TiledPattern p) {
+		setOriginInDots(p.getOriginXInDots(), p.getOriginYInDots());
+		setStartingTile(p.getInitialPatternFileNumber());
+		setTileConfiguration(p.getNumTilesX(), p.getNumTilesY());
+		setTileSizeInDots(p.getNumDotsXPerFullTile(), p.getNumDotsYPerFullTile());
+		setTileToTileOffsetInDots(p.getNumHorizDotsBetweenTiles(), p.getNumVertDotsBetweenTiles());
+		setTotalSizeInDots(p.getNumTotalColumns(), p.getNumTotalRows());
+	}
+
+	/**
 	 * What is the physical coordinate of the top-left corner of the top-left tile?
 	 * 
 	 * @param leftMostPatternX
@@ -317,7 +333,7 @@ public class TiledPatternCoordinateConverter {
 	}
 
 	/**
-	 * the number of the first (top-left) tile; this is largely arbitrary, but _may_ correlate with
+	 * The number of the first (top-left) tile; this is largely arbitrary, but _may_ correlate with
 	 * a pattern file number N.pattern --> N as a starting tile number. This makes calculations
 	 * easier for certain operations, such as finding out which page of a notebook your user has
 	 * written on.
@@ -393,6 +409,7 @@ public class TiledPatternCoordinateConverter {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "TiledPatternCoordinateConverter";
+		return "TiledPatternCoordinateConverter {" + "x=" + originX + ", y=" + originY + " w="
+				+ numTotalDotsAcrossObj + ", h=" + numTotalDotsDownObj + "}";
 	}
 }

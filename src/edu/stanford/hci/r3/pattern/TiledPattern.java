@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.pattern;
 
 import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -37,7 +38,7 @@ public class TiledPattern {
 	/**
 	 * Which was the last one we used? Make sure to use the next one if you want unique pattern.
 	 */
-	private int lastPatternFileUsed = 0;
+	private int lastPatternFileUsed;
 
 	/**
 	 * For regular tiles, how many horizontal dots will we need?
@@ -51,6 +52,9 @@ public class TiledPattern {
 
 	private int numDotsYBottomMost;
 
+	/**
+	 * How many vertical dots for each regular tile?
+	 */
 	private int numDotsYPerFullTile;
 
 	/**
@@ -63,8 +67,14 @@ public class TiledPattern {
 	 */
 	private int numTilesY;
 
+	/**
+	 * Grand Total: How many columns does this pattern contain?
+	 */
 	private int numTotalColumns;
 
+	/**
+	 * Grand Total: How many rows does this pattern contain?
+	 */
 	private int numTotalRows;
 
 	/**
@@ -72,6 +82,8 @@ public class TiledPattern {
 	 * for reading in the pattern from disk.
 	 */
 	private StringBuilder[] pattern;
+
+	private StreamedPatternCoordinates patternCoordinateOfOrigin;
 
 	/**
 	 * Where we get our pattern from.
@@ -128,8 +140,22 @@ public class TiledPattern {
 		numTotalRows = (numTilesY - 1) * numDotsYPerFullTile // all rows before the bottom
 				+ numDotsYFromBottomMostTiles; // the bottom row
 
+		// get the origin of the first pattern file
+		patternCoordinateOfOrigin = patternPackage
+				.getPatternCoordinateOfOriginOfFile(initialPatternFileNum);
+		// adjust the x coordinate as necessary (0 for now)
+		patternCoordinateOfOrigin.setX( //
+				new PatternDots(patternCoordinateOfOrigin.getX().getValue() + initialDotXOffset));
+
 		// read in the pattern information
 		loadPattern();
+	}
+
+	/**
+	 * @return
+	 */
+	public int getInitialPatternFileNumber() {
+		return initialPatternFileNum;
 	}
 
 	/**
@@ -139,11 +165,57 @@ public class TiledPattern {
 		return lastPatternFileUsed;
 	}
 
+	public int getNumDotsXPerFullTile() {
+		return numDotsXPerFullTile;
+	}
+
+	public int getNumDotsYPerFullTile() {
+		return numDotsYPerFullTile;
+	}
+
+	public double getNumHorizDotsBetweenTiles() {
+		return patternPackage.getNumDotsHorizontalBetweenPages();
+	}
+
 	/**
 	 * @return the number of rows of pattern this object represents
 	 */
 	public int getNumRows() {
 		return pattern.length;
+	}
+
+	public int getNumTilesX() {
+		return numTilesX;
+	}
+
+	public int getNumTilesY() {
+		return numTilesY;
+	}
+
+	public int getNumTotalColumns() {
+		return numTotalColumns;
+	}
+
+	public int getNumTotalRows() {
+		return numTotalRows;
+	}
+
+	public double getNumVertDotsBetweenTiles() {
+		return patternPackage.getNumDotsVerticalBetweenPages();
+	}
+
+	/**
+	 * @return
+	 */
+	public double getOriginXInDots() {
+		return patternCoordinateOfOrigin.getXVal();
+	}
+
+	/**
+	 * @return
+	 */
+	public double getOriginYInDots() {
+		return patternCoordinateOfOrigin.getYVal();
 	}
 
 	/**
@@ -155,7 +227,8 @@ public class TiledPattern {
 	}
 
 	/**
-	 * @param patternPackage
+	 * Called by the constructor to load in the pattern. Any field set by this method can be safely
+	 * accessed by external classes.
 	 */
 	private void loadPattern() {
 		// System.out.println(this);

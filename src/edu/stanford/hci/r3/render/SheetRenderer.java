@@ -16,10 +16,13 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
+import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pattern.output.PDFPatternGenerator;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
@@ -51,6 +54,15 @@ public class SheetRenderer {
 	 */
 	private final TiledPatternGenerator generator = new TiledPatternGenerator();
 
+	private File mostRecentlyRenderedPDFFile;
+
+	/**
+	 * Populate this only when we render the pattern (renderToPDF). After we render to pdf, we can
+	 * save the information to a file, for so that we can run the application in the future without
+	 * rendering more pattern.
+	 */
+	private PatternLocationToSheetLocationMapping patternInformation;
+
 	/**
 	 * By Default, any active regions will be overlaid with pattern (unique to at least this sheet,
 	 * unless otherwise specified).
@@ -67,6 +79,14 @@ public class SheetRenderer {
 	 */
 	public SheetRenderer(Sheet s) {
 		sheet = s;
+		patternInformation = new PatternLocationToSheetLocationMapping(sheet);
+	}
+
+	/**
+	 * @return
+	 */
+	public PatternLocationToSheetLocationMapping getPatternInformation() {
+		return patternInformation;
 	}
 
 	/**
@@ -110,10 +130,16 @@ public class SheetRenderer {
 
 			// render the pattern starting at the region's origin
 			pgen.renderPattern(pattern, r.getOriginX(), r.getOriginY());
-			
+
 			// also, at this point, we know what pattern we have assigned to each region
 			// we should be able to assign a tile configuration to each region
-			// TODO: 
+			TiledPatternCoordinateConverter tiledPatternInRegion = patternInformation
+					.getPatternBoundsOfRegion(r);
+			// set all the information here
+			tiledPatternInRegion.readPatternInformationFrom(pattern);
+			// now, this object is modified
+			// since it is already mapped to the correct region r, we do not need
+			// to do anything else!
 		}
 	}
 
@@ -216,6 +242,8 @@ public class SheetRenderer {
 			}
 
 			doc.close();
+
+			mostRecentlyRenderedPDFFile = destPDFFile;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
@@ -224,17 +252,37 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * After Rendering Pattern, we now know
-	 * 
-	 * @param sheetConfigFile
+	 * This saves an xml file with the same name/path, but different extension as the most-recently
+	 * rendered PDF file.
 	 */
-	public void saveSheetConfiguration(File sheetConfigFile) {
-		// go through all my regions
+	public void savePatternInformation() {
+		if (mostRecentlyRenderedPDFFile == null) {
+			System.err.println("SheetRenderer: We cannot save the pattern information "
+					+ "without a destination file. Please render a PDF first "
+					+ "so we know where to put the pattern configuration file!");
+		} else {
+			File parentDir = mostRecentlyRenderedPDFFile.getParentFile();
+			String fileName = mostRecentlyRenderedPDFFile.getName();
+			if (fileName.contains(".pdf")) {
+				fileName = fileName.replace(".pdf", ".patternInfo.xml");
+			} else {
+				fileName = fileName + ".patternInfo.xml";
+			}
+			File destFile = new File(parentDir, fileName);
+			savePatternInformation(destFile);
+		}
+	}
 
-		// figure out what tile configurations were set to each sheet
-
-		// save it to disk as a nice XML File! =)
-
+	/**
+	 * After Rendering Pattern, we now know the particulars of the pattern coordinates for each
+	 * region. Save that information to disk.
+	 * 
+	 * @param patternInfoFile
+	 */
+	public void savePatternInformation(File patternInfoFile) {
+		// save the pattern info to disk as a nice XML File! =)
+		patternInformation.saveConfigurationToXML(patternInfoFile);
+		DebugUtils.println("Pattern Information saved to " + patternInfoFile.getAbsolutePath());
 	}
 
 	/**
