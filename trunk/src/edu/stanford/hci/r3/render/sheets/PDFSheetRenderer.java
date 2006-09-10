@@ -13,7 +13,6 @@ import com.lowagie.text.pdf.PdfStamper;
 
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.render.SheetRenderer;
-import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -33,6 +32,9 @@ public class PDFSheetRenderer extends SheetRenderer {
 	 */
 	private PDFSheet pdfSheet;
 
+	/**
+	 * @param s
+	 */
 	public PDFSheetRenderer(PDFSheet s) {
 		super(s);
 		pdfSheet = s;
@@ -44,10 +46,13 @@ public class PDFSheetRenderer extends SheetRenderer {
 	 * By default, the transforms works at 72 dots per inch. Scale the transform beforehand if you
 	 * would like better (more dots per inch) or worse rendering (fewer dots per inch).
 	 * 
+	 * TODO: Finish this! =)
+	 * 
 	 * @param g2d
 	 */
 	public void renderToG2D(Graphics2D g2d) {
-		// render the PDF to the g2d's background
+		// TODO: FIX THIS NOW
+		// render the PDF to the g2d's background (do we need to do this? since we are using a stamper???)
 		PdfReader reader = pdfSheet.getReader();
 
 		// deleted some code from here... about PDF Imported Page
@@ -65,41 +70,21 @@ public class PDFSheetRenderer extends SheetRenderer {
 	 */
 	public void renderToPDF(File destPDFFile) {
 		try {
-			final Units width = sheet.getWidth();
-			final Units height = sheet.getHeight();
+			final FileOutputStream fileOutputStream = new FileOutputStream(destPDFFile);
+
 			final PdfReader reader = pdfSheet.getReader();
 			DebugUtils.println("NumPages in Existing PDF: " + reader.getNumberOfPages());
 
 			// allows us to stamp on top of an existing PDF
-			final PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(destPDFFile));
+			final PdfStamper stamp = new PdfStamper(reader, fileOutputStream);
 
 			// change the content on top of page 1
-			float wPoints = (float) width.getValueInPoints();
-			float hPoints = (float) height.getValueInPoints();
-
 			// bottom layer for regions
-			final PdfContentByte cb = stamp.getUnderContent(1);
-			final Graphics2D g2Under = cb.createGraphicsShapes(wPoints, hPoints);
-
-			// now that we have a G2D, we can just use our other G2D rendering method
-			renderToG2D(g2Under);
-
-			// an efficient dispose, because we are not within a Java paint() method
-			g2Under.dispose();
-
-			// should this be moved to regions???
-			if (renderActiveRegionsWithPattern) {
-				DebugUtils.println("Rendering Pattern");
-				// after rendering everything, we still need to overlay the pattern on top of active
-				// regions; This is only for PDF rendering.
-
-				// top layer for pattern
-				PdfContentByte over = stamp.getOverContent(1);
-				renderPattern(over);
-			}
+			final PdfContentByte topLayer = stamp.getOverContent(1 /* page number */);
+			final PdfContentByte bottomLayer = stamp.getUnderContent(1);
+			renderToPDFContentLayers(destPDFFile, topLayer, bottomLayer);
 
 			stamp.close();
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
@@ -108,5 +93,4 @@ public class PDFSheetRenderer extends SheetRenderer {
 			e.printStackTrace();
 		}
 	}
-
 }

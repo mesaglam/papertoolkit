@@ -62,8 +62,6 @@ public class PDFPatternGenerator {
 	 */
 	private static final boolean DEBUG_PATTERN = false;
 
-	private static final int DEFAULT_FONT_SIZE = 21;
-
 	private static final int DEFAULT_JITTER = 5;
 
 	private static final int DEFAULT_PADDING = 30;
@@ -110,6 +108,11 @@ public class PDFPatternGenerator {
 
 	private String dotSymbol;
 
+	/**
+	 * A circle that is drawn over and over again, for the dot pattern.
+	 */
+	private PdfTemplate dotTemplate;
+
 	private int fontSize;
 
 	/**
@@ -120,16 +123,14 @@ public class PDFPatternGenerator {
 	private BaseFont patternFont;
 
 	/**
-	 * The width of the PDFdocument.
-	 */
-	private Units width;
-
-	private PdfTemplate template;
-
-	/**
 	 * Template-based drawing of dots seems better. Use this by default.
 	 */
 	private boolean useTemplateInsteadOfFont = true;
+
+	/**
+	 * The width of the PDFdocument.
+	 */
+	private Units width;
 
 	/**
 	 * @param cb
@@ -155,10 +156,7 @@ public class PDFPatternGenerator {
 				convertHundredthsOfMMToPoints));
 
 		if (useTemplateInsteadOfFont) {
-			// the dot as a pdf template (a rubber stamp)
-			template = content.createTemplate(7, 7);
-			template.circle(3, 3, 3);
-			template.fill();
+			createDotTemplate(0 /* default */);
 		}
 
 		// even if we are using templates, initialize fonts... for debugging
@@ -167,20 +165,52 @@ public class PDFPatternGenerator {
 	}
 
 	/**
+	 * @param adjustment
+	 */
+	private void createDotTemplate(float adjustment) {
+		float radiusAdjustment = 0.5f * adjustment;
+		final int defaultRadius = 3;
+		float xCenter = defaultRadius;
+		float yCenter = defaultRadius;
+
+		// the dot as a pdf template (a rubber stamp)
+		dotTemplate = content.createTemplate(2 * xCenter + 1, 2 * yCenter + 1);
+		dotTemplate.circle(xCenter, yCenter, defaultRadius + radiusAdjustment);
+		dotTemplate.fill();
+	}
+
+	/**
+	 * 0 means no adjustment. - implies smaller pattern, + implies calls to larger pattern
+	 * 
+	 * @param patternDotSizeAdjustment
+	 */
+	public void adjustPatternSize(int patternDotSizeAdjustment) {
+		if (useTemplateInsteadOfFont) {
+			// if template aproach
+			createDotTemplate(patternDotSizeAdjustment);
+		} else {
+			// if font approach
+			fontSize += patternDotSizeAdjustment;
+		}
+	}
+
+	/**
 	 * 21 works for both laser and wide-format inkjet.
 	 */
+	@SuppressWarnings("unused")
 	private void initializePatternFont_Tahoma() {
-		setFontSize(21);
+		setPatternFontSize(21);
 		debugFont = BFONT_TAHOMA;
 		patternFont = BFONT_TAHOMA;
 		dotSymbol = "•";
 	}
 
 	/**
-	 * Font size 11 works for laser printers. Font size 7 works for Epson 9800 at 1440.
+	 * Font size 11 works for laser printers. Font size 7 works for Epson 9800 at 1440. Let's see
+	 * how small we can get and still have it work on a laser printer.
 	 */
 	private void initializePatternFont_Zapf() {
-		setFontSize(7);
+		setPatternFontSize(7);
 		debugFont = BFONT_TAHOMA;
 		patternFont = BFONT_ZAPF;
 		dotSymbol = "l";
@@ -221,6 +251,7 @@ public class PDFPatternGenerator {
 		// work in hundredths of a millimeter
 		final float heightInHundredths = (float) (heightOfPDF * convertPointsToHundredthsOfMM);
 
+		// if we use the font approach
 		if (!useTemplateInsteadOfFont) {
 			content.beginText();
 			// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
@@ -272,7 +303,7 @@ public class PDFPatternGenerator {
 				}
 
 				if (useTemplateInsteadOfFont) {
-					content.addTemplate(template, gridXPosition + xJitter, heightInHundredths
+					content.addTemplate(dotTemplate, gridXPosition + xJitter, heightInHundredths
 							- (gridYPosition + yJitter));
 				} else {
 					content.showTextAligned(PdfContentByte.ALIGN_CENTER, dotSymbol, gridXPosition
@@ -299,7 +330,7 @@ public class PDFPatternGenerator {
 	 * 
 	 * @param size
 	 */
-	public void setFontSize(int size) {
-		fontSize = size;
+	private void setPatternFontSize(int s) {
+		fontSize = s;
 	}
 }

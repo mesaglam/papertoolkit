@@ -2,13 +2,16 @@ package edu.stanford.hci.r3.paper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Size;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -42,6 +45,13 @@ import edu.stanford.hci.r3.units.Units;
 public class Sheet {
 
 	private static final String INDENT = "   ";
+
+	/**
+	 * Any time we load regions from a configuration file, we will keep track of that path. Later
+	 * on, we can use this information to find other files, such as the .patternInfo.xml files or
+	 * even the patterned pdf file.
+	 */
+	private Set<File> configurationPaths = new HashSet<File>();
 
 	/**
 	 * A list of all the regions contained on this sheet. This is the master list. We may keep other
@@ -114,6 +124,8 @@ public class Sheet {
 		for (Region r : theRegions) {
 			addRegion(r);
 		}
+
+		registerConfigurationPath(regionConfigurationFile.getParentFile());
 	}
 
 	/**
@@ -122,6 +134,14 @@ public class Sheet {
 	 */
 	public boolean containsRegion(Region r) {
 		return regions.contains(r);
+	}
+
+	/**
+	 * @return directories to look in for files like the patterned pdf, patternInfo.xml, or
+	 *         regions.xml files.
+	 */
+	public Set<File> getConfigurationPaths() {
+		return configurationPaths;
 	}
 
 	/**
@@ -150,6 +170,17 @@ public class Sheet {
 	 */
 	public Units getWidth() {
 		return size.getWidth();
+	}
+
+	/**
+	 * @param configPath
+	 *            a directory that we should be aware of, for automatically loading things such as
+	 *            the patternInfo.xml file.
+	 */
+	protected void registerConfigurationPath(File configPath) {
+		// register the fact that we loaded a configuration file from this directory
+		configurationPaths.add(configPath);
+		// DebugUtils.println("Configuration Paths: " + configurationPaths);
 	}
 
 	/**

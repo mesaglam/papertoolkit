@@ -66,7 +66,7 @@ public class ImageRegion extends Region {
 		// System.out.println(rect);
 		setShape(rect);
 		imageRect = rect;
-		
+
 		setName("An Image Region");
 	}
 
@@ -80,7 +80,7 @@ public class ImageRegion extends Region {
 	/**
 	 * @return
 	 */
-	public double getHeight() {
+	public double getHeightVal() {
 		return imageRect.getHeight() * scaleY;
 	}
 
@@ -94,7 +94,7 @@ public class ImageRegion extends Region {
 	/**
 	 * @return
 	 */
-	public double getWidth() {
+	public double getWidthVal() {
 		return imageRect.getWidth() * scaleX;
 	}
 
@@ -122,7 +122,7 @@ public class ImageRegion extends Region {
 	 * @see edu.stanford.hci.r3.paper.Region#toString()
 	 */
 	public String toString() {
-		return "Image: {" + getX() + ", " + getY() + ", " + getWidth() + ", " + getHeight()
+		return "Image: {" + getX() + ", " + getY() + ", " + getWidthVal() + ", " + getHeightVal()
 				+ "} in " + getUnitsReference().getUnitName();
 	}
 }

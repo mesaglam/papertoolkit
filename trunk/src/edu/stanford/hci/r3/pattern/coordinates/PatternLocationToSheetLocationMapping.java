@@ -12,6 +12,8 @@ import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.SystemUtils;
+import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -107,6 +109,23 @@ public class PatternLocationToSheetLocationMapping {
 	public PatternLocationToSheetLocationMapping(Sheet s) {
 		sheet = s;
 		initializeMap(s.getRegions());
+
+		// check to see if the pattern configuration file exists.
+		// if it does, load it automatically
+		Set<File> configurationPaths = sheet.getConfigurationPaths();
+
+		// files end with .patternInfo.xml
+		final String[] extensionFilter = new String[] { "patternInfo.xml" };
+
+		for (File path : configurationPaths) {
+			// System.out.println(path);
+			List<File> patternInfoFiles = FileUtils.listVisibleFiles(path, extensionFilter);
+			// System.out.println(patternInfoFiles.size());
+			for (File f : patternInfoFiles) {
+				// System.out.println(f.getAbsolutePath());
+				loadConfigurationFromXML(f);
+			}
+		}
 	}
 
 	/**
@@ -127,11 +146,6 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * TODO: Test if this actually works, so we can start doing event handling. I am guessing NO!
-	 * The region keys will actually be incorrect! Unless hashCode and equality are working... An
-	 * alternate approach would be to iterate through the list...., check for equality, and then add
-	 * the tiled convert from the loaded map into the actual map!
-	 * 
 	 * @param xmlFile
 	 */
 	@SuppressWarnings("unchecked")
@@ -142,6 +156,7 @@ public class PatternLocationToSheetLocationMapping {
 			RegionID xmlKey = new RegionID(r);
 			// System.out.println("Found Key: " + regionIDToPattern.containsKey(xmlKey) + " for " +
 			// r.getName());
+
 			// loads the information into our map
 			if (regionIDToPattern.containsKey(xmlKey)) {
 				regionToPatternBounds.put(r, regionIDToPattern.get(xmlKey));

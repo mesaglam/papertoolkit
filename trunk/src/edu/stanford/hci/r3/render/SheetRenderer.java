@@ -75,6 +75,12 @@ public class SheetRenderer {
 	protected Sheet sheet;
 
 	/**
+	 * You can make the pattern bigger or smaller depending on your printer... 0 == default. - -->
+	 * smaller, + --> bigger. Each unit corresponds to two font points.
+	 */
+	private int patternDotSizeAdjustment = 0;
+
+	/**
 	 * @param s
 	 */
 	public SheetRenderer(Sheet s) {
@@ -87,6 +93,14 @@ public class SheetRenderer {
 	 */
 	public PatternLocationToSheetLocationMapping getPatternInformation() {
 		return patternInformation;
+	}
+
+	public void useSmallerPatternDots() {
+		patternDotSizeAdjustment--;
+	}
+
+	public void useLargerPatternDots() {
+		patternDotSizeAdjustment++;
 	}
 
 	/**
@@ -106,7 +120,10 @@ public class SheetRenderer {
 		// this object will generate the right PDF (itext) calls to create pattern
 		final PDFPatternGenerator pgen = new PDFPatternGenerator(cb, sheet.getWidth(), sheet
 				.getHeight());
-
+		
+		// adjust the font size of the pattern...
+		pgen.adjustPatternSize(patternDotSizeAdjustment);
+		
 		// render each region
 		for (Region r : regions) {
 			if (!r.isActive()) {
@@ -203,51 +220,65 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * Uses the iText package to render a PDF file. iText is nice because we can write to a
-	 * Graphics2D context. Alternatively, we can use PDF-like commands.
+	 * Uses the iText package to render a PDF file from scratch. iText is nice because we can write
+	 * to a Graphics2D context. Alternatively, we can use PDF-like commands.
 	 * 
 	 * @param destPDFFile
 	 */
 	public void renderToPDF(File destPDFFile) {
 		try {
-			final Units width = sheet.getWidth();
-			final Units height = sheet.getHeight();
 			final FileOutputStream fileOutputStream = new FileOutputStream(destPDFFile);
 
-			final Rectangle pageSize = new Rectangle(0, 0, (int) Math.round(width
-					.getValueInPoints()), (int) Math.round(height.getValueInPoints()));
+			final Rectangle pageSize = new Rectangle(0, 0, (int) Math.round(sheet.getWidth()
+					.getValueInPoints()), (int) Math.round(sheet.getHeight().getValueInPoints()));
 
 			// create a document with these margins (worry about margins later)
 			final Document doc = new Document(pageSize, 0, 0, 0, 0);
 			final PdfWriter writer = PdfWriter.getInstance(doc, fileOutputStream);
 			doc.open();
 
-			// bottom layer for regions
-			final PdfContentByte cb = writer.getDirectContentUnder();
-			final Graphics2D g2d = cb.createGraphicsShapes(pageSize.width(), pageSize.height());
-
-			// now that we have a G2D, we can just use our other G2D rendering method
-			renderToG2D(g2d);
-
-			// an efficient dispose, because we are not within a Java paint() method
-			g2d.dispose();
-
-			// should this be moved to regions???
-			if (renderActiveRegionsWithPattern) {
-				System.out.println("Rendering Pattern");
-				// after rendering everything, we still need to overlay the pattern on top of active
-				// regions; This is only for PDF rendering.
-				// top layer for pattern
-				renderPattern(writer.getDirectContent());
-			}
+			final PdfContentByte topLayer = writer.getDirectContent();
+			final PdfContentByte bottomLayer = writer.getDirectContentUnder();
+			renderToPDFContentLayers(destPDFFile, topLayer, bottomLayer);
 
 			doc.close();
-
-			mostRecentlyRenderedPDFFile = destPDFFile;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param destPDFFile
+	 * @param topLayer
+	 * @param bottomLayer
+	 */
+	protected void renderToPDFContentLayers(File destPDFFile, PdfContentByte topLayer,
+			PdfContentByte bottomLayer) {
+		mostRecentlyRenderedPDFFile = destPDFFile;
+
+		final Units width = sheet.getWidth();
+		final Units height = sheet.getHeight();
+		final float wPoints = (float) width.getValueInPoints();
+		final float hPoints = (float) height.getValueInPoints();
+
+		// bottom layer for regions
+		final Graphics2D g2dUnder = bottomLayer.createGraphicsShapes(wPoints, hPoints);
+		// now that we have a G2D, we can just use our other G2D rendering method
+		renderToG2D(g2dUnder);
+
+		// an efficient dispose, because we are not within a Java paint() method
+		g2dUnder.dispose();
+
+		// should this be moved to regions???
+		if (renderActiveRegionsWithPattern) {
+			DebugUtils.println("Rendering Pattern");
+			// after rendering everything, we still need to overlay the pattern on top of active
+			// regions; This is only for PDF rendering.
+
+			// top layer for pattern
+			renderPattern(topLayer);
 		}
 	}
 

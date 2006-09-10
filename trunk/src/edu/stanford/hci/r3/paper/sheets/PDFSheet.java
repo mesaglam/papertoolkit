@@ -46,6 +46,8 @@ public class PDFSheet extends Sheet {
 	 */
 	public PDFSheet(File pdfFile, int pageNumber) {
 		file = pdfFile;
+		registerConfigurationPath(pdfFile.getParentFile());
+		
 		pageNum = pageNumber;
 		try {
 			pdfReader = new PdfReader(new FileInputStream(file));
