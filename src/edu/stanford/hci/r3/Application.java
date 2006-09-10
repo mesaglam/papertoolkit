@@ -2,10 +2,12 @@ package edu.stanford.hci.r3;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -50,6 +52,12 @@ public class Application {
 	private List<Sheet> sheets = new ArrayList<Sheet>();
 
 	/**
+	 * For each sheet, we need to keep the pattern to sheet location map. This lets us know, given
+	 * some physical coordinate, where we are on the sheet (i.e., which regions we point to).
+	 */
+	private Map<Sheet, PatternLocationToSheetLocationMapping> sheetToPatternMap = new HashMap<Sheet, PatternLocationToSheetLocationMapping>();
+
+	/**
 	 * @param theName
 	 */
 	public Application(String theName) {
@@ -64,10 +72,17 @@ public class Application {
 	}
 
 	/**
+	 * When a sheet is added to an application, we will need to determine how the pattern maps to
+	 * the sheet. We will create a PatternLocationToSheetLocationMapping object from this sheet.
+	 * 
 	 * @param sheet
 	 */
 	public void addSheet(Sheet sheet) {
 		sheets.add(sheet);
+		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
+				sheet);
+		// mapping.printMapping();
+		sheetToPatternMap.put(sheet, mapping);
 	}
 
 	/**
