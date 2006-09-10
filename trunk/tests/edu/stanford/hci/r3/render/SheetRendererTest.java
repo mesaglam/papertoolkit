@@ -75,6 +75,7 @@ public class SheetRendererTest {
 		Sheet sheet = createSmallSheet();
 		// Sheet sheet = createLargeSheet();
 		SheetRenderer renderer = new SheetRenderer(sheet);
-		renderer.renderToPDF(new File("data/testFiles/output/TestTemplateSmall.pdf"));
+		renderer.renderToPDF(new File("data/testFiles/output/TestSmall.pdf"));
+		renderer.savePatternInformation(new File("data/testFiles/output/TestSmall.patternInfo.xml"));
 	}
 }

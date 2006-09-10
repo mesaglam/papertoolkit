@@ -12,6 +12,7 @@ import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.StringUtils;
 
@@ -69,7 +70,7 @@ public class RegionRenderer {
 	 */
 	public void renderToG2D(Graphics2D g2d) {
 		if (DEBUG_REGIONS) {
-			System.out.println("Debugging!");
+			DebugUtils.println("Debugging regions in renderToG2D(...)");
 			return;
 		}
 		

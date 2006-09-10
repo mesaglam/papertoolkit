@@ -68,7 +68,15 @@ public class StreamedPatternCoordinates {
 	public double getYVal() {
 		return y.getValue();
 	}
-	
+
+	public void setX(PatternDots xCoord) {
+		x = xCoord;
+	}
+
+	public void setY(PatternDots yCoord) {
+		y = yCoord;
+	}
+
 	public String toString() {
 		return "[" + x + ", " + y + "]";
 	}

@@ -1,10 +1,17 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.units.Units;
 
 /**
  * <p>
@@ -19,6 +26,10 @@ import edu.stanford.hci.r3.paper.Sheet;
  * mapping per sheet.
  * </p>
  * <p>
+ * The SheetRenderer class uses this class to save the mapping to disk, so that a future instance
+ * can load the mapping and run the application.
+ * </p>
+ * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
@@ -28,10 +39,58 @@ import edu.stanford.hci.r3.paper.Sheet;
 public class PatternLocationToSheetLocationMapping {
 
 	/**
+	 * Allows us to save and load to/from xml files, because we can identify regions more or less
+	 * uniquely this way.
+	 */
+	public static class RegionID {
+		private Units height;
+
+		private String name;
+
+		private Units originX;
+
+		private Units originY;
+
+		private Units width;
+
+		public RegionID(Region r) {
+			name = r.getName();
+			originX = r.getOriginX();
+			originY = r.getOriginY();
+			width = r.getWidth();
+			height = r.getHeight();
+		}
+
+		/**
+		 * Same name, origin, and dimensions. Good enough for now!
+		 * 
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		public boolean equals(Object o) {
+			if (o instanceof RegionID) {
+				RegionID r = (RegionID) o;
+				return name.equals(r.name) && originX.equals(r.originX)
+						&& originY.equals(r.originY) && width.equals(r.width)
+						&& height.equals(r.height);
+			}
+			return false;
+		}
+
+		/**
+		 * Makes HashMaps work.
+		 * 
+		 * @see java.lang.Object#hashCode()
+		 */
+		public int hashCode() {
+			return name.hashCode();
+		}
+	}
+
+	/**
 	 * Binds regions to pattern bounds, specified in logical (batched) and physical (streamed)
 	 * coordinates.
 	 */
-	private HashMap<Region, TiledPatternCoordinateConverter> regionToPatternBounds = new HashMap<Region, TiledPatternCoordinateConverter>();
+	private Map<Region, TiledPatternCoordinateConverter> regionToPatternBounds = new HashMap<Region, TiledPatternCoordinateConverter>();
 
 	/**
 	 * The mapping is bound to one sheet.
@@ -68,6 +127,29 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
+	 * TODO: Test if this actually works, so we can start doing event handling. I am guessing NO!
+	 * The region keys will actually be incorrect! Unless hashCode and equality are working... An
+	 * alternate approach would be to iterate through the list...., check for equality, and then add
+	 * the tiled convert from the loaded map into the actual map!
+	 * 
+	 * @param xmlFile
+	 */
+	@SuppressWarnings("unchecked")
+	public void loadConfigurationFromXML(File xmlFile) {
+		HashMap<RegionID, TiledPatternCoordinateConverter> regionIDToPattern = (HashMap<RegionID, TiledPatternCoordinateConverter>) PaperToolkit
+				.fromXML(xmlFile);
+		for (Region r : regionToPatternBounds.keySet()) {
+			RegionID xmlKey = new RegionID(r);
+			// System.out.println("Found Key: " + regionIDToPattern.containsKey(xmlKey) + " for " +
+			// r.getName());
+			// loads the information into our map
+			if (regionIDToPattern.containsKey(xmlKey)) {
+				regionToPatternBounds.put(r, regionIDToPattern.get(xmlKey));
+			}
+		}
+	}
+
+	/**
 	 * 
 	 */
 	public void printMapping() {
@@ -75,6 +157,32 @@ public class PatternLocationToSheetLocationMapping {
 			System.out.print(r.getName() + " --> ");
 			TiledPatternCoordinateConverter bounds = regionToPatternBounds.get(r);
 			System.out.println(bounds);
+		}
+	}
+
+	/**
+	 * Due to xstream's inability to serial/unserialize really complicated classes, we will save
+	 * only a regionName+origin --> pattern info mapping
+	 * 
+	 * @param xmlFile
+	 */
+	public void saveConfigurationToXML(File xmlFile) {
+		try {
+
+			// create a new map that goes from name+origin to pattern bounds mapping
+			// only save active regions... because we don't render pattern for nonactive regions
+			HashMap<RegionID, TiledPatternCoordinateConverter> regionIDToPattern = new HashMap<RegionID, TiledPatternCoordinateConverter>();
+			Set<Region> regions = regionToPatternBounds.keySet();
+			for (Region r : regions) {
+				if (!r.isActive()) {
+					continue;
+				}
+				RegionID rid = new RegionID(r);
+				regionIDToPattern.put(rid, regionToPatternBounds.get(r));
+			}
+			PaperToolkit.toXML(regionIDToPattern, new FileOutputStream(xmlFile));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 

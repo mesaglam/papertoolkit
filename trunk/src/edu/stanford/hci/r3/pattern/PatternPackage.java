@@ -215,25 +215,21 @@ public class PatternPackage {
 	}
 
 	/**
-	 * Given a starting pattern file, we can determine the origin (top left corner) based on our
-	 * knowledge of the origin of the first file, and the distance between each file.
-	 * 
-	 * @param patternFileNumber
-	 * @return
-	 */
-	public StreamedPatternCoordinates getPatternCoordinateOfOriginOfFile(int patternFileNumber) {
-		final PatternDots x = new PatternDots(minPatternX.getValue() + patternFileNumber
-				* numDotsHorizontalBetweenOriginOfPages);
-		final PatternDots y = new PatternDots(minPatternY.getValue() + patternFileNumber
-				* numDotsVerticalBetweenOriginOfPages);
-		return new StreamedPatternCoordinates(x, y);
-	}
-
-	/**
 	 * @return the name of the package (same as the directory's name)
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return
+	 */
+	public double getNumDotsHorizontalBetweenPages() {
+		return numDotsHorizontalBetweenOriginOfPages;
+	}
+
+	public double getNumDotsVerticalBetweenPages() {
+		return numDotsVerticalBetweenOriginOfPages;
 	}
 
 	/**
@@ -248,6 +244,21 @@ public class PatternPackage {
 	 */
 	public int getNumPatternRowsPerFile() {
 		return numPatternRowsPerFile;
+	}
+
+	/**
+	 * Given a starting pattern file, we can determine the origin (top left corner) based on our
+	 * knowledge of the origin of the first file, and the distance between each file.
+	 * 
+	 * @param patternFileNumber
+	 * @return
+	 */
+	public StreamedPatternCoordinates getPatternCoordinateOfOriginOfFile(int patternFileNumber) {
+		final PatternDots x = new PatternDots(minPatternX.getValue() + patternFileNumber
+				* numDotsHorizontalBetweenOriginOfPages);
+		final PatternDots y = new PatternDots(minPatternY.getValue() + patternFileNumber
+				* numDotsVerticalBetweenOriginOfPages);
+		return new StreamedPatternCoordinates(x, y);
 	}
 
 	/**

@@ -73,6 +73,8 @@ public class TextRegion extends Region {
 				widthInPoints.getValueIn(units), heightInPoints.getValueIn(units));
 		bounds = rect;
 		setShape(rect);
+
+		setName("A Text Region");
 	}
 
 	/**

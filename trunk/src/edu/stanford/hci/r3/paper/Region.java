@@ -13,24 +13,27 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  * A region is defined by a Shape that outlines the region. Internally, the region remembers the
  * Units that it is represented in. Thus, you may use whatever units pleases you.
- * 
+ * </p>
+ * <p>
  * Also, a region can be INPUT(REALTIME|BATCH), OUTPUT(REALTIME|INTERMITTENT), or STATIC. This is
  * entirely determined by the type(s) of attachments (input event handlers, input filters, realtime
  * outputs, print output) you add to a region. If you do not add anything, it is by default a STATIC
  * region. For example, if you add an input event handler for a streaming pen, it becomes an
  * INPUT(REALTIME) region. Regions that handle interactive input will automatically be overlaid with
  * pattern when rendered to PDF or to a printer.
- * 
+ * </p>
+ * <p>
  * Regardless of whether the Shape is closed or not, we assume that all regions are closed Shapes. A
  * rectangular region is represented using this class's Region(4 args) constructors.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class Region {
 
@@ -131,6 +134,13 @@ public class Region {
 	public Region(Units x, Units y, Units w, Units h) {
 		this(new Rectangle2D.Double(x.getValue(), y.getValueIn(x), // assume a Rectangle2D
 				w.getValueIn(x), h.getValueIn(x)), x);
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getHeight() {
+		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight() * scaleY);
 	}
 
 	/**
@@ -240,6 +250,13 @@ public class Region {
 	 */
 	public Shape getUnscaledShapeCopy() {
 		return new GeneralPath(shape);
+	}
+
+	/**
+	 * @return
+	 */
+	public Units getWidth() {
+		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getWidth() * scaleX);
 	}
 
 	/**
