@@ -67,11 +67,6 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	 *            if port is null, use the default port (COM5)
 	 */
 	public static PenStreamingConnection getInstance(String port) {
-
-		// allow the system to find our native libraries
-		PaperToolkit.setupNativeLibraryPath();
-
-		
 		if (instance != null) {
 			return instance;
 		}

@@ -138,17 +138,6 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Call this if you need to load native libraries. Pen.java needs some native libs, so it should
-	 * call this.
-	 */
-	public static void setupNativeLibraryPath() {
-		// add the win32com.dll to the java.library.path
-		// it can be found in the papertoolkit main directory (TODO: Fix this later when we allow
-		// JARring of the toolkit)
-		SystemUtils.addToLibraryPath(PaperToolkit.class.getResource("/system"));
-	}
-
-	/**
 	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
 	 * printer.
 	 * 
