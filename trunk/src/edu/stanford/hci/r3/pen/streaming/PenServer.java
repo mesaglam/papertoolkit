@@ -43,8 +43,10 @@ public class PenServer implements PenListener {
 								+ serverSocket.getLocalPort() + "...");
 					}
 					s = serverSocket.accept();
-					log("PenServer: Got a connection on port " + serverSocket.getLocalPort() + "...");
-					System.out.println("PenServer: Client IP Addr is " + s.getRemoteSocketAddress());
+					log("PenServer: Got a connection on port " + serverSocket.getLocalPort()
+							+ "...");
+					System.out
+							.println("PenServer: Client IP Addr is " + s.getRemoteSocketAddress());
 				} catch (IOException ioe) {
 					log("PenServer: Error with server socket: " + ioe.getLocalizedMessage());
 				}
@@ -59,7 +61,8 @@ public class PenServer implements PenListener {
 						try {
 							s.close();
 						} catch (IOException ioe2) {
-							log("PenServer: Error with server socket: " + ioe2.getLocalizedMessage());
+							log("PenServer: Error with server socket: "
+									+ ioe2.getLocalizedMessage());
 						}
 						log("PenServer: Error creating output: " + ioe.getLocalizedMessage());
 					}
@@ -143,13 +146,15 @@ public class PenServer implements PenListener {
 	}
 
 	/**
-	 * Start a Java server on this machine at the corresponding TCP/IP port. Add the java server as a
-	 * listener to the local pen connection (at the specified COM port).
+	 * Start a Java server on this machine at the corresponding TCP/IP port. Add the java server as
+	 * a listener to the local pen connection (at the specified COM port).
 	 * 
 	 * @param tcpipPort
 	 */
 	public static void startJavaServer(String serialPortName, int tcpipPort) {
 		try {
+			// TODO: At some point, provide access to this variable, so we can close a pen
+			// connection if necessary
 			final PenStreamingConnection penConnection = PenStreamingConnection
 					.getInstance(serialPortName);
 			final ServerSocket javaServer = new ServerSocket(tcpipPort);
@@ -217,6 +222,10 @@ public class PenServer implements PenListener {
 
 	private ClientServerType serverType;
 
+	/**
+	 * @param ss
+	 * @param type
+	 */
 	public PenServer(ServerSocket ss, ClientServerType type) {
 		serverSocket = ss;
 		serverType = type;

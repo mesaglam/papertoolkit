@@ -2,8 +2,10 @@ package edu.stanford.hci.r3.paper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.stanford.hci.r3.PaperToolkit;
@@ -11,7 +13,6 @@ import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Size;
 import edu.stanford.hci.r3.units.Units;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -60,6 +61,11 @@ public class Sheet {
 	private List<Region> regions = new ArrayList<Region>();
 
 	/**
+	 * Internal datastructure for indexing a region by its name.
+	 */
+	private Map<String, Region> regionNameToRegionObject = new HashMap<String, Region>();
+
+	/**
 	 * Represents the rectangular size of this Sheet.
 	 */
 	private Size size = new Size();
@@ -97,6 +103,7 @@ public class Sheet {
 	 */
 	public void addRegion(Region r) {
 		regions.add(r);
+		regionNameToRegionObject.put(r.getName(), r);
 	}
 
 	/**
@@ -217,6 +224,15 @@ public class Sheet {
 		sb.append(i + "}\n");
 		sb.append("}\n");
 		return sb.toString();
+	}
+
+	/**
+	 * @param regionName
+	 *            This will only work if the names are unique.
+	 * @return the region with this name...
+	 */
+	public Region getRegion(String regionName) {
+		return regionNameToRegionObject.get(regionName);
 	}
 
 	/**
