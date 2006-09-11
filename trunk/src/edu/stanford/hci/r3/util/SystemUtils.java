@@ -6,6 +6,7 @@ import java.net.URL;
 
 /**
  * <p>
+ * Environment Variables, OS specific tasks, etc.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -16,6 +17,10 @@ import java.net.URL;
  */
 public class SystemUtils {
 
+	/**
+	 * Where to look for DLLs. Unfortunately, you cannot change this at runtime and expect the
+	 * classloaders to find the dlls correctly.
+	 */
 	public static final String LIBRARY_PATH_KEY = "java.library.path";
 
 	/**

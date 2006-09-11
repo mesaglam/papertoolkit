@@ -11,14 +11,15 @@ import javax.media.Manager;
 import javax.media.NoPlayerException;
 import javax.media.Player;
 import javax.media.StopEvent;
-import javax.media.TransitionEvent;
 
 import com.sun.media.codec.audio.mp3.JavaDecoder;
 
 import edu.stanford.hci.r3.actions.R3Action;
 
 /**
- * 
+ * <p>
+ * Play a sound file. It must be available on the local file system, wherever this action ends up.
+ * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
@@ -29,15 +30,22 @@ import edu.stanford.hci.r3.actions.R3Action;
 public class PlaySoundAction implements R3Action {
 
 	static {
+		// register the MP3 plugin for JMF.
 		JavaDecoder.main(new String[] {});
 		System.out.println("Disregard the InvocationTargetException. "
 				+ "It is printed out by the JavaDecoder while registering the mp3 plugin.");
 	}
 
+	/**
+	 * The file to play (from the local file system).
+	 */
 	private File sound;
 
 	private Player player;
 
+	/**
+	 * @param soundFile
+	 */
 	public PlaySoundAction(File soundFile) {
 		sound = soundFile;
 	}
@@ -50,7 +58,8 @@ public class PlaySoundAction implements R3Action {
 				public void controllerUpdate(ControllerEvent ce) {
 					if (ce instanceof StopEvent) {
 						StopEvent se = (StopEvent) ce;
-						System.out.println("PlaySoundAction Stopped at: " + se.getMediaTime().getSeconds() + " seconds");
+						System.out.println("PlaySoundAction Stopped at: "
+								+ se.getMediaTime().getSeconds() + " seconds");
 						stop();
 					}
 				}

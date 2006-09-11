@@ -6,7 +6,9 @@ import java.lang.reflect.Method;
 import edu.stanford.hci.r3.actions.R3Action;
 
 /**
- * 
+ * <p>
+ * Runs the main method of a java class.
+ * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>

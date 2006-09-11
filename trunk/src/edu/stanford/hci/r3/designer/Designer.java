@@ -23,17 +23,18 @@ import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> ( ronyeh(AT)cs.stanford.edu )
- * @created Feb 15, 2006
- * 
  * Basically, a JFrame with a scrollable document that can render any printable document.
  * 
  * We will use this code in the Gigapixel designer, where the user can interactively place anoto
  * pattern and bind actions to different parts of the pattern.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * @created Feb 15, 2006
  */
 public class Designer {
 

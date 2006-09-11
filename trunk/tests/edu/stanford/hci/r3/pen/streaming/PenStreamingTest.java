@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.pen.streaming;
 
+import edu.stanford.hci.r3.networking.ClientServerType;
+
 /**
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">

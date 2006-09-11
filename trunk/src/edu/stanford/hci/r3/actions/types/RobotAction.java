@@ -15,7 +15,11 @@ import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.util.graphics.ImageUtils;
 
 /**
- * 
+ * <p>
+ * Makes the machine run low level keyboard and mouse actions. TODO: Implement higher level calls,
+ * like drag from x1,y1 to x2,y2. Which ends up being a mouse down at x1,y1, mouseMove, and mouseUp at
+ * x2,y2.
+ * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
