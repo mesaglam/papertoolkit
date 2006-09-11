@@ -10,16 +10,18 @@ import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
- * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
+ * <p></p>
+ * <p><span class="BSDLicense">
+ * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
+ * </span></p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class ServerOutputJavaObjectXML implements PenServerOutput {
 
-	private Socket sock;
-
 	private BufferedOutputStream bos;
+
+	private Socket sock;
 
 	private XStream xml;
 
@@ -31,6 +33,27 @@ public class ServerOutputJavaObjectXML implements PenServerOutput {
 		sock = s;
 		bos = new BufferedOutputStream(s.getOutputStream());
 		xml = new XStream();
+	}
+
+	/**
+	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerOutput#destroy()
+	 */
+	public void destroy() {
+		try {
+			xml = null;
+
+			if (bos != null) {
+				bos.close();
+				bos = null;
+			}
+			if (sock != null) {
+				sock.close();
+				sock = null;
+			}
+		} catch (IOException ioe) {
+			System.out.println("Got exception when destroying JavaServerOutput: "
+					+ ioe.getLocalizedMessage());
+		}
 	}
 
 	/**
@@ -55,27 +78,6 @@ public class ServerOutputJavaObjectXML implements PenServerOutput {
 		// System.out.println(xmlString);
 		bos.write((xmlString + SystemUtils.LINE_SEPARATOR).getBytes());
 		bos.flush();
-	}
-
-	/**
-	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerOutput#destroy()
-	 */
-	public void destroy() {
-		try {
-			xml = null;
-
-			if (bos != null) {
-				bos.close();
-				bos = null;
-			}
-			if (sock != null) {
-				sock.close();
-				sock = null;
-			}
-		} catch (IOException ioe) {
-			System.out.println("Got exception when destroying JavaServerOutput: "
-					+ ioe.getLocalizedMessage());
-		}
 	}
 
 }

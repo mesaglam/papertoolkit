@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerOutput;
 import edu.stanford.hci.r3.pen.streaming.data.ServerOutputJavaObjectXML;
 import edu.stanford.hci.r3.pen.streaming.data.ServerOutputPlainText;

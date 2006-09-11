@@ -1,6 +1,6 @@
 package edu.stanford.hci.r3.pen;
 
-import edu.stanford.hci.r3.pen.streaming.ClientServerType;
+import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.pen.streaming.PenClient;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenServer;

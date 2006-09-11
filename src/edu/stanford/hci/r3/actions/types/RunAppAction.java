@@ -7,7 +7,9 @@ import java.util.Map;
 import edu.stanford.hci.r3.actions.R3Action;
 
 /**
- * 
+ * <p>
+ * Run a local file, that is either in the system PATH, or addressed by an absolute path.
+ * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>

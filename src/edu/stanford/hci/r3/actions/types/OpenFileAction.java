@@ -8,7 +8,10 @@ import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
- * 
+ * <p>
+ * Opens a local file. If you send this across the wire, the local file better exist on the other
+ * device's file system. Otherwise, use an OpenURLAction instead.
+ * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
