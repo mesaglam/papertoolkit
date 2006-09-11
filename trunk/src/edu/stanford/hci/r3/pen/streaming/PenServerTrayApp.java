@@ -64,7 +64,8 @@ public class PenServerTrayApp {
 						serverRunning = false;
 					} else {
 						trayIcon.displayMessage("Pen is Online",
-								"Server started. The pen is now in live mode.", TrayIcon.MessageType.INFO);
+								"Server started. The pen is now in live mode.",
+								TrayIcon.MessageType.INFO);
 						PenServer.startJavaServer();
 						trayIcon.setImage(imageON);
 						onOffItem.setLabel(STOP_PEN_SERVER_MSG);
@@ -76,13 +77,18 @@ public class PenServerTrayApp {
 		return iconListener;
 	}
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		if (!SystemTray.isSupported()) {
-			System.err.println("The System Tray is not supported. Exiting the Pen Server Tray App.");
+			System.err
+					.println("The System Tray is not supported. Exiting the Pen Server Tray App.");
 			return;
 		}
 		SystemTray systemTray = SystemTray.getSystemTray();
-		imageON = ImageCache.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sun.png"));
+		imageON = ImageCache
+				.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sun.png"));
 		imageOFF = ImageCache.loadBufferedImage(PenServerTrayApp.class
 				.getResource("/icons/sunOff.png"));
 

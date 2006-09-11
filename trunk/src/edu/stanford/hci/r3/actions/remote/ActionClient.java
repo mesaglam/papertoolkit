@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.actions.remote;
 
 import java.io.BufferedReader;
@@ -16,6 +13,7 @@ import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.networking.ClientServerType;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -29,18 +27,44 @@ import edu.stanford.hci.r3.networking.ClientServerType;
  */
 public class ActionClient {
 
+	/**
+	 * 
+	 */
 	private List<ActionHandler> actionHandlers = new ArrayList<ActionHandler>();
 
+	/**
+	 * 
+	 */
 	private Socket clientSocket;
 
+	/**
+	 * 
+	 */
 	private ClientServerType clientType;
 
+	/**
+	 * 
+	 */
 	private boolean exitFlag = false;
 
+	/**
+	 * 
+	 */
 	private String machineName;
 
+	/**
+	 * 
+	 */
 	private int portNumber;
 
+	/**
+	 * 
+	 */
+	private BufferedReader socketBufferedReader;
+
+	/**
+	 * 
+	 */
 	private Thread socketListenerThread;
 
 	/**
@@ -62,7 +86,7 @@ public class ActionClient {
 	}
 
 	/**
-	 * 
+	 * Connect to the server.
 	 */
 	public void connect() {
 		socketListenerThread = getSocketListenerThreadBasedOnClientType();
@@ -72,72 +96,104 @@ public class ActionClient {
 	/**
 	 * 
 	 */
-	public synchronized void exit() {
-		exitFlag = true;
+	public synchronized void disconnect() {
+		try {
+			exitFlag = true;
+			if (clientSocket != null) {
+				clientSocket.close();
+				clientSocket = null;
+			}
+			if (socketBufferedReader != null) {
+				socketBufferedReader.close();
+				socketBufferedReader = null;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @return whether this action client is still active.
+	 */
+	public boolean isRunning() {
+		return !exitFlag && clientSocket != null;
+	}
+
+	/**
+	 * @return
+	 */
+	private Runnable getJavaClientRunnable() {
+		return new Runnable() {
+			public void run() {
+				try {
+					final BufferedReader br = setupSocketAndReader();
+					String line = null;
+
+					final XStream xml = new XStream();
+
+					while ((line = br.readLine()) != null) {
+						// System.out.println(line);
+
+						// reconstruct the action
+						final R3Action gpAction = (R3Action) xml.fromXML(line);
+
+						// tell my listeners!
+						for (ActionHandler ah : actionHandlers) {
+							ah.receivedAction(gpAction);
+						}
+
+						if (exitFlag) {
+							break;
+						}
+					}
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				disconnect();
+			}
+		};
 	}
 
 	/**
 	 * @return
 	 */
 	private Thread getSocketListenerThreadBasedOnClientType() {
-
 		if (clientType == ClientServerType.JAVA) {
-			return new Thread(new Runnable() {
-
-				public void run() {
-					try {
-						final BufferedReader br = setupSocketAndReader();
-						String line = null;
-
-						final XStream xml = new XStream();
-
-						while ((line = br.readLine()) != null) {
-							// System.out.println(line);
-
-							// reconstruct the action
-							final R3Action gpAction = (R3Action) xml.fromXML(line);
-
-							// tell my listeners!
-							for (ActionHandler ah : actionHandlers) {
-								ah.receivedAction(gpAction);
-							}
-
-							if (exitFlag) {
-								break;
-							}
-						}
-					} catch (UnknownHostException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-			});
+			return new Thread(getJavaClientRunnable());
 		} else { // PLAIN TEXT CLIENT
-			return new Thread(new Runnable() {
-				public void run() {
-					try {
-						final BufferedReader br = setupSocketAndReader();
-						String line = null;
-						while ((line = br.readLine()) != null) {
-							// tell my listeners!
-							// System.out.println(line);
-							for (ActionHandler ah : actionHandlers) {
-								ah.receivedActionText(line);
-							}
-							if (exitFlag) {
-								break;
-							}
-						}
-					} catch (UnknownHostException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			});
+			return new Thread(getTextClientRunnable());
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private Runnable getTextClientRunnable() {
+		return new Runnable() {
+			public void run() {
+				try {
+					final BufferedReader br = setupSocketAndReader();
+					String line = null;
+					while ((line = br.readLine()) != null) {
+						// tell my listeners!
+						// System.out.println(line);
+						for (ActionHandler ah : actionHandlers) {
+							ah.receivedActionText(line);
+						}
+						if (exitFlag) {
+							break;
+						}
+					}
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				disconnect();
+			}
+		};
 	}
 
 	/**
@@ -146,11 +202,11 @@ public class ActionClient {
 	 * @throws IOException
 	 */
 	private BufferedReader setupSocketAndReader() throws UnknownHostException, IOException {
-		System.out.println("Trying to connect to " + machineName + "::" + portNumber);
+		DebugUtils.println("Trying to connect to " + machineName + "::" + portNumber);
 		clientSocket = new Socket(machineName, portNumber);
 		final InputStream inputStream = clientSocket.getInputStream();
-		final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-		return br;
+		socketBufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+		return socketBufferedReader;
 	}
 
 }
