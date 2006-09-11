@@ -4,19 +4,14 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
-
-import org.jfree.util.ArrayUtilities;
 
 import edu.stanford.hci.r3.actions.R3Action;
-import edu.stanford.hci.r3.util.ArrayUtils;
 import edu.stanford.hci.r3.util.graphics.ImageUtils;
 
 /**
