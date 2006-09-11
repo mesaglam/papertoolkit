@@ -5,7 +5,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
+import edu.stanford.hci.r3.events.handlers.EventHandler;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Units;
@@ -86,6 +89,14 @@ public class Region {
 	 * like to create an invisible region, go ahead. We're not gonna stop you.=)
 	 */
 	private boolean visible = true;
+
+	/**
+	 * All Regions can have event handlers that listen for pen events. If the event handler list is
+	 * non empty, the region should also be set to active. We can do this automatically. If the
+	 * region is not set to active, no pattern will be rendered when a renderer processes this
+	 * region.
+	 */
+	private List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
 
 	/**
 	 * For our American friends.
@@ -369,6 +380,14 @@ public class Region {
 		sb.append("} in " + units.getUnitName());
 		sb.append(getIsActiveString());
 		return sb.toString();
+	}
+
+	/**
+	 * @param handler
+	 */
+	public void addEventHandler(EventHandler handler) {
+		eventHandlers.add(handler);
+
 	}
 
 }
