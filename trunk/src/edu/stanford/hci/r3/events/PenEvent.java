@@ -1,7 +1,8 @@
-package edu.stanford.hci.r3.events.handlers;
+package edu.stanford.hci.r3.events;
 
 /**
  * <p>
+ * Contains all the information we need to handle events.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -10,6 +11,9 @@ package edu.stanford.hci.r3.events.handlers;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public interface DragHandler extends EventHandler {
+public class PenEvent {
 
+	public PenEvent() {
+
+	}
 }

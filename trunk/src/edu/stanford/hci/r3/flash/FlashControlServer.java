@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.flash;
 
 import java.io.*;
@@ -9,12 +6,15 @@ import java.net.Socket;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
  * This server will relay events to the Flash UI, which will listen for commands. It can ask the UI
  * to do different things, such as going to a named frame.
+ * </p>
+ * <p>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
@@ -42,15 +42,30 @@ public class FlashControlServer {
 		server = new FlashControlServer(port);
 	}
 
+	/**
+	 * 
+	 */
 	private Socket incoming;
 
-	private PrintStream writerOut;
-
+	/**
+	 * 
+	 */
 	private BufferedReader readerIn;
 
+	/**
+	 * 
+	 */
 	private int serverPort;
 
+	/**
+	 * 
+	 */
 	private ServerSocket socket;
+
+	/**
+	 * 
+	 */
+	private PrintStream writerOut;
 
 	/**
 	 * 
@@ -104,7 +119,7 @@ public class FlashControlServer {
 	 * Prints to both the console and to the client.
 	 * 
 	 * @param message
-	 *           the string to print.
+	 *            the string to print.
 	 */
 	public void sendMessage(String message) {
 		if (writerOut != null) {

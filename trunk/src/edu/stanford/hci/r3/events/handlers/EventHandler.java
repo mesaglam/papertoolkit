@@ -1,8 +1,11 @@
 package edu.stanford.hci.r3.events.handlers;
 
+import edu.stanford.hci.r3.events.PenEvent;
+
 /**
  * <p>
- * This is the super interface of all the other event handlers.
+ * This is the super interface of all the other event handlers. These are the pen & paper analogues
+ * to Java Swing's EventListener architecture.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -13,4 +16,14 @@ package edu.stanford.hci.r3.events.handlers;
  */
 public interface EventHandler {
 
+	/**
+	 * @return whether this event should be consumed (i.e., lower priority event handlers should not
+	 *         see this event).
+	 */
+	public boolean handleEvent(PenEvent event);
+
+	/**
+	 * @return the Event Handler's Name
+	 */
+	public String toString();
 }

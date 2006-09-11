@@ -12,15 +12,21 @@ import edu.stanford.hci.r3.util.components.SuperJTextField;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
  * A GUI for testing out the various Flash connectivity features. Currently, an SWF file cannot
  * connect to a socket on the local machine. However, it seems to work through Flash 9's debugging
  * environment.
  * 
- * We will have to change the implementation to Flash's XMLSocket(...).
+ * TODO: We will have to change the implementation to Flash's XMLSocket(...).
+ * 
+ * We should also be able to send more interesting events over to the Flash UI. (PenEvents and
+ * EventHandlers?)
+ * </p>
+ * <p>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
@@ -33,18 +39,39 @@ public class FlashControlDebugger {
 		new FlashControlDebugger();
 	}
 
+	/**
+	 * 
+	 */
 	private JFrame control;
 
+	/**
+	 * 
+	 */
 	private JPanel mainPanel;
 
+	/**
+	 * 
+	 */
 	private JButton okButton;
 
+	/**
+	 * 
+	 */
 	private ActionListener sendActionListener;
 
+	/**
+	 * 
+	 */
 	private FlashControlServer server;
 
+	/**
+	 * 
+	 */
 	private SuperJTextField textField;
 
+	/**
+	 * 
+	 */
 	public FlashControlDebugger() {
 		PaperToolkit.initializeLookAndFeel();
 
