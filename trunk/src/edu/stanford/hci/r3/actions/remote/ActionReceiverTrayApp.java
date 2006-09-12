@@ -35,7 +35,7 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ActionClientTrayApp {
+public class ActionReceiverTrayApp {
 
 	/**
 	 * 
@@ -273,7 +273,7 @@ public class ActionClientTrayApp {
 		}
 
 		// the on and off icons
-		imageON = ImageCache.loadBufferedImage(ActionClientTrayApp.class
+		imageON = ImageCache.loadBufferedImage(ActionReceiverTrayApp.class
 				.getResource("/icons/planet.png"));
 		imageOFF = ImageCache.loadBufferedImage(PenServerTrayApp.class
 				.getResource("/icons/planetOff.png"));
