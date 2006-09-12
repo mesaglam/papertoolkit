@@ -1,19 +1,11 @@
 package edu.stanford.hci.r3.designer.acrobat;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.io.*;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -41,13 +33,29 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class AcrobatCommunicationServer {
 
+	private static final StringBuilder CONFIRMATION = FileUtils.readFileIntoStringBuffer(new File(
+			"data/designer/Confirmation.html"), false /* no new lines */);
+
+	private static AcrobatCommunicationServer server;
+
 	/**
 	 * Sep 6, 2006
 	 */
 	public static void main(String[] args) {
+		startServer();
+	}
+
+	/**
+	 * 
+	 */
+	protected static void startServer() {
+		if (server != null) {
+			DebugUtils.println("Acrobat Communication Server has already started...");
+			return;
+		}
 		try {
-			AcrobatCommunicationServer server = new AcrobatCommunicationServer(8888,
-					new FileOutputStream(new File("data/designer/AcrobatCommunicationServer.log")));
+			server = new AcrobatCommunicationServer(8888, new FileOutputStream(new File(
+					"data/designer/AcrobatCommunicationServer.log")));
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -66,14 +74,14 @@ public class AcrobatCommunicationServer {
 	 */
 	private PrintWriter logOutput;
 
+	private File outputFile;
+
 	private int serverPort;
 
 	/**
 	 * The socket that we open.
 	 */
 	private ServerSocket serverSocket;
-
-	private File outputFile;
 
 	/**
 	 * @param port
@@ -209,8 +217,7 @@ public class AcrobatCommunicationServer {
 					String confirmation = CONFIRMATION.toString().replace("__PARENTURI__",
 							parentDir.toURI().toString());
 					confirmation = confirmation.replace("__FOLDERNAME__", parentDir.getName());
-					confirmation = confirmation.replace("__FILEURI__", outputFile.toURI()
-							.toString());
+					confirmation = confirmation.replace("__FILEURI__", outputFile.toURI().toString());
 					confirmation = confirmation.replace("__FILENAME__", outputFile.getName());
 
 					// tell the client to go away now
@@ -228,30 +235,6 @@ public class AcrobatCommunicationServer {
 			}
 
 		});
-	}
-
-	private static final StringBuilder CONFIRMATION = FileUtils.readFileIntoStringBuffer(new File(
-			"data/designer/Confirmation.html"), false /* no new lines */);
-
-	/**
-	 * @param xml
-	 */
-	private void processXML(String xml) {
-		logToConsoleAndFile(xml);
-
-		File xmlFile = new File("data/designer/TemporaryXML.xml");
-		FileWriter fw;
-		try {
-			fw = new FileWriter(xmlFile);
-			fw.append(xml);
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		RegionConfigurationWriter writer = new RegionConfigurationWriter(xmlFile);
-		writer.processXML();
-		outputFile = writer.getOutputFile();
 	}
 
 	/**
@@ -274,6 +257,27 @@ public class AcrobatCommunicationServer {
 			System.out.println("Processing exit command");
 			System.exit(0);
 		}
+	}
+
+	/**
+	 * @param xml
+	 */
+	private void processXML(String xml) {
+		logToConsoleAndFile(xml);
+
+		File xmlFile = new File("data/designer/TemporaryXML.xml");
+		FileWriter fw;
+		try {
+			fw = new FileWriter(xmlFile);
+			fw.append(xml);
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		RegionConfigurationWriter writer = new RegionConfigurationWriter(xmlFile);
+		writer.processXML();
+		outputFile = writer.getOutputFile();
 	}
 
 }
