@@ -17,6 +17,27 @@ import edu.stanford.hci.r3.events.PenEvent;
 public abstract class ClickHandler implements EventHandler {
 
 	/**
+	 * 
+	 */
+	private boolean penDownHappened = false;
+
+	/**
+	 * Use this variable to see if there was a double click, while handing a clicked() event.
+	 */
+	protected int clickCount = 1;
+
+	/**
+	 * If the current click time is really close to the last click time, we can signal a double
+	 * click.
+	 */
+	private long lastClickTime = 0;
+
+	/**
+	 * 
+	 */
+	protected int maxMillisBetweenMultipleClicks = 300; // 300 ms for a double-click
+
+	/**
 	 * @param e
 	 */
 	public abstract void clicked(PenEvent e);
@@ -37,9 +58,26 @@ public abstract class ClickHandler implements EventHandler {
 	 * 
 	 * @see edu.stanford.hci.r3.events.handlers.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
-	public boolean handleEvent(PenEvent event) {
-		
-		
-		return false; // do not consume the event
+	public void handleEvent(PenEvent event) {
+		if (event.isPenDown()) {
+			pressed(event);
+			penDownHappened = true;
+		} else if (event.isPenUp()) {
+			released(event);
+
+			// really, this should always be true
+			if (penDownHappened) {
+				if (event.getTimestamp() - lastClickTime <= maxMillisBetweenMultipleClicks) {
+					clickCount++;
+				} else {
+					clickCount = 1; // reset the click count
+				}
+				clicked(event);
+				lastClickTime = event.getTimestamp();
+				penDownHappened = false;
+			}
+		}
+
+		// do not consume the event (event has a consumed property that we do not set here)
 	}
 }

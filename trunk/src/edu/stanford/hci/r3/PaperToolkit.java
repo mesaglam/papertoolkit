@@ -1,5 +1,11 @@
 package edu.stanford.hci.r3;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,6 +13,18 @@ import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.AbstractListModel;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
+
+import org.jdesktop.swingx.JXList;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -23,7 +41,6 @@ import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.StringUtils;
-import edu.stanford.hci.r3.util.SystemUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
@@ -39,9 +56,13 @@ import edu.stanford.hci.r3.util.WindowUtils;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  */
 public class PaperToolkit {
+
+	/**
+	 * Font for the App Manager GUI.
+	 */
+	private static final Font APP_MANAGER_FONT = new Font("Trebuchet MS", Font.PLAIN, 18);
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
@@ -114,11 +135,28 @@ public class PaperToolkit {
 	 */
 	private List<Application> applications = new ArrayList<Application>();
 
+	private JFrame appManager;
+
+	private JPanel controls;
+
 	/**
 	 * The engine that processes all pen events, producing the correct outputs and calling the right
 	 * event handlers.
 	 */
 	private EventEngine eventEngine;
+
+	private JButton exitAppManagerButton;
+
+	private JXList listOfRunningApps;
+
+	private JLabel mainMessage;
+
+	private JButton stopAppButton;
+
+	/**
+	 * Whether to show the application manager whenever an app is loaded/started.
+	 */
+	private boolean useAppManager = true;
 
 	/**
 	 * The version of the PaperToolkit.
@@ -135,6 +173,112 @@ public class PaperToolkit {
 		printInitializationMessages();
 		initializeLookAndFeel();
 		eventEngine = new EventEngine();
+	}
+
+	/**
+	 * Allows an end user to stop, start, and otherwise manage loaded applications.
+	 * 
+	 * @return
+	 */
+	public JFrame getApplicationManager() {
+		if (appManager == null) {
+			appManager = new JFrame("R3 Applications");
+
+			appManager.setLayout(new BorderLayout());
+			appManager.add(getMainMessage(), BorderLayout.NORTH);
+			appManager.add(getListOfRunningApps(), BorderLayout.CENTER);
+			appManager.add(getControls(), BorderLayout.SOUTH);
+
+			appManager.setSize(640, 480);
+			appManager.setLocation(WindowUtils.getWindowOrigin(appManager,
+					WindowUtils.DESKTOP_CENTER));
+			appManager.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			appManager.setVisible(true);
+		}
+		return appManager;
+	}
+
+	/**
+	 * @return
+	 */
+	private Component getControls() {
+		if (controls == null) {
+			controls = new JPanel();
+			controls.setLayout(new FlowLayout());
+			controls.add(getStopApplicationButton());
+			controls.add(getExitAppManagerButton());
+		}
+		return controls;
+	}
+
+	/**
+	 * @return
+	 */
+	private Component getExitAppManagerButton() {
+		// stop all apps and then exit the application manager
+		if (exitAppManagerButton == null) {
+			exitAppManagerButton = new JButton("Exit App Manager");
+			exitAppManagerButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					System.exit(0);
+				}
+			});
+		}
+		return exitAppManagerButton;
+	}
+
+	/**
+	 * @return
+	 */
+	private Component getListOfRunningApps() {
+		if (listOfRunningApps == null) {
+			ListModel model = new AbstractListModel() {
+				public Object getElementAt(int appIndex) {
+					return applications.get(appIndex);
+				}
+
+				public int getSize() {
+					return applications.size();
+				}
+			};
+			listOfRunningApps = new JXList(model);
+			listOfRunningApps.setBorder(BorderFactory.createEmptyBorder(20, 5, 20, 5));
+			listOfRunningApps.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			listOfRunningApps.setFont(APP_MANAGER_FONT);
+		}
+		return listOfRunningApps;
+	}
+
+	/**
+	 * @return
+	 */
+	private Component getMainMessage() {
+		if (mainMessage == null) {
+			mainMessage = new JLabel("<html>Manage your running applications here.<br/>"
+					+ "Closing this App Manager will stop <b>all</b> applications.</html>");
+			mainMessage.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+			mainMessage.setFont(APP_MANAGER_FONT);
+		}
+		return mainMessage;
+	}
+
+	/**
+	 * @return
+	 */
+	private Component getStopApplicationButton() {
+		if (stopAppButton == null) {
+			stopAppButton = new JButton("Stop Selected Application");
+			stopAppButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					Application selectedApp = (Application)listOfRunningApps.getSelectedValue();
+					if (selectedApp != null) {
+						stopApplication(selectedApp);
+						listOfRunningApps.repaint();
+					}
+				}
+			});
+		}
+		return stopAppButton;
 	}
 
 	/**
@@ -175,8 +319,20 @@ public class PaperToolkit {
 				eventEngine.register(pen);
 			}
 		}
-		
-		eventEngine.registerEventHandlers(paperApp.getPatternMaps());
+
+		// keep track of the pattern assigned to different sheets and regions
+		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
+
+		// show the app manager
+		if (useAppManager) {
+			JFrame applicationManager = getApplicationManager();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			applicationManager.setExtendedState(JFrame.ICONIFIED);
+		}
 	}
 
 	/**
@@ -191,9 +347,18 @@ public class PaperToolkit {
 		for (Pen pen : pens) {
 			if (pen.isLive()) {
 				eventEngine.unregisterPen(pen);
+				// stop the pen from listening!
+				pen.stopLiveMode();
 			}
 		}
-		
-		eventEngine.unregisterEventHandlers(paperApp.getPatternMaps());
+
+		eventEngine.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
+	}
+
+	/**
+	 * @param flag
+	 */
+	public void useApplicationManager(boolean flag) {
+		useAppManager = flag;
 	}
 }

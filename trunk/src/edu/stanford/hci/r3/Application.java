@@ -113,4 +113,10 @@ public class Application {
 		DebugUtils.println("Unimplemented Method");
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return name + " Application";
+	}
 }

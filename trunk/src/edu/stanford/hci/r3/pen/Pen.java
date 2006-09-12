@@ -44,6 +44,9 @@ public class Pen {
 	 */
 	private PenClient livePenClient;
 
+	/**
+	 * A simple default name.
+	 */
 	private String name = "A Pen";
 
 	/**
@@ -52,6 +55,9 @@ public class Pen {
 	public Pen() {
 	}
 
+	/**
+	 * @param name
+	 */
 	public Pen(String name) {
 		setName(name);
 	}
@@ -69,12 +75,15 @@ public class Pen {
 		livePenClient.addPenListener(penListener);
 	}
 
+	/**
+	 * @return the name of this pen
+	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return
+	 * @return if this pen in live mode.
 	 */
 	public boolean isLive() {
 		return liveMode;
@@ -92,8 +101,12 @@ public class Pen {
 		livePenClient.removePenListener(penListener);
 	}
 
-	private void setName(String n) {
-		name = n;
+	/**
+	 * @param nomDePlume
+	 *            Optional, for differentiating pens during debugging.
+	 */
+	private void setName(String nomDePlume) {
+		name = nomDePlume;
 	}
 
 	/**
@@ -123,5 +136,14 @@ public class Pen {
 				ClientServerType.JAVA);
 		livePenClient.connect();
 		liveMode = true;
+	}
+
+	/**
+	 * Exit live mode.
+	 */
+	public void stopLiveMode() {
+		livePenClient.disconnect();
+		livePenClient = null;
+		liveMode = false;
 	}
 }

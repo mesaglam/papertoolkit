@@ -29,5 +29,6 @@
 	<classpathentry path="lib/BrowserLauncher2-10rc4.jar" kind="lib"/>
 	<classpathentry path="lib/jmf/jmf.jar" kind="lib"/>
 	<classpathentry path="lib/jmf/mp3plugin.jar" kind="lib"/>
+	<classpathentry path="lib/swingx.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

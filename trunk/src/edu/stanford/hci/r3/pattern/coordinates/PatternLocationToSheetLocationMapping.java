@@ -129,21 +129,52 @@ public class PatternLocationToSheetLocationMapping {
 			}
 		}
 	}
+	
+	/**
+	 * Checks whether this mapping contains the pen sample (streamed coordinates). If it does, it
+	 * retursn the TiledPatternCoordinateConverter object for that sample. If not, it returns null.
+	 * 
+	 * @param sample
+	 * @return
+	 */
+	public TiledPatternCoordinateConverter getCoordinateConverterForSample(PenSample sample) {
+		for (Region r : regionToPatternBounds.keySet()) {
+			TiledPatternCoordinateConverter converter = regionToPatternBounds.get(r);
+			if (converter.contains(new StreamedPatternCoordinates(sample))) {
+				// DebugUtils.println("Sample is on: " + r.getName());
+				return converter;
+			}
+		}
+		return null; // couldn't find any
+	}
 
 	/**
 	 * @param r
-	 * @return
+	 *            find the coordinate converter for this region.
+	 * @return the converter that enables you to figure out where on the region a sample falls.
 	 */
 	public TiledPatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
 		return regionToPatternBounds.get(r);
 	}
 
 	/**
+	 * @return
+	 */
+	public Sheet getSheet() {
+		return sheet;
+	}
+
+	/**
+	 * For all active regions, we need a coordinate converter that will enable us to find out where
+	 * the pen is on the region.
+	 * 
 	 * @param regions
 	 */
 	private void initializeMap(List<Region> regions) {
 		for (Region r : regions) {
-			regionToPatternBounds.put(r, new TiledPatternCoordinateConverter());
+			if (r.isActive()) {
+				regionToPatternBounds.put(r, new TiledPatternCoordinateConverter(r.getName()));
+			}
 		}
 	}
 
@@ -185,7 +216,6 @@ public class PatternLocationToSheetLocationMapping {
 	 */
 	public void saveConfigurationToXML(File xmlFile) {
 		try {
-
 			// create a new map that goes from name+origin to pattern bounds mapping
 			// only save active regions... because we don't render pattern for nonactive regions
 			HashMap<RegionID, TiledPatternCoordinateConverter> regionIDToPattern = new HashMap<RegionID, TiledPatternCoordinateConverter>();
@@ -196,6 +226,10 @@ public class PatternLocationToSheetLocationMapping {
 				}
 				RegionID rid = new RegionID(r);
 				regionIDToPattern.put(rid, regionToPatternBounds.get(r));
+			}
+			if (xmlFile.exists()) {
+				DebugUtils.println("Overwriting XML File: " + xmlFile.getName());
+				xmlFile.delete();
 			}
 			PaperToolkit.toXML(regionIDToPattern, new FileOutputStream(xmlFile));
 		} catch (FileNotFoundException e) {
@@ -216,20 +250,5 @@ public class PatternLocationToSheetLocationMapping {
 			System.err.println("PatternLocationToSheetLocationMapping.java: Region unknown. "
 					+ "Please add it to the sheet before updating this mapping.");
 		}
-	}
-
-	/**
-	 * @param sample
-	 * @return
-	 */
-	public boolean contains(PenSample sample) {
-		for (Region r : regionToPatternBounds.keySet()) {
-			TiledPatternCoordinateConverter converter = regionToPatternBounds.get(r);
-			if (converter.contains(new StreamedPatternCoordinates(sample))) {
-				DebugUtils.println("Sample is on: " + r.getName());
-				return true;
-			}
-		}
-		return false;
 	}
 }

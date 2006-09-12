@@ -1,8 +1,10 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 
 /**
@@ -58,10 +60,9 @@ public class TiledPatternCoordinateConverterTest {
 		// 184022418, 7187, // physical coordinates information
 		// 2734.625, 1792.25); // region configuration
 
-		
 		// set the values after the fact, and do it in any order!
 		// as long as all the values are set, it will work in the end...
-		converter = new TiledPatternCoordinateConverter();
+		converter = new TiledPatternCoordinateConverter("Dummy Region Name");
 		converter.setOriginInDots(184022418, 7187);
 		converter.setTotalSizeInDots(2734.625, 1792.25);
 		converter.setTileConfiguration(4, 2);
@@ -69,7 +70,6 @@ public class TiledPatternCoordinateConverterTest {
 		converter.setStartingTile(0);
 		converter.setTileSizeInDots(721, 932);
 
-		
 		Pen pen = new Pen();
 		pen.startLiveMode();
 		pen.addLivePenListener(getPenListener());

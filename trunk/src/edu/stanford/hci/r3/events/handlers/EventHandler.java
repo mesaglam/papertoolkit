@@ -17,10 +17,10 @@ import edu.stanford.hci.r3.events.PenEvent;
 public interface EventHandler {
 
 	/**
-	 * @return whether this event should be consumed (i.e., lower priority event handlers should not
-	 *         see this event).
+	 * if this event should be consumed (i.e., lower priority event handlers should not see this
+	 * event), we should set the event.consumed property to true
 	 */
-	public boolean handleEvent(PenEvent event);
+	public void handleEvent(PenEvent event);
 
 	/**
 	 * @return the Event Handler's Name
