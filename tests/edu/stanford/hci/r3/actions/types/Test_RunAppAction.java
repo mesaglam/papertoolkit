@@ -13,5 +13,6 @@ public class Test_RunAppAction {
 	public static void main(String[] args) {
 		// loads Windows wordpad
 		new RunAppAction("write").invoke();
+		// new RunAppAction("acrobat.exe").invoke();
 	}
 }
