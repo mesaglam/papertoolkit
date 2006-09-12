@@ -6,6 +6,7 @@
   <regions>
     <Region>
       <active>true</active>
+      <eventHandlers/>
       <name>MainDrawingArea</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
@@ -23,6 +24,7 @@
     </Region>
     <Region>
       <active>true</active>
+      <eventHandlers/>
       <name>BlackPalette</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
@@ -40,6 +42,7 @@
     </Region>
     <Region>
       <active>true</active>
+      <eventHandlers/>
       <name>PurplePalette</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
@@ -57,6 +60,7 @@
     </Region>
     <Region>
       <active>true</active>
+      <eventHandlers/>
       <name>OrangePalette</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>
@@ -74,6 +78,7 @@
     </Region>
     <Region>
       <active>true</active>
+      <eventHandlers/>
       <name>SendToScreen</name>
       <scaleX>1.0</scaleX>
       <scaleY>1.0</scaleY>

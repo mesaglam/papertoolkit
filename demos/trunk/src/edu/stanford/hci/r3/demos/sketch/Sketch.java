@@ -1,11 +1,15 @@
 package edu.stanford.hci.r3.demos.sketch;
 
+import java.awt.Color;
 import java.io.File;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.filters.InkContainer;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.handlers.GestureHandler;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.pen.Pen;
@@ -25,14 +29,11 @@ import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
  */
 public class Sketch {
 
-	/**
-	 * Either sends us into the rendering mode, or application (runtime) mode.
-	 * 
-	 * TODO: In the future, the PaperToolkit's application manager will enable printing. Thus, this
-	 * flag will not be necessary. An application author will subclass Application (which will have
-	 * an empty renderToPDF function).
-	 */
-	private static boolean renderPDFMode = false;
+	private static final Color BLACK = new Color(0, 0, 0, 220);
+
+	private static final Color ORANGE = new Color(255, 153, 51, 220);
+
+	private static final Color PURPLE = new Color(128, 0, 128, 220);
 
 	/**
 	 * There are two modes to the operation of this class. First, we would like to generate the
@@ -42,14 +43,33 @@ public class Sketch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		new Sketch();
+	}
 
-		PDFSheet s = new PDFSheet(new File("data/Sketch/SketchUI.pdf"));
-		s.addRegions(new File("data/Sketch/SketchUI.regions.xml"));
+	private Color currentColor = BLACK;
+
+	/**
+	 * Either sends us into the rendering mode, or application (runtime) mode.
+	 * 
+	 * TODO: In the future, the PaperToolkit's application manager will enable printing. Thus, this
+	 * flag will not be necessary. An application author will subclass Application (which will have
+	 * an empty renderToPDF function).
+	 */
+	private boolean renderPDFMode = false;
+
+	private PDFSheet sheet;
+
+	/**
+	 * 
+	 */
+	public Sketch() {
+		sheet = new PDFSheet(new File("data/Sketch/SketchUI.pdf"));
+		sheet.addRegions(new File("data/Sketch/SketchUI.regions.xml"));
 
 		if (renderPDFMode) {
-			renderPDF(s);
+			renderPDF(sheet);
 		} else {
-			runApplication(s);
+			runApplication(sheet);
 		}
 	}
 
@@ -60,7 +80,7 @@ public class Sketch {
 	 * 
 	 * @param s
 	 */
-	private static void renderPDF(PDFSheet s) {
+	private void renderPDF(PDFSheet s) {
 		// print the sheet!
 		// when printing, we also render a configuration file for the Paper UI
 		PDFSheetRenderer renderer = new PDFSheetRenderer(s);
@@ -78,30 +98,51 @@ public class Sketch {
 	/**
 	 * @param s
 	 */
-	private static void runApplication(PDFSheet s) {
+	private void runApplication(PDFSheet s) {
 		// add some event handlers to the regions...
-		System.out.println("Regions: ");
-		for (Region r : s.getRegions()) {
-			System.out.println("\t" + r.getName());
-		}
-		System.out.println();
+		// System.out.println("Regions: ");
+		// for (Region r : s.getRegions()) {
+		// System.out.println("\t" + r.getName());
+		// }
+		// System.out.println();
 
-		Region region = s.getRegion("MainDrawingArea");
-		// System.out.println(region);
-		region.addEventHandler(new ClickHandler() {
+		Region regionMain = s.getRegion("MainDrawingArea");
+		final InkContainer inkContainer = new InkContainer();
+		regionMain.addEventFilter(inkContainer);
+		
+		Region regionBlack = s.getRegion("BlackPalette");
+		regionBlack.addEventHandler(new ClickAdapter() {
 			@Override
 			public void clicked(PenEvent e) {
-				System.out.println("Clicked " + clickCount + " times in a row.");
+				System.out.println("Clicked Black " + clickCount + " times in a row.");
+				currentColor = BLACK;
 			}
+		});
 
+		Region regionPurple = s.getRegion("PurplePalette");
+		regionPurple.addEventHandler(new ClickAdapter() {
 			@Override
-			public void pressed(PenEvent e) {
-				System.out.println("Pressed");
+			public void clicked(PenEvent e) {
+				System.out.println("Clicked Purple " + clickCount + " times in a row.");
+				currentColor = PURPLE;
 			}
+		});
 
+		Region regionOrange = s.getRegion("OrangePalette");
+		regionOrange.addEventHandler(new ClickAdapter() {
 			@Override
-			public void released(PenEvent e) {
-				System.out.println("Released");
+			public void clicked(PenEvent e) {
+				System.out.println("Clicked Orange " + clickCount + " times in a row.");
+			}
+		});
+
+		// wouldn't it be cool if you could copy a region in acrobat
+		// and paste it here, and it would become the code??? (FUTURE TODO)
+		Region regionSendToScreen = s.getRegion("SendToScreen");
+		regionSendToScreen.addEventHandler(new GestureHandler() {
+			@Override
+			public void handleMark(PenEvent e, GestureDirection dir) {
+				System.out.println("Mark Direction: " + dir);
 			}
 		});
 
