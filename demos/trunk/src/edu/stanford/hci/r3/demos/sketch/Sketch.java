@@ -4,6 +4,8 @@ import java.io.File;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.pen.Pen;
@@ -24,7 +26,11 @@ import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
 public class Sketch {
 
 	/**
+	 * Either sends us into the rendering mode, or application (runtime) mode.
 	 * 
+	 * TODO: In the future, the PaperToolkit's application manager will enable printing. Thus, this
+	 * flag will not be necessary. An application author will subclass Application (which will have
+	 * an empty renderToPDF function).
 	 */
 	private static boolean renderPDFMode = false;
 
@@ -81,7 +87,23 @@ public class Sketch {
 		System.out.println();
 
 		Region region = s.getRegion("MainDrawingArea");
-		System.out.println(region);
+		// System.out.println(region);
+		region.addEventHandler(new ClickHandler() {
+			@Override
+			public void clicked(PenEvent e) {
+				System.out.println("Clicked " + clickCount + " times in a row.");
+			}
+
+			@Override
+			public void pressed(PenEvent e) {
+				System.out.println("Pressed");
+			}
+
+			@Override
+			public void released(PenEvent e) {
+				System.out.println("Released");
+			}
+		});
 
 		Application app = new Application("Sketch!");
 		app.addSheet(s);
@@ -93,7 +115,10 @@ public class Sketch {
 
 		app.addPen(pen);
 
+		// this should add a task to the start bar, so that a user can turn off the application if
+		// necessary...
 		PaperToolkit r3 = new PaperToolkit();
+		// r3.useApplicationManager(false); // only if you want to hide it...
 		r3.startApplication(app);
 	}
 }
