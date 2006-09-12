@@ -12,7 +12,7 @@ import org.junit.Test;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class UnitsTest {
+public class Test_Units {
 
 	/**
 	 * Check that our inches and SI units convert nicely.

@@ -1,6 +1,9 @@
 package edu.stanford.hci.r3.actions.types;
 
+import java.io.File;
+
 /**
+ * 
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
@@ -8,15 +11,17 @@ package edu.stanford.hci.r3.actions.types;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class RobotActionTest {
+public class Test_OpenFileAction {
 	public static void main(String[] args) {
-		RobotAction r = new RobotAction();
-		r.setAutoDelay(10);
-		r.mouseMove(0, 0);
-		for (int i = 0; i < 100; i++) {
-			r.mouseMove(i * 4, i * 10);
-		}
-		System.out.println(r.getNumCommands() + " Commands");
-		r.invoke();
+		openLocalFile();
+	}
+
+	/**
+	 * 
+	 */
+	private static void openLocalFile() {
+		OpenFileAction oaction = new OpenFileAction(new File(
+				"data/testFiles/ButterflyNetCHI2006.pdf"));
+		oaction.invoke();
 	}
 }

@@ -21,7 +21,7 @@ import edu.stanford.hci.r3.units.Inches;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class SheetTest {
+public class Test_Sheet {
 
 	/**
 	 * @return a test sheet with a few regions of different types.

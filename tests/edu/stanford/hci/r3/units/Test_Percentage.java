@@ -11,7 +11,7 @@ import org.junit.Test;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PercentageTest {
+public class Test_Percentage {
 
 	/**
 	 * 

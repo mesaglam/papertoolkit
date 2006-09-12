@@ -1,6 +1,7 @@
-package edu.stanford.hci.r3.networking;
+package edu.stanford.hci.r3.actions.types;
 
 /**
+ * 
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
@@ -8,8 +9,9 @@ package edu.stanford.hci.r3.networking;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ClientServerTypeTest {
+public class Test_RunAppAction {
 	public static void main(String[] args) {
-		System.out.println(ClientServerType.JAVA.toString().toLowerCase());
+		// loads Windows wordpad
+		new RunAppAction("write").invoke();
 	}
 }

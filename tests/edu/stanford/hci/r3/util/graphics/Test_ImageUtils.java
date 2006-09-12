@@ -13,7 +13,7 @@ import java.io.File;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ImageUtilsTest {
+public class Test_ImageUtils {
 
 	public static void main(String[] args) {
 		BufferedImage image = ImageUtils.createWritableBuffer(640, 480);

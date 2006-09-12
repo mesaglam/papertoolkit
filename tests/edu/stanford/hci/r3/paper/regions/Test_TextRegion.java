@@ -14,7 +14,7 @@ import edu.stanford.hci.r3.units.Inches;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class TextRegionTest {
+public class Test_TextRegion {
 
 	public static void main(String[] args) {
 		TextRegion tr = new TextRegion("Hello World!", new Font("Comic Sans", Font.PLAIN, 44),

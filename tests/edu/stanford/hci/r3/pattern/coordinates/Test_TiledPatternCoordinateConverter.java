@@ -15,7 +15,7 @@ import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class TiledPatternCoordinateConverterTest {
+public class Test_TiledPatternCoordinateConverter {
 
 	/**
 	 * 

@@ -22,7 +22,7 @@ import edu.stanford.hci.r3.units.Meters;
  * space). Use the -Xmx512M argument to your java VM. The PDF rendering calls are much more
  * efficient. That is probably because we didn't implement them. ;)
  */
-public class PDFSheetTest {
+public class Test_PDFSheet {
 
 	public static void main(String[] args) {
 		// a 13 foot long PDF!

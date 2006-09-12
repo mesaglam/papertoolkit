@@ -1,6 +1,6 @@
 package edu.stanford.hci.r3.actions;
 
-public class ActionTester {
+public class Test_Actions {
 
 	/**
 	 * @param args

@@ -10,7 +10,7 @@ import edu.stanford.hci.r3.networking.ClientServerType;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PenStreamingTest {
+public class Test_PenStreaming {
 
 	public static void main(String[] args) {
 		localhost();
