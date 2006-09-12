@@ -5,7 +5,6 @@
 	<classpathentry path="/PaperToolkit" combineaccessrules="false" kind="src"/>
 	<classpathentry path="/PaperToolkit/lib/itext-1.4.3.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/jfreechart/jcommon-1.0.5.jar" kind="lib"/>
-	<classpathentry path="/JFreeChart" combineaccessrules="false" kind="src"/>
 	<classpathentry path="/PaperToolkit/lib/comm/comm.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/jfreechart/jfreechart-1.0.2.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/jpedal/bcprov-jdk15-133.jar" kind="lib"/>
