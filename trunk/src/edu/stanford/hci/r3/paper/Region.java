@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.events.EventFilter;
 import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Inches;
@@ -54,6 +55,12 @@ public class Region {
 	 * If the region is active (i.e., NOT STATIC), we will overlay pattern over it.
 	 */
 	private boolean active = false;
+
+	/**
+	 * Filters events and passes them to other event handlers (which are usually customized to the
+	 * event filter)...
+	 */
+	private List<EventFilter> eventFilters = new ArrayList<EventFilter>();
 
 	/**
 	 * All Regions can have event handlers that listen for pen events. If the event handler list is
@@ -148,6 +155,14 @@ public class Region {
 	}
 
 	/**
+	 * @param filter
+	 */
+	public void addEventFilter(EventFilter filter) {
+		eventFilters.add(filter);
+		active = true;
+	}
+
+	/**
 	 * Keeps track of this event handler. The PaperToolkit will dispatch events to these, whenever
 	 * the event deals with this region.
 	 * 
@@ -156,6 +171,13 @@ public class Region {
 	public void addEventHandler(EventHandler handler) {
 		eventHandlers.add(handler);
 		active = true;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<EventFilter> getEventFilters() {
+		return eventFilters;
 	}
 
 	/**
@@ -317,9 +339,17 @@ public class Region {
 			System.err.println("Region.java:: [" + getName()
 					+ "]'s eventHandlers list was unexpectedly null upon "
 					+ "deserialization with XStream. Perhaps you need to "
-					+ "reserialize some of your Regions?");
+					+ "reserialize your Regions?");
 			eventHandlers = new ArrayList<EventHandler>();
 		}
+		if (eventFilters == null) {
+			System.err.println("Region.java:: [" + getName()
+					+ "]'s eventFilters list was unexpectedly null upon "
+					+ "deserialization with XStream. Perhaps you need to "
+					+ "reserialize your Regions?");
+			eventFilters = new ArrayList<EventFilter>();
+		}
+
 		return this;
 	}
 
