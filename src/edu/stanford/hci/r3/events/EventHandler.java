@@ -1,6 +1,5 @@
-package edu.stanford.hci.r3.events.handlers;
+package edu.stanford.hci.r3.events;
 
-import edu.stanford.hci.r3.events.PenEvent;
 
 /**
  * <p>

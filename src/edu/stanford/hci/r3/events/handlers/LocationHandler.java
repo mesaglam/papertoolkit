@@ -1,5 +1,9 @@
 package edu.stanford.hci.r3.events.handlers;
 
+import edu.stanford.hci.r3.events.EventHandler;
+import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
+
 /**
  * <p>
  * </p>
@@ -12,4 +16,13 @@ package edu.stanford.hci.r3.events.handlers;
  */
 public abstract class LocationHandler implements EventHandler {
 
+	
+	/**
+	 * @see edu.stanford.hci.r3.events.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
+	 */
+	public void handleEvent(PenEvent event) {
+		PercentageCoordinates percentageLocation = event.getPercentageLocation();
+		
+		
+	}
 }

@@ -6,7 +6,7 @@ import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 
 /**
  * <p>
- * Contains all the information we need to handle events.
+ * Contains all the information we need to handle pen events.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -17,6 +17,9 @@ import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
  */
 public class PenEvent {
 
+	/**
+	 * What type of event is this? DOWN, UP, OTHER?
+	 */
 	protected static final int PEN_DOWN_MODIFIER = 1;
 
 	protected static final int PEN_UP_MODIFIER = 2;
@@ -68,27 +71,40 @@ public class PenEvent {
 	}
 
 	/**
-	 * @return
+	 * WARNING: This is a dangerous method to use, if you do not know what you are doing. The
+	 * original pen samples have not been converted into the region's local coordinate system, so if
+	 * the region happens to have tiled pattern, you may get unexpected results!
+	 * 
+	 * Use getPercentageLocation(...) instead!
+	 * 
+	 * @return the raw pen sample
 	 */
 	public PenSample getOriginalSample() {
 		return penSample;
 	}
 
 	/**
-	 * @return
+	 * @return Which pen generated this event?
 	 */
 	public int getPenID() {
 		return penID;
 	}
 
 	/**
-	 * @return
+	 * It will give you a percentage location, from which you can derive actual coordinates (by
+	 * converting to inches, etc).
+	 * 
+	 * @return the location of the event on the parent region.
 	 */
 	public PercentageCoordinates getPercentageLocation() {
 		return locationOnRegion;
 	}
 
 	/**
+	 * WARNING: See getOriginalSample(). Do not use this value unless you _know_ what you are doing.
+	 * It is OK to use this value if you are doing simple calculations and you are SURE that the
+	 * samples all come from thes same pattern tile.
+	 * 
 	 * @return
 	 */
 	public StreamedPatternCoordinates getStreamedPatternCoordinate() {

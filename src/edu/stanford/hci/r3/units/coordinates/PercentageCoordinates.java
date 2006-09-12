@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.units.coordinates;
 
 import edu.stanford.hci.r3.units.Percentage;
+import edu.stanford.hci.r3.units.Units;
 
 /**
  * <p>
@@ -32,24 +33,35 @@ public class PercentageCoordinates extends Coordinates {
 	}
 
 	/**
-	 * @return
+	 * Not as useful as the actual value, because of the aspect ratio of the sheet/region. If it's a
+	 * wide sheet, 50% is a lot bigger in X than it is in Y.
+	 * 
+	 * @return the percentage value in the horizontal direction.
 	 */
-	public double getPctInXDirection() {
+	public double getPercentageInXDirection() {
 		return x.getValue();
 	}
 
+	public Units getActualValueInXDirection() {
+		return x.getActualValue();
+	}
+
 	/**
-	 * @return
+	 * @return the percentage value in the vertical direction.
 	 */
-	public double getPctInYDirection() {
+	public double getPercentageInYDirection() {
 		return y.getValue();
+	}
+
+	public Units getActualValueInYDirection() {
+		return y.getActualValue();
 	}
 
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "PercentageCoordinates { \n"//
+		return "PercentageCoordinates { \n" //
 				+ "\t" + x.toString() + ", \n" //
 				+ "\t" + y.toString() + "\n}";
 	}

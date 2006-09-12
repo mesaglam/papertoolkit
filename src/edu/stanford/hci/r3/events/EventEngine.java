@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.stanford.hci.r3.events.handlers.EventHandler;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -108,6 +107,9 @@ public class EventEngine {
 		final int penID = pensCurrentlyMonitoring.indexOf(pen);
 
 		return new PenListener() {
+			/**
+			 * @see edu.stanford.hci.r3.pen.streaming.PenListener#penDown(edu.stanford.hci.r3.pen.streaming.PenSample)
+			 */
 			public void penDown(PenSample sample) {
 				PenEvent event = createPenEvent(sample);
 				event.setModifier(PenEvent.PEN_DOWN_MODIFIER);
@@ -128,11 +130,18 @@ public class EventEngine {
 				}
 			}
 
+			/**
+			 * @see edu.stanford.hci.r3.pen.streaming.PenListener#sample(edu.stanford.hci.r3.pen.streaming.PenSample)
+			 */
 			public void sample(PenSample sample) {
 				PenEvent event = createPenEvent(sample);
 				handlePenSample(event);
 			}
 
+			/**
+			 * @param sample
+			 * @return
+			 */
 			private PenEvent createPenEvent(PenSample sample) {
 				// make an event object and send it to the event handler
 				PenEvent event = new PenEvent(penID, System.currentTimeMillis());
@@ -150,7 +159,7 @@ public class EventEngine {
 	private void handlePenSample(PenEvent penEvent) {
 		// System.out.println("Dispatching Event for pen #" + penID + " " + sample);
 		lastEventHandlers.clear();
-		
+
 		// for each sample, we first have to convert it to a location on the sheet.
 		// THEN, we will be able to make more interesting events...
 		for (PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
@@ -182,8 +191,6 @@ public class EventEngine {
 			// where are we on this region?
 			final PercentageCoordinates relativeLocation = coordinateConverter
 					.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
-			// System.out.println(relativeLocation);
-
 			penEvent.setPercentageLocation(relativeLocation);
 
 			// send the event to every event handler!
@@ -201,8 +208,8 @@ public class EventEngine {
 		} // check the next pattern map
 	}
 
-	private List <EventHandler> lastEventHandlers = new ArrayList<EventHandler>();
-	
+	private List<EventHandler> lastEventHandlers = new ArrayList<EventHandler>();
+
 	/**
 	 * @param pen
 	 */
