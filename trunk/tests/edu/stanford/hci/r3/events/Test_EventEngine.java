@@ -23,7 +23,7 @@ import edu.stanford.hci.r3.util.components.SuperJTextField;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class EventEngineTest {
+public class Test_EventEngine {
 
 	public static void main(String[] args) {
 		JFrame f = new JFrame("EventEngine Test");

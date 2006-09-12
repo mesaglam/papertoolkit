@@ -16,7 +16,7 @@ import edu.stanford.hci.r3.units.Inches;
  * 
  * Turns a Sheet object into a PDF file.
  */
-public class SheetRendererTest {
+public class Test_SheetRenderer {
 
 	private static Sheet createLargeSheet() {
 		Sheet sheet = new Sheet(new Inches(42), new Inches(24));

@@ -13,7 +13,7 @@ import edu.stanford.hci.r3.paper.sheets.PDFSheet;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PDFSheetRendererTest {
+public class Test_PDFSheetRenderer {
 	/**
 	 * 
 	 */

@@ -22,7 +22,7 @@ import edu.stanford.hci.r3.units.Inches;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PatternLocationToSheetLocationMappingTest {
+public class Test_PatternLocationToSheetLocationMapping {
 	public static Sheet createSheet() {
 		Sheet sheet = new Sheet(new Inches(8.5), new Inches(11));
 

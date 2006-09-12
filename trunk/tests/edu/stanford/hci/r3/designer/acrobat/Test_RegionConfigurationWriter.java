@@ -1,6 +1,9 @@
-package edu.stanford.hci.r3.actions.types;
+package edu.stanford.hci.r3.designer.acrobat;
+
+import java.io.File;
 
 /**
+ * 
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
@@ -8,8 +11,10 @@ package edu.stanford.hci.r3.actions.types;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class DummyWithMain {
+public class Test_RegionConfigurationWriter {
+
 	public static void main(String[] args) {
-		System.out.println("The Dummy Java App was Launched.");
+		RegionConfigurationWriter writer = new RegionConfigurationWriter(new File("data/designer/ExampleSubmit.xml"));
+		writer.processXML();
 	}
 }

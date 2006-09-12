@@ -3,7 +3,7 @@ package edu.stanford.hci.r3.actions.types;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class OpenURLActionTest {
+public class Test_OpenURLAction {
 	public static void main(String[] args) {
 		try {
 			OpenURLAction o = new OpenURLAction(new URL("http://www.yahoo.com/"));
