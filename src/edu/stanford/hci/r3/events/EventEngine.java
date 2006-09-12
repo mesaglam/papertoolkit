@@ -6,10 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.stanford.hci.r3.events.handlers.EventHandler;
+import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
+import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -103,57 +109,100 @@ public class EventEngine {
 
 		return new PenListener() {
 			public void penDown(PenSample sample) {
-				handlePenDown(penID, sample);
+				PenEvent event = createPenEvent(sample);
+				event.setModifier(PenEvent.PEN_DOWN_MODIFIER);
+				handlePenSample(event);
 			}
 
+			/**
+			 * A penup sample has 0,0 coordinates, so we need to tell the LAST region handlers to
+			 * handle the penUp.
+			 * 
+			 * @see edu.stanford.hci.r3.pen.streaming.PenListener#penUp(edu.stanford.hci.r3.pen.streaming.PenSample)
+			 */
 			public void penUp(PenSample sample) {
-				handlePenUp(penID, sample);
+				PenEvent event = createPenEvent(sample);
+				event.setModifier(PenEvent.PEN_UP_MODIFIER);
+				for (EventHandler h : lastEventHandlers) {
+					h.handleEvent(event);
+				}
 			}
 
 			public void sample(PenSample sample) {
-				handlePenSample(penID, sample);
+				PenEvent event = createPenEvent(sample);
+				handlePenSample(event);
+			}
+
+			private PenEvent createPenEvent(PenSample sample) {
+				// make an event object and send it to the event handler
+				PenEvent event = new PenEvent(penID, System.currentTimeMillis());
+				event.setOriginalSample(sample);
+				return event;
 			}
 		};
 	}
 
 	/**
-	 * @param penID
-	 * @param penDownSample
+	 * All pen events go here. We dispatch it to the right handlers in this method.
+	 * 
+	 * @param penEvent
 	 */
-	private void handlePenDown(int penID, PenSample penDownSample) {
-		System.out.println("DOWN: " + penDownSample);
-	}
-
-	/**
-	 * @param penID
-	 * @param sample
-	 */
-	private void handlePenSample(int penID, PenSample sample) {
-		System.out.println("Dispatching Event for pen #" + penID + " " + sample);
-
+	private void handlePenSample(PenEvent penEvent) {
+		// System.out.println("Dispatching Event for pen #" + penID + " " + sample);
+		lastEventHandlers.clear();
+		
 		// for each sample, we first have to convert it to a location on the sheet.
 		// THEN, we will be able to make more interesting events...
 		for (PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
-			if (pmap.contains(sample)) {
-				
+			final TiledPatternCoordinateConverter coordinateConverter = pmap
+					.getCoordinateConverterForSample(penEvent.getOriginalSample());
+
+			// this map doesn't know about this sample; next!
+			if (coordinateConverter == null) {
+				continue;
 			}
-		}
-		
-		
-		
-		// Should the event engine know about a running applications sheets? YEAH!
 
-		// interactors?
+			// which sheet are we on?
+			final Sheet sheet = pmap.getSheet();
+
+			// which region are we on?
+			final String regionName = coordinateConverter.getRegionName();
+			final Region region = sheet.getRegion(regionName);
+
+			// does this region have any event handler?
+			// if not, just go onto the next region
+			final List<EventHandler> eventHandlers = region.getEventHandlers();
+			if (eventHandlers.size() == 0) {
+				continue;
+			} // if we get here, eventHandlers.size() > 0
+
+			// System.out.println("Found " + eventHandlers.size() + " Event Handler(s) on "
+			// + regionName);
+
+			// where are we on this region?
+			final PercentageCoordinates relativeLocation = coordinateConverter
+					.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
+			// System.out.println(relativeLocation);
+
+			penEvent.setPercentageLocation(relativeLocation);
+
+			// send the event to every event handler!
+			// so long as the event is not consumed
+			for (EventHandler eh : eventHandlers) {
+				eh.handleEvent(penEvent);
+				lastEventHandlers.add(eh);
+				if (penEvent.isConsumed()) {
+					// we are done handling this event
+					// look at no more event handlers
+					// look at no more pattern maps
+					return;
+				}
+			} // check the next event handler
+		} // check the next pattern map
 	}
 
-	/**
-	 * @param penID
-	 * @param penUpSample
-	 */
-	private void handlePenUp(int penID, PenSample penUpSample) {
-		System.out.println("UP: " + penUpSample);
-	}
-
+	private List <EventHandler> lastEventHandlers = new ArrayList<EventHandler>();
+	
 	/**
 	 * @param pen
 	 */
@@ -190,9 +239,12 @@ public class EventEngine {
 	}
 
 	/**
+	 * Keep track of the pattern on sheets, so we can dispatch events appropriately.
+	 * 
 	 * @param patternMaps
 	 */
-	public void registerEventHandlers(Collection<PatternLocationToSheetLocationMapping> patternMaps) {
+	public void registerPatternMapsForEventHandling(
+			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
 		for (PatternLocationToSheetLocationMapping map : patternMaps) {
 			patternToSheetMaps.add(map);
 		}
@@ -212,7 +264,7 @@ public class EventEngine {
 	/**
 	 * @param patternMaps
 	 */
-	public void unregisterEventHandlers(
+	public void unregisterPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
 		for (PatternLocationToSheetLocationMapping map : patternMaps) {
 			patternToSheetMaps.remove(map);

@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Percentage;
@@ -89,6 +90,11 @@ public class TiledPatternCoordinateConverter {
 	private double originY;
 
 	/**
+	 * 
+	 */
+	private String regionName;
+
+	/**
 	 * Name the top-left tile anything you want.
 	 */
 	private int startingTile;
@@ -98,10 +104,16 @@ public class TiledPatternCoordinateConverter {
 	private double tileWidthIncludingPadding;
 
 	/**
-	 * A Dummy constructor for when you need to set the information later (The Lazy Approach).
+	 * A constructor for when you need to set the information later (The Lazy Approach).
+	 * 
+	 * @param regionName
+	 *            the Region that this coordinate converter was created for. The reason we don't
+	 *            pass in the whole region object is because this converter WILL be serialized and
+	 *            unserialized. Due to XStream's limitations, we will have to resolve the region at
+	 *            runtime using the region's name instead.
 	 */
-	public TiledPatternCoordinateConverter() {
-		this(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	public TiledPatternCoordinateConverter(String regionName) {
+		this(regionName, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 
 	/**
@@ -117,6 +129,8 @@ public class TiledPatternCoordinateConverter {
 	 * We precompute the boundaries so that we can do contains(...) tests faster.
 	 * </p>
 	 * 
+	 * @param regionName
+	 *            The region that this converter was created for.
 	 * @param startTile
 	 *            the number that you assign to the top-left tile
 	 * @param nTilesAcross
@@ -140,11 +154,12 @@ public class TiledPatternCoordinateConverter {
 	 * @param numVertDotsBetweenTiles
 	 *            the vertical padding between adjacent tiles (tends to be 0, in our experience)
 	 */
-	public TiledPatternCoordinateConverter(int startTile, int nTilesAcross, int nTilesDown,
-			int dotsPerTileHoriz, int dotsPerTileVert, double numHorizDotsBetweenTiles,
-			double numVertDotsBetweenTiles, double leftMostPatternX, double topMostPatternY,
-			double numDotsAcross, double numDotsDown) {
-
+	public TiledPatternCoordinateConverter(String regionName, int startTile, int nTilesAcross,
+			int nTilesDown, int dotsPerTileHoriz, int dotsPerTileVert,
+			double numHorizDotsBetweenTiles, double numVertDotsBetweenTiles,
+			double leftMostPatternX, double topMostPatternY, double numDotsAcross,
+			double numDotsDown) {
+		setRegionName(regionName);
 		setStartingTile(startTile);
 		setTileConfiguration(nTilesAcross, nTilesDown);
 		setTileSizeInDots(dotsPerTileHoriz, dotsPerTileVert);
@@ -225,6 +240,13 @@ public class TiledPatternCoordinateConverter {
 		final double xTestVal = location.getXVal();
 		final double yTestVal = location.getYVal();
 		return contains(xTestVal, yTestVal);
+	}
+
+	/**
+	 * @return
+	 */
+	public String getRegionName() {
+		return regionName;
 	}
 
 	/**
@@ -330,6 +352,15 @@ public class TiledPatternCoordinateConverter {
 
 		// must update some internal state
 		calculateCachedDimensions();
+	}
+
+	/**
+	 * @param rName
+	 *            the name of the region that this converter manages. It's important to keep your
+	 *            regions uniquely identifiable.
+	 */
+	public void setRegionName(String rName) {
+		regionName = rName;
 	}
 
 	/**

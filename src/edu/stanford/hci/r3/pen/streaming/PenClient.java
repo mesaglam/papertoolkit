@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.networking.ClientServerType;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -70,16 +72,6 @@ public class PenClient {
 	}
 
 	/**
-	 * If the pen listener is one of our listeners, detach it. That is, stop sending events to it.
-	 * 
-	 * @param penListener
-	 * @return
-	 */
-	public boolean removePenListener(PenListener penListener) {
-		return listeners.remove(penListener);
-	}
-
-	/**
 	 * 
 	 */
 	public void connect() {
@@ -88,10 +80,15 @@ public class PenClient {
 	}
 
 	/**
-	 * 
+	 * Disconnect from the server.
 	 */
-	public synchronized void exit() {
+	public synchronized void disconnect() {
 		exitFlag = true;
+		try {
+			clientSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -149,7 +146,12 @@ public class PenClient {
 						}
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
-					} catch (IOException e) {
+					} catch (SocketException se) {
+						if (se.getMessage().contains("socket closed")) {
+							DebugUtils.println("Pen Client's Socket is now closed...");
+						}
+					}
+					catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
@@ -181,6 +183,16 @@ public class PenClient {
 				}
 			});
 		}
+	}
+
+	/**
+	 * If the pen listener is one of our listeners, detach it. That is, stop sending events to it.
+	 * 
+	 * @param penListener
+	 * @return
+	 */
+	public boolean removePenListener(PenListener penListener) {
+		return listeners.remove(penListener);
 	}
 
 	/**

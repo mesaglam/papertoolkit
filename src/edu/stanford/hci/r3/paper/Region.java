@@ -56,6 +56,14 @@ public class Region {
 	private boolean active = false;
 
 	/**
+	 * All Regions can have event handlers that listen for pen events. If the event handler list is
+	 * non empty, the region should also be set to active. We can do this automatically. If the
+	 * region is not set to active, no pattern will be rendered when a renderer processes this
+	 * region.
+	 */
+	private List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
+
+	/**
 	 * The name of the region (e.g., Public/Private Button). Useful for debugging. Initialized with
 	 * a simple default.
 	 */
@@ -89,14 +97,6 @@ public class Region {
 	 * like to create an invisible region, go ahead. We're not gonna stop you.=)
 	 */
 	private boolean visible = true;
-
-	/**
-	 * All Regions can have event handlers that listen for pen events. If the event handler list is
-	 * non empty, the region should also be set to active. We can do this automatically. If the
-	 * region is not set to active, no pattern will be rendered when a renderer processes this
-	 * region.
-	 */
-	private List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
 
 	/**
 	 * For our American friends.
@@ -145,6 +145,24 @@ public class Region {
 	public Region(Units x, Units y, Units w, Units h) {
 		this(new Rectangle2D.Double(x.getValue(), y.getValueIn(x), // assume a Rectangle2D
 				w.getValueIn(x), h.getValueIn(x)), x);
+	}
+
+	/**
+	 * Keeps track of this event handler. The PaperToolkit will dispatch events to these, whenever
+	 * the event deals with this region.
+	 * 
+	 * @param handler
+	 */
+	public void addEventHandler(EventHandler handler) {
+		eventHandlers.add(handler);
+		active = true;
+	}
+
+	/**
+	 * @return the event engine will access the event handlers, to invoke events.
+	 */
+	public List<EventHandler> getEventHandlers() {
+		return eventHandlers;
 	}
 
 	/**
@@ -286,6 +304,26 @@ public class Region {
 	}
 
 	/**
+	 * For De-Serialization through XStream (just like in Java deserialization), we need to fill in
+	 * some fields, especially if they are null due to old serialized versions, or because of
+	 * transient variables.
+	 * 
+	 * For fields that are unexpectedly null, signal a warning.
+	 * 
+	 * @return
+	 */
+	private Object readResolve() {
+		if (eventHandlers == null) {
+			System.err.println("Region.java:: [" + getName()
+					+ "]'s eventHandlers list was unexpectedly null upon "
+					+ "deserialization with XStream. Perhaps you need to "
+					+ "reserialize some of your Regions?");
+			eventHandlers = new ArrayList<EventHandler>();
+		}
+		return this;
+	}
+
+	/**
 	 * Resets to the default scaling factors.
 	 */
 	public void resetScale() {
@@ -380,14 +418,6 @@ public class Region {
 		sb.append("} in " + units.getUnitName());
 		sb.append(getIsActiveString());
 		return sb.toString();
-	}
-
-	/**
-	 * @param handler
-	 */
-	public void addEventHandler(EventHandler handler) {
-		eventHandlers.add(handler);
-
 	}
 
 }
