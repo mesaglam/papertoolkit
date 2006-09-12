@@ -38,6 +38,10 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class EventEngine {
 
+	private List<EventFilter> lastEventFilters = new ArrayList<EventFilter>();
+
+	private List<EventHandler> lastEventHandlers = new ArrayList<EventHandler>();
+
 	/**
 	 * Lets us figure out which sheets and regions should handle which events. Interacting with this
 	 * list should be as efficient as possible, because many "events" may be thrown per second!
@@ -108,6 +112,17 @@ public class EventEngine {
 
 		return new PenListener() {
 			/**
+			 * @param sample
+			 * @return
+			 */
+			private PenEvent createPenEvent(PenSample sample) {
+				// make an event object and send it to the event handler
+				PenEvent event = new PenEvent(penID, System.currentTimeMillis());
+				event.setOriginalSample(sample);
+				return event;
+			}
+
+			/**
 			 * @see edu.stanford.hci.r3.pen.streaming.PenListener#penDown(edu.stanford.hci.r3.pen.streaming.PenSample)
 			 */
 			public void penDown(PenSample sample) {
@@ -128,6 +143,9 @@ public class EventEngine {
 				for (EventHandler h : lastEventHandlers) {
 					h.handleEvent(event);
 				}
+				for (EventFilter f : lastEventFilters) {
+					f.filterEvent(event);
+				}
 			}
 
 			/**
@@ -136,17 +154,6 @@ public class EventEngine {
 			public void sample(PenSample sample) {
 				PenEvent event = createPenEvent(sample);
 				handlePenSample(event);
-			}
-
-			/**
-			 * @param sample
-			 * @return
-			 */
-			private PenEvent createPenEvent(PenSample sample) {
-				// make an event object and send it to the event handler
-				PenEvent event = new PenEvent(penID, System.currentTimeMillis());
-				event.setOriginalSample(sample);
-				return event;
 			}
 		};
 	}
@@ -159,6 +166,7 @@ public class EventEngine {
 	private void handlePenSample(PenEvent penEvent) {
 		// System.out.println("Dispatching Event for pen #" + penID + " " + sample);
 		lastEventHandlers.clear();
+		lastEventFilters.clear();
 
 		// for each sample, we first have to convert it to a location on the sheet.
 		// THEN, we will be able to make more interesting events...
@@ -178,21 +186,14 @@ public class EventEngine {
 			final String regionName = coordinateConverter.getRegionName();
 			final Region region = sheet.getRegion(regionName);
 
-			// does this region have any event handler?
-			// if not, just go onto the next region
-			final List<EventHandler> eventHandlers = region.getEventHandlers();
-			if (eventHandlers.size() == 0) {
-				continue;
-			} // if we get here, eventHandlers.size() > 0
-
-			// System.out.println("Found " + eventHandlers.size() + " Event Handler(s) on "
-			// + regionName);
-
 			// where are we on this region?
 			final PercentageCoordinates relativeLocation = coordinateConverter
 					.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
 			penEvent.setPercentageLocation(relativeLocation);
 
+			// does this region have any event handler?
+			// if not, just go onto the next region
+			final List<EventHandler> eventHandlers = region.getEventHandlers();
 			// send the event to every event handler!
 			// so long as the event is not consumed
 			for (EventHandler eh : eventHandlers) {
@@ -202,13 +203,24 @@ public class EventEngine {
 					// we are done handling this event
 					// look at no more event handlers
 					// look at no more pattern maps
+					// DebugUtils.println("Event Consumed");
 					return;
 				}
 			} // check the next event handler
+
+			// also, send this event to all the filters, if the event is not yet consumed by one of
+			// the above handlers
+			List<EventFilter> eventFilters = region.getEventFilters();
+			for (EventFilter ef : eventFilters) {
+				ef.filterEvent(penEvent);
+				lastEventFilters.add(ef);
+				// filters do not consume events
+				// but they are lower priority than event handlers
+				// should they be HIGHER priority???
+			}
+
 		} // check the next pattern map
 	}
-
-	private List<EventHandler> lastEventHandlers = new ArrayList<EventHandler>();
 
 	/**
 	 * @param pen

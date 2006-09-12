@@ -71,7 +71,11 @@ public abstract class GestureHandler implements EventHandler {
 
 				// calculate the angle, and decide the compass direction
 				double theta = Math.atan2(dy, dx);
-				double testTheta = theta + Math.PI / 8; // makes it easier to binary search
+				
+				// makes it easier to binary search
+				// we negate it because our y actually grows going DOWN the page.
+				// This is opposite from the standard cartesian coordinate system.
+				double testTheta = -theta + Math.PI/8; 
 
 				final double PI_4 = Math.PI / 4;
 				final double PI_2 = Math.PI / 2;
@@ -123,8 +127,5 @@ public abstract class GestureHandler implements EventHandler {
 	 * @param e
 	 * @param dir
 	 */
-	public void handleMark(PenEvent e, GestureDirection dir) {
-		System.out.println("Mark Direction: " + dir);
-	}
-
+	public abstract void handleMark(PenEvent e, GestureDirection dir);
 }

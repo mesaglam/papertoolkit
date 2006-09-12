@@ -1,5 +1,10 @@
 package edu.stanford.hci.r3.events;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.stanford.hci.r3.paper.Region;
+
 /**
  * <p>
  * Filters are both similar to and different from EventHandlers. They are similar in the sense that
@@ -21,12 +26,66 @@ package edu.stanford.hci.r3.events;
  * listener. We can implement these as inner classes.
  * </p>
  * <p>
+ * Filters can change the incoming event stream. For example, it might only care about events that
+ * affect certain parts of the region. Events that are not close to these parts will be ignored.
+ * </p>
+ * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class Filter {
+public abstract class EventFilter {
 
+	/**
+	 * Events are sent to this filter only if it is active.
+	 */
+	private boolean active = false;
+
+	/**
+	 * The event handlers attached to this filter.
+	 */
+	private List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
+
+	private Region region;
+
+	public EventFilter() {
+
+	}
+
+	/**
+	 * @param handler
+	 */
+	public void addEventHandler(EventHandler handler) {
+		eventHandlers.add(handler);
+		active = true;
+	}
+
+	/**
+	 * Consuming this event has no effect. Additionally, filters are handled AFTER regular event
+	 * handling. Thus, consuming this event will not do anything, except impact the event handlers
+	 * that are attached to this filter.
+	 */
+	public abstract void filterEvent(PenEvent event);
+
+	/**
+	 * @return
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * @param r
+	 *            the region to monitor
+	 */
+	public void setRegion(Region r) {
+		region = r;
+	}
+
+	/**
+	 * @return the Filter's Name
+	 */
+	public abstract String toString();
 }

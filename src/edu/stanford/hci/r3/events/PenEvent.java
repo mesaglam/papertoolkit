@@ -25,9 +25,11 @@ public class PenEvent {
 	protected static final int PEN_UP_MODIFIER = 2;
 
 	/**
-	 * Whether this event should not be processed anymore by handlers deeper in the queue.
+	 * Whether this event should not be processed anymore by handlers deeper in the queue. FALSE by
+	 * default. An Event Handler should set it to be consumed if it is NOT OK for other handlers to
+	 * deal with this event in "parallel."
 	 */
-	private boolean consumed = true;
+	private boolean consumed = false;
 
 	/**
 	 * Was it a pen up or down, or just a regular sample? Regular Sample --> 0 (the default)
