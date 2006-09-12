@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.events.handlers;
 
+import edu.stanford.hci.r3.events.EventHandler;
+
 /**
  * <p></p>
  * <p><span class="BSDLicense">

@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.events.handlers;
 
+import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.events.PenEvent;
 
 /**
@@ -56,7 +57,7 @@ public abstract class ClickHandler implements EventHandler {
 	 * This method does the hard work of figuring out when a pen pressed, released, and clicked. It
 	 * is up to the subclass to do something interesting with once the events are triggered.
 	 * 
-	 * @see edu.stanford.hci.r3.events.handlers.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
+	 * @see edu.stanford.hci.r3.events.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
 	public void handleEvent(PenEvent event) {
 		if (event.isPenDown()) {
