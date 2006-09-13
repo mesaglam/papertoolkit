@@ -1,19 +1,32 @@
 package edu.stanford.hci.r3.demos.sketch;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Font;
 import java.io.File;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.filters.InkContainer;
+import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.events.handlers.GestureHandler;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkPanel;
 import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
+import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
  * <p>
@@ -46,7 +59,17 @@ public class Sketch {
 		new Sketch();
 	}
 
+	private JPanel colorPanel;
+
 	private Color currentColor = BLACK;
+
+	private JFrame inkDisplay;
+
+	private InkPanel inkPanel;
+
+	private InkCollector inkWell;
+
+	private JPanel mainPanel;
 
 	/**
 	 * Either sends us into the rendering mode, or application (runtime) mode.
@@ -57,7 +80,14 @@ public class Sketch {
 	 */
 	private boolean renderPDFMode = false;
 
+	/**
+	 * A Sheet object that encapsulates an existing PDF file (designed in some other tool).
+	 */
 	private PDFSheet sheet;
+
+	private JPanel statusPanel;
+
+	private JLabel statusText;
 
 	/**
 	 * 
@@ -66,11 +96,152 @@ public class Sketch {
 		sheet = new PDFSheet(new File("data/Sketch/SketchUI.pdf"));
 		sheet.addRegions(new File("data/Sketch/SketchUI.regions.xml"));
 
+		// two branches.... we need to do this, for now...
 		if (renderPDFMode) {
-			renderPDF(sheet);
+			renderPDF();
 		} else {
-			runApplication(sheet);
+			runApplication();
 		}
+	}
+
+	/**
+	 * @param sheet
+	 */
+	private void addEventHandlersToRegions(PDFSheet sheet) {
+		// System.out.println("Regions: ");
+		// for (Region r : s.getRegions()) {
+		// System.out.println("\t" + r.getName());
+		// }
+		// System.out.println();
+
+		// address regions by name (stored in the xml file)
+		// add some event handlers to the regions...
+		Region regionMain = sheet.getRegion("MainDrawingArea");
+		inkWell = new InkCollector();
+		inkWell.addListener(new ContentFilterListener() {
+			public void contentArrived() {
+				statusText.setText("Writing... " + inkWell.getNumStrokesCollected()
+						+ " strokes have been collected");
+			}
+		});
+		regionMain.addEventFilter(inkWell);
+
+		Region regionBlack = sheet.getRegion("BlackPalette");
+		regionBlack.addEventHandler(new ClickAdapter() {
+			@Override
+			public void clicked(PenEvent e) {
+				System.out.println("Clicked Black " + clickCount + " times in a row.");
+				currentColor = BLACK;
+				colorPanel.setBackground(currentColor);
+			}
+		});
+
+		Region regionPurple = sheet.getRegion("PurplePalette");
+		regionPurple.addEventHandler(new ClickAdapter() {
+			@Override
+			public void clicked(PenEvent e) {
+				System.out.println("Clicked Purple " + clickCount + " times in a row.");
+				currentColor = PURPLE;
+				colorPanel.setBackground(currentColor);
+			}
+		});
+
+		Region regionOrange = sheet.getRegion("OrangePalette");
+		regionOrange.addEventHandler(new ClickAdapter() {
+			@Override
+			public void clicked(PenEvent e) {
+				System.out.println("Clicked Orange " + clickCount + " times in a row.");
+				currentColor = ORANGE;
+				colorPanel.setBackground(currentColor);
+			}
+		});
+
+		// wouldn't it be cool if you could copy a region in acrobat
+		// and paste it here, and it would become the code??? (FUTURE TODO)
+		Region regionSendToScreen = sheet.getRegion("SendToScreen");
+		regionSendToScreen.addEventHandler(new GestureHandler() {
+			@Override
+			public void handleMark(PenEvent e, GestureDirection dir) {
+				System.out.println("Mark Direction: " + dir);
+				switch (dir) {
+				case E: // save to file...
+					System.out.println("Saving....");
+					inkWell.saveToXMLFile(new File("data/Sketch/InkOutput.xml"));
+					break;
+				case N: // send to screen...
+					Ink ink = inkWell.getNewInkOnly();
+					if (ink.getNumStrokes() > 0) {
+						ink.setColor(currentColor);
+						inkPanel.addInk(ink);
+					} else {
+						System.out.println("Zero Strokes");
+					}
+					break;
+				case S: // clear the screen!
+					System.out.println("Clearing....");
+					inkPanel.clear();
+					inkWell.clear();
+					break;
+				case W: // undo the last stroke
+					System.out.println("Undoing....");
+					inkPanel.removeLastBatchOfInk();
+					break;
+				}
+			}
+
+		});
+	}
+
+	/**
+	 * @return
+	 */
+	private JFrame getInkDisplay() {
+		if (inkDisplay == null) {
+			inkDisplay = new JFrame("Sketch! Display");
+			inkDisplay.setContentPane(getMainPanel());
+			inkDisplay.setSize(690, 740);
+			inkDisplay.setLocation(WindowUtils.getWindowOrigin(inkDisplay,
+					WindowUtils.DESKTOP_CENTER));
+			inkDisplay.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			inkDisplay.setVisible(true);
+		}
+		return inkDisplay;
+	}
+
+	/**
+	 * @return
+	 */
+	private Container getInkPanel() {
+		if (inkPanel == null) {
+			inkPanel = new InkPanel();
+		}
+		return inkPanel;
+	}
+
+	private Container getMainPanel() {
+		if (mainPanel == null) {
+			mainPanel = new JPanel();
+			mainPanel.setLayout(new BorderLayout());
+			mainPanel.add(getInkPanel(), BorderLayout.CENTER);
+			mainPanel.add(getStatusPanel(), BorderLayout.SOUTH);
+		}
+		return mainPanel;
+	}
+
+	private Component getStatusPanel() {
+		if (statusPanel == null) {
+			statusPanel = new JPanel();
+			statusPanel.setLayout(new BorderLayout());
+			colorPanel = new JPanel();
+			colorPanel.setBackground(currentColor);
+			colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			statusText = new JLabel("Start Sketching!");
+			statusText.setFont(new Font("Tahoma", Font.PLAIN, 18));
+			statusText.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+			statusPanel.add(colorPanel, BorderLayout.WEST);
+			statusPanel.add(statusText, BorderLayout.CENTER);
+		}
+		return statusPanel;
 	}
 
 	/**
@@ -80,10 +251,10 @@ public class Sketch {
 	 * 
 	 * @param s
 	 */
-	private void renderPDF(PDFSheet s) {
+	private void renderPDF() {
 		// print the sheet!
 		// when printing, we also render a configuration file for the Paper UI
-		PDFSheetRenderer renderer = new PDFSheetRenderer(s);
+		PDFSheetRenderer renderer = new PDFSheetRenderer(sheet);
 
 		// for my laser printer... calling this once makes it look better (although it still works
 		// otherwise) You may want to play around to see how many times you want to call this
@@ -96,70 +267,31 @@ public class Sketch {
 	}
 
 	/**
-	 * @param s
+	 * @param sheet
 	 */
-	private void runApplication(PDFSheet s) {
-		// add some event handlers to the regions...
-		// System.out.println("Regions: ");
-		// for (Region r : s.getRegions()) {
-		// System.out.println("\t" + r.getName());
-		// }
-		// System.out.println();
-
-		Region regionMain = s.getRegion("MainDrawingArea");
-		final InkContainer inkContainer = new InkContainer();
-		regionMain.addEventFilter(inkContainer);
-		
-		Region regionBlack = s.getRegion("BlackPalette");
-		regionBlack.addEventHandler(new ClickAdapter() {
-			@Override
-			public void clicked(PenEvent e) {
-				System.out.println("Clicked Black " + clickCount + " times in a row.");
-				currentColor = BLACK;
-			}
-		});
-
-		Region regionPurple = s.getRegion("PurplePalette");
-		regionPurple.addEventHandler(new ClickAdapter() {
-			@Override
-			public void clicked(PenEvent e) {
-				System.out.println("Clicked Purple " + clickCount + " times in a row.");
-				currentColor = PURPLE;
-			}
-		});
-
-		Region regionOrange = s.getRegion("OrangePalette");
-		regionOrange.addEventHandler(new ClickAdapter() {
-			@Override
-			public void clicked(PenEvent e) {
-				System.out.println("Clicked Orange " + clickCount + " times in a row.");
-			}
-		});
-
-		// wouldn't it be cool if you could copy a region in acrobat
-		// and paste it here, and it would become the code??? (FUTURE TODO)
-		Region regionSendToScreen = s.getRegion("SendToScreen");
-		regionSendToScreen.addEventHandler(new GestureHandler() {
-			@Override
-			public void handleMark(PenEvent e, GestureDirection dir) {
-				System.out.println("Mark Direction: " + dir);
-			}
-		});
-
+	private void runApplication() {
+		// Our main paper application
 		Application app = new Application("Sketch!");
-		app.addSheet(s);
+
+		// an application contains one or more sheets
+		app.addSheet(sheet);
 
 		Pen pen = new Pen("Main Pen");
 		pen.startLiveMode(); // the pen is attached to the local machine
 		// if you are adventurous, you can add listeners DIRECTLY to the pen
-		// however, that's too low level for us, so we'll add listeners to the regions instead
+		// however, that's too low level for us, so we add listeners to the regions instead
 
+		// the application has to know about this pen
 		app.addPen(pen);
 
-		// this should add a task to the start bar, so that a user can turn off the application if
-		// necessary...
+		// we need to add code that actually does stuff to each region
+		addEventHandlersToRegions(sheet);
+
+		// show the ink display
+		getInkDisplay();
+
+		// Ask the toolkit to load and start the application
 		PaperToolkit r3 = new PaperToolkit();
-		// r3.useApplicationManager(false); // only if you want to hide it...
 		r3.startApplication(app);
 	}
 }
