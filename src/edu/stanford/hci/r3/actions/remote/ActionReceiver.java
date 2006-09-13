@@ -51,13 +51,6 @@ public class ActionReceiver {
 	private static ActionReceiver textDaemon;
 
 	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		startDaemons();
-	}
-
-	/**
 	 * Unlike the pen servers, it's probably OK to start both a java and text server...
 	 */
 	public static void startDaemons() {
@@ -83,12 +76,12 @@ public class ActionReceiver {
 	public static void stopDaemons() {
 		DebugUtils.println("Stopping Action Receiver Daemons.");
 		if (javaDaemon != null) {
-			javaDaemon.stopServer();
+			javaDaemon.stopDaemon();
 			javaDaemon = null;
 		}
 
 		if (textDaemon != null) {
-			textDaemon.stopServer();
+			textDaemon.stopDaemon();
 			textDaemon = null;
 		}
 	}
@@ -102,6 +95,8 @@ public class ActionReceiver {
 	 * 
 	 */
 	private List<Socket> clients = new ArrayList<Socket>();
+
+	private ActionReceiverConnectionListener connectionListener;
 
 	/**
 	 * Close the action server if this is ever set to true.
@@ -144,6 +139,7 @@ public class ActionReceiver {
 	 */
 	public ActionReceiver(int tcpipPort, ClientServerType type, String... trusted) {
 		trustedSenders.addAll(Arrays.asList(trusted));
+		System.out.println("Trusted Client List: " + trustedSenders);
 		try {
 			serverSocket = new ServerSocket(tcpipPort);
 		} catch (IOException e) {
@@ -155,7 +151,7 @@ public class ActionReceiver {
 		serverPort = serverSocket.getLocalPort();
 
 		// start thread to accept connections
-		getServerThread().start();
+		getDaemonThread().start();
 	}
 
 	/**
@@ -163,6 +159,84 @@ public class ActionReceiver {
 	 */
 	public void addActionHandler(ActionHandler ah) {
 		actionHandlers.add(ah);
+	}
+
+	/**
+	 * Waits for connections, and passes of connections to a client handler thread.
+	 * 
+	 * @return
+	 */
+	private Thread getDaemonThread() {
+		return new Thread() {
+
+			public void run() {
+				while (true) {
+					Socket client = null;
+					try {
+						if (exitFlag) {
+							System.out.println("Closing Action Receiver Daemon.");
+							break;
+						}
+
+						log("ActionReceiver :: Waiting for a " + serverType
+								+ " connection on port [" + serverPort + "]");
+
+						client = serverSocket.accept();
+
+						final InetAddress inetAddress = client.getInetAddress();
+						final String ipAddr = inetAddress.toString();
+						final String dnsName = inetAddress.getHostName();
+
+						// we got a connection with the client
+						log("ActionReceiver :: Got a connection on server port " + serverPort);
+						log("               from client: " + ipAddr + " :: " + dnsName);
+						if (connectionListener != null) {
+							connectionListener.newConnectionFrom(dnsName, ipAddr);
+						}
+
+						// check whether it's ok to get messages from this remote machine...
+						boolean clientIsOK = false;
+						for (String nameOrAddress : trustedSenders) {
+							if (nameOrAddress.contains("*")) {
+								// 128.15.*.* --> 128.15.
+								nameOrAddress = nameOrAddress.substring(0, nameOrAddress
+										.indexOf("*"));
+							}
+
+							if (dnsName.toLowerCase().endsWith(nameOrAddress)
+									|| ipAddr.startsWith(nameOrAddress)) {
+								// .stanford.edu
+								// 128.15.
+								// good enough for us!
+								DebugUtils.println("This is a trusted client. Matched: "
+										+ nameOrAddress);
+								clientIsOK = true;
+							} else {
+								DebugUtils.println("Untrusted client... next!");
+							}
+						}
+						if (!clientIsOK) {
+							client.close();
+							continue;
+						}
+
+						// keep it around
+						clients.add(client);
+					} catch (IOException ioe) {
+						log("ActionReceiver :: Error with server socket: "
+								+ ioe.getLocalizedMessage());
+					}
+
+					if (client != null) {
+						if (serverType == ClientServerType.PLAINTEXT) {
+							getTextClientHandlerThread(client).start();
+						} else { // serverType == Java Server
+							getJavaClientHandlerThread(client).start();
+						}
+					}
+				}
+			}
+		};
 	}
 
 	/**
@@ -196,71 +270,6 @@ public class ActionReceiver {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
-				}
-			}
-		};
-	}
-
-	/**
-	 * Waits for connections, and passes of connections to a client handler thread.
-	 * 
-	 * @return
-	 */
-	private Thread getServerThread() {
-		return new Thread() {
-
-			public void run() {
-				while (true) {
-					Socket client = null;
-					try {
-						if (exitFlag) {
-							System.out.println("Closing Action Receiver Daemon.");
-							break;
-						}
-
-						log("ActionServer:: Waiting for a " + serverType + " connection on port ["
-								+ serverPort + "]");
-
-						client = serverSocket.accept();
-
-						final InetAddress inetAddress = client.getInetAddress();
-						final String ipAddr = inetAddress.toString();
-						final String dnsName = inetAddress.getHostName();
-
-						// we got a connection with the client
-						log("ActionServer:: Got a connection on server port " + serverPort);
-						log("               from client: " + ipAddr + " :: " + dnsName);
-
-						// check whether it's ok to get messages from this remote machine...
-						boolean clientIsOK = false;
-						for (String nameOrAddress : trustedSenders) {
-							if (dnsName.toLowerCase().endsWith(nameOrAddress)
-									|| ipAddr.endsWith(nameOrAddress)) {
-								// good enough for us!
-								DebugUtils.println("This is a trusted client.");
-								clientIsOK = true;
-							} else {
-								DebugUtils.println("Untrusted client... next!");
-							}
-						}
-						if (!clientIsOK) {
-							client.close();
-							continue;
-						}
-
-						// keep it around
-						clients.add(client);
-					} catch (IOException ioe) {
-						log("ActionServer:: Error with server socket: " + ioe.getLocalizedMessage());
-					}
-
-					if (client != null) {
-						if (serverType == ClientServerType.PLAINTEXT) {
-							getTextClientHandlerThread(client).start();
-						} else { // serverType == Java Server
-							getJavaClientHandlerThread(client).start();
-						}
-					}
 				}
 			}
 		};
@@ -329,10 +338,14 @@ public class ActionReceiver {
 		System.out.println(msg);
 	}
 
+	public void setConnectionListener(ActionReceiverConnectionListener listener) {
+		connectionListener = listener;
+	}
+
 	/**
 	 * Tell the server to stop sending actions.
 	 */
-	private void stopServer() {
+	public void stopDaemon() {
 		try {
 			exitFlag = true;
 			for (Socket client : clients) {
