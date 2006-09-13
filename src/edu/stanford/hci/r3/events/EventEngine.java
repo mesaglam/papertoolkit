@@ -38,7 +38,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class EventEngine {
 
-	private List<EventFilter> lastEventFilters = new ArrayList<EventFilter>();
+	private List<ContentFilter> lastEventFilters = new ArrayList<ContentFilter>();
 
 	private List<EventHandler> lastEventHandlers = new ArrayList<EventHandler>();
 
@@ -63,6 +63,11 @@ public class EventEngine {
 	 * Each pen gets one and only one event engine listener...
 	 */
 	private Map<Pen, PenListener> penToListener = new HashMap<Pen, PenListener>();
+
+	/**
+	 * Set when handling regular samples, so that we can set the location of the pen up.
+	 */
+	private PercentageCoordinates lastKnownLocation;
 
 	/**
 	 * 
@@ -138,12 +143,14 @@ public class EventEngine {
 			 * @see edu.stanford.hci.r3.pen.streaming.PenListener#penUp(edu.stanford.hci.r3.pen.streaming.PenSample)
 			 */
 			public void penUp(PenSample sample) {
-				PenEvent event = createPenEvent(sample);
+				final PenEvent event = createPenEvent(sample);
 				event.setModifier(PenEvent.PEN_UP_MODIFIER);
+				event.setPercentageLocation(lastKnownLocation);
+				
 				for (EventHandler h : lastEventHandlers) {
 					h.handleEvent(event);
 				}
-				for (EventFilter f : lastEventFilters) {
+				for (ContentFilter f : lastEventFilters) {
 					f.filterEvent(event);
 				}
 			}
@@ -190,6 +197,7 @@ public class EventEngine {
 			final PercentageCoordinates relativeLocation = coordinateConverter
 					.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
 			penEvent.setPercentageLocation(relativeLocation);
+			lastKnownLocation = relativeLocation;
 
 			// does this region have any event handler?
 			// if not, just go onto the next region
@@ -210,8 +218,8 @@ public class EventEngine {
 
 			// also, send this event to all the filters, if the event is not yet consumed by one of
 			// the above handlers
-			List<EventFilter> eventFilters = region.getEventFilters();
-			for (EventFilter ef : eventFilters) {
+			List<ContentFilter> eventFilters = region.getEventFilters();
+			for (ContentFilter ef : eventFilters) {
 				ef.filterEvent(penEvent);
 				lastEventFilters.add(ef);
 				// filters do not consume events

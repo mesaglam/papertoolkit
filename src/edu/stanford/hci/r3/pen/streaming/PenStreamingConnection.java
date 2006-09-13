@@ -7,9 +7,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.TooManyListenersException;
 
-import javax.comm.*;
-
-import edu.stanford.hci.r3.PaperToolkit;
+import javax.comm.CommPortIdentifier;
+import javax.comm.PortInUseException;
+import javax.comm.SerialPort;
+import javax.comm.SerialPortEvent;
+import javax.comm.SerialPortEventListener;
+import javax.comm.UnsupportedCommOperationException;
 
 /**
  * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the

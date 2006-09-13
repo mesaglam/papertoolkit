@@ -10,6 +10,8 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +125,22 @@ public class PaperToolkit {
 
 	/**
 	 * @param object
+	 * @param outputFile
+	 */
+	public static void toXML(Object object, File outputFile) {
+		try {
+			FileOutputStream fos = new FileOutputStream(outputFile);
+			toXML(object, fos);
+			fos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param object
 	 * @param stream
 	 *            write the xml to disk or another output stream.
 	 */
@@ -154,9 +172,10 @@ public class PaperToolkit {
 	private JButton stopAppButton;
 
 	/**
-	 * Whether to show the application manager whenever an app is loaded/started.
+	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false.
+	 * True is useful for debugging and stopping apps that don't have a GUI.
 	 */
-	private boolean useAppManager = true;
+	private boolean useAppManager = false;
 
 	/**
 	 * The version of the PaperToolkit.
@@ -270,7 +289,7 @@ public class PaperToolkit {
 			stopAppButton = new JButton("Stop Selected Application");
 			stopAppButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
-					Application selectedApp = (Application)listOfRunningApps.getSelectedValue();
+					Application selectedApp = (Application) listOfRunningApps.getSelectedValue();
 					if (selectedApp != null) {
 						stopApplication(selectedApp);
 						listOfRunningApps.repaint();

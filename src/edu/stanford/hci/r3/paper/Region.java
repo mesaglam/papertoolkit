@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.hci.r3.events.EventFilter;
+import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Inches;
@@ -60,7 +60,7 @@ public class Region {
 	 * Filters events and passes them to other event handlers (which are usually customized to the
 	 * event filter)...
 	 */
-	private List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+	private List<ContentFilter> eventFilters = new ArrayList<ContentFilter>();
 
 	/**
 	 * All Regions can have event handlers that listen for pen events. If the event handler list is
@@ -157,7 +157,7 @@ public class Region {
 	/**
 	 * @param filter
 	 */
-	public void addEventFilter(EventFilter filter) {
+	public void addEventFilter(ContentFilter filter) {
 		eventFilters.add(filter);
 		active = true;
 	}
@@ -176,7 +176,7 @@ public class Region {
 	/**
 	 * @return
 	 */
-	public List<EventFilter> getEventFilters() {
+	public List<ContentFilter> getEventFilters() {
 		return eventFilters;
 	}
 
@@ -347,7 +347,7 @@ public class Region {
 					+ "]'s eventFilters list was unexpectedly null upon "
 					+ "deserialization with XStream. Perhaps you need to "
 					+ "reserialize your Regions?");
-			eventFilters = new ArrayList<EventFilter>();
+			eventFilters = new ArrayList<ContentFilter>();
 		}
 
 		return this;

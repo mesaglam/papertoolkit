@@ -31,10 +31,19 @@ public class OpenURL2Action implements R3Action {
 
 	private URL url;
 
+	/**
+	 * @param theURL
+	 */
 	public OpenURL2Action(URL theURL) {
 		this(theURL, null);
 	}
 
+	/**
+	 * This one works the best on my desktop machine. I have no idea why...
+	 * 
+	 * @param theURL
+	 * @param targetBrowser
+	 */
 	public OpenURL2Action(URL theURL, String targetBrowser) {
 		url = theURL;
 		browser = targetBrowser;

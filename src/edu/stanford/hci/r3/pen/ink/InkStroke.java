@@ -3,6 +3,7 @@ package edu.stanford.hci.r3.pen.ink;
 import java.util.Collection;
 
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
@@ -47,7 +48,11 @@ public class InkStroke {
 	private double[] y = null;
 
 	/**
+	 * Copies the samples into our own arrays. The reference unit enables us to interpret the
+	 * samples correctly.
+	 * 
 	 * @param currentStrokeSamples
+	 * @param reference
 	 */
 	public InkStroke(Collection<InkSample> currentStrokeSamples, Units reference) {
 		referenceUnit = reference;
@@ -120,6 +125,10 @@ public class InkStroke {
 		return minY;
 	}
 
+	public int getNumSamples() {
+		return numSamples;
+	}
+
 	/**
 	 * @return
 	 */
@@ -141,11 +150,27 @@ public class InkStroke {
 		return x;
 	}
 
+	public int[] getXSamplesAsInts() {
+		int[] xInts = new int[numSamples];
+		for (int i = 0; i < numSamples; i++) {
+			xInts[i] = MathUtils.rint(x[i]);
+		}
+		return xInts;
+	}
+
 	/**
 	 * @return
 	 */
 	public double[] getYSamples() {
 		return y;
+	}
+
+	public int[] getYSamplesAsInts() {
+		int[] yInts = new int[numSamples];
+		for (int i = 0; i < numSamples; i++) {
+			yInts[i] = MathUtils.rint(y[i]);
+		}
+		return yInts;
 	}
 
 	/**

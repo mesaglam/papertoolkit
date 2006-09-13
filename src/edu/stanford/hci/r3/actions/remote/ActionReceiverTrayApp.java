@@ -2,6 +2,7 @@ package edu.stanford.hci.r3.actions.remote;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.MenuItem;
@@ -12,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -74,6 +76,11 @@ public class ActionReceiverTrayApp {
 	/**
 	 * 
 	 */
+	private ActionReceiver actionReceiver;
+
+	/**
+	 * 
+	 */
 	private String currentStatus;
 
 	/**
@@ -96,12 +103,10 @@ public class ActionReceiverTrayApp {
 	 */
 	private MenuItem onOffItem;
 
-	private ActionReceiver server;
-
 	/**
 	 * It connects/reconnects when you press enter in the text field.
 	 */
-	private boolean serverRunning = false;
+	private boolean receiverRunning = false;
 
 	/**
 	 * 
@@ -165,6 +170,7 @@ public class ActionReceiverTrayApp {
 		return new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Exiting the Action Receiver Tray App...");
+				SystemTray.getSystemTray().remove(trayIcon);
 				System.exit(0);
 			}
 		};
@@ -177,14 +183,14 @@ public class ActionReceiverTrayApp {
 		if (iconListener == null) {
 			iconListener = new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
-					if (serverRunning) {
+					if (receiverRunning) {
 						trayIcon.displayMessage("Action Receiver is Offline",
 								"Not listening for new actions.", TrayIcon.MessageType.INFO);
-						server.stopDaemon();
+						actionReceiver.stopDaemon();
 						currentStatus = STATUS_OFF;
 						trayIcon.setImage(imageOFF);
 						onOffItem.setLabel(START_MSG);
-						serverRunning = false;
+						receiverRunning = false;
 					} else {
 						String trustedClientsList = trustedClientsTextField.getText();
 						String[] clientNames = trustedClientsList.split(",");
@@ -192,23 +198,25 @@ public class ActionReceiverTrayApp {
 							clientNames[i] = clientNames[i].trim();
 						}
 
-						server = new ActionReceiver(ActionReceiver.DEFAULT_JAVA_PORT,
+						actionReceiver = new ActionReceiver(ActionReceiver.DEFAULT_JAVA_PORT,
 								ClientServerType.JAVA, clientNames);
 
-						server.setConnectionListener(new ActionReceiverConnectionListener() {
-							public void newConnectionFrom(String hostName, String ipAddr) {
-								trayIcon.displayMessage("New Connection", hostName + ipAddr
-										+ " has connected.", TrayIcon.MessageType.INFO);
-							}
-						});
-						server.addActionHandler(new ActionHandler()); // invokes the actions
+						actionReceiver
+								.setConnectionListener(new ActionReceiverConnectionListener() {
+									public void newConnectionFrom(String hostName, String ipAddr) {
+										trayIcon.displayMessage("New Connection", hostName + ipAddr
+												+ " has connected.", TrayIcon.MessageType.INFO);
+									}
+								});
+						actionReceiver.addActionHandler(new ActionHandler()); // invokes the
+						// actions
 
 						trayIcon.displayMessage("Action Receiver is Online",
 								"Waiting for commands.", TrayIcon.MessageType.INFO);
 						currentStatus = STATUS_ON;
 						trayIcon.setImage(imageON);
 						onOffItem.setLabel(STOP_MSG);
-						serverRunning = true;
+						receiverRunning = true;
 					}
 					trayIcon.setToolTip(DESCRIPTION + currentStatus);
 				}
@@ -239,13 +247,29 @@ public class ActionReceiverTrayApp {
 		// a message to tell the user what to do
 		JLabel message = new JLabel(
 				"<html>Enter a comma-separated list of trusted machines. You may use whole or partial <b>DNS names</b> or <b>IP Addresses</b>.<br/>"
-						+ "\tExample: \"localhost, .stanford.edu, 128.123.\" <br/><br/>"
+						+ "\tExample: <b>localhost, .stanford.edu, 192.168, 128.123.*.*</b><br/><br/>"
 						+ "Press Enter to save the value. Then, double click the Action Receiver (Saturn icon) in your System Tray to connect.</html>");
 		message.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 		message.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
+		JPanel controls = new JPanel();
+		controls.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		controls.setLayout(new BorderLayout());
+		JButton hideButton = new JButton("Minimize this Window to the System Tray");
+		hideButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				trustedClientsFrame.setVisible(false);
+			}
+		});
+		JButton exitButton = new JButton("Exit the Action Receiver");
+		exitButton.addActionListener(getExitListener());
+		controls.add(hideButton, BorderLayout.CENTER);
+		controls.add(exitButton, BorderLayout.EAST);
+
+		// add the components
 		mainPanel.add(trustedClientsTextField, BorderLayout.CENTER);
 		mainPanel.add(message, BorderLayout.NORTH);
+		mainPanel.add(controls, BorderLayout.SOUTH);
 		return mainPanel;
 	}
 
@@ -270,6 +294,7 @@ public class ActionReceiverTrayApp {
 
 		popup.add(setTrustedClients);
 		popup.add(onOffItem);
+		popup.add(new MenuItem("-"));
 		popup.add(exitItem);
 
 		return popup;

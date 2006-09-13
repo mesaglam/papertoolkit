@@ -1,17 +1,11 @@
 package edu.stanford.hci.r3.actions.remote;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.networking.ClientServerType;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>

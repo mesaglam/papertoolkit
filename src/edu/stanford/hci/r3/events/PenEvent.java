@@ -94,7 +94,9 @@ public class PenEvent {
 
 	/**
 	 * It will give you a percentage location, from which you can derive actual coordinates (by
-	 * converting to inches, etc).
+	 * converting to inches, etc). This coordinate will be duplicated when a PEN_UP happens, because
+	 * the coordinate will be set to the last known good coordinate (captured during a regular, non
+	 * PEN_UP sample).
 	 * 
 	 * @return the location of the event on the parent region.
 	 */
