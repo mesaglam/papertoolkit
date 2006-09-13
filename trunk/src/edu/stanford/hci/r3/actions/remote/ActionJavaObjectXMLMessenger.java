@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.actions.remote.transport;
+package edu.stanford.hci.r3.actions.remote;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -59,7 +59,7 @@ public class ActionJavaObjectXMLMessenger implements ActionMessenger {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.actions.remote.transport.ActionMessenger#destroy()
+	 * @see edu.stanford.hci.r3.actions.remote.ActionMessenger#destroy()
 	 */
 	public void destroy() {
 		try {
@@ -83,7 +83,7 @@ public class ActionJavaObjectXMLMessenger implements ActionMessenger {
 	/**
 	 * Removes \n from the string to send over the wire.
 	 * 
-	 * @see edu.stanford.hci.r3.actions.remote.transport.ActionMessenger#sendAction(edu.stanford.hci.r3.actions.R3Action)
+	 * @see edu.stanford.hci.r3.actions.remote.ActionMessenger#sendAction(edu.stanford.hci.r3.actions.R3Action)
 	 */
 	public void sendAction(R3Action action) throws IOException {
 		String xmlString = xml.toXML(action);

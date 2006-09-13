@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.actions.remote.transport;
+package edu.stanford.hci.r3.actions.remote;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class ActionPlainTextMessenger implements ActionMessenger {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.actions.remote.transport.ActionMessenger#destroy()
+	 * @see edu.stanford.hci.r3.actions.remote.ActionMessenger#destroy()
 	 */
 	public void destroy() {
 		try {

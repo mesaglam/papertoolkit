@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.actions.remote.transport;
+package edu.stanford.hci.r3.actions.remote;
 
 import java.io.IOException;
 
