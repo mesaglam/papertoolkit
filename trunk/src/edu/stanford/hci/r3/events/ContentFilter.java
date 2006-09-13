@@ -36,7 +36,7 @@ import edu.stanford.hci.r3.paper.Region;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class EventFilter {
+public abstract class ContentFilter {
 
 	/**
 	 * Events are sent to this filter only if it is active.
@@ -44,21 +44,24 @@ public abstract class EventFilter {
 	private boolean active = false;
 
 	/**
-	 * The event handlers attached to this filter.
+	 * The event listeners attached to this filter.
 	 */
-	private List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
+	protected List<ContentFilterListener> filterListeners = new ArrayList<ContentFilterListener>();
 
+	/**
+	 * 
+	 */
 	private Region region;
 
-	public EventFilter() {
+	public ContentFilter() {
 
 	}
 
 	/**
 	 * @param handler
 	 */
-	public void addEventHandler(EventHandler handler) {
-		eventHandlers.add(handler);
+	public void addListener(ContentFilterListener listener) {
+		filterListeners.add(listener);
 		active = true;
 	}
 
@@ -74,6 +77,15 @@ public abstract class EventFilter {
 	 */
 	public boolean isActive() {
 		return active;
+	}
+
+	/**
+	 * 
+	 */
+	protected void notifyAllListenersOfNewContent() {
+		for (ContentFilterListener listener : filterListeners) {
+			listener.contentArrived();
+		}
 	}
 
 	/**
