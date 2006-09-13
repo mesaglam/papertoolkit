@@ -155,10 +155,12 @@ public class ActionReceiver {
 	}
 
 	/**
-	 * @param ah
+	 * Add another listener that handles received actions.
+	 * 
+	 * @param handler
 	 */
-	public void addActionHandler(ActionHandler ah) {
-		actionHandlers.add(ah);
+	public void addActionHandler(ActionHandler handler) {
+		actionHandlers.add(handler);
 	}
 
 	/**

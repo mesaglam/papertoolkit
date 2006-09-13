@@ -23,6 +23,9 @@ import edu.stanford.hci.r3.actions.R3Action;
  */
 public class OpenURL2Action implements R3Action {
 
+	/**
+	 * Choose a specific browser using these strings.
+	 */
 	public static final String FIREFOX = "FIREFOX";
 
 	public static final String IE = "IE";

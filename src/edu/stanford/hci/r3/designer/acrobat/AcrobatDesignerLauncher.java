@@ -12,10 +12,13 @@ import javax.swing.*;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.components.BufferedImagePanel;
+import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 import edu.stanford.hci.r3.util.graphics.ImageCache;
 
 /**
  * <p>
+ * Part of our design suite. This launches your system's Acrobat Pro installation (if it is assigned
+ * to edit pdf files). It enables the designer to add regions to an existing PDF of the paper UI.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -24,7 +27,7 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class AcrobatLauncher {
+public class AcrobatDesignerLauncher {
 
 	private static BufferedImagePanel activeArea;
 
@@ -34,15 +37,26 @@ public class AcrobatLauncher {
 
 	private static FileTransferHandler fileTransferHandler;
 
+	private static final Font FONT = new Font("Trebuchet MS", Font.BOLD, 28);
+
 	private static JFrame frame;
 
 	private static JPanel mainPanel;
 
+	/**
+	 * A List of PDFs, filtered from the bigger list of files by our FileTransferHandler.
+	 */
+	private static List<File> onlyPDFs;
+
+	/**
+	 * Icon that pops up when you drag PDF files on to the active area.
+	 */
 	private static BufferedImage pdfLogo;
 
+	/**
+	 * For the text overlay of file names.
+	 */
 	private static final Color TRANSLUCENT_GRAY = new Color(50, 50, 50, 88);
-
-	private static final Font FONT = new Font("Trebuchet MS", Font.BOLD, 28);
 
 	/**
 	 * @return
@@ -52,17 +66,19 @@ public class AcrobatLauncher {
 			activeArea = new BufferedImagePanel() {
 				public void paintComponent(Graphics g) {
 					super.paintComponent(g);
-					Graphics2D g2d = (Graphics2D) g;
-					// draw list of file names
+					if (onlyPDFs == null) {
+						return;
+					}
 
-					if (onlyPDFs != null) {
-						g.setColor(TRANSLUCENT_GRAY);
-						g.setFont(FONT);
-						int stringY = (int) ((activeArea.getHeight() - onlyPDFs.size() * 40) / 2.0);
-						for (File f : onlyPDFs) {
-							g.drawString(f.getName(), 50, stringY);
-							stringY += 50;
-						}
+					// draw list of file names
+					final Graphics2D g2d = (Graphics2D) g;
+					g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+					g2d.setColor(TRANSLUCENT_GRAY);
+					g2d.setFont(FONT);
+					int stringY = (int) ((activeArea.getHeight() - onlyPDFs.size() * 40) / 2.0);
+					for (File f : onlyPDFs) {
+						g2d.drawString(f.getName(), 50, stringY);
+						stringY += 50;
 					}
 				}
 			};
@@ -83,8 +99,6 @@ public class AcrobatLauncher {
 		}
 		return activeArea;
 	}
-
-	private static List<File> onlyPDFs;
 
 	/**
 	 * @return
@@ -111,7 +125,6 @@ public class AcrobatLauncher {
 				 * @see java.awt.dnd.DropTargetAdapter#dragExit(java.awt.dnd.DropTargetEvent)
 				 */
 				public void dragExit(DropTargetEvent dte) {
-					// hide background
 					hideBackground();
 				}
 
@@ -142,17 +155,18 @@ public class AcrobatLauncher {
 	}
 
 	/**
-	 * @return
+	 * @return the directions for operating this app.
 	 */
 	private static Component getLabel() {
-		JLabel label = new JLabel(
-				"Drag a PDF on to the active area below to start the R3 Acrobat Designer.");
+		JLabel label = new JLabel("Drag a PDF on to the active area below to start the "
+				+ "R3 Acrobat Designer. You must have Acrobat Pro on your system, "
+				+ "with the R3 plugin installed.");
 		label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		return label;
 	}
 
 	/**
-	 * @return
+	 * @return panel with a big active area where you can drop PDF files (yes, >=1).
 	 */
 	private static Container getMainPanel() {
 		if (mainPanel == null) {

@@ -7,7 +7,9 @@ import edu.stanford.hci.r3.actions.R3Action;
 
 /**
  * <p>
- * A useful default, but you can override if you want.
+ * Deals with actions that have been unserialized by ActionReceiver. It provides a useful default,
+ * but you can override the functionality if you want to make more interesting things happen (e.g.,
+ * batch actions until a certain time).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -19,7 +21,10 @@ import edu.stanford.hci.r3.actions.R3Action;
 public class ActionHandler {
 
 	/**
+	 * Invoke the action object that was received over the wire.
+	 * 
 	 * @param action
+	 *            sent from a remote machine (or possibly from the localhost)
 	 */
 	public void receivedAction(R3Action action) {
 		action.invoke();
@@ -27,6 +32,8 @@ public class ActionHandler {
 
 	/**
 	 * @param line
+	 *            a line of text sent over the wire. We just print it out. This is useful for
+	 *            debugging the Action Sender/Receiver architecture.
 	 */
 	public void receivedActionText(String line) {
 		System.out.println(line);

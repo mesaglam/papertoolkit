@@ -16,9 +16,11 @@ import edu.stanford.hci.r3.util.graphics.ImageUtils;
 
 /**
  * <p>
- * Makes the machine run low level keyboard and mouse actions. TODO: Implement higher level calls,
- * like drag from x1,y1 to x2,y2. Which ends up being a mouse down at x1,y1, mouseMove, and mouseUp at
- * x2,y2.
+ * Makes the machine run low level keyboard and mouse actions.
+ * </p>
+ * <p>
+ * TODO: Implement higher level calls, like drag from x1,y1 to x2,y2. Which ends up being a mouse
+ * down at x1,y1, mouseMove, and mouseUp at x2,y2.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -37,25 +39,12 @@ public class RobotAction implements R3Action {
 		
 		private int value;
 		
-		MouseWheelDirection(int val) {
+		private MouseWheelDirection(int val) {
 			value = val;
 		}
 		
 		public int getValue() {
 			return value;
-		}
-	}
-
-	/**
-	 * Embodies a robot method and its arguments.
-	 */
-	public static class RobotCommand {
-		Object[] arguments; // make sure they are of the right type!
-		RobotMethod method;
-		
-		public RobotCommand(RobotMethod m, Object...args) {
-			method = m;
-			arguments = args;
 		}
 	}
 
@@ -80,7 +69,7 @@ public class RobotAction implements R3Action {
 		
 		private String command;
 
-		RobotMethod(String commandString) {
+		private RobotMethod(String commandString) {
 			command = commandString;
 		}
 		
@@ -88,8 +77,22 @@ public class RobotAction implements R3Action {
 			return command;
 		}
 	}
-	
 
+	
+	/**
+	 * Embodies a robot method and its arguments.
+	 */
+	public static class RobotCommand {
+		private Object[] arguments; // make sure they are of the right type!
+		private RobotMethod method;
+		
+		public RobotCommand(RobotMethod m, Object...args) {
+			method = m;
+			arguments = args;
+		}
+	}
+
+	
 	/**
 	 * Save up a list of commands to run in order.
 	 */
@@ -104,7 +107,7 @@ public class RobotAction implements R3Action {
 	 * 
 	 */
 	public RobotAction() {
-		
+
 	}
 
 	/**
@@ -112,7 +115,8 @@ public class RobotAction implements R3Action {
 	 * @return
 	 */
 	public void createScreenCapture(Rectangle screenRect, File destFile) {
-		commandsToRun.add(new RobotCommand(RobotMethod.CREATE_SCREEN_CAPTURE, screenRect, destFile));
+		commandsToRun
+				.add(new RobotCommand(RobotMethod.CREATE_SCREEN_CAPTURE, screenRect, destFile));
 	}
 
 	/**
@@ -156,6 +160,8 @@ public class RobotAction implements R3Action {
 	}
 
 	/**
+	 * Run through our command list and invoke each command.
+	 * 
 	 * @see edu.stanford.hci.r3.actions.R3Action#invoke()
 	 */
 	public void invoke() {
@@ -166,7 +172,7 @@ public class RobotAction implements R3Action {
 		for (RobotCommand command : commandsToRun) {
 			Object[] arguments = command.arguments;
 			RobotMethod method = command.method;
-			
+
 			// System.out.println("RobotAction: Invoking " + method + " [" +
 			// ArrayUtils.toString(arguments));
 			switch (method) {
@@ -180,9 +186,11 @@ public class RobotAction implements R3Action {
 				rob.delay((Integer) arguments[0]);
 				break;
 			case GET_PIXEL_COLOR: // args: int x, int y
-				final Color pixelColor = rob.getPixelColor((Integer)arguments[0], (Integer)arguments[1]);
-				// System.out.println("RobotAction :: Pixel Color at " + arguments[0] + "," +
-				// arguments[1] + " is " + pixelColor);
+				final Color pixelColor = rob.getPixelColor((Integer) arguments[0],
+						(Integer) arguments[1]);
+				System.out.println("RobotAction :: Pixel Color at " + arguments[0] + ","
+						+ arguments[1] + " is " + pixelColor);
+				// TODO: Do something more interesting with this data
 				break;
 			case KEY_PRESS: // arg: int keycode to press
 				rob.keyPress((Integer) arguments[0]);
@@ -234,6 +242,8 @@ public class RobotAction implements R3Action {
 	}
 
 	/**
+	 * Queue up a mouseMove.
+	 * 
 	 * @param x
 	 * @param y
 	 */
@@ -263,7 +273,8 @@ public class RobotAction implements R3Action {
 	 * @param direction
 	 */
 	public void mouseWheel(int wheelAmt, MouseWheelDirection direction) {
-		commandsToRun.add(new RobotCommand(RobotMethod.MOUSE_WHEEL, Math.abs(wheelAmt) * direction.getValue()));
+		commandsToRun.add(new RobotCommand(RobotMethod.MOUSE_WHEEL, Math.abs(wheelAmt)
+				* direction.getValue()));
 	}
 
 	/**

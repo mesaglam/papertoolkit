@@ -11,6 +11,7 @@ import javax.swing.*;
 
 /**
  * <p>
+ * Helps the drag and drop interaction for AcrobatDesignerLauncher.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -21,9 +22,11 @@ import javax.swing.*;
  */
 public class FileTransferHandler extends TransferHandler {
 
-	protected static final DataFlavor FILE_FLAVOR = DataFlavor.javaFileListFlavor;
+	private static final DataFlavor FILE_FLAVOR = DataFlavor.javaFileListFlavor;
 
 	/**
+	 * Check if one of the possible transfer flavors is file transfer.
+	 * 
 	 * @param transferFlavors
 	 * @return
 	 */
@@ -35,8 +38,6 @@ public class FileTransferHandler extends TransferHandler {
 		}
 		return false;
 	}
-
-	private List<File> okFiles = new ArrayList<File>();
 
 	public FileTransferHandler() {
 	}
@@ -53,9 +54,16 @@ public class FileTransferHandler extends TransferHandler {
 		return false;
 	}
 
+	/**
+	 * Filters a list of files for *.PDF.
+	 * 
+	 * @param comp
+	 * @param t
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public List<File> getOnlyPDFs(JComponent comp, Transferable t) {
-		okFiles.clear();
+		final List<File> okFiles = new ArrayList<File>();
 		if (!canImport(comp, t.getTransferDataFlavors())) {
 			return okFiles;
 		}
@@ -99,6 +107,9 @@ public class FileTransferHandler extends TransferHandler {
 	}
 
 	/**
+	 * When files are dropped onto the launcher, we will get the list of PDFs and start the server
+	 * to listen for R3 data coming from Acrobat.
+	 * 
 	 * @see javax.swing.TransferHandler#importData(javax.swing.JComponent,
 	 *      java.awt.datatransfer.Transferable)
 	 */
@@ -109,14 +120,14 @@ public class FileTransferHandler extends TransferHandler {
 			return false;
 		}
 		if (hasFileFlavor(t.getTransferDataFlavors())) {
-			List<File> onlyPDFs = getOnlyPDFs(comp, t);
+			final List<File> onlyPDFs = getOnlyPDFs(comp, t);
 			if (onlyPDFs.size() == 0) {
 				return false;
 			}
-			
+
 			// start the acrobat communication server if it hasn't already started...
 			AcrobatCommunicationServer.startServer();
-			
+
 			System.out.println("Opening... " + onlyPDFs);
 			for (File f : onlyPDFs) {
 				try {
@@ -131,8 +142,11 @@ public class FileTransferHandler extends TransferHandler {
 		return false;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
-		return "My Cool File Transfer Handler";
+		return "PDF File Transfer Handler";
 	}
 
 }

@@ -14,9 +14,9 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * </p>
  * <code>
  * this.submitForm({
- * 	cURL: "http://localhost/",
- * 	cSubmitAs: "XFDF",
- * 	bAnnotations: true
+ * 		cURL: "http://localhost/",
+ * 		cSubmitAs: "XFDF",
+ * 		bAnnotations: true
  * });
  * </code>
  * <p>
@@ -25,8 +25,8 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * disk as a region configuration file.
  * </p>
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -141,13 +141,13 @@ public class AcrobatCommunicationServer {
 
 						logToConsoleAndFile(connectMsg);
 
-						Socket clientConnection = serverSocket.accept();
+						final Socket clientConnection = serverSocket.accept();
 						clientConnections.add(clientConnection);
 
 						// we got a connection with the client
-						String connectedMsg = "AcrobatCommServer::Got a connection on port "
+						final String connectedMsg = "AcrobatCommServer::Got a connection on port "
 								+ serverSocket.getLocalPort();
-						String newClientMsg = "AcrobatCommServer::New Client: "
+						final String newClientMsg = "AcrobatCommServer::New Client: "
 								+ clientConnection.getInetAddress();
 
 						logToConsoleAndFile(connectedMsg);
@@ -180,7 +180,7 @@ public class AcrobatCommunicationServer {
 					logOutput.println("Failed creating an in/out connection with the client.");
 				}
 
-				StringBuilder sb = new StringBuilder();
+				final StringBuilder sb = new StringBuilder();
 
 				String inputLine = null;
 
@@ -217,10 +217,13 @@ public class AcrobatCommunicationServer {
 					String confirmation = CONFIRMATION.toString().replace("__PARENTURI__",
 							parentDir.toURI().toString());
 					confirmation = confirmation.replace("__FOLDERNAME__", parentDir.getName());
-					confirmation = confirmation.replace("__FILEURI__", outputFile.toURI().toString());
+					confirmation = confirmation.replace("__FILEURI__", outputFile.toURI()
+							.toString());
 					confirmation = confirmation.replace("__FILENAME__", outputFile.getName());
 
 					// tell the client to go away now
+					// provide a valid web server response so that the Acrobat web browser
+					// will not hang
 					out.println("HTTP/1.1 200 OK");
 					out.println("Content-Length: " + confirmation.length());
 					out.println("Connection: close");
@@ -243,20 +246,6 @@ public class AcrobatCommunicationServer {
 	private void logToConsoleAndFile(String msg) {
 		System.out.println(msg);
 		logOutput.println(msg);
-	}
-
-	/**
-	 * @param inputLine
-	 */
-	private void processInput(String inputLine) {
-		String inputLowerCase = inputLine.toLowerCase();
-
-		// exit check
-		if (inputLowerCase.equals("[[exit]]")) {
-			closeSockets();
-			System.out.println("Processing exit command");
-			System.exit(0);
-		}
 	}
 
 	/**

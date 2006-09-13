@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.components.SuperJTextField;
 
 /**
@@ -79,6 +80,7 @@ public class FlashControlDebugger {
 
 		control = new JFrame("Flash UI Controller");
 		control.setSize(640, 80);
+		control.setLocation(WindowUtils.getWindowOrigin(control, WindowUtils.DESKTOP_CENTER));
 		control.add(getMainPanel());
 		control.setVisible(true);
 		control.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

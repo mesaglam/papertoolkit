@@ -50,6 +50,9 @@ public class PlaySoundAction implements R3Action {
 		sound = soundFile;
 	}
 
+	/**
+	 * @see edu.stanford.hci.r3.actions.R3Action#invoke()
+	 */
 	public void invoke() {
 		// play it!
 		try {
@@ -77,7 +80,7 @@ public class PlaySoundAction implements R3Action {
 	}
 
 	/**
-	 * 
+	 * Stops the audio player and disposes resources.
 	 */
 	public void stop() {
 		player.stop();

@@ -4,7 +4,10 @@ import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
 
 /**
- * 
+ * <p>
+ * Produces ASCII text from input samples. Listeners can be notified whenever we have enough text.
+ * Unimplemented.
+ * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
