@@ -8,8 +8,9 @@ import java.net.Socket;
  * <p>
  * This server will relay events to the Flash UI, which will listen for commands. It can ask the UI
  * to do different things, such as going to a named frame.
- * </p>
- * <p>
+ * 
+ * This is a skeleton implementation. Later on, we will allow our event handlers and content filters
+ * to live in the world of Flash, for faster UI prototyping.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -25,8 +26,6 @@ public class FlashControlServer {
 	 */
 	public static final int DEFAULT_PORT = 6543;
 
-	private static FlashControlServer server;
-
 	/**
 	 * @param args
 	 */
@@ -39,7 +38,7 @@ public class FlashControlServer {
 			// Catch exception and keep going.
 		}
 
-		server = new FlashControlServer(port);
+		new FlashControlServer(port);
 	}
 
 	/**

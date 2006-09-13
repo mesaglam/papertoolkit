@@ -23,10 +23,9 @@ import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
  * <p>
- * Basically, a JFrame with a scrollable document that can render any printable document.
- * 
- * We will use this code in the Gigapixel designer, where the user can interactively place anoto
- * pattern and bind actions to different parts of the pattern.
+ * Basically, a JFrame with a scrollable document panel that can render Sheets and Regions. This
+ * class is incomplete, but it was inspired by the original GIGAprints designer. It should provide
+ * debugging and design options for the designer/developer.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -34,7 +33,6 @@ import edu.stanford.hci.r3.util.WindowUtils;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * @created Feb 15, 2006
  */
 public class Designer {
 
@@ -127,6 +125,21 @@ public class Designer {
 	}
 
 	/**
+	 * @return
+	 * 
+	 * @created Feb 15, 2006
+	 * @author Ron Yeh
+	 */
+	private Container getDocumentPanel() {
+		if (mainPanel == null) {
+			mainPanel = new DocumentPanel(new Sheet(8.5, 11));
+			mainPanel.setBackground(Color.WHITE);
+			mainPanel.setLayout(new BorderLayout());
+		}
+		return mainPanel;
+	}
+
+	/**
 	 * @return Where the window was last positioned (X Coordinate)
 	 * @created Mar 1, 2006
 	 * @author Ron Yeh
@@ -146,21 +159,6 @@ public class Designer {
 
 	public JFrame getMainFrame() {
 		return mainFrame;
-	}
-
-	/**
-	 * @return
-	 * 
-	 * @created Feb 15, 2006
-	 * @author Ron Yeh
-	 */
-	private Container getDocumentPanel() {
-		if (mainPanel == null) {
-			mainPanel = new DocumentPanel(new Sheet(8.5, 11));
-			mainPanel.setBackground(Color.WHITE);
-			mainPanel.setLayout(new BorderLayout());
-		}
-		return mainPanel;
 	}
 
 	/**

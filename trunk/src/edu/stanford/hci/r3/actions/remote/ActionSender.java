@@ -53,7 +53,7 @@ public class ActionSender {
 	}
 
 	/**
-	 * 
+	 * Stop talking to the remote server.
 	 */
 	public synchronized void disconnect() {
 		try {
@@ -67,16 +67,12 @@ public class ActionSender {
 	}
 
 	/**
+	 * Invokes the action as soon as possible on a remote device.
 	 * 
 	 * @param action
 	 */
 	public void invokeRemoteAction(R3Action action) {
-		try {
-			messengerOutput.sendAction(action);
-		} catch (IOException ioe) {
-			System.out.println("Error sending action. Closing messenger output. "
-					+ ioe.getLocalizedMessage());
-		}
+		messengerOutput.sendAction(action);
 	}
 
 }

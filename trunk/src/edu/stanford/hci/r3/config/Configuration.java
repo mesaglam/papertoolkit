@@ -16,11 +16,14 @@ import edu.stanford.hci.r3.units.Pixels;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * The design of this configuration scheme was informed by Jeff Heer's prefuse code. It is
+ * incomplete, but when properly implemented, it will allow a user of this toolkit to retrieve
+ * resources from the JAR, and customize the operation of the toolkit with one or more config files.
  * </p>
- * 
- * The design of this configuration scheme was informed by Jeff Heer's prefuse source code.
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
@@ -105,12 +108,15 @@ public class Configuration extends Properties {
 		return props.getProperty(propertyName);
 	}
 
+	/**
+	 * 
+	 */
 	private Configuration() {
 		setDefaultConfig();
 	}
 
 	/**
-	 * 
+	 * Provide default locations for our xml config files and other resources.
 	 */
 	private void setDefaultConfig() {
 		// part of the resources in the JAR File (or export directory)

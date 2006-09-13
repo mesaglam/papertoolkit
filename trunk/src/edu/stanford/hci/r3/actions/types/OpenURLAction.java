@@ -11,8 +11,11 @@ import edu.stanford.hci.r3.actions.R3Action;
 /**
  * <p>
  * Uses the default browser to launch the specified URL. WARNING: This seems really really slow on
- * Java 6. It is slow (a minute??) on both Firefox and IE7. It used to work well through JDIC on
- * Java 5. We may implement an alternative.
+ * Java 6 on my desktop. It is slow (a minute??) on both Firefox and IE7. It used to work well
+ * through JDIC on Java 5. We may implement an alternative.
+ * 
+ * UPDATE: This seems to work perfectly fine on my laptop. So yeah, just be aware that it might not
+ * work consistently across machines.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -25,10 +28,16 @@ public class OpenURLAction implements R3Action {
 
 	private URL url;
 
+	/**
+	 * @param theURL
+	 */
 	public OpenURLAction(URL theURL) {
 		url = theURL;
 	}
 
+	/**
+	 * @see edu.stanford.hci.r3.actions.R3Action#invoke()
+	 */
 	public void invoke() {
 		try {
 			System.out.println();

@@ -2,6 +2,7 @@ package edu.stanford.hci.r3.events;
 
 /**
  * <p>
+ * Listens to a content filter, and allows us to process the content once it arrives.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -13,8 +14,9 @@ package edu.stanford.hci.r3.events;
 public interface ContentFilterListener {
 
 	/**
-	 * 
-	 * 
+	 * Get notified of new content.
 	 */
 	public void contentArrived();
+
+	// TODO: ADD MORE HERE
 }

@@ -17,7 +17,8 @@ import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 
 /**
  * <p>
- * Captures ink strokes, and allows access to them on demand.
+ * Captures ink strokes, and allows access to them on demand. Notifies listeners every time a stroke
+ * is written.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

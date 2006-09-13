@@ -1,23 +1,20 @@
 package edu.stanford.hci.r3.actions.remote;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.thoughtworks.xstream.XStream;
-
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.R3Action;
-import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
  * <p>
- * TODO: Seems like we could integrate this with PenServer's equivalent classes. How do we make it
- * generic so that we can send an object over and either consider it a pen sample, or an action?
- * Might be simpler to keep them separate for now.
+ * Sends an R3 Action as a Java object serialized to xml over a socket.
  * </p>
  * <p>
- * We can definitely at least integrate the messengers and the pen server output objects and move
- * them into the networking package. This is a TODO, but the interfaces should remain the same.
+ * TODO: Seems like we could integrate this with PenServer's equivalent classes. How do we make it
+ * generic so that we can send an object over and either consider it a pen sample, or an action?
+ * Might be simpler to keep them separate for now. There are some issues with the way we serialize
+ * (removing spaces, et cetera).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -26,82 +23,28 @@ import edu.stanford.hci.r3.util.SystemUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ActionJavaObjectXMLMessenger implements ActionMessenger {
-
-	/**
-	 * The OS specific newline string.
-	 */
-	private static final String LINE_SEPARATOR = SystemUtils.LINE_SEPARATOR;
-
-	/**
-	 * 
-	 */
-	private BufferedOutputStream bos;
-
-	/**
-	 * 
-	 */
-	private Socket sock;
-
-	/**
-	 * 
-	 */
-	private XStream xml;
+public class ActionJavaObjectXMLMessenger extends ActionMessenger {
 
 	/**
 	 * @param s
 	 * @throws IOException
 	 */
-	public ActionJavaObjectXMLMessenger(Socket s) throws IOException {
-		sock = s;
-		bos = new BufferedOutputStream(s.getOutputStream());
-		xml = new XStream();
+	public ActionJavaObjectXMLMessenger(Socket s) {
+		super(s);
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.actions.remote.ActionMessenger#destroy()
-	 */
-	public void destroy() {
-		try {
-			xml = null;
-
-			if (bos != null) {
-				bos.close();
-				bos = null;
-			}
-			if (sock != null) {
-				sock.close();
-				sock = null;
-			}
-		} catch (IOException ioe) {
-			System.out
-					.println("ActionServerOutputJOXML::Got exception when destroying JavaServerOutput: "
-							+ ioe.getLocalizedMessage());
-		}
-	}
-
-	/**
-	 * Removes \n from the string to send over the wire.
+	 * Turns an R3Action into an xml string and then into the bytes we need to send.
 	 * 
-	 * @see edu.stanford.hci.r3.actions.remote.ActionMessenger#sendAction(edu.stanford.hci.r3.actions.R3Action)
+	 * @see edu.stanford.hci.r3.actions.remote.ActionMessenger#getMessage(edu.stanford.hci.r3.actions.R3Action)
 	 */
-	public void sendAction(R3Action action) throws IOException {
-		String xmlString = xml.toXML(action);
-
+	public byte[] getMessage(R3Action action) {
+		String xmlString = PaperToolkit.toXML(action);
+		// put it all on one line
 		if (xmlString.contains("\n")) {
 			xmlString = xmlString.replace("\n", "");
 		}
-
-		// do not remove spaces!!!!
-		// as that is not appropriate for actions, which may have paths, which depend on spaces...
-		// if (xmlString.contains(" ")) {
-		// xmlString = xmlString.replace(" ", "");
-		// }
-
-		// System.out.println(xmlString);
-
-		bos.write((xmlString + LINE_SEPARATOR).getBytes());
-		bos.flush();
+		// do not remove spaces!!!! as actions may have paths, which depend on spaces...
+		return (xmlString + LINE_SEPARATOR).getBytes();
 	}
-
 }

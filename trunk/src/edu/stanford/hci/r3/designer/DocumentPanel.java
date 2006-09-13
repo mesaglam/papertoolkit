@@ -14,6 +14,7 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
+ * Renders the document in our interactive designer.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

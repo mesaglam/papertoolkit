@@ -74,6 +74,14 @@ public abstract class ContentFilter {
 
 	/**
 	 * @return
+	 * 
+	 */
+	public Region getRegion() {
+		return region;
+	}
+
+	/**
+	 * @return
 	 */
 	public boolean isActive() {
 		return active;

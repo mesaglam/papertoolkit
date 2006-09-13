@@ -14,7 +14,6 @@ import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
-import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -38,9 +37,21 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class EventEngine {
 
-	private List<ContentFilter> lastEventFilters = new ArrayList<ContentFilter>();
+	/**
+	 * Set when handling regular samples, so that we can set the location of the pen up.
+	 */
+	private PercentageCoordinates lastKnownLocation;
 
-	private List<EventHandler> lastEventHandlers = new ArrayList<EventHandler>();
+	/**
+	 * Used by penUp to notify content filters. This is because a pen up event has no coordinates,
+	 * so we cannot figure out what region it belongs to.
+	 */
+	private List<ContentFilter> mostRecentContentFilters = new ArrayList<ContentFilter>();
+
+	/**
+	 * Used by penUp to notify event handlers.
+	 */
+	private List<EventHandler> mostRecentEventHandlers = new ArrayList<EventHandler>();
 
 	/**
 	 * Lets us figure out which sheets and regions should handle which events. Interacting with this
@@ -63,11 +74,6 @@ public class EventEngine {
 	 * Each pen gets one and only one event engine listener...
 	 */
 	private Map<Pen, PenListener> penToListener = new HashMap<Pen, PenListener>();
-
-	/**
-	 * Set when handling regular samples, so that we can set the location of the pen up.
-	 */
-	private PercentageCoordinates lastKnownLocation;
 
 	/**
 	 * 
@@ -146,11 +152,11 @@ public class EventEngine {
 				final PenEvent event = createPenEvent(sample);
 				event.setModifier(PenEvent.PEN_UP_MODIFIER);
 				event.setPercentageLocation(lastKnownLocation);
-				
-				for (EventHandler h : lastEventHandlers) {
+
+				for (EventHandler h : mostRecentEventHandlers) {
 					h.handleEvent(event);
 				}
-				for (ContentFilter f : lastEventFilters) {
+				for (ContentFilter f : mostRecentContentFilters) {
 					f.filterEvent(event);
 				}
 			}
@@ -172,8 +178,8 @@ public class EventEngine {
 	 */
 	private void handlePenSample(PenEvent penEvent) {
 		// System.out.println("Dispatching Event for pen #" + penID + " " + sample);
-		lastEventHandlers.clear();
-		lastEventFilters.clear();
+		mostRecentEventHandlers.clear();
+		mostRecentContentFilters.clear();
 
 		// for each sample, we first have to convert it to a location on the sheet.
 		// THEN, we will be able to make more interesting events...
@@ -206,7 +212,7 @@ public class EventEngine {
 			// so long as the event is not consumed
 			for (EventHandler eh : eventHandlers) {
 				eh.handleEvent(penEvent);
-				lastEventHandlers.add(eh);
+				mostRecentEventHandlers.add(eh);
 				if (penEvent.isConsumed()) {
 					// we are done handling this event
 					// look at no more event handlers
@@ -221,7 +227,7 @@ public class EventEngine {
 			List<ContentFilter> eventFilters = region.getEventFilters();
 			for (ContentFilter ef : eventFilters) {
 				ef.filterEvent(penEvent);
-				lastEventFilters.add(ef);
+				mostRecentContentFilters.add(ef);
 				// filters do not consume events
 				// but they are lower priority than event handlers
 				// should they be HIGHER priority???
