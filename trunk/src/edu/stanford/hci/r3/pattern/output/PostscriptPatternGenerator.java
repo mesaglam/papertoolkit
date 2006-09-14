@@ -13,12 +13,11 @@ import edu.stanford.hci.r3.units.Units;
  * WARNING: This class is unfinished. Use the PDF implementation until this works.
  * </p>
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  */
 public class PostscriptPatternGenerator {
 

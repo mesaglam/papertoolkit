@@ -4,13 +4,16 @@ import java.io.*;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * The batch importer will be called by the pen importer (.NET code) every time you synchronize the
+ * pen. If you would like to use your own BatchImporter, create a subclass and tell R3 where to find
+ * it.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * If you would like to use your own BatchImporter, create a subclass and tell R3 where to find it.
  */
 public class BatchImporter {
 

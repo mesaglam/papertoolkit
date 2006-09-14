@@ -14,22 +14,28 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Renders an ImageRegion to a graphics context or PDF file (not yet finished).
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class ImageRenderer extends RegionRenderer {
 
+	/**
+	 * The region to render.
+	 */
 	private ImageRegion imgRegion;
 
 	/**
-	 * @param r
+	 * @param region
 	 */
-	public ImageRenderer(ImageRegion r) {
-		super(r);
-		imgRegion = r;
+	public ImageRenderer(ImageRegion region) {
+		super(region);
+		imgRegion = region;
 	}
 
 	/**
@@ -42,7 +48,6 @@ public class ImageRenderer extends RegionRenderer {
 		final File file = imgRegion.getFile();
 		final Units units = imgRegion.getUnits();
 		final double conv = units.getConversionTo(new Points());
-
 		final PlanarImage image = ImageCache.loadPlanarImage(file);
 		final AffineTransform transform = new AffineTransform();
 

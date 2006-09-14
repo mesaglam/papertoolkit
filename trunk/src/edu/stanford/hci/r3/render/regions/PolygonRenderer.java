@@ -3,6 +3,7 @@ package edu.stanford.hci.r3.render.regions;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 
@@ -13,8 +14,12 @@ import edu.stanford.hci.r3.units.Units;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Renders a Polygon Region. You can customize the renderer by changing the type of stroke it uses,
+ * etc.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -23,13 +28,18 @@ public class PolygonRenderer extends RegionRenderer {
 
 	private PolygonalRegion polyRegion;
 
-	private BasicStroke stroke = new BasicStroke(1);
+	private Stroke stroke;
 
-	private Color strokeColor = Color.RED;
+	private Color strokeColor;
 
+	/**
+	 * @param r
+	 */
 	public PolygonRenderer(PolygonalRegion r) {
 		super(r);
 		polyRegion = r;
+		stroke = new BasicStroke(r.getStrokeThickness());
+		strokeColor = r.getStrokeColor();
 	}
 
 	/**
@@ -81,5 +91,12 @@ public class PolygonRenderer extends RegionRenderer {
 		g2d.draw(gp);
 
 		// System.out.println(g2d.getTransform());
+	}
+
+	/**
+	 * @param stroke
+	 */
+	public void setStroke(Stroke s) {
+		stroke = s;
 	}
 }

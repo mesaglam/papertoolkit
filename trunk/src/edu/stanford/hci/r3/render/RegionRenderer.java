@@ -18,8 +18,11 @@ import edu.stanford.hci.r3.util.StringUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Renders a Region to a graphics context.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -28,6 +31,9 @@ public class RegionRenderer {
 
 	public static final String CONFIG_FILE = "regionrenderer.debugregions.file";
 
+	/**
+	 * Whether we are in debug mode.
+	 */
 	public static final boolean DEBUG_REGIONS = readDebugFlagFromConfigFile();
 
 	/**
@@ -42,8 +48,14 @@ public class RegionRenderer {
 	 */
 	private static final String PROPERTY_NAME = "debugRegions";
 
+	/**
+	 * For Debugging.
+	 */
 	private static final Color REGION_COLOR = new Color(123, 123, 123, 30);
 
+	/**
+	 * 
+	 */
 	private static final Color TEXT_COLOR = Color.BLACK;
 
 	/**
@@ -73,8 +85,7 @@ public class RegionRenderer {
 			DebugUtils.println("Debugging regions in renderToG2D(...)");
 			return;
 		}
-		
-		
+
 		g2d.setFont(FONT);
 
 		final Rectangle2D b = region.getUnscaledBounds2D();

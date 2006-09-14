@@ -16,7 +16,6 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
-import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.TiledPattern;
@@ -36,7 +35,8 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
 /**
  * <p>
  * This class will render a Sheet into a JPEG, PDF, or Java2D graphics context.
- * 
+ * </p>
+ * <p>
  * For individual regions, it will use specific region renderers (e.g., ImageRenderer,
  * PolygonRenderer, and TextRenderer).
  * </p>
@@ -50,10 +50,15 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
 public class SheetRenderer {
 
 	/**
-	 * For now, get a tiled pattern generator. TODO: later on, we might want to pass this in
+	 * For now, get a tiled pattern generator.
+	 * 
+	 * TODO: later on, we might want to pass this in.
 	 */
 	private final TiledPatternGenerator generator = new TiledPatternGenerator();
 
+	/**
+	 * Allows us to save the pattern info to the same directory as the most recently rendered pdf.
+	 */
 	private File mostRecentlyRenderedPDFFile;
 
 	/**
@@ -120,10 +125,10 @@ public class SheetRenderer {
 		// this object will generate the right PDF (itext) calls to create pattern
 		final PDFPatternGenerator pgen = new PDFPatternGenerator(cb, sheet.getWidth(), sheet
 				.getHeight());
-		
+
 		// adjust the font size of the pattern...
 		pgen.adjustPatternSize(patternDotSizeAdjustment);
-		
+
 		// render each region
 		for (Region r : regions) {
 			if (!r.isActive()) {
@@ -169,6 +174,9 @@ public class SheetRenderer {
 	 * @param g2d
 	 */
 	public void renderToG2D(Graphics2D g2d) {
+		// anti-aliased, high quality rendering
+		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+
 		final List<Region> regions = sheet.getRegions();
 		// render each region
 		for (Region r : regions) {

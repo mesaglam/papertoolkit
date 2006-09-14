@@ -4,44 +4,41 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.thoughtworks.xstream.XStream;
-
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
- * <p></p>
- * <p><span class="BSDLicense">
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
- * </span></p>
+ * <p>
+ * Sends Java XML objects representing Pen Samples over the wire.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ServerOutputJavaObjectXML implements PenServerOutput {
+public class PenServerJavaObjectXMLSender implements PenServerSender {
 
 	private BufferedOutputStream bos;
 
 	private Socket sock;
 
-	private XStream xml;
-
 	/**
 	 * @param s
 	 * @throws IOException
 	 */
-	public ServerOutputJavaObjectXML(Socket s) throws IOException {
+	public PenServerJavaObjectXMLSender(Socket s) throws IOException {
 		sock = s;
 		bos = new BufferedOutputStream(s.getOutputStream());
-		xml = new XStream();
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerOutput#destroy()
+	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerSender#destroy()
 	 */
 	public void destroy() {
 		try {
-			xml = null;
-
 			if (bos != null) {
 				bos.close();
 				bos = null;
@@ -62,10 +59,10 @@ public class ServerOutputJavaObjectXML implements PenServerOutput {
 	 * @created Mar 31, 2006
 	 * @author Ron Yeh
 	 * 
-	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerOutput#sendSample(edu.stanford.hci.r3.pen.streaming.PenSample)
+	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerSender#sendSample(edu.stanford.hci.r3.pen.streaming.PenSample)
 	 */
 	public void sendSample(PenSample as) throws IOException {
-		String xmlString = xml.toXML(as);
+		String xmlString = PaperToolkit.toXML(as);
 
 		if (xmlString.contains("\n")) {
 			xmlString = xmlString.replace("\n", "");

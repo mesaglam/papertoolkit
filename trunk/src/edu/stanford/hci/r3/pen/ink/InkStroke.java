@@ -195,27 +195,27 @@ public class InkStroke {
 	}
 
 	/**
-	 * @param maxY
+	 * @param mxY
 	 *            the maxY to set
 	 */
-	public void setMaxY(float maxY) {
-		this.maxY = maxY;
+	public void setMaxY(float mxY) {
+		maxY = mxY;
 	}
 
 	/**
-	 * @param minX
+	 * @param mnX
 	 *            the minX to set
 	 */
-	public void setMinX(float minX) {
-		this.minX = minX;
+	public void setMinX(float mnX) {
+		minX = mnX;
 	}
 
 	/**
-	 * @param minY
+	 * @param mnY
 	 *            the minY to set
 	 */
-	public void setMinY(float minY) {
-		this.minY = minY;
+	public void setMinY(float mnY) {
+		minY = mnY;
 	}
 
 	/**

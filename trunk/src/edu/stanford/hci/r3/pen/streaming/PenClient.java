@@ -17,18 +17,20 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * <span class="BSDLicense"> This software is distributed under the <a
- * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
- * </p>
- * 
  * Connects to the Pen Server and displays some output...
- * 
+ * </p>
+ * <p>
  * A client who connects to a server can also have local PenListeners to process the samples...
  * 
  * TODO: A multithreaded Client for listening to multiple servers... However, does this make sense?
  * Why would we want to listen to multiple pens?
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> [ronyeh(AT)cs.stanford.edu]
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PenClient {
 
@@ -150,8 +152,7 @@ public class PenClient {
 						if (se.getMessage().contains("socket closed")) {
 							DebugUtils.println("Pen Client's Socket is now closed...");
 						}
-					}
-					catch (IOException e) {
+					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}

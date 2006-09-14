@@ -4,6 +4,13 @@
 	font-weight: bolder;
 }
 
+.Heading1 {
+	font-family: "Trebuchet MS", Verdana, Helvetica, sans-serif;
+	font-size: x-large;
+	font-weight: bolder;
+	margin-bottom: -10px;
+}
+
 .Heading2 {
 	font-family: "Trebuchet MS", Verdana, Helvetica, sans-serif;
 	font-size: large;

@@ -1,6 +1,5 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
-import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Percentage;

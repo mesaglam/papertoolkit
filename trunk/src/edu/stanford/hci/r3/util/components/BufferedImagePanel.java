@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 
 /**
  * <p>
+ * Displays an Image in a JPanel. Different than DisplayJAI, because it does not use JAI, and it
+ * allows for positioning of the image.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -74,8 +76,8 @@ public class BufferedImagePanel extends JPanel {
 
 	/**
 	 * @param img
-	 *           setting this to null will not repaint the panel. This allows use to release the
-	 *           memory right before any new setImage calls...
+	 *            setting this to null will not repaint the panel. This allows use to release the
+	 *            memory right before any new setImage calls...
 	 */
 	public void setImage(BufferedImage img, int imgX, int imgY) {
 		setOrigin(imgX, imgY);

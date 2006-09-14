@@ -12,14 +12,15 @@ import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Create a Bundle that contains PDFSheets. The PDF manipulation code in this class leverages iText.
+ * This class exists to enable us to open an existing PDF and modify its pages.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * Create a Bundle that contains PDFSheets. The PDF manipulation code in this class leverages iText.
- * This class exists to enable us to open an existing PDF and modify its pages.
  */
 public class PDFBundle extends Bundle {
 

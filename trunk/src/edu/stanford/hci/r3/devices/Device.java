@@ -1,8 +1,7 @@
-package edu.stanford.hci.r3.pen.ink;
+package edu.stanford.hci.r3.devices;
 
 /**
  * <p>
- * Renders Ink to a Graphics2D or PDF.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -11,6 +10,6 @@ package edu.stanford.hci.r3.pen.ink;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class InkRenderer {
+public abstract class Device {
 
 }

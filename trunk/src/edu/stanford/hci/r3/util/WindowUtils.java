@@ -1,3 +1,8 @@
+/*
+ * version 0.3 -- Added Screen Size for BNet (Summer 2005). ronyeh
+ * version 0.2 -- Added Desktop location stuff (Summer 2004). ronyeh
+ * version 0.1 -- Created for the FlowVis project (Winter 2004). ronyeh
+ */
 package edu.stanford.hci.r3.util;
 
 import java.awt.*;
@@ -7,17 +12,16 @@ import javax.swing.UIManager;
 
 /**
  * <p>
- * This software is distributed under the <a
- * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
+ * This class contains useful methods for positioning, sizing, and manipulating JFrames and other
+ * Window-like elements.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron Yeh</a> ( ronyeh(AT)cs.stanford.edu )
- * @comment This class contains useful methods for positioning, sizing, and manipulating JFrames and
- *          other Window-like elements.
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-// version 0.1 -- Created for the FlowVis project (Winter 2004). ronyeh
-// version 0.2 -- Added Desktop location stuff (Summer 2004). ronyeh
-// version 0.3 -- Added Screen Size for BNet (Summer 2005). ronyeh
 public class WindowUtils {
 
 	// defaults for screen width and height are very small

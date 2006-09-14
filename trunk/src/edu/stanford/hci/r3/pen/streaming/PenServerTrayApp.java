@@ -51,7 +51,7 @@ public class PenServerTrayApp {
 	/**
 	 * @return
 	 */
-	private static ActionListener getIconListener() {
+	private static ActionListener getOnOffListener() {
 		if (iconListener == null) {
 			iconListener = new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
@@ -96,13 +96,13 @@ public class PenServerTrayApp {
 		MenuItem exitItem = new MenuItem("Exit");
 		exitItem.addActionListener(getExitListener());
 		onOffItem = new MenuItem(STOP_PEN_SERVER_MSG);
-		onOffItem.addActionListener(getIconListener());
+		onOffItem.addActionListener(getOnOffListener());
 		popup.add(exitItem);
 		popup.add(onOffItem);
 
 		trayIcon = new TrayIcon(imageON, "Pen Server (double-click to turn ON/OFF)", popup);
 		trayIcon.setImageAutoSize(true);
-		trayIcon.addActionListener(getIconListener());
+		trayIcon.addActionListener(getOnOffListener());
 
 		try {
 			systemTray.add(trayIcon);

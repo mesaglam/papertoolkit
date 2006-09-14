@@ -16,10 +16,6 @@ import edu.stanford.hci.r3.units.Units;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * <p>
  * Represents one sheet of interactive/augmented paper. This sheet can be large (like a GIGAprint)
  * or it can be smaller, like an 8.5x11" print.
  * </p>
@@ -38,7 +34,11 @@ import edu.stanford.hci.r3.units.Units;
  * (0,0) to be the top-left corner of the document (I can hear the screams of PDF/Postscript
  * enthusiasts already--I'm sorry). We will make it easy to flip the coordinate systems to a more
  * Postscript-friendly way later. Possibly, we'll have a call like setCoordinateSystem(GUI |
- * POSTSCRIPT). Happy?
+ * POSTSCRIPT).
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)

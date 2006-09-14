@@ -1,13 +1,28 @@
 package edu.stanford.hci.r3.designer.acrobat;
 
-import java.awt.*;
-import java.awt.dnd.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 import java.util.TooManyListenersException;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.util.WindowUtils;
@@ -95,7 +110,8 @@ public class AcrobatDesignerLauncher {
 				e.printStackTrace();
 			}
 
-			pdfLogo = ImageCache.loadBufferedImage(new File("data/icons/pdfIcon.png"));
+			pdfLogo = ImageCache.loadBufferedImage(AcrobatDesignerLauncher.class
+					.getResource("/icons/pdfIcon.png"));
 		}
 		return activeArea;
 	}
@@ -182,12 +198,22 @@ public class AcrobatDesignerLauncher {
 	 * Sep 12, 2006
 	 */
 	public static void main(String[] args) {
+		start();
+	}
+
+	/**
+	 * @return
+	 */
+	public static JFrame start() {
 		PaperToolkit.initializeLookAndFeel();
-		frame = new JFrame("Acrobat Designer Launcher");
-		frame.setContentPane(getMainPanel());
-		frame.setSize(640, 480);
-		frame.setLocation(WindowUtils.getWindowOrigin(frame, WindowUtils.DESKTOP_CENTER));
+		if (frame == null) {
+			frame = new JFrame("Acrobat Designer Launcher");
+			frame.setContentPane(getMainPanel());
+			frame.setSize(640, 480);
+			frame.setLocation(WindowUtils.getWindowOrigin(frame, WindowUtils.DESKTOP_CENTER));
+			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		}
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		return frame;
 	}
 }

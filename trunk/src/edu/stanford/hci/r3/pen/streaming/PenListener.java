@@ -2,13 +2,14 @@ package edu.stanford.hci.r3.pen.streaming;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Listens for Pen events, such as when a pen touches pattern, or when samples are sent wirelessly.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * Listens for Pen events, such as when a pen touches pattern, or when samples are sent wirelessly.
  */
 public interface PenListener {
 
