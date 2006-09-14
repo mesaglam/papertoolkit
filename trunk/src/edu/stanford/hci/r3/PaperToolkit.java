@@ -300,6 +300,7 @@ public class PaperToolkit {
 		return designSheetsButton;
 	}
 
+
 	/**
 	 * @return
 	 */
@@ -321,7 +322,7 @@ public class PaperToolkit {
 		}
 		return exitAppManagerButton;
 	}
-
+	
 	/**
 	 * @return a GUI list of loaded applications (running or not). Grey out the ones that are not
 	 *         running.
@@ -479,6 +480,13 @@ public class PaperToolkit {
 		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. "
 				+ versionString);
 		System.out.println("-----------------------------------------------------------" + dashes);
+	}
+
+	/**
+	 * 
+	 */
+	public static void startAcrobatDesigner() {
+		AcrobatDesignerLauncher.start();
 	}
 
 	/**
