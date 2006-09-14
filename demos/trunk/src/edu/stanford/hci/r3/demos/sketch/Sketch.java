@@ -44,6 +44,13 @@ public class Sketch {
 
 	private static final Color BLACK = new Color(0, 0, 0, 220);
 
+	/**
+	 * Either sends us into the rendering mode, or application (runtime) mode.
+	 * 
+	 * TODO: In the future, the PaperToolkit's application manager will enable printing. Thus, this
+	 * flag will not be necessary. An application author will subclass Application (which will have
+	 * an empty renderToPDF function).
+	 */
 	private static final int MODE_DESIGN_PDF = 0;
 
 	private static final int MODE_RENDER_PDF = 1;
@@ -62,8 +69,8 @@ public class Sketch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Sketch(MODE_DESIGN_PDF);
-		// new Sketch(MODE_RENDER_PDF);
+		// new Sketch(MODE_DESIGN_PDF);
+		new Sketch(MODE_RENDER_PDF);
 		// new Sketch(MODE_RUN_APP);
 	}
 
@@ -78,15 +85,6 @@ public class Sketch {
 	private InkCollector inkWell;
 
 	private JPanel mainPanel;
-
-	/**
-	 * Either sends us into the rendering mode, or application (runtime) mode.
-	 * 
-	 * TODO: In the future, the PaperToolkit's application manager will enable printing. Thus, this
-	 * flag will not be necessary. An application author will subclass Application (which will have
-	 * an empty renderToPDF function).
-	 */
-	private boolean renderPDFMode = true;
 
 	/**
 	 * A Sheet object that encapsulates an existing PDF file (designed in some other tool).
@@ -170,7 +168,7 @@ public class Sketch {
 
 		// wouldn't it be cool if you could copy a region in acrobat
 		// and paste it here, and it would become the code??? (FUTURE TODO)
-		Region regionSendToScreen = sheet.getRegion("SendToScreen");
+		Region regionSendToScreen = sheet.getRegion("MarkingMenu");
 		regionSendToScreen.addEventHandler(new GestureHandler() {
 			@Override
 			public void handleMark(PenEvent e, GestureDirection dir) {
@@ -216,8 +214,8 @@ public class Sketch {
 			inkDisplay = new JFrame("Sketch! Display");
 			inkDisplay.setContentPane(getMainPanel());
 			inkDisplay.setSize(690, 740);
-			inkDisplay.setLocation(WindowUtils.getWindowOrigin(inkDisplay,
-					WindowUtils.DESKTOP_CENTER));
+			inkDisplay
+					.setLocation(WindowUtils.getWindowOrigin(inkDisplay, WindowUtils.DESKTOP_CENTER));
 			inkDisplay.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			inkDisplay.setVisible(true);
 		}
