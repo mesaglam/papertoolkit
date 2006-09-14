@@ -44,6 +44,12 @@ public class Sketch {
 
 	private static final Color BLACK = new Color(0, 0, 0, 220);
 
+	private static final int MODE_DESIGN_PDF = 0;
+
+	private static final int MODE_RENDER_PDF = 1;
+
+	private static final int MODE_RUN_APP = 2;
+
 	private static final Color ORANGE = new Color(255, 153, 51, 220);
 
 	private static final Color PURPLE = new Color(128, 0, 128, 220);
@@ -51,12 +57,14 @@ public class Sketch {
 	/**
 	 * There are two modes to the operation of this class. First, we would like to generate the
 	 * patterned PDF file. Second, we would like to load in the information and run the application,
-	 * along with all the event handlers. It seems like many Paper Apps will take this approach.
+	 * along with all the event handlers. tIt seems like many Paper Apps will take this approach.
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Sketch();
+		new Sketch(MODE_DESIGN_PDF);
+		// new Sketch(MODE_RENDER_PDF);
+		// new Sketch(MODE_RUN_APP);
 	}
 
 	private JPanel colorPanel;
@@ -78,7 +86,7 @@ public class Sketch {
 	 * flag will not be necessary. An application author will subclass Application (which will have
 	 * an empty renderToPDF function).
 	 */
-	private boolean renderPDFMode = false;
+	private boolean renderPDFMode = true;
 
 	/**
 	 * A Sheet object that encapsulates an existing PDF file (designed in some other tool).
@@ -92,22 +100,26 @@ public class Sketch {
 	/**
 	 * 
 	 */
-	public Sketch() {
-		sheet = new PDFSheet(new File("data/Sketch/SketchUI.pdf"));
-		sheet.addRegions(new File("data/Sketch/SketchUI.regions.xml"));
-
-		// two branches.... we need to do this, for now...
-		if (renderPDFMode) {
-			renderPDF();
+	public Sketch(int mode) {
+		// three branches.... we do this, for now...
+		if (mode == MODE_DESIGN_PDF) {
+			PaperToolkit.startAcrobatDesigner();
 		} else {
-			runApplication();
+			sheet = new PDFSheet(new File("data/Sketch/SketchUI.pdf"));
+			sheet.addRegions(new File("data/Sketch/SketchUI.regions.xml"));
+
+			if (mode == MODE_RENDER_PDF) {
+				renderPDF();
+			} else if (mode == MODE_RUN_APP) {
+				runApplication();
+			}
 		}
 	}
 
 	/**
 	 * @param sheet
 	 */
-	private void addEventHandlersToRegions(PDFSheet sheet) {
+	private void addEventHandlersToRegions() {
 		// System.out.println("Regions: ");
 		// for (Region r : s.getRegions()) {
 		// System.out.println("\t" + r.getName());
@@ -290,7 +302,7 @@ public class Sketch {
 		app.addPen(pen);
 
 		// we need to add code that actually does stuff to each region
-		addEventHandlersToRegions(sheet);
+		addEventHandlersToRegions();
 
 		// show the ink display
 		getInkDisplay();
