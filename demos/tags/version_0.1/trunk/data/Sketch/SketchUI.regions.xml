@@ -1,0 +1,107 @@
+<RegionConfiguration>
+  <heightInPoints>
+    <unitName>Points</unitName>
+    <value>792.0</value>
+  </heightInPoints>
+  <regions>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>BlackPalette</name>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>70.656006</x>
+        <y>679.069992</y>
+        <width>77.10198999999999</width>
+        <height>73.05810600000001</height>
+      </shape>
+      <units class="Points">
+        <unitName>Points</unitName>
+        <value>70.656006</value>
+      </units>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>PurplePalette</name>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>167.550003</x>
+        <y>677.606003</y>
+        <width>77.20100399999998</width>
+        <height>75.600601</height>
+      </shape>
+      <units class="Points">
+        <unitName>Points</unitName>
+        <value>167.550003</value>
+      </units>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>OrangePalette</name>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>268.315002</x>
+        <y>676.862991</y>
+        <width>75.40100100000001</width>
+        <height>78.60020500000002</height>
+      </shape>
+      <units class="Points">
+        <unitName>Points</unitName>
+        <value>268.315002</value>
+      </units>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>MarkingMenu</name>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>459.859009</x>
+        <y>675.791</y>
+        <width>87.40100099999995</width>
+        <height>80.400803</height>
+      </shape>
+      <units class="Points">
+        <unitName>Points</unitName>
+        <value>459.859009</value>
+      </units>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>MainDrawingArea</name>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>47.344803</x>
+        <y>122.34497099999999</y>
+        <width>518.2421720000001</width>
+        <height>533.329025</height>
+      </shape>
+      <units class="Points">
+        <unitName>Points</unitName>
+        <value>47.344803</value>
+      </units>
+      <visible>true</visible>
+    </Region>
+  </regions>
+  <widthInPoints>
+    <unitName>Points</unitName>
+    <value>612.0</value>
+  </widthInPoints>
+</RegionConfiguration>

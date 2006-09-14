@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry path="src" kind="src"/>
+	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
+	<classpathentry path="/PaperToolkit" combineaccessrules="false" kind="src"/>
+	<classpathentry path="/PaperToolkit/lib/itext-1.4.3.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jfreechart/jcommon-1.0.5.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/comm/comm.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jfreechart/jfreechart-1.0.2.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jpedal/bcprov-jdk15-133.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/xstream/xpp3-1.1.3.4.O.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/epsgraphics.jar" kind="lib">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/PaperToolkit/lib/epsgraphics.jar!/javadocs"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry path="/PaperToolkit/lib/junit-4.1.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/looks-2.0.4.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/metadata-extractor-2.3.1.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/xstream/xstream-1.1.3.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jfreechart/jfreechart-1.0.2-experimental.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jpedal/jai_codec.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jpedal/jai_core.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jpedal/jdom.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jpedal/jpedalSTD.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jpedal/pjes.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jmf/jmf.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/BrowserLauncher2-10rc4.jar" kind="lib"/>
+	<classpathentry path="/PaperToolkit/lib/jmf/mp3plugin.jar" kind="lib"/>
+	<classpathentry path="bin" kind="output"/>
+</classpath>
