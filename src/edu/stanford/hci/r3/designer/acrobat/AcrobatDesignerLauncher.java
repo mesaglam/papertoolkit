@@ -174,9 +174,9 @@ public class AcrobatDesignerLauncher {
 	 * @return the directions for operating this app.
 	 */
 	private static Component getLabel() {
-		JLabel label = new JLabel("Drag a PDF on to the active area below to start the "
-				+ "R3 Acrobat Designer. You must have Acrobat Pro on your system, "
-				+ "with the R3 plugin installed.");
+		JLabel label = new JLabel("<html>Drag a PDF on to the active area below to start the "
+				+ "R3 Acrobat Designer. You must have Acrobat Pro <br/>on your system, "
+				+ "with the R3 plugin installed.</html>");
 		label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		return label;
 	}

@@ -230,8 +230,7 @@ public class AcrobatCommunicationServer {
 					String confirmation = CONFIRMATION.toString().replace("__PARENTURI__",
 							parentDir.toURI().toString());
 					confirmation = confirmation.replace("__FOLDERNAME__", parentDir.getName());
-					confirmation = confirmation.replace("__FILEURI__", outputFile.toURI()
-							.toString());
+					confirmation = confirmation.replace("__FILEURI__", outputFile.toURI().toString());
 					confirmation = confirmation.replace("__FILENAME__", outputFile.getName());
 
 					// tell the client to go away now
@@ -262,12 +261,13 @@ public class AcrobatCommunicationServer {
 	}
 
 	/**
+	 * We communicate the region information through a temporary XML file.
+	 * 
 	 * @param xml
 	 */
 	private void processXML(String xml) {
 		logToConsoleAndFile(xml);
-
-		File xmlFile = new File("data/designer/TemporaryXML.xml");
+		final File xmlFile = PaperToolkit.getResourceFile("/designer/TemporaryXML.xml");
 		FileWriter fw;
 		try {
 			fw = new FileWriter(xmlFile);
@@ -277,7 +277,7 @@ public class AcrobatCommunicationServer {
 			e.printStackTrace();
 		}
 
-		RegionConfigurationWriter writer = new RegionConfigurationWriter(xmlFile);
+		final RegionConfigurationWriter writer = new RegionConfigurationWriter(xmlFile);
 		writer.processXML();
 		outputFile = writer.getOutputFile();
 	}
