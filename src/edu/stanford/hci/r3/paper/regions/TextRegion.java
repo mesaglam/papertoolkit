@@ -1,12 +1,12 @@
 package edu.stanford.hci.r3.paper.regions;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
-import edu.stanford.hci.r3.render.regions.PolygonRenderer;
 import edu.stanford.hci.r3.render.regions.TextRenderer;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
@@ -14,17 +14,20 @@ import edu.stanford.hci.r3.util.StringUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Represents some text that can be drawn on a page.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * Represents some text that can be drawn on a page.
  */
 public class TextRegion extends Region {
 
 	private Rectangle2D bounds;
+
+	private Color color = new Color(100, 100, 100, 128);
 
 	private Font font;
 
@@ -77,11 +80,8 @@ public class TextRegion extends Region {
 		setName("A Text Region");
 	}
 
-	/**
-	 * @see edu.stanford.hci.r3.paper.Region#getRenderer()
-	 */
-	public RegionRenderer getRenderer() {
-		return new TextRenderer(this);
+	public Color getColor() {
+		return color;
 	}
 
 	/**
@@ -96,6 +96,13 @@ public class TextRegion extends Region {
 	 */
 	public String[] getLinesOfText() {
 		return lines;
+	}
+
+	/**
+	 * @see edu.stanford.hci.r3.paper.Region#getRenderer()
+	 */
+	public RegionRenderer getRenderer() {
+		return new TextRenderer(this);
 	}
 
 	/**
@@ -117,6 +124,10 @@ public class TextRegion extends Region {
 	 */
 	public Units getY() {
 		return originY;
+	}
+
+	public void setColor(Color c) {
+		color = c;
 	}
 
 	/**

@@ -13,8 +13,11 @@ import edu.stanford.hci.r3.units.Units;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Renders a Text Region.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -23,12 +26,17 @@ public class TextRenderer extends RegionRenderer {
 
 	private Font font;
 
+	/**
+	 * Calculate how big the text is.
+	 */
 	private LineMetrics lineMetrics;
 
 	private String text;
 
-	private Color textColor = new Color(100, 100, 100, 128);
-	
+	/**
+	 * Render the Text with this Color.
+	 */
+	private Color textColor;
 
 	/**
 	 * @param tr
@@ -38,16 +46,20 @@ public class TextRenderer extends RegionRenderer {
 		region = tr;
 		text = tr.getText();
 		font = tr.getFont();
+		textColor = tr.getColor();
 		lineMetrics = font.getLineMetrics(text, new FontRenderContext(null, true, true));
 	}
 
 	/**
 	 * @return
 	 */
-	public Units getAscentInPoints() {
+	public Points getAscentInPoints() {
 		return new Points(lineMetrics.getAscent());
 	}
 
+	/**
+	 * @return
+	 */
 	public Points getLineHeightInPoints() {
 		return new Points(lineMetrics.getHeight());
 	}
@@ -68,7 +80,7 @@ public class TextRenderer extends RegionRenderer {
 		// System.out.println(tr.getFont());
 
 		g2d.setColor(textColor);
-		
+
 		final double offset = getAscentInPoints().getValue();
 		final double textLineHeight = getLineHeightInPoints().getValue();
 

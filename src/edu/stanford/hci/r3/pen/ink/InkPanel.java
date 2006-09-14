@@ -13,6 +13,7 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
+ * Renders Ink in a JPanel using a very simple lineTo(...) method.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

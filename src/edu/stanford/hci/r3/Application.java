@@ -63,6 +63,7 @@ public class Application {
 	 */
 	public Application(String theName) {
 		name = theName;
+		initialize();
 	}
 
 	/**
@@ -81,6 +82,29 @@ public class Application {
 	public void addSheet(Sheet sheet) {
 		sheets.add(sheet);
 		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet));
+	}
+
+	
+	/**
+	 * <p>
+	 * Renders all of the sheets to different PDF files... If there are four Sheets, it will make
+	 * files as follows:<p/>
+	 * 
+	 * <code>
+	 * parentDirectory <br>
+	 * |_fileName_1.pdf <br>
+	 * |_fileName_2.pdf <br>
+	 * |_fileName_3.pdf <br>
+	 * |_fileName_4.pdf <br>
+	 * </code>
+	 */
+	public void renderToPDF(File parentDirectory, String fileNameWithoutExtension) {
+		DebugUtils.println("Rendering PDFs...");
+		for (int i = 0; i < sheets.size(); i++) {
+			File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + "_" + i + 1
+					+ ".pdf");
+			System.out.println("Rendering: " + destPDFFile.getName());
+		}
 	}
 
 	/**
@@ -105,12 +129,23 @@ public class Application {
 	}
 
 	/**
-	 * Serializes an application to disk.
+	 * This is an empty initialization method that developers can override if they choose to
+	 * subclass an Application instead of creating an empty App and adding sheets to it.
+	 * 
+	 * It is called by the constructor.
+	 */
+	protected void initialize() {
+		// do nothing, unless it is overridden.
+	}
+
+	/**
+	 * Serializes an application to disk. For now, uses the XML serialization. It might not be the
+	 * best...
 	 * 
 	 * @param appDirectory
 	 */
-	public void saveToDisk(File appDirectory) {
-		DebugUtils.println("Unimplemented Method");
+	public void saveToDisk(File appFile) {
+		PaperToolkit.toXML(this, appFile);
 	}
 
 	/**

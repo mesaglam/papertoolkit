@@ -1,5 +1,6 @@
-/**
- * 
+/*
+ * August 19, 2005 -- Merged AutoCompleteTextField with SuperJTextField (ronyeh)
+ * March 10, 2005 -- Created AutoCompleteTextField
  */
 package edu.stanford.hci.r3.util.components;
 
@@ -21,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.text.*;
 
 /**
+ * <p>
  * This JTextField is great for inputting text. It offers amazing features, so much so that you will
  * want to use it everywhere... After reading this, you will never use a JTextField again!
  * 
@@ -28,17 +30,16 @@ import javax.swing.text.*;
  * search. A typing listener needs to be installed needs to check for enter or backspace...
  * 
  * Features: Autocomplete, Input Hints
- * 
+ * </p>
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * TODO: Implement ComboBoxEditor to allow this to be an awesome combobox editor field.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> ( ronyeh(AT)cs.stanford.edu )
- * @changelog August 19, 2005 -- Merged AutoCompleteTextField with SuperJTextField (ronyeh)
- * @changelog March 10, 2005 -- Created AutoCompleteTextField
- * 
- * TODO: Implement ComboBoxEditor to allow this to be an awesome combobox editor field.
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class SuperJTextField extends JTextField {
 
@@ -78,7 +79,8 @@ public class SuperJTextField extends JTextField {
 			// if the current text is a parsable number, then we're done!
 			// don't autocomplete numbers
 			try {
-				// try to cause an exception here; if an exception, that means that it is NOT a number
+				// try to cause an exception here; if an exception, that means that it is NOT a
+				// number
 				// The exception will skip the return; line, and we will be able to continue
 				NumberFormat.getInstance().parse(myText);
 				// System.out.println("Number is: " + n);

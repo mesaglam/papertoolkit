@@ -9,11 +9,16 @@ import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Sends plain text pen samples. Great for debugging.
  * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ServerOutputPlainText implements PenServerOutput {
+public class PenServerPlainTextSender implements PenServerSender {
 
 	private Socket socket;
 
@@ -23,13 +28,13 @@ public class ServerOutputPlainText implements PenServerOutput {
 	 * @param sock
 	 * @throws IOException
 	 */
-	public ServerOutputPlainText(Socket sock) throws IOException {
+	public PenServerPlainTextSender(Socket sock) throws IOException {
 		socket = sock;
 		bos = new BufferedOutputStream(sock.getOutputStream());
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerOutput#sendSample(edu.stanford.hci.r3.pen.streaming.PenSample)
+	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerSender#sendSample(edu.stanford.hci.r3.pen.streaming.PenSample)
 	 */
 	public void sendSample(PenSample as) throws IOException {
 		bos.write((as.toCommaSeparatedString() + SystemUtils.LINE_SEPARATOR).getBytes());
@@ -37,7 +42,7 @@ public class ServerOutputPlainText implements PenServerOutput {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerOutput#destroy()
+	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerSender#destroy()
 	 */
 	public void destroy() {
 		try {

@@ -21,6 +21,12 @@ public class InkSample {
 
 	public double y;
 
+	/**
+	 * @param xVal
+	 * @param yVal
+	 * @param f
+	 * @param ts
+	 */
 	public InkSample(double xVal, double yVal, int f, long ts) {
 		x = xVal;
 		y = yVal;

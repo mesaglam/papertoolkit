@@ -16,26 +16,28 @@ import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
- * 
- * <p>
  * This sits on top of PatternPackage and/or TiledPattern to create PDFs that can be printed. It
  * uses the iText library to create and manipulate PDFs.
  * </p>
+ * <p>
+ * The circle approach works best. We draw and fill a circle the size of an Anoto pattern dot.
+ * </p>
+ * <p>
+ * Other approaches that this class supports:
  * 
- * So far, printing dots with the bullet point • in Tahoma works decently. We will also try drawing
- * circles, or using some sort of stamping pattern if possible.
+ * Printing dots with the bullet point • in Tahoma works decently. We will also try drawing circles,
+ * or using some sort of stamping pattern if possible.
  * 
  * setFontSize(...) is an important method, as you will need to adjust it based on your printer. We
  * picked a decent default (21 pt Tahoma) since it works for both of our printers.
  * 
  * ZapfDingbats seems to work even better, as it is a built-in Adobe font. The 'l' lowercase L
  * character looks like a dot. =)
- * 
- * We will try one more, template-based, approach.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */

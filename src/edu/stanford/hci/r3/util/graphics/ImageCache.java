@@ -1,6 +1,5 @@
 package edu.stanford.hci.r3.util.graphics;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -102,9 +101,10 @@ public class ImageCache {
 
 	/**
 	 * @param resource
+	 *            Allows you to get images from the JAR.
 	 * @return
 	 */
-	public static Image loadBufferedImage(URL resource) {
+	public static BufferedImage loadBufferedImage(URL resource) {
 		try {
 			return getInstance().getBufferedImage(new File(resource.toURI()));
 		} catch (URISyntaxException e) {

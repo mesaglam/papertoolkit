@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.printing;
 
 import java.awt.Desktop;
@@ -10,10 +7,10 @@ import java.io.IOException;
 import javax.print.PrintServiceLookup;
 
 /**
- * <p>
- * <span class="BSDLicense"> This software is distributed under the <a
- * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
- * </p>
+ * <p>Allows you to query and work with the system's Printers.</p>
+ * <p><span class="BSDLicense">
+ * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
+ * </span></p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */

@@ -60,7 +60,7 @@ public class Region {
 	 * Filters events and passes them to other event handlers (which are usually customized to the
 	 * event filter)...
 	 */
-	private List<ContentFilter> eventFilters = new ArrayList<ContentFilter>();
+	private List<ContentFilter> contentFilters = new ArrayList<ContentFilter>();
 
 	/**
 	 * All Regions can have event handlers that listen for pen events. If the event handler list is
@@ -157,8 +157,8 @@ public class Region {
 	/**
 	 * @param filter
 	 */
-	public void addEventFilter(ContentFilter filter) {
-		eventFilters.add(filter);
+	public void addContentFilter(ContentFilter filter) {
+		contentFilters.add(filter);
 		active = true;
 	}
 
@@ -177,7 +177,7 @@ public class Region {
 	 * @return
 	 */
 	public List<ContentFilter> getEventFilters() {
-		return eventFilters;
+		return contentFilters;
 	}
 
 	/**
@@ -342,12 +342,12 @@ public class Region {
 					+ "reserialize your Regions?");
 			eventHandlers = new ArrayList<EventHandler>();
 		}
-		if (eventFilters == null) {
+		if (contentFilters == null) {
 			System.err.println("Region.java:: [" + getName()
 					+ "]'s eventFilters list was unexpectedly null upon "
 					+ "deserialization with XStream. Perhaps you need to "
 					+ "reserialize your Regions?");
-			eventFilters = new ArrayList<ContentFilter>();
+			contentFilters = new ArrayList<ContentFilter>();
 		}
 
 		return this;

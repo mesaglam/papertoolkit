@@ -15,19 +15,22 @@ import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
 
 /**
+ * <p>
  * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the
  * Nokia SU-1B pen and converts it according to the Nokia Document.
  * 
  * The idea for this class is that it reports low-level pen events. It does not do any bit of
  * gesture recognition.
- * 
- * Example code is taken from: http://java.sun.com/products/javacomm/javadocs/API_users_guide.html
+ * </p>
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Example code is taken from: http://java.sun.com/products/javacomm/javadocs/API_users_guide.html
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> ( ronyeh(AT)cs.stanford.edu )
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PenStreamingConnection implements SerialPortEventListener {
 

@@ -1,10 +1,20 @@
 package edu.stanford.hci.r3.designer.acrobat;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -33,8 +43,11 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class AcrobatCommunicationServer {
 
-	private static final StringBuilder CONFIRMATION = FileUtils.readFileIntoStringBuffer(new File(
-			"data/designer/Confirmation.html"), false /* no new lines */);
+	/**
+	 * The RESPONSE to send to Acrobat Pro.
+	 */
+	private static final StringBuilder CONFIRMATION = FileUtils.readFileIntoStringBuffer(
+			PaperToolkit.getResourceFile("/designer/Confirmation.html"), false /* no new lines */);
 
 	private static AcrobatCommunicationServer server;
 
@@ -55,7 +68,7 @@ public class AcrobatCommunicationServer {
 		}
 		try {
 			server = new AcrobatCommunicationServer(8888, new FileOutputStream(new File(
-					"data/designer/AcrobatCommunicationServer.log")));
+					"AcrobatCommunicationServer.log")));
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

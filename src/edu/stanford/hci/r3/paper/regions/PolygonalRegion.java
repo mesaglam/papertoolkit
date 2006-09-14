@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.paper.regions;
 
+import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
@@ -11,10 +12,6 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
  * Polygonal Regions store the individual vertices and the units to interpret the vertices.
  * 
  * WARNING: Java2D Polygons only accept integer values! Thus, it might not be smart to pass in
@@ -28,11 +25,20 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  * Points from Inches to Points, call PolygonalRegion(new Inches(), new Points(), Point2D vertex1,
  * Point2D vertex2, ...). Of course, with Java's varargs, you can pass in a Point2D[] as the final
  * argument.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PolygonalRegion extends Region {
 
+	/**
+	 * @param points
+	 * @return
+	 */
 	private static double getMinX(Point2D[] points) {
 		double minX = Double.MAX_VALUE;
 		for (Point2D p : points) {
@@ -41,6 +47,10 @@ public class PolygonalRegion extends Region {
 		return minX;
 	}
 
+	/**
+	 * @param points
+	 * @return
+	 */
 	private static double getMinY(Point2D[] points) {
 		double minY = Double.MAX_VALUE;
 		for (Point2D p : points) {
@@ -52,6 +62,10 @@ public class PolygonalRegion extends Region {
 	private Units offsetX;
 
 	private Units offsetY;
+
+	private Color strokeColor = Color.BLACK;
+
+	private int strokeThickness = 1;
 
 	/**
 	 * Creates a polygon with origin at the first point that was passed in.
@@ -96,7 +110,7 @@ public class PolygonalRegion extends Region {
 		// save these around for later
 		offsetX = originX;
 		offsetY = originY;
-		
+
 		setName("A Polygonal Region");
 	}
 
@@ -126,6 +140,22 @@ public class PolygonalRegion extends Region {
 	 */
 	public RegionRenderer getRenderer() {
 		return new PolygonRenderer(this);
+	}
+
+	public Color getStrokeColor() {
+		return strokeColor;
+	}
+
+	public int getStrokeThickness() {
+		return strokeThickness;
+	}
+
+	public void setStrokeColor(Color strokeColor) {
+		this.strokeColor = strokeColor;
+	}
+
+	public void setStrokeThickness(int strokeThickness) {
+		this.strokeThickness = strokeThickness;
 	}
 
 	/**

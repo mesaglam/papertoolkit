@@ -17,10 +17,9 @@ import edu.stanford.hci.r3.util.communications.COMPort;
  * The Pen object abstracts the lower level connections with the streaming server/client, and
  * dealing with batched ink input. It also interfaces with event handling in the system.
  * </p>
- * 
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
- * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -28,9 +27,21 @@ import edu.stanford.hci.r3.util.communications.COMPort;
 public class Pen {
 
 	/**
-	 * Do something with this. TODO: Make PenStreamingConnection use this instead of a String.
+	 * Do something with this.
+	 * 
+	 * TODO: Make PenStreamingConnection use this instead of a String.
 	 */
 	public static final COMPort DEFAULT_COM_PORT = COMPort.COM5;
+
+	/**
+	 * The local machine.
+	 */
+	private static final String LOCALHOST = "localhost";
+
+	/**
+	 * Where to connect when we go live.
+	 */
+	private String defaultPenServer;
 
 	/**
 	 * TRUE if the Pen object is currently connected to the physical pen in streaming mode.
@@ -47,19 +58,32 @@ public class Pen {
 	/**
 	 * A simple default name.
 	 */
-	private String name = "A Pen";
+	private String name;
 
 	/**
-	 * 
+	 * Can't use this constructor too many times, because you can only have ONE physical pen
+	 * connected to the localhost's pen server. However, you can have two pen objects listen to the
+	 * same localhost server if you wish. They will just get the same data.
 	 */
 	public Pen() {
+		this("A Pen");
 	}
 
 	/**
 	 * @param name
 	 */
 	public Pen(String name) {
+		this(name, LOCALHOST);
+	}
+
+	/**
+	 * @param name
+	 *            name the pen so you can identify it later
+	 * @param penServer
+	 */
+	public Pen(String name, String penServer) {
 		setName(name);
+		defaultPenServer = penServer;
 	}
 
 	/**
@@ -111,10 +135,11 @@ public class Pen {
 
 	/**
 	 * Connects to the pen connection on the local machine, with the default com port. This will
-	 * ensure the PenServer on the local machine is running.
+	 * ensure the PenServer on the local machine is running. This will be called by the PaperToolkit
+	 * when you start an application.
 	 */
 	public void startLiveMode() {
-		startLiveMode("localhost");
+		startLiveMode(defaultPenServer);
 	}
 
 	/**
@@ -125,17 +150,21 @@ public class Pen {
 	 * @param hostDomainNameOrIPAddr
 	 */
 	public void startLiveMode(String hostDomainNameOrIPAddr) {
-		if (hostDomainNameOrIPAddr.equals("localhost")) {
+		if (hostDomainNameOrIPAddr.equals(LOCALHOST)) {
 			// ensure that a java server has been started on this machine
 			if (!PenServer.javaServerStarted()) {
 				PenServer.startJavaServer();
 			}
 		}
-
-		livePenClient = new PenClient(hostDomainNameOrIPAddr, PenServer.DEFAULT_JAVA_PORT,
-				ClientServerType.JAVA);
-		livePenClient.connect();
-		liveMode = true;
+		if (livePenClient == null && !isLive()) {
+			livePenClient = new PenClient(hostDomainNameOrIPAddr, PenServer.DEFAULT_JAVA_PORT,
+					ClientServerType.JAVA);
+			livePenClient.connect();
+			liveMode = true;
+		} else {
+			DebugUtils.println("Pen [" + getName() + "] is already live. "
+					+ "You are trying to connect again.");
+		}
 	}
 
 	/**

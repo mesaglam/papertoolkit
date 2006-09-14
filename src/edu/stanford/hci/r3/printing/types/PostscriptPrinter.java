@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.printing.postscript;
+package edu.stanford.hci.r3.printing.types;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,17 +17,28 @@ import javax.print.attribute.HashDocAttributeSet;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 
+import edu.stanford.hci.r3.printing.Printer;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Enables you to print Postscript files.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PostscriptPrinter {
+public class PostscriptPrinter extends Printer {
+
+	/**
+	 * @param serv
+	 */
+	public PostscriptPrinter(PrintService serv) {
+		super(serv);
+	}
 
 	/**
 	 * Sends the designated PSFile to the Default Printer.

@@ -198,7 +198,7 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * 
+	 * For debugging.
 	 */
 	public void printMapping() {
 		for (Region r : regionToPatternBounds.keySet()) {

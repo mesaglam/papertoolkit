@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.networking.ClientServerType;
-import edu.stanford.hci.r3.pen.streaming.data.PenServerOutput;
-import edu.stanford.hci.r3.pen.streaming.data.ServerOutputJavaObjectXML;
-import edu.stanford.hci.r3.pen.streaming.data.ServerOutputPlainText;
+import edu.stanford.hci.r3.pen.streaming.data.PenServerSender;
+import edu.stanford.hci.r3.pen.streaming.data.PenServerJavaObjectXMLSender;
+import edu.stanford.hci.r3.pen.streaming.data.PenServerPlainTextSender;
 
 /**
  * <p>
@@ -54,9 +54,9 @@ public class PenServer implements PenListener {
 				if (s != null) {
 					try {
 						if (serverType == ClientServerType.PLAINTEXT) {
-							outputs.add(new ServerOutputPlainText(s));
+							outputs.add(new PenServerPlainTextSender(s));
 						} else { // serverType == Java Server
-							outputs.add(new ServerOutputJavaObjectXML(s));
+							outputs.add(new PenServerJavaObjectXMLSender(s));
 						}
 					} catch (IOException ioe) {
 						try {
@@ -212,7 +212,7 @@ public class PenServer implements PenListener {
 
 	private boolean exitFlag = false;
 
-	private List<PenServerOutput> outputs;
+	private List<PenServerSender> outputs;
 
 	/**
 	 * Is the pen currently UP (not touching a patterned page)
@@ -230,7 +230,7 @@ public class PenServer implements PenListener {
 	public PenServer(ServerSocket ss, ClientServerType type) {
 		serverSocket = ss;
 		serverType = type;
-		outputs = new ArrayList<PenServerOutput>();
+		outputs = new ArrayList<PenServerSender>();
 
 		// start thread to accept connections
 		new ServerThread().start();
@@ -269,9 +269,9 @@ public class PenServer implements PenListener {
 	 * @see edu.stanford.hci.r3.pen.streaming.PenListener#sample(edu.stanford.hci.r3.pen.streaming.PenSample)
 	 */
 	public void sample(PenSample sample) {
-		final List<PenServerOutput> toRemove = new ArrayList<PenServerOutput>();
+		final List<PenServerSender> toRemove = new ArrayList<PenServerSender>();
 
-		for (PenServerOutput out : outputs) {
+		for (PenServerSender out : outputs) {
 			try {
 				out.sendSample(sample);
 			} catch (IOException ioe) {
@@ -280,7 +280,7 @@ public class PenServer implements PenListener {
 			}
 		}
 
-		for (PenServerOutput penServerOutput : toRemove) {
+		for (PenServerSender penServerOutput : toRemove) {
 			penServerOutput.destroy();
 			outputs.remove(penServerOutput);
 		}

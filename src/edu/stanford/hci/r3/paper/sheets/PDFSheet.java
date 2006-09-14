@@ -13,14 +13,16 @@ import edu.stanford.hci.r3.units.Points;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Create a Sheet that is based on a single page of a PDF file. Since a sheet is one page, if we
+ * have a multipage PDF, we can only access one page of it. Later on, we will add support for
+ * Bundles to read multipage PDFs.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * Create a Sheet that is based on a single page of a PDF file. Since a sheet is one page, if we
- * haev a multipage PDF, we can only access one page of it.
  */
 public class PDFSheet extends Sheet {
 

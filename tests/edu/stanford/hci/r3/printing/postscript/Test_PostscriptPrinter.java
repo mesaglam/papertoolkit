@@ -3,6 +3,7 @@ package edu.stanford.hci.r3.printing.postscript;
 import java.io.File;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.printing.types.PostscriptPrinter;
 
 /**
  * <p>
