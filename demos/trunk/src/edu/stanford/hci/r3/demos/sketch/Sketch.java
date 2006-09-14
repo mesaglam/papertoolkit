@@ -124,7 +124,7 @@ public class Sketch {
 						+ " strokes have been collected");
 			}
 		});
-		regionMain.addEventFilter(inkWell);
+		regionMain.addContentFilter(inkWell);
 
 		Region regionBlack = sheet.getRegion("BlackPalette");
 		regionBlack.addEventHandler(new ClickAdapter() {
@@ -169,6 +169,8 @@ public class Sketch {
 					inkWell.saveToXMLFile(new File("data/Sketch/InkOutput.xml"));
 					break;
 				case N: // send to screen...
+				case NW:
+				case NE:
 					Ink ink = inkWell.getNewInkOnly();
 					if (ink.getNumStrokes() > 0) {
 						ink.setColor(currentColor);
@@ -178,11 +180,13 @@ public class Sketch {
 					}
 					break;
 				case S: // clear the screen!
+				case SE:
 					System.out.println("Clearing....");
 					inkPanel.clear();
 					inkWell.clear();
 					break;
 				case W: // undo the last stroke
+				case SW:
 					System.out.println("Undoing....");
 					inkPanel.removeLastBatchOfInk();
 					break;
@@ -218,6 +222,9 @@ public class Sketch {
 		return inkPanel;
 	}
 
+	/**
+	 * @return
+	 */
 	private Container getMainPanel() {
 		if (mainPanel == null) {
 			mainPanel = new JPanel();
@@ -228,6 +235,9 @@ public class Sketch {
 		return mainPanel;
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getStatusPanel() {
 		if (statusPanel == null) {
 			statusPanel = new JPanel();
@@ -271,17 +281,12 @@ public class Sketch {
 	 */
 	private void runApplication() {
 		// Our main paper application
-		Application app = new Application("Sketch!");
-
 		// an application contains one or more sheets
+		Application app = new Application("Sketch!");
 		app.addSheet(sheet);
 
-		Pen pen = new Pen("Main Pen");
-		pen.startLiveMode(); // the pen is attached to the local machine
-		// if you are adventurous, you can add listeners DIRECTLY to the pen
-		// however, that's too low level for us, so we add listeners to the regions instead
-
 		// the application has to know about this pen
+		Pen pen = new Pen("Main Pen");
 		app.addPen(pen);
 
 		// we need to add code that actually does stuff to each region
