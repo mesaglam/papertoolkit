@@ -50,24 +50,26 @@ public class CompoundRenderer extends RegionRenderer {
 
 		final AffineTransform oldTransform = new AffineTransform(g2d.getTransform());
 		// offset by the origin
-		g2d.getTransform().translate(originXPts, originYPts);
 		final AffineTransform originTransform = new AffineTransform(g2d.getTransform());
-		System.out.println(originTransform);
+		originTransform.translate(originXPts, originYPts);
 
 		System.out.println("Rendering Compound Region");
 		Set<Region> children = compoundRegion.getChildren();
 		for (Region child : children) {
+			g2d.setTransform(originTransform); // start from the origin
+
 			// move to the correct offset in Points
 			Coordinates childOffset = compoundRegion.getChildOffset(child);
 			final double xOffsetPts = childOffset.getX().getValueInPoints();
 			final double yOffsetPts = childOffset.getY().getValueInPoints();
 			DebugUtils.println("Rendering Child Region: [" + child.getName()
 					+ "] with Child Offset: " + childOffset);
-			g2d.getTransform().translate(xOffsetPts, yOffsetPts); // push a transform matrix
+			final AffineTransform translated = g2d.getTransform();
+			translated.translate(xOffsetPts, yOffsetPts);
+			g2d.setTransform(translated); // move to the correct offset
 			System.out.println(g2d.getTransform());
 			final RegionRenderer renderer = child.getRenderer();
 			renderer.renderToG2D(g2d);
-			g2d.setTransform(originTransform); // pop the transform matrix
 		}
 
 		g2d.setTransform(oldTransform);

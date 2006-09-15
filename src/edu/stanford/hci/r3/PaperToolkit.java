@@ -3,6 +3,7 @@ package edu.stanford.hci.r3;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -486,6 +487,14 @@ public class PaperToolkit {
 									// start rendering
 									selectedApp.renderToPDF(folderToSavePDFs, selectedApp.getName());
 									DebugUtils.println("Done Rendering.");
+									
+									// open the folder in explorer! =)
+									try {
+										Desktop.getDesktop().open(folderToSavePDFs);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+									
 									progress.setVisible(false);
 									progress = null;
 								}

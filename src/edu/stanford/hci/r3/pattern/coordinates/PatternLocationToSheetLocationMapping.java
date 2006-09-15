@@ -183,7 +183,7 @@ public class PatternLocationToSheetLocationMapping {
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadConfigurationFromXML(File xmlFile) {
-		HashMap<RegionID, TiledPatternCoordinateConverter> regionIDToPattern = (HashMap<RegionID, TiledPatternCoordinateConverter>) PaperToolkit
+		final HashMap<RegionID, TiledPatternCoordinateConverter> regionIDToPattern = (HashMap<RegionID, TiledPatternCoordinateConverter>) PaperToolkit
 				.fromXML(xmlFile);
 		for (Region r : regionToPatternBounds.keySet()) {
 			RegionID xmlKey = new RegionID(r);

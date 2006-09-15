@@ -18,6 +18,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.paper.regions.CompoundRegion;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -129,7 +130,7 @@ public class SheetRenderer {
 		// adjust the font size of the pattern...
 		pgen.adjustPatternSize(patternDotSizeAdjustment);
 
-		// render each region
+		// render each region that is active
 		for (Region r : regions) {
 			if (!r.isActive()) {
 				continue;
@@ -138,15 +139,15 @@ public class SheetRenderer {
 			System.out.println("SheetRenderer: Rendering Pattern!");
 			System.out.println("SheetRenderer: " + r.getShape());
 
-			// TODO: later on, figure out the real width and height....
-			final Units unscaledWidth = r.getUnscaledBoundsWidth();
-			final Units unscaledHeight = r.getUnscaledBoundsHeight();
+			// Figure out the real width and height....
+			final Units scaledWidth = r.getWidth();
+			final Units scaledHeight = r.getHeight();
 
 			// get pattern of the given width and height
 			// by default, the pattern returned will be unique if possible (and a warning thrown
 			// otherwise). If you want to use the same pattern in different places, you will
 			// need to keep the returned pattern object around
-			final TiledPattern pattern = generator.getPattern(unscaledWidth, unscaledHeight);
+			final TiledPattern pattern = generator.getPattern(scaledWidth, scaledHeight);
 
 			DebugUtils.println(r.getOriginX() + " " + r.getOriginY());
 
@@ -155,14 +156,29 @@ public class SheetRenderer {
 
 			// also, at this point, we know what pattern we have assigned to each region
 			// we should be able to assign a tile configuration to each region
-			TiledPatternCoordinateConverter tiledPatternInRegion = patternInformation
+			final TiledPatternCoordinateConverter tiledPatternInRegion = patternInformation
 					.getPatternBoundsOfRegion(r);
 			// set all the information here
-			tiledPatternInRegion.readPatternInformationFrom(pattern);
+			tiledPatternInRegion.setPatternInformationByReadingItFrom(pattern);
 			// now, this object is modified
 			// since it is already mapped to the correct region r, we do not need
 			// to do anything else!
 		}
+
+		// /////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////
+		// FOR NOW, SPECIAL CASE THE COMPOUND REGIONS
+		// IN THE FUTURE, FIGURE OUTHOW TO INTEGRATE IT NICELY
+		// /////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////
+		// for (Region r : regions) {
+		// if (r instanceof CompoundRegion) {
+		// DebugUtils.println("Rendering Pattern for Compound Region!");
+		// }
+		// }
+		// 
+		// MUST REARCHITECT Pattern Rendering & Event Handling if we are to allow Compound Regions
+		// This is for R3 version 0.2 =\ AFTER September 29th...
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.paper;
 
+import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
@@ -102,6 +103,8 @@ public class Region {
 	 * the scaleX and scaleY parameters to adjust the width and height.
 	 */
 	private Shape shape;
+
+	private Color strokeColor = Color.BLACK;
 
 	/**
 	 * By default, regions are visible (they tend to be images, pattern, etc). However, if you would
@@ -266,6 +269,10 @@ public class Region {
 		return shape;
 	}
 
+	public Color getStrokeColor() {
+		return strokeColor;
+	}
+
 	/**
 	 * TODO: We should make sure that Units objects immutable if possible.
 	 * 
@@ -419,6 +426,10 @@ public class Region {
 	 */
 	protected void setShape(Shape s) {
 		shape = s;
+	}
+
+	public void setStrokeColor(Color strokeCol) {
+		strokeColor = strokeCol;
 	}
 
 	/**

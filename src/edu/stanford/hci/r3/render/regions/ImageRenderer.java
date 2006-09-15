@@ -47,6 +47,7 @@ public class ImageRenderer extends RegionRenderer {
 		if (RegionRenderer.DEBUG_REGIONS) {
 			super.renderToG2D(g2d);
 		}
+		// final AffineTransform oldTransform = new AffineTransform(g2d.getTransform());
 		final File file = imgRegion.getFile();
 		final Units units = imgRegion.getUnits();
 		final double ppi = imgRegion.getPixelsPerInch(); // default is 72
@@ -64,5 +65,6 @@ public class ImageRenderer extends RegionRenderer {
 		// resize the image based on its pixelsPerInch
 		transform.scale(ppiConversion, ppiConversion);
 		g2d.drawRenderedImage(image, transform);
+		// g2d.setTransform(oldTransform);
 	}
 }

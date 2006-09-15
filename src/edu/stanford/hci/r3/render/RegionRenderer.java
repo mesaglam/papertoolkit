@@ -83,14 +83,6 @@ public class RegionRenderer {
 	 *            subclass would want to override this and NOT call the super.renderToG2D(...)
 	 */
 	public void renderToG2D(Graphics2D g2d) {
-		if (DEBUG_REGIONS) {
-			DebugUtils.println("Debugging regions in renderToG2D(...)");
-			// a subclass that normally would not render these gray rectangles is asking us to...
-			// so, go on....
-		}
-
-		g2d.setFont(FONT);
-
 		final Rectangle2D b = region.getUnscaledBounds2D();
 
 		final float scaleX = (float) region.getScaleX();
@@ -111,35 +103,41 @@ public class RegionRenderer {
 		final int finalH = (int) Math.round(hPts * scaleY);
 
 		// handle different regions differently
+
 		g2d.setStroke(OUTLINE);
-		g2d.setColor(Color.BLACK);
+		g2d.setColor(region.getStrokeColor());
 		g2d.drawRect(finalX, finalY, finalW, finalH);
-		g2d.setColor(REGION_COLOR);
-		g2d.fillRect(finalX, finalY, finalW, finalH);
-		g2d.setColor(TEXT_COLOR);
-		final String regionString = region.toString();
 
-		final Rectangle2D stringBounds = FONT.getStringBounds(regionString, new FontRenderContext(
-				null, true, true));
-		final double lineWidth = stringBounds.getWidth();
-		final int lineHeight = MathUtils.rint(stringBounds.getHeight());
-		final int lengthOfString = regionString.length();
+		if (DEBUG_REGIONS) { // draw some debug text and fill in the region
+			DebugUtils.println("Debugging regions in renderToG2D(...)");
+			g2d.setFont(FONT);
+			g2d.setColor(REGION_COLOR);
+			g2d.fillRect(finalX, finalY, finalW, finalH);
+			g2d.setColor(TEXT_COLOR);
+			final String regionString = region.toString();
 
-		if (finalW > lineWidth) {
-			g2d.drawString(regionString, finalX, finalY + lineHeight);
-		} else {
+			final Rectangle2D stringBounds = FONT.getStringBounds(regionString,
+					new FontRenderContext(null, true, true));
+			final double lineWidth = stringBounds.getWidth();
+			final int lineHeight = MathUtils.rint(stringBounds.getHeight());
+			final int lengthOfString = regionString.length();
 
-			// the box is not wide enough
-			final double fraction = finalW / lineWidth;
-			final int maxCharsPerLine = (int) (fraction * lengthOfString);
+			if (finalW > lineWidth) {
+				g2d.drawString(regionString, finalX, finalY + lineHeight);
+			} else {
 
-			// split the string so it's more readable
-			final List<String> lines = StringUtils.splitString(regionString, maxCharsPerLine);
-			double yOffset = finalY + lineHeight;
-			final int xOffset = finalX + 3;
-			for (String line : lines) {
-				g2d.drawString(line, xOffset, (int) Math.round(yOffset));
-				yOffset += lineHeight;
+				// the box is not wide enough
+				final double fraction = finalW / lineWidth;
+				final int maxCharsPerLine = (int) (fraction * lengthOfString);
+
+				// split the string so it's more readable
+				final List<String> lines = StringUtils.splitString(regionString, maxCharsPerLine);
+				double yOffset = finalY + lineHeight;
+				final int xOffset = finalX + 3;
+				for (String line : lines) {
+					g2d.drawString(line, xOffset, (int) Math.round(yOffset));
+					yOffset += lineHeight;
+				}
 			}
 		}
 	}
