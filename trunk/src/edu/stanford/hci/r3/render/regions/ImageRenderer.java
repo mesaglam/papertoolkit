@@ -14,7 +14,7 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
 
 /**
  * <p>
- * Renders an ImageRegion to a graphics context or PDF file (not yet finished).
+ * Renders an ImageRegion to a graphics context or PDF file.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -39,6 +39,8 @@ public class ImageRenderer extends RegionRenderer {
 	}
 
 	/**
+	 * Render the image to a graphics context, given the pixels per inch scaling.
+	 * 
 	 * @see edu.stanford.hci.r3.render.RegionRenderer#renderToG2D(java.awt.Graphics2D)
 	 */
 	public void renderToG2D(Graphics2D g2d) {
@@ -47,6 +49,8 @@ public class ImageRenderer extends RegionRenderer {
 		}
 		final File file = imgRegion.getFile();
 		final Units units = imgRegion.getUnits();
+		final double ppi = imgRegion.getPixelsPerInch(); // default is 72
+		final double ppiConversion = 72 / ppi;
 		final double conv = units.getConversionTo(new Points());
 		final PlanarImage image = ImageCache.loadPlanarImage(file);
 		final AffineTransform transform = new AffineTransform();
@@ -55,7 +59,10 @@ public class ImageRenderer extends RegionRenderer {
 
 		// translate to the origin first!
 		transform.translate(imgRegion.getX() * conv, imgRegion.getY() * conv);
-		transform.scale(imgRegion.getScaleX(), imgRegion.getScaleY()); // then resize the image
+		// resize the image based on its scale
+		transform.scale(imgRegion.getScaleX(), imgRegion.getScaleY());
+		// resize the image based on its pixelsPerInch
+		transform.scale(ppiConversion, ppiConversion);
 		g2d.drawRenderedImage(image, transform);
 	}
 }

@@ -31,6 +31,8 @@ public class ImageRegion extends Region {
 	 */
 	private Rectangle2D imageRect;
 
+	private double pixelsPerInch;
+
 	/**
 	 * This constructor interprets the image as 72 pixels per physical inch. Use the alternate
 	 * constructor if you feel otherwise. ;)
@@ -55,7 +57,8 @@ public class ImageRegion extends Region {
 		// figure out the shape of this image, by loading it and determining the dimensions
 		final Dimension dimension = ImageUtils.readSize(imgFile);
 
-		double ppi = pixelConversion.getPixelsPerInch();
+		// infer the physical size of the photo from this value
+		pixelsPerInch = pixelConversion.getPixelsPerInch();
 
 		imageFile = imgFile;
 
@@ -64,13 +67,13 @@ public class ImageRegion extends Region {
 
 		// create a Rectangle from origin X, Y, with the correct dimensions (72 pixels per inch)
 		final Rectangle2D.Double rect = new Rectangle2D.Double(originX.getValue(), originY
-				.getValueIn(u), new Pixels(dimension.getWidth(), ppi).getValueIn(u), new Pixels(
-				dimension.getHeight(), ppi).getValueIn(u));
+				.getValueIn(u), new Pixels(dimension.getWidth(), pixelsPerInch).getValueIn(u),
+				new Pixels(dimension.getHeight(), pixelsPerInch).getValueIn(u));
 		// System.out.println(rect);
 		setShape(rect);
 		imageRect = rect;
 
-		setName("An Image Region");
+		setName("An Image Region: " + imgFile.getName());
 	}
 
 	/**
@@ -85,6 +88,13 @@ public class ImageRegion extends Region {
 	 */
 	public double getHeightVal() {
 		return imageRect.getHeight() * scaleY;
+	}
+
+	/**
+	 * @return
+	 */
+	public double getPixelsPerInch() {
+		return pixelsPerInch;
 	}
 
 	/**

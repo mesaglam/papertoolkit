@@ -78,12 +78,14 @@ public class RegionRenderer {
 
 	/**
 	 * @param g2d
-	 *            Draw some boxes to the Graphics context to show where the regions lie.
+	 *            Draw some boxes to the Graphics context to show where the regions lie. Normally, a
+	 *            subclass would want to override this and NOT call the super.renderToG2D(...)
 	 */
 	public void renderToG2D(Graphics2D g2d) {
 		if (DEBUG_REGIONS) {
 			DebugUtils.println("Debugging regions in renderToG2D(...)");
-			return;
+			// a subclass that normally would not render these gray rectangles is asking us to...
+			// so, go on....
 		}
 
 		g2d.setFont(FONT);

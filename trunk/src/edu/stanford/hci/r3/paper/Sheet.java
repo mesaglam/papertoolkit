@@ -10,6 +10,7 @@ import java.util.Set;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
+import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Size;
 import edu.stanford.hci.r3.units.Units;
@@ -55,15 +56,15 @@ public class Sheet {
 	private Set<File> configurationPaths = new HashSet<File>();
 
 	/**
+	 * Internal datastructure for indexing a region by its name.
+	 */
+	private Map<String, Region> regionNameToRegionObject = new HashMap<String, Region>();
+
+	/**
 	 * A list of all the regions contained on this sheet. This is the master list. We may keep other
 	 * lists for convenience or efficiency.
 	 */
 	private List<Region> regions = new ArrayList<Region>();
-
-	/**
-	 * Internal datastructure for indexing a region by its name.
-	 */
-	private Map<String, Region> regionNameToRegionObject = new HashMap<String, Region>();
 
 	/**
 	 * Represents the rectangular size of this Sheet.
@@ -144,6 +145,13 @@ public class Sheet {
 	}
 
 	/**
+	 * @return a new Renderer for this object.
+	 */
+	public SheetRenderer getRenderer() {
+		return new SheetRenderer(this);
+	}
+
+	/**
 	 * @return directories to look in for files like the patterned pdf, patternInfo.xml, or
 	 *         regions.xml files.
 	 */
@@ -156,6 +164,15 @@ public class Sheet {
 	 */
 	public Units getHeight() {
 		return size.getHeight();
+	}
+
+	/**
+	 * @param regionName
+	 *            This will only work if the names are unique.
+	 * @return the region with this name...
+	 */
+	public Region getRegion(String regionName) {
+		return regionNameToRegionObject.get(regionName);
 	}
 
 	/**
@@ -224,15 +241,6 @@ public class Sheet {
 		sb.append(i + "}\n");
 		sb.append("}\n");
 		return sb.toString();
-	}
-
-	/**
-	 * @param regionName
-	 *            This will only work if the names are unique.
-	 * @return the region with this name...
-	 */
-	public Region getRegion(String regionName) {
-		return regionNameToRegionObject.get(regionName);
 	}
 
 	/**

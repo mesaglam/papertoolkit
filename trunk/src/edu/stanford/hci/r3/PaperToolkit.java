@@ -20,14 +20,20 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
@@ -50,6 +56,8 @@ import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.StringUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
+import edu.stanford.hci.r3.util.components.EndlessProgressDialog;
+import edu.stanford.hci.r3.util.files.FileUtils;
 import edu.stanford.hci.r3.util.layout.StackedLayout;
 
 /**
@@ -137,6 +145,13 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * 
+	 */
+	public static void startAcrobatDesigner() {
+		AcrobatDesignerLauncher.start();
+	}
+
+	/**
 	 * @param obj
 	 * @return a string representing the object translated into XML
 	 */
@@ -169,10 +184,16 @@ public class PaperToolkit {
 		getXMLEngine().toXML(object, stream);
 	}
 
+	private JTextArea appDetailsPanel;
+
+	private JScrollPane appDetailsScrollPane;
+
 	/**
 	 * Stop, run, pause applications.
 	 */
 	private JFrame appManager;
+
+	private JPanel appsInspectorPanel;
 
 	private JPanel controls;
 
@@ -205,6 +226,8 @@ public class PaperToolkit {
 	private JLabel mainMessage;
 
 	private JButton printSheetsButton;
+
+	private EndlessProgressDialog progress;
 
 	/**
 	 * The Run Queue.
@@ -245,6 +268,28 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @return
+	 */
+	private Component getAppDetailsPane() {
+		if (appDetailsScrollPane == null) {
+			appDetailsScrollPane = new JScrollPane(getAppDetailsTextArea());
+		}
+		return appDetailsScrollPane;
+	}
+
+	/**
+	 * @return
+	 */
+	private JTextArea getAppDetailsTextArea() {
+		if (appDetailsPanel == null) {
+			appDetailsPanel = new JTextArea(8, 50 /* cols */);
+			appDetailsPanel.setBackground(new Color(240, 240, 240));
+			appDetailsPanel.setEditable(false);
+		}
+		return appDetailsPanel;
+	}
+
+	/**
 	 * Allows an end user to stop, start, and otherwise manage loaded applications.
 	 * 
 	 * @return
@@ -255,7 +300,7 @@ public class PaperToolkit {
 
 			appManager.setLayout(new BorderLayout());
 			appManager.add(getMainMessage(), BorderLayout.NORTH);
-			appManager.add(getListOfApps(), BorderLayout.CENTER);
+			appManager.add(getAppsInspectorPanel(), BorderLayout.CENTER);
 			appManager.add(getExitAppManagerButton(), BorderLayout.SOUTH);
 			appManager.add(getControls(), BorderLayout.EAST);
 
@@ -271,13 +316,25 @@ public class PaperToolkit {
 	/**
 	 * @return
 	 */
+	private Component getAppsInspectorPanel() {
+		if (appsInspectorPanel == null) {
+			appsInspectorPanel = new JPanel();
+			appsInspectorPanel.setLayout(new BorderLayout());
+			appsInspectorPanel.add(getListOfApps(), BorderLayout.CENTER);
+			appsInspectorPanel.add(getAppDetailsPane(), BorderLayout.SOUTH);
+		}
+		return appsInspectorPanel;
+	}
+
+	/**
+	 * @return
+	 */
 	private Component getControls() {
 		if (controls == null) {
 			controls = new JPanel();
 			controls.setLayout(new StackedLayout(StackedLayout.VERTICAL));
-
 			controls.add(getDesignSheetsButton(), "TopWide");
-			controls.add(getPrintSheetsButton(), "TopWide");
+			controls.add(getRenderSheetsButton(), "TopWide");
 			controls.add(getStartApplicationButton(), "TopWide");
 			controls.add(getStopApplicationButton(), "TopWide");
 		}
@@ -300,7 +357,6 @@ public class PaperToolkit {
 		return designSheetsButton;
 	}
 
-
 	/**
 	 * @return
 	 */
@@ -322,7 +378,14 @@ public class PaperToolkit {
 		}
 		return exitAppManagerButton;
 	}
-	
+
+	/**
+	 * @return where to save our Sheet PDFs. NULL if the user cancels.
+	 */
+	private File getFolderToSavePDFs() {
+		return FileUtils.showDirectoryChooser(appManager, "Choose a Directory for your PDFs");
+	}
+
 	/**
 	 * @return a GUI list of loaded applications (running or not). Grey out the ones that are not
 	 *         running.
@@ -339,6 +402,16 @@ public class PaperToolkit {
 				}
 			};
 			listOfApps = new JXList(model);
+			listOfApps.addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent event) {
+					Application selectedApp = (Application) listOfApps.getSelectedValue();
+					if (selectedApp != null) {
+						// show a list of sheets
+						getAppDetailsTextArea().setText(selectedApp.getSheets().toString());
+					}
+				}
+			});
+
 			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0,
 					-1) {
 				@Override
@@ -392,19 +465,36 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return
+	 * @return turn sheets into PDF files.
 	 */
-	private Component getPrintSheetsButton() {
+	private Component getRenderSheetsButton() {
 		if (printSheetsButton == null) {
-			printSheetsButton = new JButton("Make PDFs");
+			printSheetsButton = new JButton("Make PDFs", new ImageIcon(PaperToolkit.class
+					.getResource("/icons/pdfIcon32x32.png")));
 			printSheetsButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					Application selectedApp = (Application) listOfApps.getSelectedValue();
+					final Application selectedApp = (Application) listOfApps.getSelectedValue();
 					if (selectedApp != null) {
-						selectedApp.renderToPDF(new File("."), "FileName");
+						new Thread(new Runnable() {
+							public void run() {
+								final File folderToSavePDFs = getFolderToSavePDFs();
+								if (folderToSavePDFs != null) { // user approved
+									// an endless progress bar
+									progress = new EndlessProgressDialog(appManager,
+											"Creating the PDF",
+											"Please wait while your PDF is generated.");
+									// start rendering
+									selectedApp.renderToPDF(folderToSavePDFs, selectedApp.getName());
+									DebugUtils.println("Done Rendering.");
+									progress.setVisible(false);
+									progress = null;
+								}
+							}
+						}).start();
 						listOfApps.repaint();
 					}
 				}
+
 			});
 		}
 		return printSheetsButton;
@@ -483,13 +573,6 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * 
-	 */
-	public static void startAcrobatDesigner() {
-		AcrobatDesignerLauncher.start();
-	}
-
-	/**
 	 * Start this application and register all live pens with the event engine. The event engine
 	 * will then start dispatching events for this application until the application is stopped.
 	 * 
@@ -545,6 +628,7 @@ public class PaperToolkit {
 
 	/**
 	 * @param flag
+	 *            whether or not to load the app manager when you load an application.
 	 */
 	public void useApplicationManager(boolean flag) {
 		useAppManager = flag;
