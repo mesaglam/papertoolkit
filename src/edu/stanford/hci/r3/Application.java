@@ -64,8 +64,10 @@ public class Application {
 	 */
 	public Application(String theName) {
 		name = theName;
+
 		initializePaperUI();
 		initializeEventHandlers();
+		initializeInputAndOutputDevices();
 	}
 
 	/**
@@ -130,6 +132,13 @@ public class Application {
 	protected void initializePaperUI() {
 		// do nothing, unless it is overridden.
 	}
+	
+	/**
+	 * Pens and Displays, etc.
+	 */
+	protected void initializeInputAndOutputDevices() {
+		// do nothing, unless it is overriden
+	}
 
 	/**
 	 * <p>
@@ -153,6 +162,7 @@ public class Application {
 			System.out.println("Rendering: " + destPDFFile.getAbsolutePath());
 			final SheetRenderer renderer = sheet.getRenderer();
 			renderer.renderToPDF(destPDFFile);
+			renderer.savePatternInformation(); // do this automatically
 		}
 	}
 
