@@ -330,7 +330,7 @@ public class TiledPatternCoordinateConverter {
 	 * @param p
 	 *            the tiled pattern object produced by sheet renderers.
 	 */
-	public void readPatternInformationFrom(TiledPattern p) {
+	public void setPatternInformationByReadingItFrom(TiledPattern p) {
 		setOriginInDots(p.getOriginXInDots(), p.getOriginYInDots());
 		setStartingTile(p.getInitialPatternFileNumber());
 		setTileConfiguration(p.getNumTilesX(), p.getNumTilesY());
