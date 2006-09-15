@@ -30,16 +30,22 @@ public class BioMap extends Application {
 	}
 
 	/**
+	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
+	 */
+	protected void initializeEventHandlers() {
+		// do nothing, unless it is overridden.
+	}
+
+	/**
 	 * Called by the super(...) constructor
 	 * 
-	 * @see edu.stanford.hci.r3.Application#initialize()
+	 * @see edu.stanford.hci.r3.Application#initializePaperUI()
 	 */
-	protected void initialize() {
+	protected void initializePaperUI() {
 		sheet = new PDFSheet(new File("data/BioMap/SurveyLocations.pdf"));
 		addSheet(sheet);
 	}
 
-	
 	/**
 	 * @param args
 	 */

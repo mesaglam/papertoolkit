@@ -27,5 +27,6 @@
 	<classpathentry path="/PaperToolkit/lib/jmf/jmf.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/BrowserLauncher2-10rc4.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/jmf/mp3plugin.jar" kind="lib"/>
+	<classpathentry path="lib/jickr.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
