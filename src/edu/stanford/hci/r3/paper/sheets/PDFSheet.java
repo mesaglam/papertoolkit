@@ -9,6 +9,8 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
 
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.render.SheetRenderer;
+import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
 import edu.stanford.hci.r3.units.Points;
 
 /**
@@ -75,6 +77,13 @@ public class PDFSheet extends Sheet {
 		// get the size of page
 		final Rectangle pageSize = pdfReader.getPageSize(pageNum);
 		setSize(new Points(pageSize.width()), new Points(pageSize.height()));
+	}
+
+	/**
+	 * @see edu.stanford.hci.r3.paper.Sheet#getRenderer()
+	 */
+	public SheetRenderer getRenderer() {
+		return new PDFSheetRenderer(this);
 	}
 
 	/**

@@ -180,6 +180,7 @@ public class SheetRenderer {
 		final List<Region> regions = sheet.getRegions();
 		// render each region
 		for (Region r : regions) {
+			DebugUtils.println("Rendering " + r.getName());
 			r.getRenderer().renderToG2D(g2d);
 		}
 	}

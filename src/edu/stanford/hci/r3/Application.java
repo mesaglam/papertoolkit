@@ -10,6 +10,7 @@ import java.util.Map;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -63,7 +64,8 @@ public class Application {
 	 */
 	public Application(String theName) {
 		name = theName;
-		initialize();
+		initializePaperUI();
+		initializeEventHandlers();
 	}
 
 	/**
@@ -82,29 +84,6 @@ public class Application {
 	public void addSheet(Sheet sheet) {
 		sheets.add(sheet);
 		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet));
-	}
-
-	
-	/**
-	 * <p>
-	 * Renders all of the sheets to different PDF files... If there are four Sheets, it will make
-	 * files as follows:<p/>
-	 * 
-	 * <code>
-	 * parentDirectory <br>
-	 * |_fileName_1.pdf <br>
-	 * |_fileName_2.pdf <br>
-	 * |_fileName_3.pdf <br>
-	 * |_fileName_4.pdf <br>
-	 * </code>
-	 */
-	public void renderToPDF(File parentDirectory, String fileNameWithoutExtension) {
-		DebugUtils.println("Rendering PDFs...");
-		for (int i = 0; i < sheets.size(); i++) {
-			File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + "_" + i + 1
-					+ ".pdf");
-			System.out.println("Rendering: " + destPDFFile.getName());
-		}
 	}
 
 	/**
@@ -129,13 +108,52 @@ public class Application {
 	}
 
 	/**
+	 * @return
+	 */
+	public List<Sheet> getSheets() {
+		return sheets;
+	}
+
+	/**
+	 * Add Event Handlers Here. Do nothing unless it is overridden by a subclass.
+	 */
+	protected void initializeEventHandlers() {
+		// do nothing, unless it is overridden.
+	}
+
+	/**
 	 * This is an empty initialization method that developers can override if they choose to
 	 * subclass an Application instead of creating an empty App and adding sheets to it.
 	 * 
 	 * It is called by the constructor.
 	 */
-	protected void initialize() {
+	protected void initializePaperUI() {
 		// do nothing, unless it is overridden.
+	}
+
+	/**
+	 * <p>
+	 * Renders all of the sheets to different PDF files... If there are four Sheets, it will make
+	 * files as follows:<p/>
+	 * 
+	 * <code>
+	 * parentDirectory <br>
+	 * |_fileName_1.pdf <br>
+	 * |_fileName_2.pdf <br>
+	 * |_fileName_3.pdf <br>
+	 * |_fileName_4.pdf <br>
+	 * </code>
+	 */
+	public void renderToPDF(File parentDirectory, String fileNameWithoutExtension) {
+		DebugUtils.println("Rendering PDFs...");
+		for (int i = 0; i < sheets.size(); i++) {
+			final Sheet sheet = sheets.get(i);
+			final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + "_Sheet_"
+					+ i + ".pdf");
+			System.out.println("Rendering: " + destPDFFile.getAbsolutePath());
+			final SheetRenderer renderer = sheet.getRenderer();
+			renderer.renderToPDF(destPDFFile);
+		}
 	}
 
 	/**

@@ -83,7 +83,7 @@ public class Pixels extends Units {
 	}
 
 	/**
-	 * @return
+	 * @return how many pixels per inch shall we use to interpret this value?
 	 * 
 	 */
 	public double getPixelsPerInch() {
