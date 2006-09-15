@@ -42,4 +42,7 @@ public class Coordinates {
 		return y;
 	}
 
+	public String toString() {
+		return "Coordinates: x=[" + x.toString() + "]  y=[" + y.toString() + "]";
+	}
 }

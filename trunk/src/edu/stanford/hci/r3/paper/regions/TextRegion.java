@@ -25,12 +25,24 @@ import edu.stanford.hci.r3.util.StringUtils;
  */
 public class TextRegion extends Region {
 
+	/**
+	 * 
+	 */
 	private Rectangle2D bounds;
 
+	/**
+	 * 
+	 */
 	private Color color = new Color(100, 100, 100, 128);
 
+	/**
+	 * 
+	 */
 	private Font font;
 
+	/**
+	 * 
+	 */
 	private Points heightInPoints;
 
 	/**
@@ -38,10 +50,19 @@ public class TextRegion extends Region {
 	 */
 	private String[] lines;
 
+	/**
+	 * 
+	 */
 	private Units originX;
 
+	/**
+	 * 
+	 */
 	private Units originY;
 
+	/**
+	 * 
+	 */
 	private String text;
 
 	private Points widthInPoints;
@@ -72,14 +93,18 @@ public class TextRegion extends Region {
 		final Dimension stringSize = StringUtils.getStringSize(text, font);
 		heightInPoints = new Points(stringSize.getHeight());
 		widthInPoints = new Points(stringSize.getWidth());
-		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY.getValueIn(units),
-				widthInPoints.getValueIn(units), heightInPoints.getValueIn(units));
+		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY
+				.getValueIn(referenceUnits), widthInPoints.getValueIn(referenceUnits),
+				heightInPoints.getValueIn(referenceUnits));
 		bounds = rect;
 		setShape(rect);
 
 		setName("A Text Region");
 	}
 
+	/**
+	 * @return
+	 */
 	public Color getColor() {
 		return color;
 	}
@@ -126,6 +151,9 @@ public class TextRegion extends Region {
 		return originY;
 	}
 
+	/**
+	 * @param c
+	 */
 	public void setColor(Color c) {
 		color = c;
 	}
@@ -136,6 +164,7 @@ public class TextRegion extends Region {
 	public String toString() {
 		return "Text: {" + text + "} " + font.getSize() + "pt " + font.getName()
 				+ " at Bounds: [x=" + originX.getValue() + " y=" + originY.getValue() + " w="
-				+ bounds.getWidth() + " h=" + bounds.getHeight() + "] in " + units.getUnitName();
+				+ bounds.getWidth() + " h=" + bounds.getHeight() + "] in "
+				+ referenceUnits.getUnitName();
 	}
 }

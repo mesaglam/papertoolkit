@@ -9,7 +9,6 @@ import java.awt.font.LineMetrics;
 import edu.stanford.hci.r3.paper.regions.TextRegion;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Points;
-import edu.stanford.hci.r3.units.Units;
 
 /**
  * <p>
@@ -17,7 +16,7 @@ import edu.stanford.hci.r3.units.Units;
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
- * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
