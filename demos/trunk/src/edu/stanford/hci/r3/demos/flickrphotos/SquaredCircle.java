@@ -1,14 +1,23 @@
 package edu.stanford.hci.r3.demos.flickrphotos;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.List;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.actions.types.OpenURL2Action;
+import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.paper.regions.CompoundRegion;
 import edu.stanford.hci.r3.paper.regions.ImageRegion;
+import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.coordinates.Coordinates;
 
 /**
  * <p>
@@ -23,9 +32,12 @@ import edu.stanford.hci.r3.units.Pixels;
  */
 public class SquaredCircle extends Application {
 
-	private static final double HEIGHT_IN_INCHES = 48;
+	private static final double HEIGHT_IN_INCHES = 4;
 
 	private static final double MARGIN_IN_INCHES = 0.5;
+
+	// we can fit 19 per row! =)
+	private static final int MAX_PHOTOS = 19;
 
 	private static final double PADDING_X_IN_INCHES = .2;
 
@@ -42,9 +54,6 @@ public class SquaredCircle extends Application {
 	private static final double WIDTH_IN_INCHES = 43;
 
 	public static final File XML_FILE = new File("data/Flickr/SquaredCircle.xml");
-
-	private static final int MAX_PHOTOS = 10;
-	
 
 	/**
 	 * @param args
@@ -65,12 +74,58 @@ public class SquaredCircle extends Application {
 	}
 
 	/**
+	 * @param currXInches
+	 * @param currYInches
+	 * @param photo
+	 * @return
+	 */
+	private Region getImageWithWidgets(Inches currXInches, Inches currYInches,
+			final FlickrPhoto photo) {
+		CompoundRegion cr = new CompoundRegion(currXInches, currYInches);
+		final Inches zero = new Inches(0);
+		// add an image at the upper left corner of this compoudn region
+		cr.addChild(new ImageRegion(photo.getFile(), zero, zero, PPI), new Coordinates(zero, zero));
+		final Units photoWidth = new Inches(PHOTO_WIDTH_IN_INCHES);
+
+		// one inch tall
+		Region voteUp = new Region(zero, zero, new Inches(0.5), new Inches(0.5));
+		voteUp.setStrokeColor(Color.LIGHT_GRAY);
+
+		Region retrieve = new Region(zero, new Inches(0.5), new Inches(0.5), new Inches(0.5));
+		retrieve.setStrokeColor(Color.LIGHT_GRAY);
+		retrieve.addEventHandler(new ClickAdapter() {
+			@Override
+			public void clicked(PenEvent e) {
+				System.out.println("Clicked on Photo " + photo.getUrl());
+			}
+		});
+
+		Region voteDown = new Region(zero, new Inches(1.0), new Inches(0.5), new Inches(0.5));
+		voteDown.setStrokeColor(Color.LIGHT_GRAY);
+
+		// add a rectangular region to the right of the image
+		cr.addChild(voteUp, new Coordinates(photoWidth, zero));
+		cr.addChild(retrieve, new Coordinates(photoWidth, zero));
+		cr.addChild(voteDown, new Coordinates(photoWidth, zero));
+		return cr;
+	}
+
+	/**
 	 * Called by the constructor after initializePaperUI()
 	 * 
 	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
 	 */
 	protected void initializeEventHandlers() {
 
+	}
+
+	/**
+	 * @see edu.stanford.hci.r3.Application#initializeInputAndOutputDevices()
+	 */
+	protected void initializeInputAndOutputDevices() {
+		// the application has to know about this pen
+		Pen pen = new Pen("Main Pen");
+		addPen(pen);
 	}
 
 	/**
@@ -82,6 +137,7 @@ public class SquaredCircle extends Application {
 	protected void initializePaperUI() {
 		System.out.println("Initializing Paper UI...");
 		Sheet poster = new Sheet(WIDTH_IN_INCHES, HEIGHT_IN_INCHES);
+		poster.registerConfigurationPath(new File("data/Flickr/"));
 
 		// read in the XML file
 		photosToView = (List<FlickrPhoto>) PaperToolkit.fromXML(XML_FILE);
@@ -92,20 +148,68 @@ public class SquaredCircle extends Application {
 
 		double currX = MARGIN_IN_INCHES;
 		double currY = MARGIN_IN_INCHES;
-		Inches currYInches = new Inches(currY);
+
+		final Inches halfInch = new Inches(0.5);
 
 		int n = 0;
-		for (FlickrPhoto photo : photosToView) {
+		for (final FlickrPhoto photo : photosToView) {
 
-			// add an image region
-			poster.addRegion(new ImageRegion(photo.getFile(), new Inches(currX), currYInches, PPI));
-			currX += PADDING_X_IN_INCHES + PHOTO_WIDTH_IN_INCHES;
+			// add an image region with some paper buttons
+			// final Region imageWithWidgets = getImageWithWidgets(new Inches(currX),
+			// new Inches(currY), photo);
+			// poster.addRegion(imageWithWidgets);
+
+			// since we do not handle pattern on compound regions yet, we should add active regions
+			// directly to the sheet
+
+			final Inches currYInches = new Inches(currY);
+			final ImageRegion imgRegion = new ImageRegion(photo.getFile(), new Inches(currX),
+					currYInches, PPI);
+			final Inches rightAfterImage = new Inches(currX + imgRegion.getWidthVal());
+			final Region voteUpRegion = new Region(rightAfterImage, currYInches, halfInch, halfInch);
+			voteUpRegion.setStrokeColor(Color.LIGHT_GRAY);
+			voteUpRegion.setName(photo.getId() + "_voteUp");
+			voteUpRegion.addEventHandler(new ClickAdapter() {
+				@Override
+				public void clicked(PenEvent e) {
+					System.out.println("This Photo is Great!: " + photo.getUrl() + " "
+							+ photo.getId());
+				}
+			});
+
+			final Region retrieveRegion = new Region(rightAfterImage, new Inches(currY + 0.5),
+					halfInch, halfInch);
+			retrieveRegion.setStrokeColor(Color.LIGHT_GRAY);
+			retrieveRegion.setName(photo.getId() + "_retrieve");
+			retrieveRegion.addEventHandler(new ClickAdapter() {
+				public void clicked(PenEvent e) {
+					System.out.println("Clicked on Photo " + photo.getUrl() + " " + photo.getId());
+					new OpenURL2Action(photo.getUrl(), OpenURL2Action.FIREFOX).invoke();
+				}
+			});
+			final Region voteDownRegion = new Region(rightAfterImage, new Inches(currY + 1.0),
+					halfInch, halfInch);
+			voteDownRegion.setStrokeColor(Color.LIGHT_GRAY);
+			voteDownRegion.setName(photo.getId() + "_voteDown");
+			voteDownRegion.addEventHandler(new ClickAdapter() {
+				@Override
+				public void clicked(PenEvent e) {
+					System.out.println("This Photo is No Good: " + photo.getUrl() + " "
+							+ photo.getId());
+				}
+			});
+
+			poster.addRegion(imgRegion);
+			poster.addRegion(voteUpRegion);
+			poster.addRegion(retrieveRegion);
+			poster.addRegion(voteDownRegion);
+
+			currX += PADDING_X_IN_INCHES + imgRegion.getWidth().getValue() + halfInch.getValue();
 			n++;
 			// if we will overshoot the boundary on the next turn
-			if (currX + PHOTO_WIDTH_IN_INCHES + MARGIN_IN_INCHES > WIDTH_IN_INCHES) {
+			if (currX + imgRegion.getWidth().getValue() + halfInch.getValue() + MARGIN_IN_INCHES > WIDTH_IN_INCHES) {
 				currX = MARGIN_IN_INCHES;
 				currY += PHOTO_HEIGHT_IN_INCHES + PADDING_Y_IN_INCHES;
-				currYInches = new Inches(currY);
 				if (currY + PHOTO_HEIGHT_IN_INCHES + MARGIN_IN_INCHES > HEIGHT_IN_INCHES) {
 					// we're done
 					break;
