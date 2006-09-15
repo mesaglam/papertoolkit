@@ -63,7 +63,7 @@ public class ImageRegion extends Region {
 		imageFile = imgFile;
 
 		// my units (actually, just originX, as we passed it in earlier)
-		final Units u = getUnitsReference();
+		final Units u = getUnits();
 
 		// create a Rectangle from origin X, Y, with the correct dimensions (72 pixels per inch)
 		final Rectangle2D.Double rect = new Rectangle2D.Double(originX.getValue(), originY
@@ -136,6 +136,6 @@ public class ImageRegion extends Region {
 	 */
 	public String toString() {
 		return "Image: {" + getX() + ", " + getY() + ", " + getWidthVal() + ", " + getHeightVal()
-				+ "} in " + getUnitsReference().getUnitName();
+				+ "} in " + getUnits().getUnitName();
 	}
 }

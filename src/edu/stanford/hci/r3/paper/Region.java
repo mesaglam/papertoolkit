@@ -77,8 +77,16 @@ public class Region {
 	private String name = "A Region";
 
 	/**
+	 * This is used only to interpret the shape's true physical size. The value of the units object
+	 * doesn't matter. Only the type of the unit matters.
+	 */
+	protected Units referenceUnits;
+
+	/**
 	 * Internal horizontal scale of the region. When rendering, we will multiply the shape by this
-	 * scale.
+	 * scale. This is only a RECOMMENDATION and not a requirement of the renderer, however, as some
+	 * regions may not make sense if scaled after the fact. However, we will try to make sure most
+	 * of our calculations respect this scaling factor.
 	 */
 	protected double scaleX = 1.0;
 
@@ -89,15 +97,11 @@ public class Region {
 	protected double scaleY = 1.0;
 
 	/**
-	 * This is the shape of the region.
+	 * This is the shape of the region. It is stored as unscaled coordinates, to be interpreted by
+	 * the referenceUnits object. Upon rendering, client code SHOULD but is not REQUIRED to respect
+	 * the scaleX and scaleY parameters to adjust the width and height.
 	 */
 	private Shape shape;
-
-	/**
-	 * This is used only to interpret the shape's true physical size. The value of the units object
-	 * doesn't matter. Only the type of the unit matters.
-	 */
-	protected Units units;
 
 	/**
 	 * By default, regions are visible (they tend to be images, pattern, etc). However, if you would
@@ -122,10 +126,11 @@ public class Region {
 	 * @param s
 	 *            the shape that defines this region.
 	 * @param u
+	 *            the reference unit for interpreting the shape's coordinates
 	 */
 	public Region(Shape s, Units u) {
 		shape = s;
-		units = u;
+		referenceUnits = u;
 	}
 
 	/**
@@ -136,7 +141,7 @@ public class Region {
 	 * @param u
 	 */
 	protected Region(Units u) {
-		units = u;
+		referenceUnits = u;
 	}
 
 	/**
@@ -191,7 +196,8 @@ public class Region {
 	 * @return
 	 */
 	public Units getHeight() {
-		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight() * scaleY);
+		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight()
+				* scaleY);
 	}
 
 	/**
@@ -212,14 +218,14 @@ public class Region {
 	 * @return
 	 */
 	public Units getOriginX() {
-		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getX());
+		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getX());
 	}
 
 	/**
 	 * @return
 	 */
 	public Units getOriginY() {
-		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getY());
+		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getY());
 	}
 
 	/**
@@ -261,17 +267,12 @@ public class Region {
 	}
 
 	/**
-	 * @return a copy of the units object.
+	 * TODO: We should make sure that Units objects immutable if possible.
+	 * 
+	 * @return a pointer to the actual units object.
 	 */
 	public Units getUnits() {
-		return units.getCopy();
-	}
-
-	/**
-	 * @return
-	 */
-	protected Units getUnitsReference() {
-		return units;
+		return referenceUnits;
 	}
 
 	/**
@@ -285,14 +286,14 @@ public class Region {
 	 * @return
 	 */
 	public Units getUnscaledBoundsHeight() {
-		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight());
+		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight());
 	}
 
 	/**
 	 * @return
 	 */
 	public Units getUnscaledBoundsWidth() {
-		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getWidth());
+		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getWidth());
 	}
 
 	/**
@@ -307,7 +308,8 @@ public class Region {
 	 * @return
 	 */
 	public Units getWidth() {
-		return units.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getWidth() * scaleX);
+		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getWidth()
+				* scaleX);
 	}
 
 	/**
@@ -445,7 +447,7 @@ public class Region {
 
 		sb.append(GraphicsUtils.getPathAsString(pathIterator));
 
-		sb.append("} in " + units.getUnitName());
+		sb.append("} in " + referenceUnits.getUnitName());
 		sb.append(getIsActiveString());
 		return sb.toString();
 	}

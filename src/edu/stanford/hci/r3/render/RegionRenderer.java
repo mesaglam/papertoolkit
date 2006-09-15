@@ -34,14 +34,15 @@ public class RegionRenderer {
 	/**
 	 * Whether we are in debug mode.
 	 */
+	// public static final boolean DEBUG_REGIONS = true;
 	public static final boolean DEBUG_REGIONS = readDebugFlagFromConfigFile();
 
 	/**
 	 * The font for printing the object during screen-based debugging.
 	 */
-	private static final Font FONT = new Font("Trebuchet MS", Font.PLAIN, 8);
+	private static final Font FONT = new Font("Trebuchet MS", Font.PLAIN, 10);
 
-	private static final BasicStroke OUTLINE = new BasicStroke(1);
+	private static final BasicStroke OUTLINE = new BasicStroke(0);
 
 	/**
 	 * The key as stored in the xml config file.
@@ -116,10 +117,10 @@ public class RegionRenderer {
 		g2d.setColor(REGION_COLOR);
 		g2d.fillRect(finalX, finalY, finalW, finalH);
 		g2d.setColor(TEXT_COLOR);
-		String regionString = region.toString();
+		final String regionString = region.toString();
 
-		Rectangle2D stringBounds = FONT.getStringBounds(regionString, new FontRenderContext(null,
-				true, true));
+		final Rectangle2D stringBounds = FONT.getStringBounds(regionString, new FontRenderContext(
+				null, true, true));
 		final double lineWidth = stringBounds.getWidth();
 		final int lineHeight = MathUtils.rint(stringBounds.getHeight());
 		final int lengthOfString = regionString.length();
