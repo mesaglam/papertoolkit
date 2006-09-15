@@ -18,7 +18,6 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.regions.CompoundRegion;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;

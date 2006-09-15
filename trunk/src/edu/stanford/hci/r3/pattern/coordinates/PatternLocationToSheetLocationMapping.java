@@ -83,10 +83,22 @@ public class PatternLocationToSheetLocationMapping {
 		/**
 		 * Makes HashMaps work.
 		 * 
+		 * WARNING: Did this contribute to the Region Naming bug? TODO: Make it a nicer hashcode
+		 * function.
+		 * 
 		 * @see java.lang.Object#hashCode()
 		 */
 		public int hashCode() {
-			return name.hashCode();
+			return (int) (name.hashCode() + originX.getValue() + originY.getValue()
+					+ width.getValue() + height.getValue());
+		}
+
+		/**
+		 * @see java.lang.Object#toString()
+		 */
+		public String toString() {
+			return "Region ID: {" + name + ", " + originX + ", " + originY + ", " + width + ", "
+					+ height + "}";
 		}
 	}
 
@@ -129,7 +141,7 @@ public class PatternLocationToSheetLocationMapping {
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks whether this mapping contains the pen sample (streamed coordinates). If it does, it
 	 * retursn the TiledPatternCoordinateConverter object for that sample. If not, it returns null.
@@ -192,6 +204,7 @@ public class PatternLocationToSheetLocationMapping {
 
 			// loads the information into our map
 			if (regionIDToPattern.containsKey(xmlKey)) {
+				DebugUtils.println("Loaded Pattern Config for Region " + xmlKey);
 				regionToPatternBounds.put(r, regionIDToPattern.get(xmlKey));
 			}
 		}

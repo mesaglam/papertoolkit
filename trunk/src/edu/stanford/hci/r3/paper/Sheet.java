@@ -201,7 +201,7 @@ public class Sheet {
 	 *            a directory that we should be aware of, for automatically loading things such as
 	 *            the patternInfo.xml file.
 	 */
-	protected void registerConfigurationPath(File configPath) {
+	public void registerConfigurationPath(File configPath) {
 		// register the fact that we loaded a configuration file from this directory
 		configurationPaths.add(configPath);
 		// DebugUtils.println("Configuration Paths: " + configurationPaths);
