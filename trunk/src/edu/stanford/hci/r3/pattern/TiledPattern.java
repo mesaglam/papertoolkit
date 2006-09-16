@@ -29,6 +29,8 @@ public class TiledPattern {
 	 */
 	private int initialDotXOffset;
 
+	private int initialDotYOffset;
+
 	/**
 	 * Where to start looking. Default to 0, but we should be able to set the offset so that our
 	 * different regions don't have the same pattern.
@@ -97,19 +99,21 @@ public class TiledPattern {
 	 * @param thePatternPackage
 	 * @param initialPatternFileN
 	 * @param initialDotHorizOffset
+	 * @param initialDotVertOffset
 	 * @param numTilesNeededX
 	 * @param numTilesNeededY
 	 * @param numDotsXFromRightMostTiles
 	 * @param numDotsYFromBottomMostTiles
 	 */
 	public TiledPattern(PatternPackage thePatternPackage, // where to get pattern from
-			int initialPatternFileN, int initialDotHorizOffset, // where to start
+			int initialPatternFileN, int initialDotHorizOffset, int initialDotVertOffset, //
 			int numTilesNeededX, int numTilesNeededY, // how many we'll need
 			int numDotsXFromRightMostTiles, int numDotsYFromBottomMostTiles) {
 
 		// this information is used for the indexing into the first pattern file...
 		initialPatternFileNum = initialPatternFileN;
 		initialDotXOffset = initialDotHorizOffset;
+		initialDotYOffset = initialDotVertOffset;
 
 		patternPackage = thePatternPackage;
 
@@ -126,11 +130,23 @@ public class TiledPattern {
 		numDotsYBottomMost = numDotsYFromBottomMostTiles;
 
 		// error check some values
+		boolean advanceToNextPatternPage = false;
+
 		if (initialDotXOffset < 0) {
 			initialDotXOffset = 0;
 		} else if (initialDotXOffset > numDotsXPerFullTile) {
+			advanceToNextPatternPage = true;
+		}
+		if (initialDotYOffset < 0) {
+			initialDotYOffset = 0;
+		} else if (initialDotYOffset > numDotsYPerFullTile) {
+			advanceToNextPatternPage = true;
+		}
+
+		if (advanceToNextPatternPage) {
+			// move to the next file! because we were out of bounds
 			initialDotXOffset = 0;
-			// but move to the next file!
+			initialDotYOffset = 0;
 			initialPatternFileNum++;
 		}
 
@@ -244,6 +260,7 @@ public class TiledPattern {
 		final PatternDots originX = new PatternDots(0);
 		final PatternDots originY = new PatternDots(0);
 		final PatternDots originXLeftTopMost = new PatternDots(initialDotXOffset);
+		final PatternDots originYLeftTopMost = new PatternDots(initialDotYOffset);
 		final PatternDots dotsW = new PatternDots(numDotsXPerFullTile);
 		final PatternDots dotsH = new PatternDots(numDotsYPerFullTile);
 		final PatternDots dotsWRightMost = new PatternDots(numDotsXRightMost);
@@ -268,6 +285,7 @@ public class TiledPattern {
 				// if leftmost and topmost tile, we want to start from where we were asked to
 				if (tileCol == 0 && tileRow == 0) {
 					origX = originXLeftTopMost;
+					origY = originYLeftTopMost;
 				}
 
 				// if rightmost, we only want the dots that spill over into the rightmost column

@@ -26,6 +26,7 @@ import edu.stanford.hci.r3.pattern.output.PDFPatternGenerator;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.coordinates.Coordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
@@ -135,8 +136,11 @@ public class SheetRenderer {
 				continue;
 			}
 
-			System.out.println("SheetRenderer: Rendering Pattern!");
-			System.out.println("SheetRenderer: " + r.getShape());
+			// add the region's offset from the top left corner of the sheet
+			Coordinates regionOffset = sheet.getRegionOffset(r);
+
+			// System.out.println("SheetRenderer: Rendering Pattern:" + r.getShape());
+			// DebugUtils.println(r.getOriginX() + " " + r.getOriginY());
 
 			// Figure out the real width and height....
 			final Units scaledWidth = r.getWidth();
@@ -148,10 +152,10 @@ public class SheetRenderer {
 			// need to keep the returned pattern object around
 			final TiledPattern pattern = generator.getPattern(scaledWidth, scaledHeight);
 
-			DebugUtils.println(r.getOriginX() + " " + r.getOriginY());
-
 			// render the pattern starting at the region's origin
-			pgen.renderPattern(pattern, r.getOriginX(), r.getOriginY());
+			pgen.renderPattern(pattern, // the tiled pattern
+					Units.add(r.getOriginX(), regionOffset.getX()), // origin + offset
+					Units.add(r.getOriginY(), regionOffset.getY()));// same, for y
 
 			// also, at this point, we know what pattern we have assigned to each region
 			// we should be able to assign a tile configuration to each region
@@ -186,6 +190,7 @@ public class SheetRenderer {
 	 * By default, the transforms works at 72 dots per inch. Scale the transform beforehand if you
 	 * would like better or worse rendering.
 	 * 
+	 * 
 	 * @param g2d
 	 */
 	public void renderToG2D(Graphics2D g2d) {
@@ -193,10 +198,22 @@ public class SheetRenderer {
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 
 		final List<Region> regions = sheet.getRegions();
+
 		// render each region
 		for (Region r : regions) {
+			// Weird. g2d.getTransform SHOULD give us a copy....
+			final AffineTransform currTransform = new AffineTransform(g2d.getTransform()); // a
+			// real
+			// copy
 			DebugUtils.println("Rendering " + r.getName());
+			final Coordinates regionOffset = sheet.getRegionOffset(r);
+			final double xOffsetPts = regionOffset.getX().getValueInPoints();
+			final double yOffsetPts = regionOffset.getY().getValueInPoints();
+			System.out.println(xOffsetPts);
+			// g2d.transform(AffineTransform.getTranslateInstance(xOffsetPts, yOffsetPts));
+			g2d.translate((int) xOffsetPts, (int) yOffsetPts);
 			r.getRenderer().renderToG2D(g2d);
+			g2d.setTransform(currTransform);
 		}
 	}
 
@@ -266,6 +283,9 @@ public class SheetRenderer {
 			renderToPDFContentLayers(destPDFFile, topLayer, bottomLayer);
 
 			doc.close();
+
+			// save the pattern info to the same directory automatically
+			savePatternInformation(); // do this automatically
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {

@@ -75,7 +75,7 @@ public class Region {
 	 * The name of the region (e.g., Public/Private Button). Useful for debugging. Initialized with
 	 * a simple default.
 	 */
-	private String name = "A Region";
+	private String name;
 
 	/**
 	 * This is used only to interpret the shape's true physical size. The value of the units object
@@ -120,20 +120,22 @@ public class Region {
 	 * @param wInches
 	 * @param hInches
 	 */
-	public Region(double xInches, double yInches, double wInches, double hInches) {
-		this(new Rectangle2D.Double(xInches, yInches, wInches, hInches), Inches.ONE);
+	public Region(String name, double xInches, double yInches, double wInches, double hInches) {
+		this(name, new Rectangle2D.Double(xInches, yInches, wInches, hInches), Inches.ONE);
 	}
 
 	/**
 	 * 
+	 * @param name
 	 * @param s
 	 *            the shape that defines this region.
 	 * @param u
 	 *            the reference unit for interpreting the shape's coordinates
 	 */
-	public Region(Shape s, Units u) {
+	public Region(String theName, Shape s, Units u) {
 		shape = s;
 		referenceUnits = u;
+		name = theName;
 	}
 
 	/**
@@ -143,8 +145,9 @@ public class Region {
 	 * 
 	 * @param u
 	 */
-	protected Region(Units u) {
+	protected Region(String theName, Units u) {
 		referenceUnits = u;
+		name = theName;
 	}
 
 	/**
@@ -157,8 +160,8 @@ public class Region {
 	 * @param w
 	 * @param h
 	 */
-	public Region(Units x, Units y, Units w, Units h) {
-		this(new Rectangle2D.Double(x.getValue(), y.getValueIn(x), // assume a Rectangle2D
+	public Region(String name, Units x, Units y, Units w, Units h) {
+		this(name, new Rectangle2D.Double(x.getValue(), y.getValueIn(x), // assume a Rectangle2D
 				w.getValueIn(x), h.getValueIn(x)), x);
 	}
 
@@ -392,20 +395,20 @@ public class Region {
 	}
 
 	/**
-	 * @param activeRegion
+	 * @param isRegionActive
 	 *            determines whether this will be an active region or not
 	 */
-	public void setActive(boolean activeRegion) {
-		active = activeRegion;
+	public void setActive(boolean isRegionActive) {
+		active = isRegionActive;
 	}
 
 	/**
-	 * @param n
+	 * @param theName
 	 *            the name of the region. Name it something useful, like "Blue Button for Changing
 	 *            Pen Colors"
 	 */
-	public void setName(String n) {
-		name = n;
+	public void setName(String theName) {
+		name = theName;
 	}
 
 	/**

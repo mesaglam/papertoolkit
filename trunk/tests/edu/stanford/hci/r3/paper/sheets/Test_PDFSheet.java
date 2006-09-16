@@ -30,19 +30,17 @@ public class Test_PDFSheet {
 		Sheet sheet = new PDFSheet(pdfFile);
 		System.out.println("PDF Size: " + sheet.getSize());
 
-		ImageRegion imageRegion = new ImageRegion(new File("data/testFiles/dragon.jpg"), new Meters(1),
-				new Centimeters(30));
+		ImageRegion imageRegion = new ImageRegion("Dragon", new File("data/testFiles/dragon.jpg"),
+				new Meters(1), new Centimeters(30));
 		sheet.addRegion(imageRegion);
 
-		Region rectRegion = new Region(1, 1, 5, 5);
+		Region rectRegion = new Region("Rect1", 1, 1, 5, 5);
 		sheet.addRegion(rectRegion);
 		rectRegion.setActive(true);
-		
-		
-		Region rectRegion2 = new Region(2, 2, 2, 2);
+
+		Region rectRegion2 = new Region("Rect2", 2, 2, 2, 2);
 		sheet.addRegion(rectRegion2);
 		rectRegion2.setActive(true);
-		
 
 		// sheet renderers do not know about PDFSheets
 		SheetRenderer sr = new SheetRenderer(sheet);

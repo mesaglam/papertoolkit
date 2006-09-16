@@ -17,6 +17,8 @@ import java.net.URL;
  */
 public class SystemUtils {
 
+	private static final double BYTES_PER_MB = (1024.0 * 1024.0);
+
 	/**
 	 * Where to look for DLLs. Unfortunately, you cannot change this at runtime and expect the
 	 * classloaders to find the dlls correctly.
@@ -51,6 +53,13 @@ public class SystemUtils {
 		}
 	}
 
+	/**
+	 * @return the number of megabytes of free memory
+	 */
+	public static double getFreeMemoryInMB() {
+		return Runtime.getRuntime().freeMemory() / BYTES_PER_MB;
+	}
+	
 	/**
 	 * http://developer.apple.com/technotes/tn2002/tn2110.html
 	 * 

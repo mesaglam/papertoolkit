@@ -91,6 +91,10 @@ public class RegionConfigurationWriter extends DefaultHandler {
 	 */
 	private class RegionHandler extends TagHandler {
 
+		/**
+		 * @see edu.stanford.hci.r3.designer.acrobat.RegionConfigurationWriter.TagHandler#handleStart(java.lang.String,
+		 *      org.xml.sax.Attributes)
+		 */
 		public void handleStart(String qName, Attributes attributes) {
 			if (qName.equals("square")) {
 				String nameOfRegion = attributes.getValue("title");
@@ -101,9 +105,8 @@ public class RegionConfigurationWriter extends DefaultHandler {
 				final double y = Double.parseDouble(rectValStrings[1]); // correct this later
 				final double w = Double.parseDouble(rectValStrings[2]) - x;
 				final double h = Double.parseDouble(rectValStrings[3]) - y;
-				final Region r = new Region(new Points(x), new Points(y), new Points(w),
-						new Points(h));
-				r.setName(nameOfRegion);
+				final Region r = new Region(nameOfRegion, new Points(x), new Points(y), new Points(
+						w), new Points(h));
 				temporaryRegionsList.add(r);
 			}
 		}
@@ -166,6 +169,9 @@ public class RegionConfigurationWriter extends DefaultHandler {
 			}
 		}
 
+		/**
+		 * 
+		 */
 		private void resetFlags() {
 			lookingForHeight = false;
 			lookingForWidth = false;
@@ -183,14 +189,12 @@ public class RegionConfigurationWriter extends DefaultHandler {
 			}
 
 			// correct all the y values stored in the region Configuration
-			for (Region r : temporaryRegionsList) {
+			for (final Region r : temporaryRegionsList) {
 
 				final Units rh = r.getUnscaledBoundsHeight();
 				final Units rw = r.getUnscaledBoundsWidth();
-				final Region correctedRegion = new Region(r.getOriginX(), //
-						new Points(heightInPoints - r.getOriginY().getValue() - rh.getValue()), //
-						rw, rh);
-				correctedRegion.setName(r.getName());
+				final Region correctedRegion = new Region(r.getName(), r.getOriginX(), new Points(
+						heightInPoints - r.getOriginY().getValue() - rh.getValue()), rw, rh);
 				// this region will be overlaid with pattern!
 				correctedRegion.setActive(true);
 				regionConfiguration.addRegion(correctedRegion);

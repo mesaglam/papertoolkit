@@ -26,7 +26,7 @@ import edu.stanford.hci.r3.units.coordinates.Coordinates;
 public class CompoundRegion extends Region {
 
 	/**
-	 * 
+	 * Regions and their offsets from this compound region's top left corner.
 	 */
 	private Map<Region, Coordinates> regionsAndRelativeLocations = new HashMap<Region, Coordinates>();
 
@@ -40,9 +40,9 @@ public class CompoundRegion extends Region {
 	/**
 	 * 
 	 */
-	public CompoundRegion(Units xOrigin, Units yOrigin) {
+	public CompoundRegion(String name, Units xOrigin, Units yOrigin) {
 		// it is dimensionless until we calculate the actual size
-		super(xOrigin, yOrigin, new Inches(0), new Inches(0));
+		super(name, xOrigin, yOrigin, new Inches(0), new Inches(0));
 
 		// since it is compound, we need to KEEP these origins aroudn for later calculations
 		x = xOrigin;

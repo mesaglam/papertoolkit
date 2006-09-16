@@ -30,17 +30,23 @@ public class Test_PaperToolkit {
 		return paperApp;
 	}
 
+	/**
+	 * @return
+	 */
 	private static Pen constructPen() {
 		Pen pen = new Pen();
 		pen.startLiveMode();
 		return pen;
 	}
 
+	/**
+	 * @return
+	 */
 	private static Sheet constructSheet() {
 		Sheet sheet = new Sheet(new Inches(5), new Inches(4));
 
 		// define some regions
-		Region region = new Region(0, 0, 5, 4);
+		Region region = new Region("Test", 0, 0, 5, 4);
 		region.setActive(true);
 		// region.addEventListener(getPenTapListener());
 

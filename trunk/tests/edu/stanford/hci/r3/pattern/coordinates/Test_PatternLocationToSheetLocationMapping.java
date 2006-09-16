@@ -27,25 +27,25 @@ public class Test_PatternLocationToSheetLocationMapping {
 		Sheet sheet = new Sheet(new Inches(8.5), new Inches(11));
 
 		// define some regions
-		Region reg0 = new Region(0, 0, 1.5, 1.5);
+		Region reg0 = new Region("reg0", 0, 0, 1.5, 1.5);
 		reg0.setActive(true);
 
-		Region reg1 = new Region(1, 1, 2, 3);
+		Region reg1 = new Region("reg1", 1, 1, 2, 3);
 		reg1.scaleRegionUniformly(0.75);
 
-		PolygonalRegion poly0 = new PolygonalRegion(new Inches(), new Point2D.Double(1, 7),
+		PolygonalRegion poly0 = new PolygonalRegion("poly0", new Inches(), new Point2D.Double(1, 7),
 				new Point2D.Double(2, 8), new Point2D.Double(3, 7));
 		poly0.scaleRegionUniformly(.33);
 
-		PolygonalRegion poly1 = new PolygonalRegion(new Inches(), new Point2D.Double(4, 10),
+		PolygonalRegion poly1 = new PolygonalRegion("poly1", new Inches(), new Point2D.Double(4, 10),
 				new Point2D.Double(6, 10), new Point2D.Double(5, 7), new Point2D.Double(3, 6));
 		poly1.scaleRegionUniformly(.66);
 
-		ImageRegion img = new ImageRegion(new File("data/testFiles/dragon.jpg"), new Inches(3.5),
+		ImageRegion img = new ImageRegion("dragonimg", new File("data/testFiles/dragon.jpg"), new Inches(3.5),
 				new Inches(4));
 		img.scaleRegionUniformly(.25);
 
-		TextRegion text = new TextRegion("The Dragon is\nGreeeen!", new Font("Trebuchet MS",
+		TextRegion text = new TextRegion("dragontext", "The Dragon is\nGreeeen!", new Font("Trebuchet MS",
 				Font.BOLD, 72), new Inches(1), new Inches(2));
 
 		// add regions to the sheet
@@ -91,15 +91,6 @@ public class Test_PatternLocationToSheetLocationMapping {
 		saveAndLoadPart2();
 	}
 
-	private static void saveAndLoadPart2() {
-		final Sheet theSheet = createSheet();
-		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(theSheet);
-		mapping.printMapping();
-		mapping.loadConfigurationFromXML(new File("data/testFiles/output/PatternMapping.patternInfo.xml"));
-		System.out.println();
-		mapping.printMapping();
-	}
-
 	private static void saveAndLoadPart1() {
 		final Sheet theSheet = createSheet();
 		final SheetRenderer renderer = new SheetRenderer(theSheet);
@@ -109,6 +100,17 @@ public class Test_PatternLocationToSheetLocationMapping {
 		renderer.renderToPDF(new File("data/testFiles/output/PatternMapping.pdf"));
 		renderer.savePatternInformation();
 		mapping = renderer.getPatternInformation();
+		mapping.printMapping();
+	}
+
+	private static void saveAndLoadPart2() {
+		final Sheet theSheet = createSheet();
+		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
+				theSheet);
+		mapping.printMapping();
+		mapping.loadConfigurationFromXML(new File(
+				"data/testFiles/output/PatternMapping.patternInfo.xml"));
+		System.out.println();
 		mapping.printMapping();
 	}
 }

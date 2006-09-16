@@ -78,8 +78,8 @@ public class TextRegion extends Region {
 	 * @param origX
 	 * @param origY
 	 */
-	public TextRegion(String theText, Font theFont, Units origX, Units origY) {
-		super(origX);
+	public TextRegion(String name, String theText, Font theFont, Units origX, Units origY) {
+		super(name, origX);
 		text = theText;
 		font = theFont;
 

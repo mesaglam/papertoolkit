@@ -22,7 +22,7 @@ public class Test_PDFSheetRenderer {
 		// PDFSheet sheet = new PDFSheet(new File("data/testFiles/private/AvianFluTimeline.pdf"));
 		PDFSheet sheet = new PDFSheet(new File("data/testFiles/private/AvianFluMessMap.pdf"));
 		// define some regions
-		Region reg = new Region(36, 2, 9, 2);
+		Region reg = new Region("Action", 36, 2, 9, 2);
 		reg.setActive(true);
 		sheet.addRegion(reg);
 
@@ -40,12 +40,12 @@ public class Test_PDFSheetRenderer {
 
 		// define some regions
 		for (int i = 0; i < 18; i++) {
-			Region reg = new Region(13.34 + (i * delta), 15.43, 0.8, 1.2);
+			Region reg = new Region("Book_" + i, 13.34 + (i * delta), 15.43, 0.8, 1.2);
 			reg.setActive(true);
 			sheet.addRegion(reg);
 		}
 
-		Region reg = new Region(19.09, 3.19 - .085/* ~half of height */, 11.11, .22);
+		Region reg = new Region("PS", 19.09, 3.19 - .085/* ~half of height */, 11.11, .22);
 		reg.setActive(true);
 		sheet.addRegion(reg);
 
@@ -58,7 +58,7 @@ public class Test_PDFSheetRenderer {
 		PDFSheet sheet = new PDFSheet(new File("data/testFiles/private/AvianFluMessMap.pdf"));
 
 		// define some regions
-		Region reg = new Region(0, 0, 3, 3);
+		Region reg = new Region("Test", 0, 0, 3, 3);
 		reg.setActive(true);
 		sheet.addRegion(reg);
 
