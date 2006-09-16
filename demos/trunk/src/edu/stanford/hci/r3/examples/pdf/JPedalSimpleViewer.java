@@ -20,5 +20,6 @@ public class JPedalSimpleViewer {
 		WindowUtils.setNativeLookAndFeel();
 		SimpleViewer viewer = new SimpleViewer();
 		viewer.setupViewer("data/testFiles/ButterflyNetCHI2006.pdf");
+		// viewer.setupViewer("data/Grid/GridSheet.pdf");
 	}
 }

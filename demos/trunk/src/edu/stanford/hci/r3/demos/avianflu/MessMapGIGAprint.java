@@ -23,7 +23,7 @@ public class MessMapGIGAprint {
 		final File file = new File("data/AvianFlu/AvianFluMessMap.pdf");
 		PDFSheet sheet = new PDFSheet(file);
 
-		Region reg = new Region(36, 2, 4, 2);
+		Region reg = new Region("Table", 36, 2, 4, 2);
 		reg.setActive(true);
 		sheet.addRegion(reg);
 

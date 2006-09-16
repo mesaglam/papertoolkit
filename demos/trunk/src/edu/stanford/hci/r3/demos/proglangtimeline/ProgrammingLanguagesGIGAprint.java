@@ -27,12 +27,12 @@ public class ProgrammingLanguagesGIGAprint {
 
 		// define some regions
 		for (int i = 0; i < 18; i++) {
-			Region reg = new Region(13.34 + (i * delta), 15.43, 0.8, 1.2);
+			Region reg = new Region("Book_" + i, 13.34 + (i * delta), 15.43, 0.8, 1.2);
 			reg.setActive(true);
 			sheet.addRegion(reg);
 		}
 
-		Region reg = new Region(19.09, 3.19 - .085/* ~half of height */, 11.11, .22);
+		Region reg = new Region("Timeline", 19.09, 3.19 - .085/* ~half of height */, 11.11, .22);
 		reg.setActive(true);
 		sheet.addRegion(reg);
 

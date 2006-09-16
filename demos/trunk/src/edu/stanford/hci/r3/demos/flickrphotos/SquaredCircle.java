@@ -59,7 +59,7 @@ public class SquaredCircle extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PaperToolkit r3 = new PaperToolkit();
+		final PaperToolkit r3 = new PaperToolkit();
 		r3.useApplicationManager(true);
 		r3.loadApplication(new SquaredCircle());
 	}
@@ -74,24 +74,32 @@ public class SquaredCircle extends Application {
 	}
 
 	/**
+	 * Compound Regions don't work yet.
+	 * 
 	 * @param currXInches
 	 * @param currYInches
 	 * @param photo
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private Region getImageWithWidgets(Inches currXInches, Inches currYInches,
 			final FlickrPhoto photo) {
-		CompoundRegion cr = new CompoundRegion(currXInches, currYInches);
+		final String photoID = photo.getId();
+		final CompoundRegion cr = new CompoundRegion("ImageAndWidgets_" + photoID, currXInches,
+				currYInches);
 		final Inches zero = new Inches(0);
 		// add an image at the upper left corner of this compoudn region
-		cr.addChild(new ImageRegion(photo.getFile(), zero, zero, PPI), new Coordinates(zero, zero));
+		cr.addChild(new ImageRegion("Image_" + photoID, photo.getFile(), zero, zero, PPI),
+				new Coordinates(zero, zero));
 		final Units photoWidth = new Inches(PHOTO_WIDTH_IN_INCHES);
 
 		// one inch tall
-		Region voteUp = new Region(zero, zero, new Inches(0.5), new Inches(0.5));
+		final Region voteUp = new Region("VoteUp_" + photoID, zero, zero, new Inches(0.5),
+				new Inches(0.5));
 		voteUp.setStrokeColor(Color.LIGHT_GRAY);
 
-		Region retrieve = new Region(zero, new Inches(0.5), new Inches(0.5), new Inches(0.5));
+		final Region retrieve = new Region("Retrieve_" + photoID, zero, new Inches(0.5),
+				new Inches(0.5), new Inches(0.5));
 		retrieve.setStrokeColor(Color.LIGHT_GRAY);
 		retrieve.addEventHandler(new ClickAdapter() {
 			@Override
@@ -100,7 +108,8 @@ public class SquaredCircle extends Application {
 			}
 		});
 
-		Region voteDown = new Region(zero, new Inches(1.0), new Inches(0.5), new Inches(0.5));
+		final Region voteDown = new Region("VoteDown_" + photoID, zero, new Inches(1.0),
+				new Inches(0.5), new Inches(0.5));
 		voteDown.setStrokeColor(Color.LIGHT_GRAY);
 
 		// add a rectangular region to the right of the image
@@ -115,6 +124,7 @@ public class SquaredCircle extends Application {
 	 * 
 	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
 	 */
+	@Override
 	protected void initializeEventHandlers() {
 
 	}
@@ -122,9 +132,10 @@ public class SquaredCircle extends Application {
 	/**
 	 * @see edu.stanford.hci.r3.Application#initializeInputAndOutputDevices()
 	 */
+	@Override
 	protected void initializeInputAndOutputDevices() {
 		// the application has to know about this pen
-		Pen pen = new Pen("Main Pen");
+		final Pen pen = new Pen("Main Pen");
 		addPen(pen);
 	}
 
@@ -133,10 +144,11 @@ public class SquaredCircle extends Application {
 	 * 
 	 * @see edu.stanford.hci.r3.Application#initializePaperUI()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void initializePaperUI() {
 		System.out.println("Initializing Paper UI...");
-		Sheet poster = new Sheet(WIDTH_IN_INCHES, HEIGHT_IN_INCHES);
+		final Sheet poster = new Sheet(WIDTH_IN_INCHES, HEIGHT_IN_INCHES);
 		poster.registerConfigurationPath(new File("data/Flickr/"));
 
 		// read in the XML file
@@ -153,6 +165,7 @@ public class SquaredCircle extends Application {
 
 		int n = 0;
 		for (final FlickrPhoto photo : photosToView) {
+			final String photoID = photo.getId();
 
 			// add an image region with some paper buttons
 			// final Region imageWithWidgets = getImageWithWidgets(new Inches(currX),
@@ -163,39 +176,36 @@ public class SquaredCircle extends Application {
 			// directly to the sheet
 
 			final Inches currYInches = new Inches(currY);
-			final ImageRegion imgRegion = new ImageRegion(photo.getFile(), new Inches(currX),
-					currYInches, PPI);
+			final ImageRegion imgRegion = new ImageRegion(photoID + "_image", photo.getFile(),
+					new Inches(currX), currYInches, PPI);
 			final Inches rightAfterImage = new Inches(currX + imgRegion.getWidthVal());
-			final Region voteUpRegion = new Region(rightAfterImage, currYInches, halfInch, halfInch);
+			final Region voteUpRegion = new Region(photoID + "_voteUp", rightAfterImage,
+					currYInches, halfInch, halfInch);
 			voteUpRegion.setStrokeColor(Color.LIGHT_GRAY);
-			voteUpRegion.setName(photo.getId() + "_voteUp");
 			voteUpRegion.addEventHandler(new ClickAdapter() {
 				@Override
 				public void clicked(PenEvent e) {
-					System.out.println("This Photo is Great!: " + photo.getUrl() + " "
-							+ photo.getId());
+					System.out.println("This Photo is Great!: " + photo.getUrl() + " " + photoID);
 				}
 			});
 
-			final Region retrieveRegion = new Region(rightAfterImage, new Inches(currY + 0.5),
-					halfInch, halfInch);
+			final Region retrieveRegion = new Region(photoID + "_retrieve", rightAfterImage,
+					new Inches(currY + 0.5), halfInch, halfInch);
 			retrieveRegion.setStrokeColor(Color.LIGHT_GRAY);
-			retrieveRegion.setName(photo.getId() + "_retrieve");
 			retrieveRegion.addEventHandler(new ClickAdapter() {
+				@Override
 				public void clicked(PenEvent e) {
-					System.out.println("Clicked on Photo " + photo.getUrl() + " " + photo.getId());
+					System.out.println("Clicked on Photo " + photo.getUrl() + " " + photoID);
 					new OpenURL2Action(photo.getUrl(), OpenURL2Action.FIREFOX).invoke();
 				}
 			});
-			final Region voteDownRegion = new Region(rightAfterImage, new Inches(currY + 1.0),
-					halfInch, halfInch);
+			final Region voteDownRegion = new Region(photoID + "_voteDown", rightAfterImage,
+					new Inches(currY + 1.0), halfInch, halfInch);
 			voteDownRegion.setStrokeColor(Color.LIGHT_GRAY);
-			voteDownRegion.setName(photo.getId() + "_voteDown");
 			voteDownRegion.addEventHandler(new ClickAdapter() {
 				@Override
 				public void clicked(PenEvent e) {
-					System.out.println("This Photo is No Good: " + photo.getUrl() + " "
-							+ photo.getId());
+					System.out.println("This Photo is No Good: " + photo.getUrl() + " " + photoID);
 				}
 			});
 
