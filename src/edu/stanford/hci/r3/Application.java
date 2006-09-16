@@ -162,7 +162,6 @@ public class Application {
 			System.out.println("Rendering: " + destPDFFile.getAbsolutePath());
 			final SheetRenderer renderer = sheet.getRenderer();
 			renderer.renderToPDF(destPDFFile);
-			renderer.savePatternInformation(); // do this automatically
 		}
 	}
 

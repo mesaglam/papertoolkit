@@ -8,11 +8,17 @@ import java.util.Map;
 
 import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
  * Creates arbitrary-sized pattern blocks, assuming you have enough pattern files to supply it with.
+ * </p>
+ * <p>
+ * This object keeps track of what pattern blocks you have used. It stores it in a map of each page
+ * (basically a Rectangle2D bounds). Once a request comes in that is not servicable by this SINGLE
+ * page, it will increment the patternFile Number, and allow you to get pattern from the next page.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -34,6 +40,12 @@ public class TiledPatternGenerator {
 	 * Where to find the directories that store our pattern definition files.
 	 */
 	public static final File PATTERN_PATH = getPatternPath();
+
+	/**
+	 * Number of dots we pad between pattern requests, so that no two pattern requests are touching
+	 * each other.
+	 */
+	private static final int BUFFER = 30;
 
 	/**
 	 * @return
@@ -62,6 +74,10 @@ public class TiledPatternGenerator {
 	 * Customize this to reflect where you store your pattern definition files.
 	 */
 	private File patternPath;
+
+	private int maxOfRecentHeightsInDots = 0;
+
+	private int numTimesCalled = 0;
 
 	/**
 	 * Default Pattern Path Location.
@@ -159,11 +175,14 @@ public class TiledPatternGenerator {
 	 * given you, and will give you unique pattern (if possible) every time you call this method.
 	 * 
 	 * @param width
+	 *            the amount of pattern we need
 	 * @param height
 	 * 
 	 * @return
 	 */
 	public TiledPattern getPattern(Units width, Units height) {
+		DebugUtils.println("getPattern Called " + numTimesCalled++ + " times...");
+		
 		final long numDotsX = Math.round(width.getValueInPatternDots());
 		final long numDotsY = Math.round(height.getValueInPatternDots());
 
@@ -194,17 +213,58 @@ public class TiledPatternGenerator {
 		}
 		final int numDotsYFromBottomMostTiles = numDotsRemainingY + numPatternRowsPerFile;
 
+		// if we only need one tile....
+		// we would like to stay on the same pattern file if we still have space
+		// calculate this from numDotsXFromRightMostTiles and numDotsYFromBottomMostTiles...
+		// DebugUtils.println("NumTilesNeeded: " + numTilesNeededX + ", " + numTilesNeededY);
+		if (numTilesNeededX == 1 && numTilesNeededY == 1) {
+			// DebugUtils.println("DotsNeeded: x: " + numDotsXFromRightMostTiles + ", "
+			// + numDotsYFromBottomMostTiles);
+			// if we WILL exceed the horizontal bounds....
+			if (lastDotUsedX + numDotsXFromRightMostTiles + BUFFER >= numPatternColsPerFile) {
+
+				// wrap back to the left side of the page
+				lastDotUsedX = 0;
+				lastDotUsedY += maxOfRecentHeightsInDots + BUFFER;
+			}
+
+			// if we WILL exceed the height bounds...
+			if (lastDotUsedY + numDotsYFromBottomMostTiles + BUFFER >= numPatternRowsPerFile) {
+				lastDotUsedY = 0;
+				// next time, get pattern from a new file!
+				patternFileNumber++;
+			}
+		} else {
+			// we need more than one tile...
+			// CROSS OUR FINGERS for now. =)
+		}
+
 		// create and return the tiled pattern
-		// for now, always increment the file number so that we get new pattern!
-		final TiledPattern pattern = new TiledPattern(patternPackage, patternFileNumber, 0, //
+		final TiledPattern pattern = new TiledPattern(patternPackage, patternFileNumber, //
+				lastDotUsedX, lastDotUsedY, //
 				numTilesNeededX, numTilesNeededY, //
 				numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles); //
+		patternFileNumber = pattern.getLastPatternFileUsed();
 
-		// next time, get new pattern from a new file!
-		patternFileNumber = pattern.getLastPatternFileUsed() + 1;
+		// try to shift everything right
+		// we are still tiling horizontally
+		// maintain our tallest Y to date
+		lastDotUsedX += numDotsXFromRightMostTiles + BUFFER;
+		maxOfRecentHeightsInDots = Math.max(maxOfRecentHeightsInDots, numDotsYFromBottomMostTiles
+				+ BUFFER);
 
 		return pattern;
 	}
+
+	/**
+	 * Allows us to track usage within a page.
+	 */
+	private int lastDotUsedX = 0;
+
+	/**
+	 * Track pattern usage within a page. Reset every time we go to a new page.
+	 */
+	private int lastDotUsedY = 0;
 
 	/**
 	 * @param name

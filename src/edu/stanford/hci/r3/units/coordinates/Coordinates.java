@@ -42,6 +42,9 @@ public class Coordinates {
 		return y;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return "Coordinates: x=[" + x.toString() + "]  y=[" + y.toString() + "]";
 	}

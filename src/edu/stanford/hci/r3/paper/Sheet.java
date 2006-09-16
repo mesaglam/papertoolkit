@@ -14,6 +14,7 @@ import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Size;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.coordinates.Coordinates;
 
 /**
  * <p>
@@ -66,6 +67,8 @@ public class Sheet {
 	 */
 	private List<Region> regions = new ArrayList<Region>();
 
+	private Map<Region, Coordinates> regionsAndRelativeLocations = new HashMap<Region, Coordinates>();
+
 	/**
 	 * Represents the rectangular size of this Sheet.
 	 */
@@ -108,6 +111,18 @@ public class Sheet {
 	}
 
 	/**
+	 * @param r
+	 * @param xOffset
+	 *            from the top left corner of the sheet
+	 * @param yOffset
+	 *            from the top left corner of the sheet
+	 */
+	public void addRegion(Region r, Units xOffset, Units yOffset) {
+		addRegion(r);
+		regionsAndRelativeLocations.put(r, new Coordinates(xOffset, yOffset));
+	}
+
+	/**
 	 * This file must be an XStream-serialized RegionConfiguration object. This can be produced by
 	 * hand, programmatically, or by the R3 Acrobat plugin.
 	 * 
@@ -145,13 +160,6 @@ public class Sheet {
 	}
 
 	/**
-	 * @return a new Renderer for this object.
-	 */
-	public SheetRenderer getRenderer() {
-		return new SheetRenderer(this);
-	}
-
-	/**
 	 * @return directories to look in for files like the patterned pdf, patternInfo.xml, or
 	 *         regions.xml files.
 	 */
@@ -176,10 +184,30 @@ public class Sheet {
 	}
 
 	/**
+	 * @param r
+	 *            if it doesn't exist, that implies a 0,0 offset.
+	 * @return
+	 */
+	public Coordinates getRegionOffset(Region r) {
+		final Coordinates coordinates = regionsAndRelativeLocations.get(r);
+		if (coordinates == null) {
+			return new Coordinates(new Inches(0), new Inches(0));
+		}
+		return coordinates;
+	}
+
+	/**
 	 * @return the internal list of regions
 	 */
 	public List<Region> getRegions() {
 		return regions;
+	}
+
+	/**
+	 * @return a new Renderer for this object.
+	 */
+	public SheetRenderer getRenderer() {
+		return new SheetRenderer(this);
 	}
 
 	/**

@@ -5,7 +5,7 @@ import edu.stanford.hci.r3.units.Units;
 
 /**
  * <p>
- * A region with custom graphics.
+ * A region with custom graphics. Provide it your own Java2D commands to render.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -16,7 +16,7 @@ import edu.stanford.hci.r3.units.Units;
  */
 public class GraphicsRegion extends Region {
 
-	public GraphicsRegion(Units x, Units y, Units w, Units h) {
-		super(x, y, w, h);
+	public GraphicsRegion(String name, Units x, Units y, Units w, Units h) {
+		super(name, x, y, w, h);
 	}
 }

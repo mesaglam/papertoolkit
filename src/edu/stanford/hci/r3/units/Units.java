@@ -19,6 +19,24 @@ public abstract class Units implements Cloneable {
 	 */
 	public static final double POINTS_PER_INCH = 72;
 
+	/**
+	 * @param a
+	 * @param b
+	 * @return a unit object of type a representing a+b
+	 */
+	public static Units add(Units a, Units b) {
+		return a.getUnitsObjectOfSameTypeWithValue(a.getValue() + b.getValueIn(a));
+	}
+
+	/**
+	 * @param a
+	 * @param b
+	 * @return a Unit object of type a representing a-b
+	 */
+	public static Units subtract(Units a, Units b) {
+		return a.getUnitsObjectOfSameTypeWithValue(a.getValue() - b.getValueIn(a));
+	}
+
 	private String unitName;
 
 	/**
@@ -149,6 +167,8 @@ public abstract class Units implements Cloneable {
 	}
 
 	/**
+	 * Gets the value in a new unit.
+	 * 
 	 * For example, you have a Units object that represents 2 Inches. You want to see what the value
 	 * will be in Points. getConversionTo(new Points()) will return 72. 2 * 72 is 144.
 	 * 
@@ -244,4 +264,5 @@ public abstract class Units implements Cloneable {
 	public String toString() {
 		return value + " " + getUnitName();
 	}
+
 }

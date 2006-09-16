@@ -12,7 +12,9 @@ import com.lowagie.text.pdf.PdfTemplate;
 import edu.stanford.hci.r3.pattern.PatternJitter;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
+import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
  * <p>
@@ -167,11 +169,14 @@ public class PDFPatternGenerator {
 	}
 
 	/**
+	 * defaultRadius = 3 works great
+	 * 
+	 * 
 	 * @param adjustment
 	 */
 	private void createDotTemplate(float adjustment) {
 		float radiusAdjustment = 0.5f * adjustment;
-		final int defaultRadius = 3;
+		final float defaultRadius = 2.8f; // this is key (the right size)
 		float xCenter = defaultRadius;
 		float yCenter = defaultRadius;
 
@@ -266,7 +271,7 @@ public class PDFPatternGenerator {
 		int gridXPosition = initX;
 		int gridYPosition = MathUtils.rint(yOrigInPoints * convertPointsToHundredthsOfMM);
 
-		System.out.println("PDFPatternGenerator: " + gridXPosition + " " + gridYPosition);
+		System.out.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " " + gridYPosition);
 
 		int xJitter = 0;
 		int yJitter = 0;
@@ -305,12 +310,12 @@ public class PDFPatternGenerator {
 				}
 
 				if (useTemplateInsteadOfFont) {
-					content.addTemplate(dotTemplate, gridXPosition + xJitter, heightInHundredths
-							- (gridYPosition + yJitter));
+					content.addTemplate(dotTemplate, gridXPosition + xJitter, //
+							heightInHundredths - (gridYPosition + yJitter));
 				} else {
-					content.showTextAligned(PdfContentByte.ALIGN_CENTER, dotSymbol, gridXPosition
-							+ xJitter + X_FONT_OFFSET, heightInHundredths
-							- (gridYPosition + yJitter + Y_FONT_OFFSET), 0);
+					content.showTextAligned(PdfContentByte.ALIGN_CENTER, dotSymbol, //
+							gridXPosition + xJitter + X_FONT_OFFSET, //
+							heightInHundredths - (gridYPosition + yJitter + Y_FONT_OFFSET), 0);
 				}
 
 				gridXPosition += DEFAULT_PADDING;

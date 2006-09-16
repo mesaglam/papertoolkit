@@ -22,7 +22,7 @@ public class Test_SheetRenderer {
 		Sheet sheet = new Sheet(new Inches(42), new Inches(24));
 
 		// define some regions
-		Region reg = new Region(0, 0, 42, 24);
+		Region reg = new Region("Test", 0, 0, 42, 24);
 		reg.setActive(true);
 
 		// add regions to the sheet
@@ -39,7 +39,7 @@ public class Test_SheetRenderer {
 		Sheet sheet = new Sheet(new Inches(8.5), new Inches(11));
 
 		// define some regions
-		Region reg = new Region(0, 0, 3.5, 4);
+		Region reg = new Region("Test", 0, 0, 3.5, 4);
 		reg.setActive(true);
 
 		// add regions to the sheet

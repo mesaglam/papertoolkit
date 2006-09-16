@@ -31,26 +31,27 @@ public class Test_Sheet {
 		Sheet sheet = new Sheet(new Inches(15), new Centimeters(15));
 
 		// define some regions
-		Region reg0 = new Region(0, 0, 1.5, 1.5);
+		Region reg0 = new Region("0", 0, 0, 1.5, 1.5);
 		reg0.setActive(true);
 
-		Region reg1 = new Region(1, 1, 2, 3);
+		Region reg1 = new Region("1", 1, 1, 2, 3);
 		reg1.scaleRegionUniformly(0.75);
 
-		PolygonalRegion poly = new PolygonalRegion(new Inches(), new Point2D.Double(1, 7),
+		PolygonalRegion poly = new PolygonalRegion("Poly0", new Inches(), new Point2D.Double(1, 7),
 				new Point2D.Double(2, 8), new Point2D.Double(3, 7));
 		poly.scaleRegionUniformly(.33);
 
-		PolygonalRegion poly2 = new PolygonalRegion(new Inches(), new Point2D.Double(4, 10),
-				new Point2D.Double(6, 10), new Point2D.Double(5, 7), new Point2D.Double(3, 6));
+		PolygonalRegion poly2 = new PolygonalRegion("Poly1", new Inches(),
+				new Point2D.Double(4, 10), new Point2D.Double(6, 10), new Point2D.Double(5, 7),
+				new Point2D.Double(3, 6));
 		poly2.scaleRegionUniformly(.66);
 
-		ImageRegion img = new ImageRegion(new File("data/testFiles/dragon.jpg"), new Inches(3.5),
-				new Inches(4));
+		ImageRegion img = new ImageRegion("Dragon", new File("data/testFiles/dragon.jpg"),
+				new Inches(3.5), new Inches(4));
 		img.scaleRegionUniformly(.25);
 
-		TextRegion text = new TextRegion("The Dragon is\nGreeeen!", new Font("Trebuchet MS",
-				Font.BOLD, 72), new Inches(1), new Inches(2));
+		TextRegion text = new TextRegion("DragonDescription", "The Dragon is\nGreeeen!", new Font(
+				"Trebuchet MS", Font.BOLD, 72), new Inches(1), new Inches(2));
 
 		// add regions to the sheet
 		sheet.addRegion(reg0);

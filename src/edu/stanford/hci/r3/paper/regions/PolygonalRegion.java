@@ -73,8 +73,8 @@ public class PolygonalRegion extends Region {
 	 * @param u
 	 * @param points
 	 */
-	public PolygonalRegion(Units u, Point2D... points) {
-		this(u, u.getUnitsObjectOfSameTypeWithValue(getMinX(points)), u
+	public PolygonalRegion(String name, Units u, Point2D... points) {
+		this(name, u, u.getUnitsObjectOfSameTypeWithValue(getMinX(points)), u
 				.getUnitsObjectOfSameTypeWithValue(getMinY(points)), points);
 	}
 
@@ -87,8 +87,8 @@ public class PolygonalRegion extends Region {
 	 * @param destUnits
 	 * @param pts
 	 */
-	public PolygonalRegion(Units currUnits, Units destUnits, Point2D... pts) {
-		this(destUnits, GraphicsUtils.getPointsWithConvertedUnits(currUnits, destUnits, pts));
+	public PolygonalRegion(String name, Units currUnits, Units destUnits, Point2D... pts) {
+		this(name, destUnits, GraphicsUtils.getPointsWithConvertedUnits(currUnits, destUnits, pts));
 	}
 
 	/**
@@ -104,8 +104,8 @@ public class PolygonalRegion extends Region {
 	 * @param originY
 	 * @param points
 	 */
-	private PolygonalRegion(Units u, Units originX, Units originY, Point2D... points) {
-		super(GraphicsUtils.createPolygon(points), u);
+	private PolygonalRegion(String name, Units u, Units originX, Units originY, Point2D... points) {
+		super(name, GraphicsUtils.createPolygon(points), u);
 
 		// save these around for later
 		offsetX = originX;

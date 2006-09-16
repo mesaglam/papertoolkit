@@ -41,8 +41,8 @@ public class ImageRegion extends Region {
 	 * @param originX
 	 * @param originY
 	 */
-	public ImageRegion(File imgFile, Units originX, Units originY) {
-		this(imgFile, originX, originY, new Pixels(1, 72));
+	public ImageRegion(String name, File imgFile, Units originX, Units originY) {
+		this(name, imgFile, originX, originY, new Pixels(1, 72));
 	}
 
 	/**
@@ -51,8 +51,8 @@ public class ImageRegion extends Region {
 	 * @param originY
 	 * @param pixelConversion
 	 */
-	public ImageRegion(File imgFile, Units originX, Units originY, Pixels pixelConversion) {
-		super(originX); // initialize units
+	public ImageRegion(String name, File imgFile, Units originX, Units originY, Pixels pixelConversion) {
+		super(name, originX); // initialize units
 
 		// figure out the shape of this image, by loading it and determining the dimensions
 		final Dimension dimension = ImageUtils.readSize(imgFile);
