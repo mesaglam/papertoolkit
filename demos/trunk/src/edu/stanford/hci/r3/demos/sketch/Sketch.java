@@ -104,6 +104,8 @@ public class Sketch {
 			PaperToolkit.startAcrobatDesigner();
 		} else {
 			sheet = new PDFSheet(new File("data/Sketch/SketchUI.pdf"));
+			
+			// regions should be added before you run the app (i.e., add the sheet to an application, etc...)
 			sheet.addRegions(new File("data/Sketch/SketchUI.regions.xml"));
 
 			if (mode == MODE_RENDER_PDF) {
