@@ -29,5 +29,7 @@
 	<classpathentry path="lib/jmf/jmf.jar" kind="lib"/>
 	<classpathentry path="lib/jmf/mp3plugin.jar" kind="lib"/>
 	<classpathentry path="lib/swingx.jar" kind="lib"/>
+	<classpathentry path="lib/freetts/freetts.jar" kind="lib"/>
+	<classpathentry path="lib/freetts/jsapi.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

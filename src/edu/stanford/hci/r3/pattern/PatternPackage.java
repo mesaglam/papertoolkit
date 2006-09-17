@@ -320,10 +320,12 @@ public class PatternPackage {
 		// we can request at max 8-5=3 dots.
 		// So we can get dots numbered 12, 13, and 14... which makes sense in a 15-dot wide file
 		// indexed from 0
-		final int rightMostDot = startDotsX + numDotsAcross;
+		int rightMostDot = startDotsX + numDotsAcross;
 		if (rightMostDot > numPatternColsPerFile) {
-			numDotsAcross -= (rightMostDot - numPatternColsPerFile);
+			numDotsAcross = numDotsAcross - (rightMostDot - numPatternColsPerFile);
+			rightMostDot = startDotsX + numDotsAcross; // ends up being startDotsX + numDotsAcross - rightMostDot + numPatternColsPerFile
 		}
+		
 		if (numDotsDown < 0) {
 			numDotsDown = 0;
 		}

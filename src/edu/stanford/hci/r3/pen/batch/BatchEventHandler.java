@@ -56,6 +56,8 @@ public abstract class BatchEventHandler {
 
 	private String name;
 
+	PatternDots referenceUnit = new PatternDots();
+
 	/**
 	 * 
 	 */
@@ -63,6 +65,8 @@ public abstract class BatchEventHandler {
 		name = theName;
 	}
 
+	public abstract void inkArrived(Ink inkOnThisPage);
+	
 	/**
 	 * @param xmlDataFile
 	 */
@@ -148,19 +152,10 @@ public abstract class BatchEventHandler {
 				inkOnThisPage.addStroke(stroke);
 			}
 
-			// call the ink filter....
-			InkRenderer renderer = new InkRenderer(inkOnThisPage);
-			// argh... we need to specify that we are rendering in dots somehow!
-			// right now, we can only customize the pixels per inch....
-			// TODO: FIX THIS
-			renderer.renderToJPEG(new File("Ink_" + inkOnThisPage.getName() + ".jpg"),
-					new Pixels(), new Millimeters(148+20), new Millimeters(210+20));
+			inkArrived(inkOnThisPage);
 		}
 		System.out.println();
-
 	}
-
-	PatternDots referenceUnit = new PatternDots();
 
 	/**
 	 * @see java.lang.Object#toString()

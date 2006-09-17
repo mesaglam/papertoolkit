@@ -193,6 +193,11 @@ public class PaperToolkit {
 	 */
 	public static void toXML(Object object, OutputStream stream) {
 		getXMLEngine().toXML(object, stream);
+		try {
+			stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private JTextArea appDetailsPanel;
@@ -628,6 +633,8 @@ public class PaperToolkit {
 				eventEngine.register(pen);
 			}
 		}
+
+		DebugUtils.println("Starting " + paperApp.getName());
 
 		// keep track of the pattern assigned to different sheets and regions
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());

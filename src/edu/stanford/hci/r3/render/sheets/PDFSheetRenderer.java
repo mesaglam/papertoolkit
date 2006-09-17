@@ -83,8 +83,10 @@ public class PDFSheetRenderer extends SheetRenderer {
 			final PdfContentByte topLayer = stamp.getOverContent(1 /* page number */);
 			final PdfContentByte bottomLayer = stamp.getUnderContent(1);
 			renderToPDFContentLayers(destPDFFile, topLayer, bottomLayer);
-
 			stamp.close();
+			
+			// save the pattern info to the same directory automatically
+			savePatternInformation(); // do this automatically
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
