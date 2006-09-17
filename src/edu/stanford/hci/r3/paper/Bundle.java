@@ -66,11 +66,18 @@ public class Bundle {
 	}
 
 	/**
+	 * @param sheetToAdd
+	 */
+	public void addSheet(Sheet sheetToAdd) {
+		sheets.add(sheetToAdd);
+	}
+
+	/**
 	 * @param sheetsToAdd
 	 */
 	public void addSheets(Sheet... sheetsToAdd) {
 		for (Sheet s : sheetsToAdd) {
-			sheets.add(s);
+			addSheet(s);
 		}
 	}
 
@@ -79,6 +86,15 @@ public class Bundle {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @param index
+	 *            starting from 0
+	 * @return
+	 */
+	public Sheet getSheet(int index) {
+		return sheets.get(index);
 	}
 
 	/**

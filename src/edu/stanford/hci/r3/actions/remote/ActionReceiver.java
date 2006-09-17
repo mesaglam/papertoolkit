@@ -340,6 +340,9 @@ public class ActionReceiver {
 		System.out.println(msg);
 	}
 
+	/**
+	 * @param listener
+	 */
 	public void setConnectionListener(ActionReceiverConnectionListener listener) {
 		connectionListener = listener;
 	}

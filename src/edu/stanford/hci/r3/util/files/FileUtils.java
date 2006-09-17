@@ -85,6 +85,17 @@ public class FileUtils {
 		return ArrayUtils.convertArrayToList(files);
 	}
 
+	
+	/**
+	 * Reads an entire file into the StringBuilder (faster than StringBuffer).
+	 * 
+	 * @param f
+	 * @return the StringBuilder containing all the data
+	 */
+	public static StringBuilder readFileIntoStringBuffer(File f) {
+		return readFileIntoStringBuffer(f, false);
+	}
+
 	/**
 	 * @param f
 	 *            turn this file into a big string buffer (StringBuilder for efficiency)

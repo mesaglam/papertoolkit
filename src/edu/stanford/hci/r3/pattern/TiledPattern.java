@@ -85,6 +85,9 @@ public class TiledPattern {
 	 */
 	private StringBuilder[] pattern;
 
+	/**
+	 * 
+	 */
 	private StreamedPatternCoordinates patternCoordinateOfOrigin;
 
 	/**
@@ -193,13 +196,6 @@ public class TiledPattern {
 		return patternPackage.getNumDotsHorizontalBetweenPages();
 	}
 
-	/**
-	 * @return the number of rows of pattern this object represents
-	 */
-	public int getNumRows() {
-		return pattern.length;
-	}
-
 	public int getNumTilesX() {
 		return numTilesX;
 	}
@@ -212,6 +208,9 @@ public class TiledPattern {
 		return numTotalColumns;
 	}
 
+	/**
+	 * @return the number of rows of pattern this object represents
+	 */
 	public int getNumTotalRows() {
 		return numTotalRows;
 	}

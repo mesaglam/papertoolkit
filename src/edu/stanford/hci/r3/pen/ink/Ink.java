@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.pen.ink;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,15 +21,34 @@ public class Ink {
 	private Color color = Color.BLACK;
 
 	/**
+	 * The name of this Ink cluster.
+	 */
+	private String name;
+
+	/**
 	 * 
 	 */
 	private List<InkStroke> strokes;
+
+	/**
+	 * 
+	 */
+	public Ink() {
+		this(new ArrayList<InkStroke>());
+	}
 
 	/**
 	 * @param theStrokes
 	 */
 	public Ink(List<InkStroke> theStrokes) {
 		strokes = theStrokes;
+	}
+
+	/**
+	 * @param s
+	 */
+	public void addStroke(InkStroke s) {
+		strokes.add(s);
 	}
 
 	/**
@@ -41,8 +61,8 @@ public class Ink {
 	/**
 	 * @return
 	 */
-	public List<InkStroke> getStrokes() {
-		return strokes;
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -53,9 +73,33 @@ public class Ink {
 	}
 
 	/**
+	 * @return
+	 */
+	public List<InkStroke> getStrokes() {
+		return strokes;
+	}
+
+	/**
+	 * @param s
+	 */
+	public void removeStroke(InkStroke s) {
+		strokes.remove(s);
+	}
+
+	/**
 	 * @param c
 	 */
 	public void setColor(Color c) {
 		color = c;
+	}
+
+	/**
+	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink
+	 * clusters.
+	 * 
+	 * @param theName
+	 */
+	public void setName(String theName) {
+		name = theName;
 	}
 }

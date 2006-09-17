@@ -18,6 +18,9 @@ import edu.stanford.hci.r3.util.MathUtils;
  */
 public class InkStroke {
 
+	/**
+	 * 
+	 */
 	private int[] force = null;
 
 	private double maxX = Double.MIN_VALUE;
@@ -35,6 +38,9 @@ public class InkStroke {
 	 */
 	private Units referenceUnit;
 
+	/**
+	 * 
+	 */
 	private long[] timestamp = null;
 
 	/**
