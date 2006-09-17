@@ -8,21 +8,29 @@ import java.io.IOException;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.paper.Bundle;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
+import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchEventHandler;
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Millimeters;
+import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
  * Create a GIGAprint of a JRBP Project's map. Enable some cool functionality in action bars at the
  * top and bottom of the map.
+ * 
+ * TODO: Fix the Pattern Rendering Bug...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -37,11 +45,20 @@ public class BioMap extends Application {
 
 	private Bundle notebook;
 
+	private InkCollector inkWellLowerLeft;
+
+	private InkCollector inkWellLowerRight;
+
+	private InkCollector inkWellUpperRight;
+
+	private AudioFeedback audioFeedback;
+
 	/**
 	 * 
 	 */
 	public BioMap() {
 		super("Field Biology Map");
+		audioFeedback = new AudioFeedback();
 	}
 
 	/**
@@ -49,9 +66,23 @@ public class BioMap extends Application {
 	 */
 	protected void initializeEventHandlers() {
 		addBatchEventHandler(new BatchEventHandler("Note Pages Renderer") {
+
+			@Override
+			public void inkArrived(Ink inkOnThisPage) {
+				// call the ink filter....
+				InkRenderer renderer = new InkRenderer(inkOnThisPage);
+				// argh... we need to specify that we are rendering in dots somehow!
+				// right now, we can only customize the pixels per inch....
+				// TODO: FIX THIS
+				renderer.renderToJPEG(new File("data/BioMap/Output/Ink_" + inkOnThisPage.getName()
+						+ ".jpg"), new Pixels(), new Millimeters(148 + 20), new Millimeters(
+						210 + 20));
+			}
 			// nothing for now...
 		});
 	}
+
+	private int lastSite = 0;
 
 	/**
 	 * Called by the super(...) constructor
@@ -62,8 +93,58 @@ public class BioMap extends Application {
 		// sheet = new PDFSheet(new File("data/BioMap/SurveyLocations.pdf"));
 		sheet = new PDFSheet(new File("data/BioMap/SurveyLocationsLighterGaussianBlur1_0.pdf"));
 
-		// read in the BioMapSites.txt file to define the locations of the regions
+		// add the three big regions
+		sheet.addRegions(new File("data/BioMap/SurveyLocationsLighterGaussianBlur1_0.regions.xml"));
 
+		Region llRegion = sheet.getRegion("LowerLeft");
+		inkWellLowerLeft = new InkCollector();
+		inkWellLowerLeft.addListener(new ContentFilterListener() {
+			public void contentArrived() {
+				DebugUtils.println("lower left");
+			}
+		});
+		llRegion.addContentFilter(inkWellLowerLeft);
+
+		Region lrRegion = sheet.getRegion("LowerRight");
+		inkWellLowerRight = new InkCollector();
+		inkWellLowerRight.addListener(new ContentFilterListener() {
+			public void contentArrived() {
+				DebugUtils.println("lower right");
+			}
+		});
+		lrRegion.addContentFilter(inkWellLowerRight);
+
+		Region urRegion = sheet.getRegion("UpperRight");
+		inkWellUpperRight = new InkCollector();
+		inkWellUpperRight.addListener(new ContentFilterListener() {
+			public void contentArrived() {
+				DebugUtils.println("upper right");
+				audioFeedback.speak("Notes Saved for Site" + lastSite);
+			}
+		});
+		urRegion.addContentFilter(inkWellUpperRight);
+		urRegion.addEventHandler(new ClickHandler() {
+
+			@Override
+			public void clicked(PenEvent e) {
+				System.out.println("Upper Right Clicked");
+			}
+
+			@Override
+			public void pressed(PenEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void released(PenEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
+
+		// read in the BioMapSites.txt file to define the locations of the small boxed regions
 		double leftStartInches = 0.96;
 		double topStartInches = 0;
 
@@ -99,9 +180,12 @@ public class BioMap extends Application {
 						yOfThisSite), new Inches(.85), new Inches(.85));
 				rSite.addEventHandler(new ClickHandler() {
 
+
 					@Override
 					public void clicked(PenEvent e) {
 						DebugUtils.println("Site " + siteNum + " at " + utmX + ", " + utmY);
+						audioFeedback.speak("Site" + siteNum + "....");
+						lastSite = siteNum;
 					}
 
 					@Override
@@ -155,6 +239,11 @@ public class BioMap extends Application {
 			final Sheet page = new Sheet(new Millimeters(148), new Millimeters(210));
 			notebook.addSheets(page); // A5
 		}
+
+		// the application has to know about this pen
+		// warn if there are no pens
+		Pen pen = new Pen("Main Pen");
+		addPen(pen);
 	}
 
 	/**
@@ -165,6 +254,7 @@ public class BioMap extends Application {
 		// The user can then choose whether to print the GIGAprint, or run the app
 		PaperToolkit r3 = new PaperToolkit();
 		r3.useApplicationManager(true);
-		r3.loadApplication(new BioMap());
+		// r3.loadApplication(new BioMap());
+		r3.startApplication(new BioMap());
 	}
 }
