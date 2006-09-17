@@ -17,10 +17,10 @@
         <width>77.10198999999999</width>
         <height>73.05810600000001</height>
       </shape>
-      <units class="Points">
+      <referenceUnits class="Points">
         <unitName>Points</unitName>
         <value>70.656006</value>
-      </units>
+      </referenceUnits>
       <visible>true</visible>
     </Region>
     <Region>
@@ -36,10 +36,10 @@
         <width>77.20100399999998</width>
         <height>75.600601</height>
       </shape>
-      <units class="Points">
+      <referenceUnits class="Points">
         <unitName>Points</unitName>
         <value>167.550003</value>
-      </units>
+      </referenceUnits>
       <visible>true</visible>
     </Region>
     <Region>
@@ -55,10 +55,10 @@
         <width>75.40100100000001</width>
         <height>78.60020500000002</height>
       </shape>
-      <units class="Points">
+      <referenceUnits class="Points">
         <unitName>Points</unitName>
         <value>268.315002</value>
-      </units>
+      </referenceUnits>
       <visible>true</visible>
     </Region>
     <Region>
@@ -74,10 +74,10 @@
         <width>87.40100099999995</width>
         <height>80.400803</height>
       </shape>
-      <units class="Points">
+      <referenceUnits class="Points">
         <unitName>Points</unitName>
         <value>459.859009</value>
-      </units>
+      </referenceUnits>
       <visible>true</visible>
     </Region>
     <Region>
@@ -93,10 +93,10 @@
         <width>518.2421720000001</width>
         <height>533.329025</height>
       </shape>
-      <units class="Points">
+      <referenceUnits class="Points">
         <unitName>Points</unitName>
         <value>47.344803</value>
-      </units>
+      </referenceUnits>
       <visible>true</visible>
     </Region>
   </regions>
