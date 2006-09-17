@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.designer;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -7,14 +8,19 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
- * Renders the document in our interactive designer.
+ * Renders the document in our interactive designer. It actually renders the Sheet to a JPEG, so we
+ * don't have to do interactive rendering (which sucks for complicated sheets).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -22,7 +28,6 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * @created Feb 26, 2006
  */
 public class DocumentPanel extends JPanel {
 
@@ -41,6 +46,10 @@ public class DocumentPanel extends JPanel {
 	 */
 	public static final int DROP_SHADOW_DISTANCE = 4;
 
+	private static final int MIN_PADDING_HORIZ = 20;
+
+	private static final int MIN_PADDING_VERT = 25;
+
 	/**
 	 * Color of the paper's drop shadow.
 	 */
@@ -49,48 +58,30 @@ public class DocumentPanel extends JPanel {
 	/**
 	 * extra space to the left AND right of the document (pixels)
 	 */
-	private int paddingHorizontal = 20;
+	private int paddingHorizontal = MIN_PADDING_HORIZ;
 
 	/**
 	 * above AND below the document (screen pixels)
 	 */
-	private int paddingVertical = 25;
+	private int paddingVertical = MIN_PADDING_VERT;
 
-	private Sheet sheet;
+	private JFrame parentFrame;
 
-	public DocumentPanel(Sheet s) {
-		sheet = s;
-	}
+	private JScrollPane parentScrollPane;
+
+	final Pixels pixelsReferenceUnit = new Pixels();
 
 	/**
-	 * @param document
-	 * @created Feb, 2006
-	 * @author Ron Yeh
+	 * 
 	 */
-	public void computeAndSetDocumentBounds() {
+	private Sheet sheet = new Sheet(8.5, 11);
 
-		// compute the document panel's visible bounds
-		final int documentPanelWidth = getWidth();
-		final int documentPanelHeight = getHeight();
-
-		final int documentWidthDisplayed = getDisplayedDocumentWidth();
-		final int documentHeightDisplayed = getDisplayedDocumentHeight();
-
-		// pad to the left, right, top, and bottom w/ screen pixels
-		final int minPanelWidth = (getDefaultHorizontalScreenPadding() + documentWidthDisplayed);
-		final int minPanelHeight = (getDefaultVerticalScreenPadding() + documentHeightDisplayed);
-
-		// take the current size of this panel, subtract what we think the min size is..., and
-		// divide by two. If the document panel is bigger than we need it to be, then we have
-		// computed the extra slack space on the left, right, top, and bottom. If the document panel
-		// is smaller than our minimum size, then these values can go negative...
-		final int slackWidth = (documentPanelWidth - minPanelWidth) / 2;
-		final int slackHeight = (documentPanelHeight - minPanelHeight) / 2;
-
-		// if the second term goes negative, we will choose zero (flush top, left)
-		final int topLeftOfDisplayedPaperX = Math.max(0, slackWidth + paddingHorizontal);
-		final int topLeftOfDisplayedPaperY = Math.max(0, slackHeight + paddingVertical);
-
+	/**
+	 * @param s
+	 */
+	public DocumentPanel() {
+		setBackground(Color.WHITE);
+		setLayout(new BorderLayout());
 	}
 
 	/**
@@ -124,32 +115,22 @@ public class DocumentPanel extends JPanel {
 		return 2 * paddingVertical;
 	}
 
-	/**
-	 * @return how tall it should be on my physical screen, given zoom.
-	 * @created Feb 28, 2006
-	 * @author Ron Yeh
-	 */
-	public int getDisplayedDocumentHeight() {
-		return 768;
+	private int getDisplayedDocumentHeight() {
+		return MathUtils.rint(sheet.getHeight().getValueIn(pixelsReferenceUnit));
+	}
+
+	private int getDisplayedDocumentWidth() {
+		return MathUtils.rint(sheet.getWidth().getValueIn(pixelsReferenceUnit));
 	}
 
 	/**
-	 * @return how wide it should be on my physical screen, accounting for zoom!
-	 * @created Feb 28, 2006
-	 * @author Ron Yeh
-	 */
-	public int getDisplayedDocumentWidth() {
-		return 1024;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see javax.swing.JComponent#getPreferredSize()
 	 */
 	public Dimension getPreferredSize() {
-		return new Dimension(getDisplayedDocumentWidth() + getDefaultHorizontalScreenPadding(),
-				getDisplayedDocumentHeight() + getDefaultVerticalScreenPadding());
+		return new Dimension(getDisplayedDocumentWidth() + getDefaultHorizontalScreenPadding()
+				- parentScrollPane.getVerticalScrollBar().getWidth(), getDisplayedDocumentHeight()
+				+ getDefaultVerticalScreenPadding()
+				- parentScrollPane.getHorizontalScrollBar().getHeight());
 	}
 
 	/**
@@ -160,7 +141,6 @@ public class DocumentPanel extends JPanel {
 	 * layout.
 	 */
 	protected void paintComponent(Graphics g) {
-
 		// do whatever JPanel/JComponent likes to do...
 		super.paintComponent(g);
 
@@ -170,16 +150,36 @@ public class DocumentPanel extends JPanel {
 		// smooth gradient
 		drawGradientBackground(g2d);
 
+		// convert this to pixels
+		int widthPixels = getDisplayedDocumentWidth();
+		int heightPixels = getDisplayedDocumentHeight();
+		// System.out.println("Sheet size is: " + sheet.getWidth() + ", " + sheet.getHeight());
+		// System.out.println("Sheet size is: " + widthPixels + ", " + heightPixels);
+
+		int panelWidth = parentFrame.getWidth();
+		int panelHeight = parentScrollPane.getHeight();
+
+		paddingHorizontal = Math.max(MathUtils.rint((panelWidth - widthPixels) / 2.0),
+				MIN_PADDING_HORIZ);
+		paddingVertical = Math.max(MathUtils.rint((panelHeight - heightPixels) / 2.0),
+				MIN_PADDING_VERT);
+
+		// draw the jpeg image of the sheet...
+
 		// the dark drop shadow
 		g2d.setColor(SHADOW_COLOR);
-		final Rectangle docBounds = new Rectangle(0, 0, 1024, 768);
+		final Rectangle docBounds = new Rectangle(paddingHorizontal, paddingVertical, widthPixels,
+				heightPixels);
 		g2d.fillRect((int) docBounds.getX() + DROP_SHADOW_DISTANCE, (int) docBounds.getY()
 				+ DROP_SHADOW_DISTANCE, docBounds.width, docBounds.height);
 
-		// System.out.println("DesignerDocumentPanel:: " + document.getClass());
-		// System.out.println("DesignerDocumentPanel:: Bounds: "+ getBounds());//documentBounds);
-		// System.out.println("DesignerDocumentPanel:: Clip: "+ g.getClip());
-
 	}
 
+	public void setParentFrame(JFrame mainFrame) {
+		parentFrame = mainFrame;
+	}
+
+	public void setParentScrollPane(JScrollPane scrollPane) {
+		parentScrollPane = scrollPane;
+	}
 }

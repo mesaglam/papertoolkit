@@ -1,25 +1,30 @@
 package edu.stanford.hci.r3.designer;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.List;
 
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
-
-import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.designer.toolbar.DebuggingTasks;
+import edu.stanford.hci.r3.designer.toolbar.DocumentTasks;
+import edu.stanford.hci.r3.designer.toolbar.UserTestTasks;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
+import edu.stanford.hci.r3.util.components.ribbons.RibbonPanel;
+import edu.stanford.hci.r3.util.components.ribbons.RibbonToolbar;
 
 /**
  * <p>
@@ -42,7 +47,11 @@ public class Designer {
 		new Designer();
 	}
 
-	private JComboBox documentDropDown;
+	private DebuggingTasks debuggingTasks;
+
+	private DocumentPanel documentPanel;
+
+	private DocumentTasks documentTasks;
 
 	private JFrame fullScreenFrame;
 
@@ -50,22 +59,19 @@ public class Designer {
 
 	private int lastWindowY = 0;
 
-	private double lastZoomFactor = 1.0;
-
 	private JFrame mainFrame;
 
 	private JPanel mainPanel;
 
-	private JTextField printerDPITF;
-
-	private JComboBox printerDropDown;
-
 	private JScrollPane scrollPane;
 
-	private JComboBox userDropDown;
+	private RibbonToolbar toolbar;
 
-	private JTextField zoomTextField;
+	private UserTestTasks userTestTasks;
 
+	/**
+	 * 
+	 */
 	public Designer() {
 		this(0, 0);
 	}
@@ -87,8 +93,7 @@ public class Designer {
 	 * @author Ron Yeh
 	 */
 	private WindowListener getCloseHandler() {
-		return new WindowListener() {
-
+		return new WindowAdapter() {
 			private void updateWindowLocation() {
 				lastWindowX = mainFrame.getLocation().x;
 				lastWindowY = mainFrame.getLocation().y;
@@ -98,10 +103,6 @@ public class Designer {
 				updateWindowLocation();
 			}
 
-			public void windowClosed(WindowEvent arg0) {
-
-			}
-
 			public void windowClosing(WindowEvent we) {
 				updateWindowLocation();
 			}
@@ -109,19 +110,17 @@ public class Designer {
 			public void windowDeactivated(WindowEvent arg0) {
 				updateWindowLocation();
 			}
-
-			public void windowDeiconified(WindowEvent arg0) {
-
-			}
-
-			public void windowIconified(WindowEvent arg0) {
-
-			}
-
-			public void windowOpened(WindowEvent arg0) {
-
-			}
 		};
+	}
+
+	/**
+	 * @return
+	 */
+	private List<RibbonPanel> getDebuggingTasksComponents() {
+		if (debuggingTasks == null) {
+			debuggingTasks = new DebuggingTasks();
+		}
+		return debuggingTasks.getPanels();
 	}
 
 	/**
@@ -130,13 +129,21 @@ public class Designer {
 	 * @created Feb 15, 2006
 	 * @author Ron Yeh
 	 */
-	private Container getDocumentPanel() {
-		if (mainPanel == null) {
-			mainPanel = new DocumentPanel(new Sheet(8.5, 11));
-			mainPanel.setBackground(Color.WHITE);
-			mainPanel.setLayout(new BorderLayout());
+	private DocumentPanel getDocumentPanel() {
+		if (documentPanel == null) {
+			documentPanel = new DocumentPanel();
 		}
-		return mainPanel;
+		return documentPanel;
+	}
+
+	/**
+	 * @return
+	 */
+	private List<RibbonPanel> getDocumentTasksComponents() {
+		if (documentTasks == null) {
+			documentTasks = new DocumentTasks();
+		}
+		return documentTasks.getPanels();
 	}
 
 	/**
@@ -157,8 +164,84 @@ public class Designer {
 		return lastWindowY;
 	}
 
+	/**
+	 * @return
+	 */
 	public JFrame getMainFrame() {
+		if (mainFrame == null) {
+			mainFrame = new JFrame();
+			mainFrame.setTitle(TITLE);
+			mainFrame.setSize(1024, 768);
+			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			mainFrame.setContentPane(getMainPanel());
+			mainFrame.pack();
+			// position the window
+			if (lastWindowX == 0 && lastWindowY == 0) {
+				mainFrame.setLocation(WindowUtils.getWindowOrigin(mainFrame,
+						WindowUtils.DESKTOP_CENTER));
+			} else {
+				mainFrame.setLocation(lastWindowX, lastWindowY);
+			}
+			mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+			mainFrame.addWindowListener(getCloseHandler());
+			mainFrame.setVisible(true);
+		}
 		return mainFrame;
+	}
+
+	/**
+	 * @return
+	 */
+	private Container getMainPanel() {
+		if (mainPanel == null) {
+			mainPanel = new JPanel();
+			mainPanel.setLayout(new BorderLayout());
+			mainPanel.add(getRibbonToolbar(), BorderLayout.NORTH);
+			mainPanel.add(getScrollableDocumentPanel(), BorderLayout.CENTER);
+		}
+		return mainPanel;
+	}
+
+	/**
+	 * @return
+	 */
+	private JScrollPane getScrollableDocumentPanel() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane(getDocumentPanel(),
+					ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+			getDocumentPanel().setParentScrollPane(scrollPane);
+			getDocumentPanel().setParentFrame(mainFrame);
+		}
+		return scrollPane;
+	}
+
+	/**
+	 * @return the toolbar
+	 */
+	private Component getRibbonToolbar() {
+		if (toolbar == null) {
+			toolbar = new RibbonToolbar();
+
+			final String documentTasksName = "Application, Sheets, and Regions";
+			final String userTestName = "User Testing";
+			final String debuggingName = "Debugging";
+			toolbar.addCategories(documentTasksName, userTestName, debuggingName);
+			toolbar.addToolsToCategoryPanel(documentTasksName, getDocumentTasksComponents());
+			toolbar.addToolsToCategoryPanel(userTestName, getUserTestTasksComponents());
+			toolbar.addToolsToCategoryPanel(debuggingName, getDebuggingTasksComponents());
+		}
+		return toolbar;
+	}
+
+	/**
+	 * @return
+	 */
+	private List<RibbonPanel> getUserTestTasksComponents() {
+		if (userTestTasks == null) {
+			userTestTasks = new UserTestTasks();
+		}
+		return userTestTasks.getPanels();
 	}
 
 	/**
@@ -168,37 +251,12 @@ public class Designer {
 	 * @author Ron Yeh
 	 */
 	private void setupGUI() {
-
-		// JGoodies Look and Feel
-		try {
-			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
-		} catch (Exception e) {
-		}
-
-		mainFrame = new JFrame();
-		mainFrame.setTitle(TITLE);
-		mainFrame.setSize(1024, 768);
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainFrame.setContentPane(getDocumentPanel());
-		// mainFrame.pack();
-
-		if (lastWindowX == 0 && lastWindowY == 0) {
-			mainFrame.setLocation(WindowUtils
-					.getWindowOrigin(mainFrame, WindowUtils.DESKTOP_CENTER));
-		} else {
-			mainFrame.setLocation(lastWindowX, lastWindowY);
-		}
-
-		// mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
-
-		mainFrame.addWindowListener(getCloseHandler());
-
-		// last thing
-		mainFrame.setVisible(true);
-
+		PaperToolkit.initializeLookAndFeel();
+		getMainFrame();
 	}
 
 	/**
+	 * View the Designer in FullScreen Mode.
 	 * 
 	 * @created Mar 31, 2006
 	 * @author Ron Yeh
@@ -208,39 +266,16 @@ public class Designer {
 			fullScreenFrame = new JFrame();
 			fullScreenFrame.setUndecorated(true);
 			fullScreenFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-			fullScreenFrame.addWindowListener(new WindowListener() {
-				public void windowActivated(WindowEvent e) {
-				}
-
-				public void windowClosed(WindowEvent e) {
-				}
-
-				public void windowClosing(WindowEvent e) {
-
-				}
-
+			fullScreenFrame.addWindowListener(new WindowAdapter() {
 				public void windowDeactivated(WindowEvent e) {
 					final Container contentPane = fullScreenFrame.getContentPane();
 					contentPane.removeAll();
-					System.out.println("Window Deactivated... Adding back to the old panel...");
+					DebugUtils.println("Window Deactivated... Adding back to the old panel...");
 					scrollPane.setViewportView(new JPanel());
 					scrollPane.repaint();
 				}
-
-				public void windowDeiconified(WindowEvent e) {
-
-				}
-
-				public void windowIconified(WindowEvent e) {
-
-				}
-
-				public void windowOpened(WindowEvent e) {
-
-				}
 			});
 		}
-
 		final GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment
 				.getLocalGraphicsEnvironment();
 		final GraphicsDevice[] screenDevices = localGraphicsEnvironment.getScreenDevices();
