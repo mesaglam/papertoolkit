@@ -52,6 +52,7 @@ import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping.RegionID;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.batch.BatchServer;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
@@ -205,6 +206,11 @@ public class PaperToolkit {
 
 	private JPanel appsInspectorPanel;
 
+	/**
+	 * Processes batched ink.
+	 */
+	private BatchServer batchServer;
+
 	private JPanel controls;
 
 	private JButton designSheetsButton;
@@ -262,6 +268,13 @@ public class PaperToolkit {
 
 	/**
 	 * The version of the PaperToolkit.
+	 * 
+	 * <p>
+	 * Version 0.2 should include:
+	 * <ol>
+	 * <li>Better Batched Event Support</li>
+	 * </ol>
+	 * </p>
 	 */
 	private String versionString = "0.1";
 
@@ -275,6 +288,7 @@ public class PaperToolkit {
 		printInitializationMessages();
 		initializeLookAndFeel();
 		eventEngine = new EventEngine();
+		batchServer = new BatchServer();
 	}
 
 	/**
@@ -617,6 +631,7 @@ public class PaperToolkit {
 
 		// keep track of the pattern assigned to different sheets and regions
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
+		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 		runningApplications.add(paperApp);
 	}
 
@@ -635,6 +650,7 @@ public class PaperToolkit {
 			}
 		}
 		eventEngine.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
+		batchServer.unregisterBatchEventHandlers(paperApp.getBatchEventHandlers());
 		runningApplications.remove(paperApp);
 	}
 

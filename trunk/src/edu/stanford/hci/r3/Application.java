@@ -10,6 +10,7 @@ import java.util.Map;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.batch.BatchEventHandler;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -32,6 +33,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class Application {
+
+	private List<BatchEventHandler> batchEventHandlers = new ArrayList<BatchEventHandler>();
 
 	/**
 	 * The name of the application. Useful for debugging (e.g., when trying to figure out which
@@ -71,6 +74,13 @@ public class Application {
 	}
 
 	/**
+	 * @param beh
+	 */
+	public void addBatchEventHandler(BatchEventHandler beh) {
+		batchEventHandlers.add(beh);
+	}
+
+	/**
 	 * @param pen
 	 */
 	public void addPen(Pen pen) {
@@ -86,6 +96,13 @@ public class Application {
 	public void addSheet(Sheet sheet) {
 		sheets.add(sheet);
 		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet));
+	}
+
+	/**
+	 * @return
+	 */
+	public List<BatchEventHandler> getBatchEventHandlers() {
+		return batchEventHandlers;
 	}
 
 	/**
@@ -124,6 +141,13 @@ public class Application {
 	}
 
 	/**
+	 * Pens and Displays, etc.
+	 */
+	protected void initializeInputAndOutputDevices() {
+		// do nothing, unless it is overriden
+	}
+
+	/**
 	 * This is an empty initialization method that developers can override if they choose to
 	 * subclass an Application instead of creating an empty App and adding sheets to it.
 	 * 
@@ -132,12 +156,12 @@ public class Application {
 	protected void initializePaperUI() {
 		// do nothing, unless it is overridden.
 	}
-	
+
 	/**
-	 * Pens and Displays, etc.
+	 * @param beh
 	 */
-	protected void initializeInputAndOutputDevices() {
-		// do nothing, unless it is overriden
+	public void removeBatchEventHandler(BatchEventHandler beh) {
+		batchEventHandlers.remove(beh);
 	}
 
 	/**

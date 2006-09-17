@@ -2,6 +2,9 @@ package edu.stanford.hci.r3.units;
 
 /**
  * <p>
+ * Unit representing the length from pattern dot to pattern dot.
+ * </p>
+ * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
  * BSD License</a>.
  * </p>
@@ -43,6 +46,8 @@ public class PatternDots extends Units {
 	}
 
 	/**
+	 * How many pattern dots per inch?
+	 * 
 	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
 	@Override

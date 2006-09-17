@@ -1,12 +1,22 @@
 package edu.stanford.hci.r3.pen.batch;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
  * <p>
  * The batch importer will be called by the pen importer (.NET code) every time you synchronize the
- * pen. If you would like to use your own BatchImporter, create a subclass and tell R3 where to find
- * it.
+ * pen. It sends the information to the BatchServer, which will notify any running applications. In
+ * the future, applications do not need to be running all the time. They will be notified of new
+ * data upon booting.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -16,23 +26,41 @@ import java.io.*;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class BatchImporter {
-
-	/**
-	 * Aug 28, 2006
-	 */
 	public static void main(String[] args) {
+		PrintWriter pw = null;
 		try {
-			System.setOut(new PrintStream(new FileOutputStream("BatchImporter.log")));
-			System.out.println("Running the Batched Pen Data Importer");
+			pw = new PrintWriter(new File("BatchImporter.log"));
+			pw.println("Running the Batched Pen Data Importer");
 			for (String arg : args) {
-				System.out.println("Argument: " + arg);
+				pw.println("Argument: " + arg);
 			}
 
+			// open a socket connection to the batch importer / event handler
+			final Socket socket = new Socket("localhost", BatchServer.DEFAULT_PLAINTEXT_PORT);
+			final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket
+					.getOutputStream()));
+
+			// send over the xml file! =)
+			bw.write("XML: " + args[0] + SystemUtils.LINE_SEPARATOR); // the path!
+			bw.write(BatchServer.EXIT_COMMAND + SystemUtils.LINE_SEPARATOR);
+			bw.flush();
+			bw.close();
+
+			// close the socket connection...
+			socket.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			pw.println(e.getLocalizedMessage());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			pw.println(e.getLocalizedMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+			pw.println(e.getLocalizedMessage());
 		}
-
-		// figure out the configuration of where to find importers
-
+		if (pw != null) {
+			pw.flush();
+			pw.close();
+		}
 	}
 }

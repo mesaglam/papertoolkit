@@ -31,6 +31,9 @@ public class SystemUtils {
 	public static final String LINE_SEPARATOR = System.getProperties()
 			.getProperty("line.separator");
 
+	/**
+	 * Different for UNIX/WINDOWS/MAC
+	 */
 	public static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
 	/**

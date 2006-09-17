@@ -12,9 +12,7 @@ import com.lowagie.text.pdf.PdfTemplate;
 import edu.stanford.hci.r3.pattern.PatternJitter;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.Units;
-import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
-import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
  * <p>
@@ -224,7 +222,8 @@ public class PDFPatternGenerator {
 	}
 
 	/**
-	 * Render the given pattern starting at the designated origin.
+	 * Render the given pattern starting at the designated origin. Also render a white box
+	 * underneath the pattern, if we were asked to do so... This helps the pattern stand out better.
 	 * 
 	 * @param pattern
 	 * @param xOrigin
@@ -232,23 +231,17 @@ public class PDFPatternGenerator {
 	 */
 	public void renderPattern(TiledPattern pattern, Units xOrigin, Units yOrigin) {
 		// flip the transform so that the top left of the page is 0,0
+
 		float heightOfPDF = (float) height.getValueInPoints();
 
 		// convert the origins to Points
 		final double xOrigInPoints = xOrigin.getValueInPoints();
 		final double yOrigInPoints = yOrigin.getValueInPoints();
 
-		if (DEBUG_PATTERN) {
-			// write debug output
-			content.beginText();
-			content.setFontAndSize(debugFont, 10);
-			// ArrayUtils.printMatrix(BFONT.getFamilyFontName());
-			content.setColorFill(new Color(128, 128, 255, 128));
-			content.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tahoma " + (int) fontSize
-					+ " Padding: " + DEFAULT_PADDING, (float) xOrigInPoints, heightOfPDF
-					- (float) yOrigInPoints + 2, 0);
-			content.endText();
-		}
+		
+		final int numRows = pattern.getNumTotalRows();
+		final int numCols = pattern.getNumTotalColumns();
+		
 
 		// this actually mirrors everything
 		// text will display upside down!
@@ -262,22 +255,24 @@ public class PDFPatternGenerator {
 		if (!useTemplateInsteadOfFont) {
 			content.beginText();
 			// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
-			content.setColorFill(Color.BLACK);
 			content.setFontAndSize(patternFont, fontSize);
 		}
+		content.setColorFill(Color.BLACK);
 
 		final int initX = MathUtils.rint(xOrigInPoints * convertPointsToHundredthsOfMM);
 
 		int gridXPosition = initX;
 		int gridYPosition = MathUtils.rint(yOrigInPoints * convertPointsToHundredthsOfMM);
 
-		System.out.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " " + gridYPosition);
+		System.out.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " "
+				+ gridYPosition);
 
 		int xJitter = 0;
 		int yJitter = 0;
 		char currentJitterDirection;
 
-		for (int row = 0; row < pattern.getNumRows(); row++) {
+		for (int row = 0; row < numRows; row++) {
+		
 			final String patternRow = pattern.getPatternOnRow(row);
 			final int rowLength = patternRow.length();
 
