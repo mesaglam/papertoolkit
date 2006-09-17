@@ -31,7 +31,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -40,6 +41,7 @@ import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.ConditionalHighlighter;
 
+import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.designer.acrobat.AcrobatDesignerLauncher;
@@ -142,7 +144,14 @@ public class PaperToolkit {
 	 * Sets up parameters for any Java Swing UI we need.
 	 */
 	public static void initializeLookAndFeel() {
-		WindowUtils.setNativeLookAndFeel();
+		// WindowUtils.setNativeLookAndFeel();
+
+		// JGoodies Look and Feel
+		try {
+			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -485,16 +494,17 @@ public class PaperToolkit {
 											"Creating the PDF",
 											"Please wait while your PDF is generated.");
 									// start rendering
-									selectedApp.renderToPDF(folderToSavePDFs, selectedApp.getName());
+									selectedApp
+											.renderToPDF(folderToSavePDFs, selectedApp.getName());
 									DebugUtils.println("Done Rendering.");
-									
+
 									// open the folder in explorer! =)
 									try {
 										Desktop.getDesktop().open(folderToSavePDFs);
 									} catch (IOException e) {
 										e.printStackTrace();
 									}
-									
+
 									progress.setVisible(false);
 									progress = null;
 								}
