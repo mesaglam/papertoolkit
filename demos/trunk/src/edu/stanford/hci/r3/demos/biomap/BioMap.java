@@ -4,7 +4,11 @@ import java.io.File;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.paper.Bundle;
+import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
+import edu.stanford.hci.r3.pen.batch.BatchEventHandler;
+import edu.stanford.hci.r3.units.Millimeters;
 
 /**
  * <p>
@@ -22,6 +26,8 @@ public class BioMap extends Application {
 
 	private PDFSheet sheet;
 
+	private Bundle notebook;
+	
 	/**
 	 * 
 	 */
@@ -33,7 +39,9 @@ public class BioMap extends Application {
 	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
 	 */
 	protected void initializeEventHandlers() {
-		// do nothing, unless it is overridden.
+		addBatchEventHandler(new BatchEventHandler("Note Pages Renderer") {
+			// nothing for now...
+		});
 	}
 
 	/**
@@ -44,6 +52,16 @@ public class BioMap extends Application {
 	protected void initializePaperUI() {
 		sheet = new PDFSheet(new File("data/BioMap/SurveyLocations.pdf"));
 		addSheet(sheet);
+		
+		// the biomap application includes one field notebook... (95 pages)
+		// for now, the Application class doesn't allow us to add bundles
+		// so we keep it in this subclass for now
+		notebook = new Bundle("Field Notebook");
+		final int numPages = 95;
+		for (int i=0; i<numPages; i++) {
+			final Sheet page = new Sheet(new Millimeters(148), new Millimeters(210));
+			notebook.addSheets(page); // A5
+		}
 	}
 
 	/**
