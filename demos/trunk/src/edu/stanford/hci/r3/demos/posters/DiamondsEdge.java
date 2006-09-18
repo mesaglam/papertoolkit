@@ -10,7 +10,7 @@ import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
-import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.pen.Pen;
 
 /**
  * <p>
@@ -60,6 +60,7 @@ public class DiamondsEdge extends Application {
 		captureArea.addContentFilter(inkCollector);
 		inkCollector.addListener(new ContentFilterListener() {
 			public void contentArrived() {
+				System.out.println("CaptureArea");
 				System.out.println("Got Ink in the Capture Area...");
 			}
 		});
@@ -69,6 +70,7 @@ public class DiamondsEdge extends Application {
 		websiteLink.addEventHandler(new ClickAdapter() {
 			@Override
 			public void clicked(PenEvent e) {
+				System.out.println("HCIWebsiteArea");
 				doOpenURL("http://hci.stanford.edu/");
 			}
 		});
@@ -78,6 +80,7 @@ public class DiamondsEdge extends Application {
 
 			@Override
 			public void clicked(PenEvent e) {
+				System.out.println("WebsiteArea");
 				doOpenURL("http://hci.stanford.edu/");
 				doSpeakText(INTRO_TEXT_TO_READ);
 			}
@@ -91,6 +94,7 @@ public class DiamondsEdge extends Application {
 			 */
 			@Override
 			public void clicked(PenEvent e) {
+				System.out.println("EmailArea");
 				doOpenURL("https://mail.google.com/mail/?view=cm&tf=0&fs=1&to=mbernst@stanford.edu%20avir@stanford.edu");
 			}
 		});
@@ -99,6 +103,7 @@ public class DiamondsEdge extends Application {
 		video.addEventHandler(new ClickAdapter() {
 			@Override
 			public void clicked(PenEvent e) {
+				System.out.println("VideoArea");
 				doOpenFile(new File("data/Posters/DiamondsEdge.mov"));
 			}
 		});
@@ -110,10 +115,20 @@ public class DiamondsEdge extends Application {
 	 * 
 	 * It is called by the constructor.
 	 */
-	protected void initializePaperUI() {
+	protected void initialize() {
 		poster = new PDFSheet(new File("data/Posters/DiamondsEdge.pdf"));
 		poster.addRegions(new File("data/Posters/DiamondsEdge.regions.xml"));
-		DebugUtils.println(poster.getRegionNames());
+		// DebugUtils.println(poster.getRegionNames());
+
+		Pen pen = new Pen("Main Pen");
+		addPen(pen);
+		
+		// WARNING
+		// Adding the sheet HAS to go after event handlers are added to the regions
+		// This is poor design and MUST be changed... for usability's sake.
+		// WAIT: This is not true, as Sketch! adds event handlers after adding the sheet. =\
 		addSheet(poster, new File("data/Posters/DiamondsEdge.patternInfo.xml"));
+
+		initializeEventHandlers();
 	}
 }

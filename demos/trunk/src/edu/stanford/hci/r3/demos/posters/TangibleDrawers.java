@@ -92,9 +92,9 @@ public class TangibleDrawers extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#initializePaperUI()
+	 * @see edu.stanford.hci.r3.Application#initialize()
 	 */
-	protected void initializePaperUI() {
+	protected void initialize() {
 		poster = new PDFSheet(new File("data/Posters/TangibleDrawers.pdf"));
 		poster.addRegions(new File("data/Posters/TangibleDrawers.regions.xml"));
 		addSheet(poster, new File("data/Posters/TangibleDrawers.patternInfo.xml"));

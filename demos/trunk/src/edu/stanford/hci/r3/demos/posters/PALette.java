@@ -75,9 +75,9 @@ public class PALette extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#initializePaperUI()
+	 * @see edu.stanford.hci.r3.Application#initialize()
 	 */
-	protected void initializePaperUI() {
+	protected void initialize() {
 		poster = new PDFSheet(new File("data/Posters/PALette.pdf"));
 		// for some stupid reason, PowerPoint and PDF kept giving me a rotated page... Boo. We need
 		// to support this in the future, instead of manually rotating the XML files.
@@ -88,6 +88,8 @@ public class PALette extends Application {
 		// ACTUALLY 2: I forgot! You need to export it through Acrobat Twice. Bah Humbug.
 		poster.addRegions(new File("data/Posters/PALette.regions.xml"));
 
+		initializeEventHandlers();
+		
 		DebugUtils.println(poster.getRegionNames());
 		// weird... we need to use the old method once, until we render it... and
 		// then we need to add the patternInfo later... this design should be changed.

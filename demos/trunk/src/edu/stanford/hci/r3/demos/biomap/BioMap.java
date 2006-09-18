@@ -87,9 +87,9 @@ public class BioMap extends Application {
 	/**
 	 * Called by the super(...) constructor
 	 * 
-	 * @see edu.stanford.hci.r3.Application#initializePaperUI()
+	 * @see edu.stanford.hci.r3.Application#initialize()
 	 */
-	protected void initializePaperUI() {
+	protected void initialize() {
 		// sheet = new PDFSheet(new File("data/BioMap/SurveyLocations.pdf"));
 		sheet = new PDFSheet(new File("data/BioMap/SurveyLocationsLighterGaussianBlur1_0.pdf"));
 

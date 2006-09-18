@@ -119,34 +119,15 @@ public class SquaredCircle extends Application {
 		return cr;
 	}
 
-	/**
-	 * Called by the constructor after initializePaperUI()
-	 * 
-	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
-	 */
-	@Override
-	protected void initializeEventHandlers() {
-
-	}
-
-	/**
-	 * @see edu.stanford.hci.r3.Application#initializeInputAndOutputDevices()
-	 */
-	@Override
-	protected void initializeInputAndOutputDevices() {
-		// the application has to know about this pen
-		final Pen pen = new Pen("Main Pen");
-		addPen(pen);
-	}
 
 	/**
 	 * Called by the constructor.
 	 * 
-	 * @see edu.stanford.hci.r3.Application#initializePaperUI()
+	 * @see edu.stanford.hci.r3.Application#initialize()
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void initializePaperUI() {
+	protected void initialize() {
 		System.out.println("Initializing Paper UI...");
 		final Sheet poster = new Sheet(WIDTH_IN_INCHES, HEIGHT_IN_INCHES);
 		poster.registerConfigurationPath(new File("data/Flickr/"));

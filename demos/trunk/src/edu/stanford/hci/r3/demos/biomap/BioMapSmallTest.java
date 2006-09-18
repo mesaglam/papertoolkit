@@ -53,9 +53,9 @@ public class BioMapSmallTest extends Application {
 	/**
 	 * Called by the super(...) constructor
 	 * 
-	 * @see edu.stanford.hci.r3.Application#initializePaperUI()
+	 * @see edu.stanford.hci.r3.Application#initialize()
 	 */
-	protected void initializePaperUI() {
+	protected void initialize() {
 		sheet = new PDFSheet(new File("data/BioMap/SurveyLocationsTest.pdf"));
 		sheet.addRegions(new File("data/BioMap/SurveyLocationsTest_WithRegions.regions.xml"));
 		

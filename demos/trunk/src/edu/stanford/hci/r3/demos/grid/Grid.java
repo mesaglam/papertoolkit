@@ -39,7 +39,7 @@ public class Grid {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#initializePaperUI()
+	 * @see edu.stanford.hci.r3.Application#initialize()
 	 */
 	protected void initializePaperUI() {
 		sheet = new Sheet(44, 24);
