@@ -297,6 +297,14 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @param useAppManager
+	 */
+	public PaperToolkit(boolean useAppManager) {
+		this();
+		useApplicationManager(useAppManager);
+	}
+
+	/**
 	 * @return
 	 */
 	private Component getAppDetailsPane() {
@@ -626,15 +634,24 @@ public class PaperToolkit {
 		// start live mode will connect to that pen server.
 		final List<Pen> pens = paperApp.getPens();
 
-		// add all the live pens to the eventEngine
-		for (Pen pen : pens) {
-			pen.startLiveMode(); // starts live mode at the pen's default place
-			if (pen.isLive()) {
-				eventEngine.register(pen);
+		if (pens.size() != 0) {
+
+			// add all the live pens to the eventEngine
+			for (Pen pen : pens) {
+				pen.startLiveMode(); // starts live mode at the pen's default place
+				if (pen.isLive()) {
+					eventEngine.register(pen);
+				}
 			}
+		} else {
+			System.err.println("Warning: " + paperApp.getName()
+					+ " does not have any pens! We will add a single streaming pen for you.");
+			final Pen aPen = new Pen();
+			aPen.startLiveMode();
+			paperApp.addPen(aPen);
 		}
 
-		DebugUtils.println("Starting " + paperApp.getName());
+		DebugUtils.println("Starting Application: " + paperApp.getName());
 
 		// keep track of the pattern assigned to different sheets and regions
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
