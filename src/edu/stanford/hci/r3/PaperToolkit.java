@@ -630,25 +630,22 @@ public class PaperToolkit {
 		}
 
 		// get all the pens and start them in live mode...
-		// we assume we have decided where eac pen server will run
+		// we assume we have decided where each pen server will run
 		// start live mode will connect to that pen server.
-		final List<Pen> pens = paperApp.getPens();
-
-		if (pens.size() != 0) {
-
-			// add all the live pens to the eventEngine
-			for (Pen pen : pens) {
-				pen.startLiveMode(); // starts live mode at the pen's default place
-				if (pen.isLive()) {
-					eventEngine.register(pen);
-				}
-			}
-		} else {
+		if (paperApp.getPens().size() == 0) {
 			System.err.println("Warning: " + paperApp.getName()
 					+ " does not have any pens! We will add a single streaming pen for you.");
 			final Pen aPen = new Pen();
 			aPen.startLiveMode();
 			paperApp.addPen(aPen);
+		}
+		final List<Pen> pens = paperApp.getPens();
+		// add all the live pens to the eventEngine
+		for (Pen pen : pens) {
+			pen.startLiveMode(); // starts live mode at the pen's default place
+			if (pen.isLive()) {
+				eventEngine.register(pen);
+			}
 		}
 
 		DebugUtils.println("Starting Application: " + paperApp.getName());

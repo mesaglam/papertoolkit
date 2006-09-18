@@ -124,10 +124,7 @@ public class Application {
 	 */
 	public Application(String theName) {
 		name = theName;
-
-		initializePaperUI();
-		initializeEventHandlers();
-		initializeInputAndOutputDevices();
+		initialize();
 	}
 
 	/**
@@ -211,28 +208,12 @@ public class Application {
 	}
 
 	/**
-	 * Add Event Handlers Here. Do nothing unless it is overridden by a subclass.
-	 */
-	protected void initializeEventHandlers() {
-		// do nothing, unless it is overridden.
-	}
-
-	/**
-	 * Pens and Displays, etc.
-	 */
-	protected void initializeInputAndOutputDevices() {
-		// do nothing, unless it is overriden
-		// you don't need to do anything here if you only have one streaming pen and
-		// the display is local.
-	}
-
-	/**
 	 * This is an empty initialization method that developers can override if they choose to
 	 * subclass an Application instead of creating an empty App and adding sheets to it.
 	 * 
 	 * It is called by the constructor.
 	 */
-	protected void initializePaperUI() {
+	protected void initialize() {
 		// do nothing, unless it is overridden.
 	}
 
