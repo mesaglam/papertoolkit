@@ -53,6 +53,9 @@ public abstract class ContentFilter {
 	 */
 	private Region region;
 
+	/**
+	 * 
+	 */
 	public ContentFilter() {
 
 	}

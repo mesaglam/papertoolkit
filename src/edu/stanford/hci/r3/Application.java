@@ -1,12 +1,18 @@
 package edu.stanford.hci.r3;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.stanford.hci.r3.actions.types.OpenFileAction;
+import edu.stanford.hci.r3.actions.types.OpenURLAction;
+import edu.stanford.hci.r3.actions.types.PlaySoundAction;
+import edu.stanford.hci.r3.actions.types.TextToSpeechAction;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.Pen;
@@ -33,6 +39,57 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class Application {
+
+	// ////////////////////////////////////////////////////////////////////////////////////////
+	// The series of doXXX methods are convenience methods for the application to execute local
+	// actions from the actions.* package.
+	// ////////////////////////////////////////////////////////////////////////////////////////
+
+	private static TextToSpeechAction textToSpeech;
+
+	/**
+	 * @param file
+	 */
+	public static void doOpenFile(File file) {
+		OpenFileAction ofa = new OpenFileAction(file);
+		ofa.invoke();
+	}
+
+	/**
+	 * Opens a URL on the local machine.
+	 */
+	public static void doOpenURL(String urlString) {
+		try {
+			URL u = new URL(urlString);
+			new OpenURLAction(u).invoke();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Plays a sound file. Returns the object in case you need to stop it.
+	 */
+	public static PlaySoundAction doPlaySound(File soundFile) {
+		final PlaySoundAction psa = new PlaySoundAction(soundFile);
+		psa.invoke();
+		return psa;
+	}
+
+	/**
+	 * @param textToSpeak
+	 */
+	public static void doSpeakText(String textToSpeak) {
+		if (textToSpeech == null) {
+			textToSpeech = new TextToSpeechAction();
+			textToSpeech.initialize();
+		}
+		textToSpeech.speak(textToSpeak);
+	}
+
+	// ////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////
 
 	private List<BatchEventHandler> batchEventHandlers = new ArrayList<BatchEventHandler>();
 
@@ -81,6 +138,8 @@ public class Application {
 	}
 
 	/**
+	 * Add a pen for this application. An application may have multiple pens.
+	 * 
 	 * @param pen
 	 */
 	public void addPen(Pen pen) {
@@ -91,11 +150,29 @@ public class Application {
 	 * When a sheet is added to an application, we will need to determine how the pattern maps to
 	 * the sheet. We will create a PatternLocationToSheetLocationMapping object from this sheet.
 	 * 
+	 * WARNING: The current design requires you to add the sheet AFTER you have added regions to the
+	 * sheet. This is an unfortunate design (ordering constraints), and should be changed _if
+	 * possible_.
+	 * 
 	 * @param sheet
 	 */
+	@Deprecated
 	public void addSheet(Sheet sheet) {
 		sheets.add(sheet);
 		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet));
+	}
+
+	/**
+	 * This method is better than the one argument version, because it makes everything explicit. We
+	 * may deprecate the other one at some point.
+	 * 
+	 * @param sheet
+	 * @param patternInfoFile
+	 */
+	public void addSheet(Sheet sheet, File patternInfoFile) {
+		sheets.add(sheet);
+		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet,
+				patternInfoFile));
 	}
 
 	/**
@@ -145,6 +222,8 @@ public class Application {
 	 */
 	protected void initializeInputAndOutputDevices() {
 		// do nothing, unless it is overriden
+		// you don't need to do anything here if you only have one streaming pen and
+		// the display is local.
 	}
 
 	/**

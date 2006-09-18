@@ -137,7 +137,7 @@ public class Sheet {
 		// otherwise, raise a warning flag
 		if (!rc.getHeight().equals(getHeight()) || !rc.getWidth().equals(getWidth())) {
 			System.err.println("Sheet::addRegions(regionConfigurationFile): Warning! "
-					+ "This region configuration file was made for a sheet of a different size."
+					+ "This region configuration file was made for a sheet of a different size. "
 					+ "RegionConfiguration: [" + rc.getWidth() + "," + rc.getHeight() + "] versus "
 					+ "This Sheet: [" + getWidth() + "," + getHeight() + "]");
 			System.err.println("We will proceed.... but you have been warned. =)");
@@ -181,6 +181,17 @@ public class Sheet {
 	 */
 	public Region getRegion(String regionName) {
 		return regionNameToRegionObject.get(regionName);
+	}
+
+	/**
+	 * @return
+	 */
+	public List<String> getRegionNames() {
+		final List<String> names = new ArrayList<String>();
+		for (Region r : regions) {
+			names.add(r.getName());
+		}
+		return names;
 	}
 
 	/**

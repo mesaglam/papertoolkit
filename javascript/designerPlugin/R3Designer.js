@@ -124,6 +124,8 @@ function addButtons() {
 /// Create a Region
 /// We will Layer Pattern on these regions...
 ///
+/// WARNING: This leads to a very subtle bug, if you copy regions from one document to another and never hit add.
+/// INSTEAD: We should set the height and width right before a saveRegionsToXML. =( Boo
 function addRectangularRegion() {
 	mediaBox = this.getPageBox("Media");
 	var width = mediaBox[2] - mediaBox[0];

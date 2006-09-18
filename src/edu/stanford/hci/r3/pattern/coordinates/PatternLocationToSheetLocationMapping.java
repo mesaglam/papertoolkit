@@ -115,7 +115,7 @@ public class PatternLocationToSheetLocationMapping {
 
 	/**
 	 * One mapping object per sheet. Create this object after you have added all the regions that
-	 * you need to the sheet. This class will maintain a mapping of Regions to physical (stremaing)
+	 * you need to the sheet. This class will maintain a mapping of Regions to physical (streaming)
 	 * and logical (batched) pen coordinates.
 	 * 
 	 * @param s
@@ -140,6 +140,16 @@ public class PatternLocationToSheetLocationMapping {
 				loadConfigurationFromXML(f);
 			}
 		}
+	}
+
+	/**
+	 * @param s
+	 * @param patternInfoFile
+	 */
+	public PatternLocationToSheetLocationMapping(Sheet s, File patternInfoFile) {
+		sheet = s;
+		initializeMap(s.getRegions());
+		loadConfigurationFromXML(patternInfoFile);
 	}
 
 	/**

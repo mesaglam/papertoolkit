@@ -16,6 +16,9 @@ import edu.stanford.hci.r3.actions.R3Action;
  * 
  * UPDATE: This seems to work perfectly fine on my laptop. So yeah, just be aware that it might not
  * work consistently across machines.
+ * 
+ * UPDATE2: HEY, this seems to work now on my desktop. Perhaps it was Google Desktop that was making
+ * it slow???
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

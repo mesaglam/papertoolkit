@@ -12,6 +12,7 @@ import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
 import edu.stanford.hci.r3.units.Points;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -77,6 +78,9 @@ public class PDFSheet extends Sheet {
 		// get the size of page
 		final Rectangle pageSize = pdfReader.getPageSize(pageNum);
 		setSize(new Points(pageSize.width()), new Points(pageSize.height()));
+
+		// hmm... how should we handle rotations?
+		DebugUtils.println("The Rotation of the PDFSheet is: " + pdfReader.getPageRotation(pageNumber));
 	}
 
 	/**
