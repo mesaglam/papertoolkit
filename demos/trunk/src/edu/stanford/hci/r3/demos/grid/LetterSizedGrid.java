@@ -77,8 +77,8 @@ public class LetterSizedGrid extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// runApp();
-		renderPDF();
+		runApp();
+		// renderPDF();
 	}
 
 	/**
