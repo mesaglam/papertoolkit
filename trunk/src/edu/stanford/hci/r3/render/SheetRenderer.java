@@ -91,7 +91,7 @@ public class SheetRenderer {
 	 */
 	public SheetRenderer(Sheet s) {
 		sheet = s;
-		patternInformation = new PatternLocationToSheetLocationMapping(sheet);
+		patternInformation = sheet.getPatternLocationToSheetLocationMapping();
 	}
 
 	/**
@@ -133,7 +133,9 @@ public class SheetRenderer {
 			if (!r.isActive()) {
 				continue;
 			}
-
+			
+			DebugUtils.println("-------------");
+			
 			// add the region's offset from the top left corner of the sheet
 			Coordinates regionOffset = sheet.getRegionOffset(r);
 
@@ -150,6 +152,7 @@ public class SheetRenderer {
 			// need to keep the returned pattern object around
 			final TiledPattern pattern = generator.getPattern(scaledWidth, scaledHeight);
 
+			DebugUtils.println("Rendering Pattern for " + r.getName());
 			// render the pattern starting at the region's origin
 			pgen.renderPattern(pattern, // the tiled pattern
 					Units.add(r.getOriginX(), regionOffset.getX()), // origin + offset
@@ -159,6 +162,7 @@ public class SheetRenderer {
 			// we should be able to assign a tile configuration to each region
 			final TiledPatternCoordinateConverter tiledPatternInRegion = patternInformation
 					.getPatternBoundsOfRegion(r);
+			
 			// set all the information here
 			tiledPatternInRegion.setPatternInformationByReadingItFrom(pattern);
 			// now, this object is modified
@@ -169,7 +173,7 @@ public class SheetRenderer {
 		// /////////////////////////////////////////////////////
 		// /////////////////////////////////////////////////////
 		// FOR NOW, SPECIAL CASE THE COMPOUND REGIONS
-		// IN THE FUTURE, FIGURE OUTHOW TO INTEGRATE IT NICELY
+		// IN THE FUTURE, FIGURE OUT HOW TO INTEGRATE IT NICELY
 		// /////////////////////////////////////////////////////
 		// /////////////////////////////////////////////////////
 		// for (Region r : regions) {
