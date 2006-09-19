@@ -98,5 +98,6 @@ public class TangibleDrawers extends Application {
 		poster = new PDFSheet(new File("data/Posters/TangibleDrawers.pdf"));
 		poster.addRegions(new File("data/Posters/TangibleDrawers.regions.xml"));
 		addSheet(poster, new File("data/Posters/TangibleDrawers.patternInfo.xml"));
+		initializeEventHandlers();
 	}
 }

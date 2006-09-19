@@ -56,14 +56,14 @@ public class DiamondsEdge extends Application {
 	protected void initializeEventHandlers() {
 		// lower left side of the poster
 		final Region captureArea = poster.getRegion("CaptureArea");
-		final InkCollector inkCollector = new InkCollector();
-		captureArea.addContentFilter(inkCollector);
-		inkCollector.addListener(new ContentFilterListener() {
-			public void contentArrived() {
-				System.out.println("CaptureArea");
-				System.out.println("Got Ink in the Capture Area...");
-			}
-		});
+//		final InkCollector inkCollector = new InkCollector();
+//		captureArea.addContentFilter(inkCollector);
+//		inkCollector.addListener(new ContentFilterListener() {
+//			public void contentArrived() {
+//				System.out.println("CaptureArea");
+//				System.out.println("Got Ink in the Capture Area...");
+//			}
+//		});
 
 		// next to the stanford logo...
 		Region websiteLink = poster.getRegion("HCIWebsiteArea");
@@ -127,7 +127,7 @@ public class DiamondsEdge extends Application {
 		// Adding the sheet HAS to go after event handlers are added to the regions
 		// This is poor design and MUST be changed... for usability's sake.
 		// WAIT: This is not true, as Sketch! adds event handlers after adding the sheet. =\
-		addSheet(poster, new File("data/Posters/DiamondsEdge.patternInfo.xml"));
+		addSheet(poster, new File("data/Posters/DiamondsEdge2.patternInfo.xml"));
 
 		initializeEventHandlers();
 	}

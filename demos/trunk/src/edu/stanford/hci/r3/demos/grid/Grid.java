@@ -57,14 +57,14 @@ public class Grid {
 
 				@Override
 				public void pressed(PenEvent e) {
-					
+
 				}
 
 				@Override
 				public void released(PenEvent e) {
-					
+
 				}
-				
+
 			});
 			regions.add(r);
 		}
@@ -75,6 +75,9 @@ public class Grid {
 		application.addSheet(sheet);
 	}
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Grid grid = new Grid();
 		grid.initializePaperUI();
