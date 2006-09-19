@@ -246,8 +246,14 @@ public class PaperToolkit {
 	 */
 	private JLabel mainMessage;
 
+	/**
+	 * 
+	 */
 	private JButton printSheetsButton;
 
+	/**
+	 * Progress bar... for when we are rendering, etc.
+	 */
 	private EndlessProgressDialog progress;
 
 	/**

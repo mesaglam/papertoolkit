@@ -15,6 +15,7 @@ import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
  * <p>
+ * For telling the user something is happening.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -27,6 +28,11 @@ public class EndlessProgressDialog extends JDialog {
 
 	private String text;
 
+	/**
+	 * @param parentFrame
+	 * @param title
+	 * @param message
+	 */
 	public EndlessProgressDialog(JFrame parentFrame, String title, String message) {
 		super(parentFrame, title, false /* not modal */);
 		text = message;
@@ -37,12 +43,18 @@ public class EndlessProgressDialog extends JDialog {
 		setVisible(true);
 	}
 
+	/**
+	 * @return
+	 */
 	private JLabel getLabel() {
 		final JLabel label = new JLabel(text);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		return label;
 	}
 
+	/**
+	 * @return
+	 */
 	private Container getMainPanel() {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -52,10 +64,12 @@ public class EndlessProgressDialog extends JDialog {
 		return mainPanel;
 	}
 
+	/**
+	 * @return
+	 */
 	private Container getProgressBar() {
 		JProgressBar bar = new JProgressBar();
 		bar.setIndeterminate(true);
 		return bar;
 	}
-
 }
