@@ -12,6 +12,7 @@ import com.lowagie.text.pdf.PdfTemplate;
 import edu.stanford.hci.r3.pattern.PatternJitter;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 
 /**
@@ -238,10 +239,8 @@ public class PDFPatternGenerator {
 		final double xOrigInPoints = xOrigin.getValueInPoints();
 		final double yOrigInPoints = yOrigin.getValueInPoints();
 
-		
 		final int numRows = pattern.getNumTotalRows();
 		final int numCols = pattern.getNumTotalColumns();
-		
 
 		// this actually mirrors everything
 		// text will display upside down!
@@ -264,7 +263,7 @@ public class PDFPatternGenerator {
 		int gridXPosition = initX;
 		int gridYPosition = MathUtils.rint(yOrigInPoints * convertPointsToHundredthsOfMM);
 
-		System.out.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " "
+		DebugUtils.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " "
 				+ gridYPosition);
 
 		int xJitter = 0;
@@ -272,7 +271,7 @@ public class PDFPatternGenerator {
 		char currentJitterDirection;
 
 		for (int row = 0; row < numRows; row++) {
-		
+
 			final String patternRow = pattern.getPatternOnRow(row);
 			final int rowLength = patternRow.length();
 

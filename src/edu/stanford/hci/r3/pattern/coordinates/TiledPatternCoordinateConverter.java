@@ -5,6 +5,7 @@ import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Percentage;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -377,12 +378,21 @@ public class TiledPatternCoordinateConverter {
 	 *            the tiled pattern object produced by sheet renderers.
 	 */
 	public void setPatternInformationByReadingItFrom(TiledPattern p) {
+
 		setOriginInDots(p.getOriginXInDots(), p.getOriginYInDots());
 		setStartingTile(p.getInitialPatternFileNumber());
 		setTileConfiguration(p.getNumTilesX(), p.getNumTilesY());
 		setTileSizeInDots(p.getNumDotsXPerFullTile(), p.getNumDotsYPerFullTile());
 		setTileToTileOffsetInDots(p.getNumHorizDotsBetweenTiles(), p.getNumVertDotsBetweenTiles());
 		setTotalSizeInDots(p.getNumTotalColumns(), p.getNumTotalRows());
+
+		DebugUtils.println("");
+		System.out.println("=========================");
+		System.out.println(p);
+		System.out.println(this);
+		System.out.println("=========================");
+
+		
 	}
 
 	/**

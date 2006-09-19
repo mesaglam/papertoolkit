@@ -29,7 +29,7 @@ public class Test_ActionSenderAndReceiver {
 			e1.printStackTrace();
 		}
 
-		ActionSender sender = new ActionSender("localhost", ActionReceiver.DEFAULT_JAVA_PORT,
+		final ActionSender sender = new ActionSender("localhost", ActionReceiver.DEFAULT_JAVA_PORT,
 				ClientServerType.JAVA);
 
 		try {

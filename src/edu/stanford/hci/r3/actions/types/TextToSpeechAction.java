@@ -28,6 +28,19 @@ public class TextToSpeechAction implements R3Action {
 
 	private static final String DEFAULT_FREETTS_VOICE = "kevin16";
 
+	private static TextToSpeechAction instance;
+
+	/**
+	 * @return
+	 */
+	public static TextToSpeechAction getInstance() {
+		if (instance == null) {
+			instance = new TextToSpeechAction();
+			instance.initialize();
+		}
+		return instance;
+	}
+
 	private boolean initialized;
 
 	/**
@@ -42,16 +55,16 @@ public class TextToSpeechAction implements R3Action {
 	/**
 	 * 
 	 */
-	public TextToSpeechAction(String wordsToSay) {
-		savedText = wordsToSay;
-		// leave everything else null until it is invoked!
+	public TextToSpeechAction() {
+		this("");
 	}
 
 	/**
 	 * 
 	 */
-	public TextToSpeechAction() {
-		this("");
+	public TextToSpeechAction(String wordsToSay) {
+		savedText = wordsToSay;
+		// leave everything else null until it is invoked!
 	}
 
 	/**

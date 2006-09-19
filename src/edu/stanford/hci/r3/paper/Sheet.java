@@ -10,6 +10,7 @@ import java.util.Set;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
+import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Size;
@@ -55,6 +56,8 @@ public class Sheet {
 	 * even the patterned pdf file.
 	 */
 	private Set<File> configurationPaths = new HashSet<File>();
+
+	private PatternLocationToSheetLocationMapping patternLocationToSheetLocationMapping;
 
 	/**
 	 * Internal datastructure for indexing a region by its name.
@@ -172,6 +175,29 @@ public class Sheet {
 	 */
 	public Units getHeight() {
 		return size.getHeight();
+	}
+
+	/**
+	 * @return only one of these per any sheet.
+	 */
+	public PatternLocationToSheetLocationMapping getPatternLocationToSheetLocationMapping() {
+		if (patternLocationToSheetLocationMapping == null) {
+			patternLocationToSheetLocationMapping = new PatternLocationToSheetLocationMapping(this);
+		}
+		return patternLocationToSheetLocationMapping;
+	}
+
+	/**
+	 * @param patternInfoFile
+	 * @return
+	 */
+	public PatternLocationToSheetLocationMapping getPatternLocationToSheetLocationMapping(
+			File patternInfoFile) {
+		if (patternLocationToSheetLocationMapping == null) {
+			patternLocationToSheetLocationMapping = new PatternLocationToSheetLocationMapping(this,
+					patternInfoFile);
+		}
+		return patternLocationToSheetLocationMapping;
 	}
 
 	/**

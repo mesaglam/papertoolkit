@@ -13,6 +13,7 @@ import edu.stanford.hci.r3.actions.types.OpenFileAction;
 import edu.stanford.hci.r3.actions.types.OpenURLAction;
 import edu.stanford.hci.r3.actions.types.PlaySoundAction;
 import edu.stanford.hci.r3.actions.types.TextToSpeechAction;
+import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.Pen;
@@ -44,8 +45,6 @@ public class Application {
 	// The series of doXXX methods are convenience methods for the application to execute local
 	// actions from the actions.* package.
 	// ////////////////////////////////////////////////////////////////////////////////////////
-
-	private static TextToSpeechAction textToSpeech;
 
 	/**
 	 * @param file
@@ -80,11 +79,7 @@ public class Application {
 	 * @param textToSpeak
 	 */
 	public static void doSpeakText(String textToSpeak) {
-		if (textToSpeech == null) {
-			textToSpeech = new TextToSpeechAction();
-			textToSpeech.initialize();
-		}
-		textToSpeech.speak(textToSpeak);
+		TextToSpeechAction.getInstance().speak(textToSpeak);
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////
@@ -92,6 +87,12 @@ public class Application {
 	// ////////////////////////////////////////////////////////////////////////////////////////
 
 	private List<BatchEventHandler> batchEventHandlers = new ArrayList<BatchEventHandler>();
+
+	/**
+	 * An application can also coordinate multiple devices. A remote collaboration application might
+	 * have to ask the user to input the device's hostname, for example.
+	 */
+	private List<Device> devices = new ArrayList<Device>();
 
 	/**
 	 * The name of the application. Useful for debugging (e.g., when trying to figure out which
@@ -135,6 +136,13 @@ public class Application {
 	}
 
 	/**
+	 * @param dev
+	 */
+	public void addDevice(Device dev) {
+		devices.add(dev);
+	}
+
+	/**
 	 * Add a pen for this application. An application may have multiple pens.
 	 * 
 	 * @param pen
@@ -157,7 +165,7 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet) {
 		sheets.add(sheet);
-		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet));
+		sheetToPatternMap.put(sheet, sheet.getPatternLocationToSheetLocationMapping());
 	}
 
 	/**
@@ -169,8 +177,7 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet, File patternInfoFile) {
 		sheets.add(sheet);
-		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet,
-				patternInfoFile));
+		sheetToPatternMap.put(sheet, sheet.getPatternLocationToSheetLocationMapping(patternInfoFile));
 	}
 
 	/**
