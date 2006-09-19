@@ -98,8 +98,40 @@ public class TextRegion extends Region {
 				heightInPoints.getValueIn(referenceUnits));
 		bounds = rect;
 		setShape(rect);
+	}
 
-		setName("A Text Region");
+	/**
+	 * @param name
+	 * @param theText
+	 * @param theFont
+	 * @param origX
+	 * @param origY
+	 * @param width
+	 *            override the text's actual width with this value
+	 * @param height
+	 *            override the text's actual height with this value
+	 */
+	public TextRegion(String name, String theText, Font theFont, Units origX, Units origY,
+			Units width, Units height) {
+		super(name, origX);
+		text = theText;
+		font = theFont;
+
+		originX = origX;
+		originY = origY;
+
+		lines = theText.split("\n");
+
+		// determine the font's boundaries
+		// represent it as a Rectangle (x, y, w, h)
+		final Dimension stringSize = StringUtils.getStringSize(text, font);
+		heightInPoints = new Points(stringSize.getHeight());
+		widthInPoints = new Points(stringSize.getWidth());
+		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY
+				.getValueIn(referenceUnits), width.getValueIn(referenceUnits), height
+				.getValueIn(referenceUnits));
+		bounds = rect;
+		setShape(rect);
 	}
 
 	/**

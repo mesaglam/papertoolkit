@@ -151,9 +151,10 @@ public class Application {
 	 * sheet. This is an unfortunate design (ordering constraints), and should be changed _if
 	 * possible_.
 	 * 
+	 * Alternative, we can warn when there is ambiguity in loading patternInfo files.
+	 * 
 	 * @param sheet
 	 */
-	@Deprecated
 	public void addSheet(Sheet sheet) {
 		sheets.add(sheet);
 		sheetToPatternMap.put(sheet, new PatternLocationToSheetLocationMapping(sheet));

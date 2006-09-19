@@ -59,6 +59,9 @@ public class TiledPatternCoordinateConverter {
 	 */
 	private double numDotsVerticalBetweenTiles;
 
+	/**
+	 * numTilesAcross x numTilesDown. This is the total number of tiles in our configuration.
+	 */
 	private int numTiles;
 
 	/**
@@ -76,16 +79,34 @@ public class TiledPatternCoordinateConverter {
 	 */
 	private int numTilesDown;
 
+	/**
+	 * 
+	 */
 	private double numTotalDotsAcross;
 
+	/**
+	 * 
+	 */
 	private PatternDots numTotalDotsAcrossObj;
 
+	/**
+	 * 
+	 */
 	private double numTotalDotsDown;
 
+	/**
+	 * 
+	 */
 	private PatternDots numTotalDotsDownObj;
 
+	/**
+	 * 
+	 */
 	private double originX;
 
+	/**
+	 * 
+	 */
 	private double originY;
 
 	/**
@@ -98,8 +119,14 @@ public class TiledPatternCoordinateConverter {
 	 */
 	private int startingTile;
 
+	/**
+	 * 
+	 */
 	private double tileHeightIncludingPadding;
 
+	/**
+	 * 
+	 */
 	private double tileWidthIncludingPadding;
 
 	/**
@@ -171,15 +198,24 @@ public class TiledPatternCoordinateConverter {
 	 * To make it easier to use this class, this method will be called EVERY TIME one of the input
 	 * values is updated, to keep internal state consistent.
 	 * 
-	 * Unfortunately, do to the flexible design, the main constructor will call this method a total
-	 * of three times. The values will be finally correct once the last call, to
+	 * Unfortunately, have this flexible design, the main constructor will call this method a total
+	 * of four times. The values will be finally correct once the last call, to
 	 * setTileToTileOffsetInDots(...) is called.
+	 * 
+	 * ASSUMPTION: Either the dots between tiles is larger than a single tile OR it is 0. Weird
+	 * things can happen if the tiles are staggered, such that the dots between tiles is smaller
+	 * than the width or height of a tile.
+	 * 
+	 * This is an OK assumption because in all the Anoto pattern we have seen, Y values don't seem
+	 * to change from page to page.
 	 */
 	private void calculateCachedDimensions() {
-		// ASSUMPTION: Either the dots between tiles is larger than a single tile OR it is 0.
-		// Weird things can happen if the tiles are staggered, such that the dots between tiles is
-		// smaller than the width or height of a tile.
-		if (numDotsHorizontalBetweenTiles < dotsPerTileHorizontal) { // dX = 0
+
+		// set the maxX and tileHeight
+		if (numTilesAcross == 1) {
+			tileWidthIncludingPadding = numTotalDotsAcross;
+			maxX = originX + numTotalDotsAcross;
+		} else if (numDotsHorizontalBetweenTiles < dotsPerTileHorizontal) { // dX = 0
 			tileWidthIncludingPadding = dotsPerTileHorizontal;
 			maxX = originX + dotsPerTileHorizontal; // only one horizontal tile
 		} else { // bigger than the width
@@ -187,7 +223,11 @@ public class TiledPatternCoordinateConverter {
 			maxX = originX + numDotsHorizontalBetweenTiles * numTiles;
 		}
 
-		if (numDotsVerticalBetweenTiles < dotsPerTileVertical) { // dY = 0
+		// set the maxY and tileHeight
+		if (numTilesDown == 1) {
+			tileHeightIncludingPadding = numTotalDotsDown;
+			maxY = originY + numTotalDotsDown;
+		} else if (numDotsVerticalBetweenTiles < dotsPerTileVertical) { // dY = 0
 			tileHeightIncludingPadding = dotsPerTileVertical;
 			maxY = originY + dotsPerTileVertical; // only one vertical tile, like bnet's pattern
 		} else { // bigger than the height
@@ -206,23 +246,29 @@ public class TiledPatternCoordinateConverter {
 	 * @param yValPatternDots
 	 *            y value of the location, in PatternDots (physical/streamed coordinates)
 	 * @return
+	 * 
+	 * 
+	 * WARNING: POSSIBLY BUGGY, Due to New way of iterating through Pattern TODO: Fix Bug ~Here....
+	 * 
+	 * TODO: Implement a FASTER reject. Contains is called many many times. We want to reject as
+	 * soon as is possible. Also, rejects happen a lot more than accepts.
 	 */
 	public boolean contains(final double xValPatternDots, final double yValPatternDots) {
 		// has to be to the right of the leftmost border
-		boolean insideLeftBoundary = xValPatternDots >= originX;
+		final boolean insideLeftBoundary = xValPatternDots >= originX;
 
 		// has to be below the top border
-		boolean insideTopBoundary = yValPatternDots >= originY;
+		final boolean insideTopBoundary = yValPatternDots >= originY;
 
 		// has to be to the left of the rightmost border
-		boolean insideRightBoundary = xValPatternDots < maxX;
+		final boolean insideRightBoundary = xValPatternDots < maxX;
 
 		// has to be above the bottom border
-		boolean insideBottomBoundary = yValPatternDots < maxY;
+		final boolean insideBottomBoundary = yValPatternDots < maxY;
 
 		// has to NOT fall in between the gaps between pages...
-		boolean notInHorizontalGap = ((xValPatternDots - originX) % tileWidthIncludingPadding) < dotsPerTileHorizontal;
-		boolean notInVerticalGap = ((yValPatternDots - originY) % tileHeightIncludingPadding) < dotsPerTileVertical;
+		final boolean notInHorizontalGap = ((xValPatternDots - originX) % tileWidthIncludingPadding) < dotsPerTileHorizontal;
+		final boolean notInVerticalGap = ((yValPatternDots - originY) % tileHeightIncludingPadding) < dotsPerTileVertical;
 
 		return insideLeftBoundary && insideTopBoundary && insideRightBoundary
 				&& insideBottomBoundary && notInHorizontalGap && notInVerticalGap;
@@ -422,6 +468,8 @@ public class TiledPatternCoordinateConverter {
 	}
 
 	/**
+	 * Set the size of this tile configuration, irrespective of the tiling.
+	 * 
 	 * @param numDotsAcross
 	 * @param numDotsDown
 	 */
@@ -433,6 +481,8 @@ public class TiledPatternCoordinateConverter {
 		// save this for later calculations
 		numTotalDotsAcrossObj = new PatternDots(numTotalDotsAcross);
 		numTotalDotsDownObj = new PatternDots(numTotalDotsDown);
+
+		calculateCachedDimensions();
 	}
 
 	/**

@@ -2,7 +2,8 @@ package edu.stanford.hci.r3.pen.ink;
 
 /**
  * <p>
- * Just a low-overhead struct to stored ink samples.
+ * Just a low-overhead struct to stored ink samples. TODO: This should be Integrated with PenSample,
+ * since they seemingly do the same thing.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
