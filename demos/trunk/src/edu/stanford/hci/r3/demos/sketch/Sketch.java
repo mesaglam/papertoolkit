@@ -104,8 +104,9 @@ public class Sketch {
 			PaperToolkit.startAcrobatDesigner();
 		} else {
 			sheet = new PDFSheet(new File("data/Sketch/SketchUI.pdf"));
-			
-			// regions should be added before you run the app (i.e., add the sheet to an application, etc...)
+
+			// regions should be added before you run the app (i.e., add the sheet to an
+			// application, etc...)
 			sheet.addRegions(new File("data/Sketch/SketchUI.regions.xml"));
 
 			if (mode == MODE_RENDER_PDF) {
@@ -216,8 +217,8 @@ public class Sketch {
 			inkDisplay = new JFrame("Sketch! Display");
 			inkDisplay.setContentPane(getMainPanel());
 			inkDisplay.setSize(690, 740);
-			inkDisplay
-					.setLocation(WindowUtils.getWindowOrigin(inkDisplay, WindowUtils.DESKTOP_CENTER));
+			inkDisplay.setLocation(WindowUtils.getWindowOrigin(inkDisplay,
+					WindowUtils.DESKTOP_CENTER));
 			inkDisplay.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			inkDisplay.setVisible(true);
 		}
