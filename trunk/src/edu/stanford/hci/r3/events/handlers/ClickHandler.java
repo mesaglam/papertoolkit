@@ -39,6 +39,12 @@ public abstract class ClickHandler implements EventHandler {
 	protected int maxMillisBetweenMultipleClicks = 300; // 300 ms for a double-click
 
 	/**
+	 * Keeps the most recent event, so that when pen up happens, we can give it an event that does
+	 * not have ZERO coordinates.
+	 */
+	private PenEvent lastEvent;
+
+	/**
 	 * @param e
 	 */
 	public abstract void clicked(PenEvent e);
@@ -73,11 +79,12 @@ public abstract class ClickHandler implements EventHandler {
 				} else {
 					clickCount = 1; // reset the click count
 				}
-				clicked(event);
+				clicked(lastEvent);
 				lastClickTime = event.getTimestamp();
 				penDownHappened = false;
 			}
 		}
+		lastEvent = event;
 
 		// do not consume the event (event has a consumed property that we do not set here)
 	}

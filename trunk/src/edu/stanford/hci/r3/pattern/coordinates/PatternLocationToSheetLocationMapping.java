@@ -126,19 +126,27 @@ public class PatternLocationToSheetLocationMapping {
 
 		// check to see if the pattern configuration file exists.
 		// if it does, load it automatically
-		Set<File> configurationPaths = sheet.getConfigurationPaths();
+		final Set<File> configurationPaths = sheet.getConfigurationPaths();
 
-		// files end with .patternInfo.xml
-		final String[] extensionFilter = new String[] { "patternInfo.xml" };
+		if (configurationPaths.size() > 0) {
+			DebugUtils.println("This Sheet has configuration paths for *.patternInfo.xml files.");
 
-		for (File path : configurationPaths) {
-			// System.out.println(path);
-			List<File> patternInfoFiles = FileUtils.listVisibleFiles(path, extensionFilter);
-			// System.out.println(patternInfoFiles.size());
-			for (File f : patternInfoFiles) {
-				// System.out.println(f.getAbsolutePath());
-				loadConfigurationFromXML(f);
+			// files end with .patternInfo.xml
+			final String[] extensionFilter = new String[] { "patternInfo.xml" };
+
+			for (File path : configurationPaths) {
+				// System.out.println(path);
+				List<File> patternInfoFiles = FileUtils.listVisibleFiles(path, extensionFilter);
+				// System.out.println(patternInfoFiles.size());
+				for (File f : patternInfoFiles) {
+					DebugUtils.println("Trying to automatically load " + f.getName());
+					loadConfigurationFromXML(f);
+				}
 			}
+		} else {
+			DebugUtils.println("This Sheet does not have any pattern configuration paths. "
+					+ "Either add one so that we can automatically look for *.patternInfo.xml "
+					+ "files, or add patternInfo files explicitly.");
 		}
 	}
 
@@ -154,7 +162,7 @@ public class PatternLocationToSheetLocationMapping {
 
 	/**
 	 * Checks whether this mapping contains the pen sample (streamed coordinates). If it does, it
-	 * retursn the TiledPatternCoordinateConverter object for that sample. If not, it returns null.
+	 * returns the TiledPatternCoordinateConverter object for that sample. If not, it returns null.
 	 * 
 	 * @param sample
 	 * @return
@@ -214,7 +222,7 @@ public class PatternLocationToSheetLocationMapping {
 
 			// loads the information into our map
 			if (regionIDToPattern.containsKey(xmlKey)) {
-				DebugUtils.println("Loaded Pattern Config for Region " + xmlKey);
+				DebugUtils.println("Loaded Pattern Config for " + xmlKey);
 				regionToPatternBounds.put(r, regionIDToPattern.get(xmlKey));
 			}
 		}

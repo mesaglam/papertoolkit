@@ -63,6 +63,12 @@ public class SheetRenderer {
 	private File mostRecentlyRenderedPDFFile;
 
 	/**
+	 * You can make the pattern bigger or smaller depending on your printer... 0 == default. - -->
+	 * smaller, + --> bigger. Each unit corresponds to two font points.
+	 */
+	private int patternDotSizeAdjustment = 0;
+
+	/**
 	 * Populate this only when we render the pattern (renderToPDF). After we render to pdf, we can
 	 * save the information to a file, for so that we can run the application in the future without
 	 * rendering more pattern.
@@ -81,12 +87,6 @@ public class SheetRenderer {
 	protected Sheet sheet;
 
 	/**
-	 * You can make the pattern bigger or smaller depending on your printer... 0 == default. - -->
-	 * smaller, + --> bigger. Each unit corresponds to two font points.
-	 */
-	private int patternDotSizeAdjustment = 0;
-
-	/**
 	 * @param s
 	 */
 	public SheetRenderer(Sheet s) {
@@ -101,26 +101,24 @@ public class SheetRenderer {
 		return patternInformation;
 	}
 
-	public void useSmallerPatternDots() {
-		patternDotSizeAdjustment--;
-	}
-
-	public void useLargerPatternDots() {
-		patternDotSizeAdjustment++;
-	}
-
 	/**
 	 * We will render pattern when outputting PDFs. Rendering pattern to screen is a waste of time,
 	 * since dots are not resolvable on screen. Perhaps for screen display (i.e., anything < 600
 	 * dpi), we should render pattern as a faint dotted overlay?
 	 * 
+	 * WARNING: Does not work for multiple sheets, as we will get the same pattern....
+	 * 
 	 * @param cb
 	 *            a content layer returned by iText
+	 * 
 	 */
 	protected void renderPattern(PdfContentByte cb) {
 		// for each region, overlay pattern if it is an active region
 		final List<Region> regions = sheet.getRegions();
 
+		// for now, reset the pattern location once per sheet
+		// WARNING: this does not make sense for multiple sheets
+		// Need to change once we start rendering bundles
 		generator.resetUniquePatternTracker();
 
 		// this object will generate the right PDF (itext) calls to create pattern
@@ -365,5 +363,19 @@ public class SheetRenderer {
 	 */
 	public void setRenderActiveRegionsWithPattern(boolean activeWithPattern) {
 		renderActiveRegionsWithPattern = activeWithPattern;
+	}
+
+	/**
+	 * 
+	 */
+	public void useLargerPatternDots() {
+		patternDotSizeAdjustment++;
+	}
+
+	/**
+	 * 
+	 */
+	public void useSmallerPatternDots() {
+		patternDotSizeAdjustment--;
 	}
 }

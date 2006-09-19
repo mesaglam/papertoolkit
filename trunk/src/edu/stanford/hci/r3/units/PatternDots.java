@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.units;
 
+import java.text.DecimalFormat;
+
 /**
  * <p>
  * Unit representing the length from pattern dot to pattern dot.
@@ -32,10 +34,22 @@ public class PatternDots extends Units {
 	private static final double PATTERN_UNITS_PER_INCH = 84.7727;
 
 	/**
+	 * Prettifies printouts.
+	 */
+	public static final DecimalFormat FORMATTER = new DecimalFormat("#.000");
+
+	/**
 	 * Default Constructor for Doing unit conversions, etc...
 	 */
 	public PatternDots() {
 		super(1);
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return FORMATTER.format(getValue()) + " " + getUnitName();
 	}
 
 	/**

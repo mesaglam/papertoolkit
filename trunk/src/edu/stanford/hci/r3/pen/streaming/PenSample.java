@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import edu.stanford.hci.r3.units.PatternDots;
+
 /**
  * <p>
  * Stores a pen sample.
@@ -18,22 +20,40 @@ import java.util.Date;
  */
 public class PenSample implements Serializable {
 
-	// at the start of each stroke, there is a time that represents the stroke's beginning
+	/**
+	 * 
+	 * 
+	 */
+	private static final DecimalFormat FORMATTER = PatternDots.FORMATTER;
+
+	/**
+	 * at the start of each stroke, there is a time that represents the stroke's beginning
+	 */
 	private static long anchorTime = 0L;
 
-	// measure of force from pen tip
+	/**
+	 * measure of force from pen tip
+	 */
 	public int force;
 
-	// whether pen is up
+	/**
+	 * whether pen is up
+	 */
 	public boolean penUp;
 
-	// timestamp of server when received
+	/**
+	 * timestamp of server when received
+	 */
 	public long timestamp;
 
-	// x location of the point, in physical Anoto coordinates
+	/**
+	 * x location of the point, in physical Anoto coordinates
+	 */
 	public double x;
 
-	// y location of the point, in physical Anoto coordinates
+	/**
+	 * y location of the point, in physical Anoto coordinates
+	 */
 	public double y;
 
 	/**
@@ -47,18 +67,19 @@ public class PenSample implements Serializable {
 	}
 
 	/**
-	 * @param timestamp
-	 * @param x
-	 * @param y
-	 * @param force
-	 * @param penUp
+	 * @param theTimestamp
+	 * @param theX
+	 * @param theY
+	 * @param theForce
+	 *            hehehe.
+	 * @param isPenUp
 	 */
-	public PenSample(long timestamp, double x, double y, int force, boolean penUp) {
-		this.timestamp = timestamp;
-		this.x = x;
-		this.y = y;
-		this.force = force;
-		this.penUp = penUp;
+	public PenSample(long theTimestamp, double theX, double theY, int theForce, boolean isPenUp) {
+		timestamp = theTimestamp;
+		x = theX;
+		y = theY;
+		force = theForce;
+		penUp = isPenUp;
 	}
 
 	/**
@@ -122,22 +143,37 @@ public class PenSample implements Serializable {
 		timestamp = anchorTime;
 	}
 
+	/**
+	 * @param f
+	 */
 	public void setForce(int f) {
 		force = f;
 	}
 
+	/**
+	 * @param b
+	 */
 	public void setPenUp(boolean b) {
 		penUp = b;
 	}
 
+	/**
+	 * @param t
+	 */
 	public void setTimestamp(long t) {
 		timestamp = t;
 	}
 
+	/**
+	 * @param xVal
+	 */
 	public void setX(double xVal) {
 		x = xVal;
 	}
 
+	/**
+	 * @param yVal
+	 */
 	public void setY(double yVal) {
 		y = yVal;
 	}
@@ -157,8 +193,7 @@ public class PenSample implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Sample: [" + x + ", " + y + "] F=" + force + " T=" + timestamp + " P="
-				+ (isPenUp() ? "UP" : "DOWN");
+		return "Sample: [" + FORMATTER.format(x) + ", " + FORMATTER.format(y) + "] F=" + force
+				+ " T=" + timestamp + " P=" + (isPenUp() ? "UP" : "DOWN");
 	}
-
 }

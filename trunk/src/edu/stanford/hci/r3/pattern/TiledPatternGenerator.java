@@ -181,7 +181,7 @@ public class TiledPatternGenerator {
 	 * @return
 	 */
 	public TiledPattern getPattern(Units width, Units height) {
-		DebugUtils.println("getPattern Called " + numTimesCalled++ + " times...");
+		DebugUtils.println("getPattern Called " + ++numTimesCalled + " times...");
 		
 		final long numDotsX = Math.round(width.getValueInPatternDots());
 		final long numDotsY = Math.round(height.getValueInPatternDots());

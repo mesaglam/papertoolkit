@@ -29,6 +29,9 @@ public class TiledPattern {
 	 */
 	private int initialDotXOffset;
 
+	/**
+	 * 
+	 */
 	private int initialDotYOffset;
 
 	/**
@@ -52,6 +55,9 @@ public class TiledPattern {
 	 */
 	private int numDotsXRightMost;
 
+	/**
+	 * 
+	 */
 	private int numDotsYBottomMost;
 
 	/**
@@ -162,9 +168,15 @@ public class TiledPattern {
 		// get the origin of the first pattern file
 		patternCoordinateOfOrigin = patternPackage
 				.getPatternCoordinateOfOriginOfFile(initialPatternFileNum);
-		// adjust the x coordinate as necessary (0 for now)
-		patternCoordinateOfOrigin.setX( //
-				new PatternDots(patternCoordinateOfOrigin.getX().getValue() + initialDotXOffset));
+
+		// adjust the x coordinate
+		patternCoordinateOfOrigin.setX(new PatternDots(patternCoordinateOfOrigin.getXVal()
+				+ initialDotXOffset));
+		// adjust the y coordinate
+		patternCoordinateOfOrigin.setY(new PatternDots(patternCoordinateOfOrigin.getYVal()
+				+ initialDotYOffset));
+
+		DebugUtils.println(patternCoordinateOfOrigin);
 
 		// read in the pattern information
 		loadPattern();
@@ -215,22 +227,25 @@ public class TiledPattern {
 		return numTotalRows;
 	}
 
+	/**
+	 * @return
+	 */
 	public double getNumVertDotsBetweenTiles() {
 		return patternPackage.getNumDotsVerticalBetweenPages();
 	}
 
 	/**
-	 * @return
+	 * @return X coordinate of the top of the tile + an offset.
 	 */
 	public double getOriginXInDots() {
-		return patternCoordinateOfOrigin.getXVal();
+		return patternCoordinateOfOrigin.getXVal() + initialDotXOffset;
 	}
 
 	/**
-	 * @return
+	 * @return Y coordinate of the top of the tile + an offset.
 	 */
 	public double getOriginYInDots() {
-		return patternCoordinateOfOrigin.getYVal();
+		return patternCoordinateOfOrigin.getYVal() + initialDotYOffset;
 	}
 
 	/**

@@ -262,6 +262,11 @@ public class PatternPackage {
 	}
 
 	/**
+	 * We verify that numDotsX and numDotsY do not exceed the amount of dots in one file. If so,
+	 * the requested number of dots are modified to fit. Thus, the dimension of the String[] may be
+	 * smaller than you requested. You may want to make sure numDotsX/Y are correct if you do not
+	 * want to be surprised.
+	 * 
 	 * @param numPatternFile
 	 *            The number of the pattern file (numPatternFile.pattern).
 	 * @param originX
@@ -278,17 +283,13 @@ public class PatternPackage {
 	 *         String. We expect this will be much easier to manipulate, especially since we do not
 	 *         need to index dots randomly.
 	 * 
-	 * We verify that numDotsX and numDotsY do not exceed the amount of dots in one file. If so, the
-	 * requested number of dots are modified to fit. Thus, the dimension of the String[] may be
-	 * smaller than you requested. You may want to make sure numDotsX/Y are correct if you do not
-	 * want to be surprised.
 	 */
 	public String[] readPatternFromFile(int numPatternFile, Units originX, Units originY,
 			Units width, Units height) {
 
 		// regardless of the units, convert them to pattern dots
 		int startDotsX = (int) Math.round(originX.getValueInPatternDots());
-		int startDotsY = (int) Math.round(originX.getValueInPatternDots());
+		int startDotsY = (int) Math.round(originY.getValueInPatternDots());
 		int numDotsAcross = (int) Math.round(width.getValueInPatternDots());
 		int numDotsDown = (int) Math.round(height.getValueInPatternDots());
 
@@ -323,9 +324,10 @@ public class PatternPackage {
 		int rightMostDot = startDotsX + numDotsAcross;
 		if (rightMostDot > numPatternColsPerFile) {
 			numDotsAcross = numDotsAcross - (rightMostDot - numPatternColsPerFile);
-			rightMostDot = startDotsX + numDotsAcross; // ends up being startDotsX + numDotsAcross - rightMostDot + numPatternColsPerFile
+			rightMostDot = startDotsX + numDotsAcross; // ends up being startDotsX + numDotsAcross
+														// - rightMostDot + numPatternColsPerFile
 		}
-		
+
 		if (numDotsDown < 0) {
 			numDotsDown = 0;
 		}
