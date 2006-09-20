@@ -69,9 +69,9 @@ public class Sketch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// new Sketch(MODE_DESIGN_PDF);
+		 new Sketch(MODE_DESIGN_PDF);
 		// new Sketch(MODE_RENDER_PDF);
-		new Sketch(MODE_RUN_APP);
+//		new Sketch(MODE_RUN_APP);
 	}
 
 	private JPanel colorPanel;
@@ -135,6 +135,17 @@ public class Sketch {
 			public void contentArrived() {
 				statusText.setText("Writing... " + inkWell.getNumStrokesCollected()
 						+ " strokes have been collected");
+
+				// DEMO:
+				// TASK: Modify this method so that ink is updated immediately....
+				
+				
+				
+				
+				
+				
+				
+				
 			}
 		});
 		regionMain.addContentFilter(inkWell);
@@ -182,15 +193,9 @@ public class Sketch {
 					inkWell.saveToXMLFile(new File("data/Sketch/InkOutput.xml"));
 					break;
 				case N: // send to screen...
-				case NW:
-				case NE:
-					Ink ink = inkWell.getNewInkOnly();
-					if (ink.getNumStrokes() > 0) {
-						ink.setColor(currentColor);
-						inkPanel.addInk(ink);
-					} else {
-						System.out.println("Zero Strokes");
-					}
+				case NW: // whenever you stroke up
+				case NE: // or close to it
+					updateInkToScreen();
 					break;
 				case S: // clear the screen!
 				case SE:
@@ -311,5 +316,18 @@ public class Sketch {
 		// Ask the toolkit to load and start the application
 		PaperToolkit r3 = new PaperToolkit();
 		r3.startApplication(app);
+	}
+
+	/**
+	 * 
+	 */
+	private void updateInkToScreen() {
+		Ink ink = inkWell.getNewInkOnly();
+		if (ink.getNumStrokes() > 0) {
+			ink.setColor(currentColor);
+			inkPanel.addInk(ink);
+		} else {
+			System.out.println("Zero Strokes");
+		}
 	}
 }

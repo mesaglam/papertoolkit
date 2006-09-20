@@ -46,7 +46,7 @@ public class RemoteSketch {
 			progress.setAlwaysOnTop(true);
 
 			// if it is not pingable, ask for a new host...
-			hostPingable = device.isDeviceAlive();
+			hostPingable = device.isAlive();
 			progress.dispose();
 			progress = null;
 		}
