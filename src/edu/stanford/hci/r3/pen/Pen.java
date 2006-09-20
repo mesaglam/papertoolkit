@@ -71,6 +71,7 @@ public class Pen {
 
 	/**
 	 * @param name
+	 *            for debugging purposes
 	 */
 	public Pen(String name) {
 		this(name, LOCALHOST);
@@ -79,11 +80,11 @@ public class Pen {
 	/**
 	 * @param name
 	 *            name the pen so you can identify it later
-	 * @param penServer
+	 * @param penServerHostName
 	 */
-	public Pen(String name, String penServer) {
+	public Pen(String name, String penServerHostName) {
 		setName(name);
-		defaultPenServer = penServer;
+		defaultPenServer = penServerHostName;
 	}
 
 	/**
