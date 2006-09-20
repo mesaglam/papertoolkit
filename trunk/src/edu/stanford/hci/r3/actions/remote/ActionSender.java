@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.networking.ClientServerType;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -48,7 +49,9 @@ public class ActionSender {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			DebugUtils.println(e + " to " + serverNameOrIPAddr);
+			DebugUtils.println("Perhaps the ActionReceiver is not running on [" + serverNameOrIPAddr
+					+ "]?");
 		}
 	}
 

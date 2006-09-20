@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -96,12 +94,22 @@ public class ActionReceiver {
 	 */
 	private List<Socket> clients = new ArrayList<Socket>();
 
+	/**
+	 * 
+	 */
 	private ActionReceiverConnectionListener connectionListener;
 
 	/**
 	 * Close the action server if this is ever set to true.
 	 */
 	private boolean exitFlag = false;
+
+	/**
+	 * Helps with debugging or setting up connections between devices.
+	 */
+	private String hostAddress;
+
+	private String hostName;
 
 	/**
 	 * The port we are listening to for client connections.
@@ -135,7 +143,7 @@ public class ActionReceiver {
 
 	/**
 	 * @param trusted
-	 *            a list of IPs, DNSs, or (todo) subnets that we trust...
+	 *           a list of IPs, DNSs, or (todo) subnets that we trust...
 	 */
 	public ActionReceiver(int tcpipPort, ClientServerType type, String... trusted) {
 		trustedSenders.addAll(Arrays.asList(trusted));
@@ -149,6 +157,13 @@ public class ActionReceiver {
 
 		// the server port
 		serverPort = serverSocket.getLocalPort();
+
+		try {
+			hostAddress = InetAddress.getLocalHost().getHostAddress();
+			hostName = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 
 		// start thread to accept connections
 		getDaemonThread().start();
@@ -180,8 +195,8 @@ public class ActionReceiver {
 							break;
 						}
 
-						log("ActionReceiver :: Waiting for a " + serverType
-								+ " connection on port [" + serverPort + "]");
+						log("ActionReceiver :: Waiting for a " + serverType + " connection on port ["
+								+ serverPort + "]");
 
 						client = serverSocket.accept();
 
@@ -201,8 +216,7 @@ public class ActionReceiver {
 						for (String nameOrAddress : trustedSenders) {
 							if (nameOrAddress.contains("*")) {
 								// 128.15.*.* --> 128.15.
-								nameOrAddress = nameOrAddress.substring(0, nameOrAddress
-										.indexOf("*"));
+								nameOrAddress = nameOrAddress.substring(0, nameOrAddress.indexOf("*"));
 							}
 
 							if (dnsName.toLowerCase().endsWith(nameOrAddress)
@@ -210,8 +224,7 @@ public class ActionReceiver {
 								// .stanford.edu
 								// 128.15.
 								// good enough for us!
-								DebugUtils.println("This is a trusted client. Matched: "
-										+ nameOrAddress);
+								DebugUtils.println("This is a trusted client. Matched: " + nameOrAddress);
 								clientIsOK = true;
 							} else {
 								DebugUtils.println("Untrusted client... next!");
@@ -225,8 +238,7 @@ public class ActionReceiver {
 						// keep it around
 						clients.add(client);
 					} catch (IOException ioe) {
-						log("ActionReceiver :: Error with server socket: "
-								+ ioe.getLocalizedMessage());
+						log("ActionReceiver :: Error with server socket: " + ioe.getLocalizedMessage());
 					}
 
 					if (client != null) {
@@ -239,6 +251,20 @@ public class ActionReceiver {
 				}
 			}
 		};
+	}
+
+	/**
+	 * @return
+	 */
+	public String getHostAddress() {
+		return hostAddress;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getHostName() {
+		return hostName;
 	}
 
 	/**
@@ -271,7 +297,9 @@ public class ActionReceiver {
 						}
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					DebugUtils.println(e);
+					DebugUtils.println("Perhaps the client "
+							+ clientSocket.getInetAddress().getHostName() + " has disconnected?");
 				}
 			}
 		};

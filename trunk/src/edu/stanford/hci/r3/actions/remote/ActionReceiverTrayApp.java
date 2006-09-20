@@ -30,6 +30,12 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
  * they come in over the wire...
  * </p>
  * <p>
+ * WARNING: If this app crashes, it MAY break msvcr71.dll, which means that it won't be able to run
+ * again until you reboot. Sorry... Maybe it's a Java 6 Bug? NOTE: One way to get it running again
+ * is to run the Test_ActionSenderAndReceiver. Weeeiiird. Perhaps it is because in the latter case,
+ * the main() isn't bootstrapped by the Eclipse IDE?
+ * </p>
+ * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
@@ -50,8 +56,14 @@ public class ActionReceiverTrayApp {
 
 	private static final String STATUS_OFF = "The Action Receiver is off.";
 
+	/**
+	 * 
+	 */
 	private static final String STATUS_ON = "The Action Receiver is now running.";
 
+	/**
+	 * 
+	 */
 	private static final String STOP_MSG = "Stop the Action Receiver";
 
 	/**
@@ -67,6 +79,9 @@ public class ActionReceiverTrayApp {
 	 */
 	private ActionReceiver actionReceiver;
 
+	/**
+	 * 
+	 */
 	private String currentStatus;
 
 	/**
@@ -94,8 +109,14 @@ public class ActionReceiverTrayApp {
 	 */
 	private boolean receiverRunning = false;
 
+	/**
+	 * 
+	 */
 	private TrayIcon trayIcon;
 
+	/**
+	 * 
+	 */
 	private JFrame trustedClientsFrame;
 
 	/**
@@ -176,8 +197,8 @@ public class ActionReceiverTrayApp {
 				trustedClientsFrame.setVisible(false);
 			}
 		});
-		trustedClientsTextField.setBorder(BorderFactory.createCompoundBorder(
-				trustedClientsTextField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+		trustedClientsTextField.setBorder(BorderFactory.createCompoundBorder(trustedClientsTextField
+				.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		// a message to tell the user what to do
 		final JLabel message = new JLabel(DIRECTIONS_FOR_SETTING_LIST_OF_TRUSTED_CLIENTS);
@@ -259,18 +280,23 @@ public class ActionReceiverTrayApp {
 						actionReceiver = new ActionReceiver(ActionReceiver.DEFAULT_JAVA_PORT,
 								ClientServerType.JAVA, clientNames);
 
-						actionReceiver
-								.setConnectionListener(new ActionReceiverConnectionListener() {
-									public void newConnectionFrom(String hostName, String ipAddr) {
-										trayIcon.displayMessage("New Connection", hostName + ipAddr
-												+ " has connected.", TrayIcon.MessageType.INFO);
-									}
-								});
-						actionReceiver.addActionHandler(new ActionHandler()); // invokes the
-						// actions
+						actionReceiver.setConnectionListener(new ActionReceiverConnectionListener() {
+							public void newConnectionFrom(String hostName, String ipAddr) {
+								trayIcon.displayMessage("New Connection", hostName + ipAddr
+										+ " has connected.", TrayIcon.MessageType.INFO);
+							}
+						});
 
+						// invokes the actions
+						actionReceiver.addActionHandler(new ActionHandler());
+
+						final String hostAddress = actionReceiver.getHostAddress();
+						final String hostName = actionReceiver.getHostName();
+
+						// show a balloon in the windows tray.
 						trayIcon.displayMessage("Action Receiver is Online",
-								"Waiting for commands.", TrayIcon.MessageType.INFO);
+								"Waiting for commands. This receiver's name/address is: " + hostName + "/"
+										+ hostAddress, TrayIcon.MessageType.INFO);
 						currentStatus = STATUS_ON;
 						trayIcon.setImage(imageON);
 						onOffItem.setLabel(STOP_MSG);
