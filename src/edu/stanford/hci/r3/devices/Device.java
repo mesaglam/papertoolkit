@@ -1,9 +1,11 @@
 package edu.stanford.hci.r3.devices;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import edu.stanford.hci.r3.actions.remote.ActionReceiver;
+import edu.stanford.hci.r3.actions.remote.ActionSender;
+import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -11,6 +13,10 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * Applications can also include devices, which can supply input and receive output. Since devices
  * may not be attached to the local machine where you are running the program, we need to assign a
  * hostname to each device.
+ * </p>
+ * <p>
+ * Devices work closely with the Actions API. Basically, devices are constructs that allow us to
+ * send events and actions to remote machines...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -21,9 +27,17 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class Device {
 
+	/**
+	 * 
+	 */
 	private String hostNameOrIPAddr;
 
+	/**
+	 * 
+	 */
 	private String name;
+
+	private ActionSender sender;
 
 	/**
 	 * 
@@ -34,23 +48,28 @@ public class Device {
 	}
 
 	/**
-	 * Pings the device to see if will be able to talk to it.
+	 * Instead of pinging, we check if a device is "reachable" by making sure it has a host address.
 	 * 
 	 * @return
 	 */
-	public boolean isDeviceAlive() {
+	public boolean isAlive() {
 		try {
 			DebugUtils.println("Checking if Device is Alive and Reachable...");
 			InetAddress address = InetAddress.getByName(hostNameOrIPAddr);
 			DebugUtils.println("Device Hostname: " + address.getHostName());
 			DebugUtils.println("Device Address: " + address.getHostAddress());
-			return address.isReachable(5); // 5 seconds
+			return true;
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			DebugUtils.println(e);
 		}
-		System.out.println("Not Reachable");
 		return false;
+	}
+
+	/**
+	 * 
+	 */
+	public void connect() {
+		sender = new ActionSender(hostNameOrIPAddr, ActionReceiver.DEFAULT_JAVA_PORT,
+				ClientServerType.JAVA);
 	}
 }
