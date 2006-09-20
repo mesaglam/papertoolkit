@@ -2,12 +2,15 @@ package edu.stanford.hci.r3.util.files;
 
 import java.awt.Component;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -172,5 +175,39 @@ public class FileUtils {
 		}
 	}
 
+	/**
+	 * @param string
+	 * @param destFile
+	 * @created Jun 5, 2006
+	 * @author Ron Yeh
+	 */
+	public static void writeStringToFile(String string, File destFile) {
+		try {
+			final FileOutputStream fos = new FileOutputStream(destFile);
+			final BufferedWriter bw = new BufferedWriter(new PrintWriter(fos));
+			bw.write(string);
+			bw.flush();
+			bw.close();
+			fos.close(); // should be redundant
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
+	}
+
+	/**
+	 * @param string
+	 * @param file
+	 * @created Mar 14, 2006
+	 * @author Ron Yeh
+	 */
+	public static void writeStringToFileOnlyIfNew(String string, File file) {
+		if (file.exists()) {
+			System.err.println("File " + file.getPath() + " already exists. Skipping writing.");
+			return;
+		}
+		writeStringToFile(string, file);
+	}
 }

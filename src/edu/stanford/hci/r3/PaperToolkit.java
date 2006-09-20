@@ -44,6 +44,7 @@ import org.jdesktop.swingx.decorator.ConditionalHighlighter;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.thoughtworks.xstream.XStream;
 
+import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
 import edu.stanford.hci.r3.designer.acrobat.AcrobatDesignerLauncher;
 import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.events.EventEngine;
@@ -53,6 +54,7 @@ import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping.RegionID;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchServer;
+import edu.stanford.hci.r3.pen.streaming.PenServerTrayApp;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
@@ -153,6 +155,28 @@ public class PaperToolkit {
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Alternatively, try using the batch files instead.
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		if (args.length == 0) {
+			printUsage();
+			return;
+		} else if (args[0].startsWith("-actions")) {
+			ActionReceiverTrayApp.main(new String[] {});
+		} else if (args[0].startsWith("-pen")) {
+			PenServerTrayApp.main(new String[] {});
+		}
+	}
+
+	private static void printUsage() {
+		System.out.println("Takes One Argument: ");
+		System.out.println("	-actions	// runs the action receiver");
+		System.out.println("	-pen		// runs the pen server");
 	}
 
 	/**
