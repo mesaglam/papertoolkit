@@ -3,6 +3,8 @@ package edu.stanford.hci.r3.pen.streaming;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import edu.stanford.hci.r3.util.graphics.ImageCache;
 
@@ -20,20 +22,44 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
  */
 public class PenServerTrayApp {
 
+	/**
+	 * 
+	 */
 	private static ActionListener iconListener;
 
+	/**
+	 * Pen Server is stopped.
+	 */
 	private static Image imageOFF;
 
+	/**
+	 * Tells us the pen server is running (default).
+	 */
 	private static Image imageON;
 
+	/**
+	 * 
+	 */
 	private static MenuItem onOffItem;
 
+	/**
+	 * 
+	 */
 	private static boolean serverRunning;
 
+	/**
+	 * 
+	 */
 	private static final String START_PEN_SERVER_MSG = "Start the Pen Server";
 
+	/**
+	 * 
+	 */
 	private static final String STOP_PEN_SERVER_MSG = "Stop the Pen Server";
 
+	/**
+	 * 
+	 */
 	private static TrayIcon trayIcon;
 
 	/**
@@ -82,31 +108,40 @@ public class PenServerTrayApp {
 	 */
 	public static void main(String[] args) {
 		if (!SystemTray.isSupported()) {
-			System.err
-					.println("The System Tray is not supported. Exiting the Pen Server Tray App.");
+			System.err.println("The System Tray is not supported. "
+					+ "Exiting the Pen Server Tray App.");
 			return;
 		}
-		SystemTray systemTray = SystemTray.getSystemTray();
+		final SystemTray systemTray = SystemTray.getSystemTray();
 		imageON = ImageCache
 				.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sun.png"));
 		imageOFF = ImageCache.loadBufferedImage(PenServerTrayApp.class
 				.getResource("/icons/sunOff.png"));
 
-		PopupMenu popup = new PopupMenu();
-		MenuItem exitItem = new MenuItem("Exit");
+		final PopupMenu popup = new PopupMenu();
+		final MenuItem exitItem = new MenuItem("Exit");
 		exitItem.addActionListener(getExitListener());
 		onOffItem = new MenuItem(STOP_PEN_SERVER_MSG);
 		onOffItem.addActionListener(getOnOffListener());
-		popup.add(exitItem);
 		popup.add(onOffItem);
+		popup.add(exitItem);
 
-		trayIcon = new TrayIcon(imageON, "Pen Server (double-click to turn ON/OFF)", popup);
+		InetAddress localHost = null;
+		try {
+			localHost = InetAddress.getLocalHost();
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		}
+
+		final String tooltip = "Pen Server at " + localHost + "\n[double-click to turn ON/OFF]";
+		// the icon in the system tray
+		trayIcon = new TrayIcon(imageON, tooltip, popup);
 		trayIcon.setImageAutoSize(true);
 		trayIcon.addActionListener(getOnOffListener());
 
 		try {
 			systemTray.add(trayIcon);
-		} catch (AWTException e) {
+		} catch (final AWTException e) {
 			e.printStackTrace();
 		}
 
