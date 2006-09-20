@@ -1,5 +1,8 @@
 package edu.stanford.hci.r3.pen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.pen.streaming.PenClient;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
@@ -61,6 +64,12 @@ public class Pen {
 	private String name;
 
 	/**
+	 * Cached pen listeners, so we can add them when/if you go live. TODO: How will we handle
+	 * batched events later on?
+	 */
+	private List<PenListener> penListenersToAdd = new ArrayList<PenListener>();
+
+	/**
 	 * Can't use this constructor too many times, because you can only have ONE physical pen
 	 * connected to the localhost's pen server. However, you can have two pen objects listen to the
 	 * same localhost server if you wish. They will just get the same data.
@@ -88,13 +97,18 @@ public class Pen {
 	}
 
 	/**
-	 * Adds a low-level pen data listener to the live pen.
+	 * Adds a low-level pen data listener to the live pen. You SHOULD call this after starting live
+	 * mode.... However, we can cache the listener for you, if you really want. This is to eliminate
+	 * annoying ordering constraints.
 	 * 
 	 * @param penListener
 	 */
 	public void addLivePenListener(PenListener penListener) {
 		if (livePenClient == null) {
-			DebugUtils.println("Cannot add this Listener. The Pen is not in Live Mode.");
+			DebugUtils.println("We cannot register this listener at the moment. "
+					+ "The Pen is not in Live Mode.");
+			DebugUtils.println("We will keep this listener around until you startLiveMode().");
+			penListenersToAdd.add(penListener);
 			return;
 		}
 		livePenClient.addPenListener(penListener);
@@ -120,8 +134,12 @@ public class Pen {
 	 * @param penListener
 	 */
 	public void removeLivePenListener(PenListener penListener) {
+		if (penListenersToAdd.contains(penListener)) {
+			penListenersToAdd.remove(penListener);
+		}
 		if (livePenClient == null) {
 			DebugUtils.println("Cannot Remove the Listener. The Pen is not in Live Mode.");
+			return;
 		}
 		livePenClient.removePenListener(penListener);
 	}
