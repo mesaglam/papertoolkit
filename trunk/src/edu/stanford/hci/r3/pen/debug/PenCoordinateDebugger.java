@@ -1,7 +1,6 @@
-package edu.stanford.hci.r3.pen;
+package edu.stanford.hci.r3.pen.debug;
 
-import edu.stanford.hci.r3.pen.streaming.PenListener;
-import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.Pen;
 
 /**
  * <p>
@@ -18,30 +17,11 @@ import edu.stanford.hci.r3.pen.streaming.PenSample;
 public class PenCoordinateDebugger {
 
 	/**
-	 * @return
-	 */
-	private static PenListener getDebugPenListener() {
-		return new PenListener() {
-			public void penDown(PenSample sample) {
-				System.out.println("Pen Down: " + sample);
-			}
-
-			public void penUp(PenSample sample) {
-				System.out.println("Pen Up: " + sample);
-			}
-
-			public void sample(PenSample sample) {
-				System.out.println(sample);
-			}
-		};
-	}
-
-	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Pen pen = new Pen();
+		final Pen pen = new Pen();
 		pen.startLiveMode();
-		pen.addLivePenListener(getDebugPenListener());
+		pen.addLivePenListener(new DebuggingPenListener());
 	}
 }
