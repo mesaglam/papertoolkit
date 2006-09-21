@@ -124,6 +124,9 @@ public class ActionReceiver {
 	 */
 	private String hostAddress;
 
+	/**
+	 * 
+	 */
 	private String hostName;
 
 	/**
@@ -164,7 +167,7 @@ public class ActionReceiver {
 		trustedSenders.addAll(Arrays.asList(trusted));
 		readTrustedClientsFromConfigFile();
 		DebugUtils.println("Trusted Client Set: " + trustedSenders);
-		
+
 		try {
 			serverSocket = new ServerSocket(tcpipPort);
 		} catch (IOException e) {
@@ -182,7 +185,6 @@ public class ActionReceiver {
 			e.printStackTrace();
 		}
 
-		
 		// start thread to accept connections
 		getDaemonThread().start();
 	}

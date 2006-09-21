@@ -21,12 +21,24 @@ import javax.swing.JPanel;
  */
 public class BufferedImagePanel extends JPanel {
 
+	/**
+	 * 
+	 */
 	private BufferedImage image;
 
+	/**
+	 * 
+	 */
 	private Dimension size;
 
+	/**
+	 * 
+	 */
 	private int x = 0;
 
+	/**
+	 * 
+	 */
 	private int y = 0;
 
 	/**
@@ -43,14 +55,23 @@ public class BufferedImagePanel extends JPanel {
 		setImage(img);
 	}
 
+	/**
+	 * @return
+	 */
 	public int getImageHeight() {
 		return image.getHeight();
 	}
 
+	/**
+	 * @return
+	 */
 	public int getImageWidth() {
 		return image.getWidth();
 	}
 
+	/**
+	 * @see javax.swing.JComponent#getMinimumSize()
+	 */
 	public Dimension getMinimumSize() {
 		return size;
 	}
@@ -61,7 +82,7 @@ public class BufferedImagePanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g;
+		final Graphics2D g2d = (Graphics2D) g;
 		if (image != null) {
 			g2d.drawImage(image, null, x, y);
 		}

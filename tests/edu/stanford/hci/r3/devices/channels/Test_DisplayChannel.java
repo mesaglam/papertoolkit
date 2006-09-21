@@ -1,7 +1,5 @@
 package edu.stanford.hci.r3.devices.channels;
 
-import edu.stanford.hci.r3.devices.Device;
-
 /**
  * <p>
  * </p>
@@ -12,9 +10,6 @@ import edu.stanford.hci.r3.devices.Device;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class AudioChannel {
-
-	public AudioChannel(Device device) {
-	}
+public class Test_DisplayChannel {
 
 }

@@ -52,9 +52,7 @@ public class RobotAction implements R3Action {
 	 * Different things you can ask a robot to do.
 	 */
 	public static enum RobotMethod {
-		
-		/* does nothing */
-		CREATE_SCREEN_CAPTURE("CreateScreenCapture"),
+		CREATE_SCREEN_CAPTURE("CreateScreenCapture"), /* does nothing */
 		DELAY("Delay"),
 		GET_PIXEL_COLOR("GetPixelColor"),
 		KEY_PRESS("KPress"),
@@ -115,8 +113,7 @@ public class RobotAction implements R3Action {
 	 * @return
 	 */
 	public void createScreenCapture(Rectangle screenRect, File destFile) {
-		commandsToRun
-				.add(new RobotCommand(RobotMethod.CREATE_SCREEN_CAPTURE, screenRect, destFile));
+		commandsToRun.add(new RobotCommand(RobotMethod.CREATE_SCREEN_CAPTURE, screenRect, destFile));
 	}
 
 	/**
@@ -126,6 +123,9 @@ public class RobotAction implements R3Action {
 		commandsToRun.add(new RobotCommand(RobotMethod.DELAY, ms));
 	}
 
+	/**
+	 * @return
+	 */
 	public int getNumCommands() {
 		return commandsToRun.size();
 	}
@@ -139,6 +139,8 @@ public class RobotAction implements R3Action {
 	}
 
 	/**
+	 * Gets the local machine's Java robot object.
+	 * 
 	 * @return
 	 */
 	private Robot getRobot() {

@@ -1,6 +1,6 @@
-package edu.stanford.hci.r3.devices.channels;
+package edu.stanford.hci.r3.actions.types.graphicscommands;
 
-import edu.stanford.hci.r3.devices.Device;
+import java.awt.Graphics2D;
 
 /**
  * <p>
@@ -12,9 +12,14 @@ import edu.stanford.hci.r3.devices.Device;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class AudioChannel {
+public class DrawRectMethod extends GraphicsCommand {
 
-	public AudioChannel(Device device) {
+	public DrawRectMethod() {
 	}
 
+	@Override
+	public void invoke(Graphics2D g2d) {
+		// TODO Auto-generated method stub
+
+	}
 }
