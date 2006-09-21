@@ -13,6 +13,7 @@ import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.layout.FlowPaperLayout;
 import edu.stanford.hci.r3.paper.regions.TextRegion;
+import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.coordinates.Coordinates;
@@ -20,6 +21,8 @@ import edu.stanford.hci.r3.units.coordinates.Coordinates;
 /**
  * <p>
  * You may need to kick the VM up to 256Megabytes. (java -Xmx256M) Actually 512M works better. =)
+ * Click on a grid, and it tells you which box you clicked on. Additionally, you can use up to four
+ * pens at the SAME TIME!!! In fact, if your other pens are not connected, it's OK.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -29,6 +32,34 @@ import edu.stanford.hci.r3.units.coordinates.Coordinates;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class LetterSizedGrid extends Application {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		runApp();
+		// renderPDF();
+	}
+
+	/**
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	private static void renderPDF() {
+		LetterSizedGrid grid = new LetterSizedGrid();
+		SheetRenderer renderer = new SheetRenderer(grid.sheet);
+		renderer.renderToPDF(new File("data/Grid/LetterSizedGridSheet.pdf"));
+	}
+
+	/**
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	private static void runApp() {
+		LetterSizedGrid grid = new LetterSizedGrid();
+		PaperToolkit p = new PaperToolkit();
+		p.startApplication(grid);
+	}
 
 	private Sheet sheet;
 
@@ -40,7 +71,7 @@ public class LetterSizedGrid extends Application {
 	}
 
 	/**
-	 * 
+	 * Called automatically by the super's constructor.
 	 */
 	protected void initialize() {
 		sheet = new Sheet(8.5, 11); // Letter Sized
@@ -71,31 +102,12 @@ public class LetterSizedGrid extends Application {
 		// must go before the addSheet for now...
 		sheet.registerConfigurationPath(new File("data/Grid/"));
 		addSheet(sheet);
-	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		runApp();
-		// renderPDF();
-	}
-
-	/**
-	 * 
-	 */
-	private static void runApp() {
-		LetterSizedGrid grid = new LetterSizedGrid();
-		PaperToolkit p = new PaperToolkit();
-		p.startApplication(grid);
-	}
-
-	/**
-	 * 
-	 */
-	private static void renderPDF() {
-		LetterSizedGrid grid = new LetterSizedGrid();
-		SheetRenderer renderer = new SheetRenderer(grid.sheet);
-		renderer.renderToPDF(new File("data/Grid/LetterSizedGridSheet.pdf"));
+		// Add Two Pens
+		// If the other pens aren't alive, keep on going with the local pen...
+		final Pen pen1 = new Pen("Brown Pen (local)");
+		final Pen pen2 = new Pen("Green Pen", "171.66.32.119"); // VeracruzX
+		addPen(pen1);
+		addPen(pen2);
 	}
 }
