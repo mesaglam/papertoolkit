@@ -29,7 +29,9 @@ import edu.stanford.hci.r3.util.StringUtils;
  */
 public class RegionRenderer {
 
-	public static final String CONFIG_FILE = "regionrenderer.debugregions.file";
+	public static final String CONFIG_FILE_KEY = "regionrenderer.debugregions.file";
+
+	public static final String CONFIG_FILE_VALUE = "/config/RegionRenderer.xml";
 
 	/**
 	 * Whether we are in debug mode.
@@ -63,7 +65,7 @@ public class RegionRenderer {
 	 * @return whether or not the debug flag is set to TRUE
 	 */
 	private static boolean readDebugFlagFromConfigFile() {
-		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE);
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE_KEY);
 		final boolean debug = Boolean.parseBoolean(property);
 		return debug;
 	}

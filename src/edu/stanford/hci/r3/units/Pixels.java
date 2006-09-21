@@ -21,7 +21,9 @@ public class Pixels extends Units {
 	/**
 	 * The Key to access the configuration file for Pixels.
 	 */
-	public static final String CONFIG_FILE = "pixels.pixelsperinch.file";
+	public static final String CONFIG_FILE_KEY = "pixels.pixelsperinch.file";
+
+	public static final String CONFIG_FILE_VALUE = "/config/PixelsPerInch.xml";
 
 	private static final double DEFAULT_PIXELS_PER_INCH = readPixelsPerInchFromConfigFile();
 
@@ -42,7 +44,8 @@ public class Pixels extends Units {
 	 * @return
 	 */
 	private static double readPixelsPerInchFromConfigFile() {
-		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE);
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
+				CONFIG_FILE_KEY);
 		final double ppi = Double.parseDouble(property);
 		return ppi;
 	}

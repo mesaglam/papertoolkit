@@ -50,8 +50,8 @@ public class ActionSender {
 			e.printStackTrace();
 		} catch (IOException e) {
 			DebugUtils.println(e + " to " + serverNameOrIPAddr);
-			DebugUtils.println("Perhaps the ActionReceiver is not running on [" + serverNameOrIPAddr
-					+ "]?");
+			DebugUtils.println("Perhaps the ActionReceiver is not running on ["
+					+ serverNameOrIPAddr + "]?");
 		}
 	}
 
@@ -75,7 +75,13 @@ public class ActionSender {
 	 * @param action
 	 */
 	public void invokeRemoteAction(R3Action action) {
-		messengerOutput.sendAction(action);
+		if (messengerOutput != null) {
+			messengerOutput.sendAction(action);
+		} else {
+			// this should never happen...
+			// but for some reason we got a NPE once...
+			DebugUtils.println("Action Sender's Messenger is NULL!");
+		}
 	}
 
 }
