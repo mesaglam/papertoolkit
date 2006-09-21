@@ -56,7 +56,7 @@ public class DebugUtils {
 	 *            the object to print out
 	 */
 	public static void println(Object object) {
-		final String s = object.toString();
+		final String s = (object == null) ? "null" : object.toString();
 		final Thread currThread = Thread.currentThread();
 		final StackTraceElement[] ste = currThread.getStackTrace();
 		if (DebugUtils.debugTraceOn) {

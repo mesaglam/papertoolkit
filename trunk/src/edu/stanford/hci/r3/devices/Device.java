@@ -5,6 +5,8 @@ import java.net.UnknownHostException;
 
 import edu.stanford.hci.r3.actions.remote.ActionReceiver;
 import edu.stanford.hci.r3.actions.remote.ActionSender;
+import edu.stanford.hci.r3.devices.channels.AudioChannel;
+import edu.stanford.hci.r3.devices.channels.DisplayChannel;
 import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -39,6 +41,10 @@ public class Device {
 
 	private ActionSender sender;
 
+	private AudioChannel audioChannel;
+
+	private DisplayChannel displayChannel;
+
 	/**
 	 * 
 	 */
@@ -69,9 +75,32 @@ public class Device {
 	 * 
 	 */
 	public void connect() {
-		
-		
 		sender = new ActionSender(hostNameOrIPAddr, ActionReceiver.DEFAULT_JAVA_PORT,
 				ClientServerType.JAVA);
+	}
+
+	/**
+	 * We will also provide convenience functions to easily play audio on this device. But, if you
+	 * need to access the channel directly, here you go.
+	 * 
+	 * @return allows us to send audio to this device...
+	 */
+	public AudioChannel getAudioChannel() {
+		if (audioChannel == null) {
+			audioChannel = new AudioChannel(this);
+		}
+		return audioChannel;
+	}
+
+	/**
+	 * Access the display directly.
+	 * 
+	 * @return
+	 */
+	public DisplayChannel getDisplayChannel() {
+		if (displayChannel == null) {
+			displayChannel = new DisplayChannel(this);
+		}
+		return displayChannel;
 	}
 }
