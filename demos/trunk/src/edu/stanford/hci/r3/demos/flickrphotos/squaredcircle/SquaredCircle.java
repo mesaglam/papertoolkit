@@ -1,12 +1,16 @@
-package edu.stanford.hci.r3.demos.flickrphotos;
+package edu.stanford.hci.r3.demos.flickrphotos.squaredcircle;
 
 import java.awt.Color;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.types.OpenURL2Action;
+import edu.stanford.hci.r3.demos.flickrphotos.FlickrPhoto;
+import edu.stanford.hci.r3.demos.flickrphotos.PhotoDownloadr;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
@@ -58,10 +62,27 @@ public class SquaredCircle extends Application {
 	/**
 	 * @param args
 	 */
+	public static void downloadPhotos() {
+		PhotoDownloadr downloadr = new PhotoDownloadr();
+		try {
+			downloadr.downloadFromGroup(500, new URL("http://www.flickr.com/groups/circle/"),
+					new File("data/Flickr/SquaredCircle/"), SquaredCircle.XML_FILE);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		final PaperToolkit r3 = new PaperToolkit();
-		r3.useApplicationManager(true);
-		r3.loadApplication(new SquaredCircle());
+		if (false) { // the switch for getting content or running the app
+			downloadPhotos();
+		} else {
+			final PaperToolkit r3 = new PaperToolkit();
+			r3.useApplicationManager(true);
+			r3.loadApplication(new SquaredCircle());
+		}
 	}
 
 	private List<FlickrPhoto> photosToView;
@@ -118,7 +139,6 @@ public class SquaredCircle extends Application {
 		cr.addChild(voteDown, new Coordinates(photoWidth, zero));
 		return cr;
 	}
-
 
 	/**
 	 * Called by the constructor.
