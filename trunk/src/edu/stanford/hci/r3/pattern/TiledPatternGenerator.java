@@ -29,7 +29,15 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class TiledPatternGenerator {
 
-	public static final String CONFIG_PATH = "tiledpatterngenerator.patternpath";
+	/**
+	 * Number of dots we pad between pattern requests, so that no two pattern requests are touching
+	 * each other.
+	 */
+	private static final int BUFFER = 30;
+
+	public static final String CONFIG_PATH_KEY = "tiledpatterngenerator.patternpath";
+
+	public static final String CONFIG_PATH_VALUE = "/pattern/";
 
 	/**
 	 * The name of the default pattern package (stored in pattern/default/).
@@ -42,22 +50,30 @@ public class TiledPatternGenerator {
 	public static final File PATTERN_PATH = getPatternPath();
 
 	/**
-	 * Number of dots we pad between pattern requests, so that no two pattern requests are touching
-	 * each other.
-	 */
-	private static final int BUFFER = 30;
-
-	/**
 	 * @return
 	 */
 	private static File getPatternPath() {
-		return Configuration.getConfigFile(CONFIG_PATH);
+		return Configuration.getConfigFile(CONFIG_PATH_KEY);
 	}
 
 	/**
 	 * Packages indexed by name.
 	 */
 	private Map<String, PatternPackage> availablePackages;
+
+	/**
+	 * Allows us to track usage within a page.
+	 */
+	private int lastDotUsedX = 0;
+
+	/**
+	 * Track pattern usage within a page. Reset every time we go to a new page.
+	 */
+	private int lastDotUsedY = 0;
+
+	private int maxOfRecentHeightsInDots = 0;
+
+	private int numTimesCalled = 0;
 
 	/**
 	 * Where we should start getting our pattern from. This is incremented by some amount every time
@@ -74,10 +90,6 @@ public class TiledPatternGenerator {
 	 * Customize this to reflect where you store your pattern definition files.
 	 */
 	private File patternPath;
-
-	private int maxOfRecentHeightsInDots = 0;
-
-	private int numTimesCalled = 0;
 
 	/**
 	 * Default Pattern Path Location.
@@ -182,7 +194,7 @@ public class TiledPatternGenerator {
 	 */
 	public TiledPattern getPattern(Units width, Units height) {
 		DebugUtils.println("getPattern Called " + ++numTimesCalled + " times...");
-		
+
 		final long numDotsX = Math.round(width.getValueInPatternDots());
 		final long numDotsY = Math.round(height.getValueInPatternDots());
 
@@ -255,16 +267,6 @@ public class TiledPatternGenerator {
 
 		return pattern;
 	}
-
-	/**
-	 * Allows us to track usage within a page.
-	 */
-	private int lastDotUsedX = 0;
-
-	/**
-	 * Track pattern usage within a page. Reset every time we go to a new page.
-	 */
-	private int lastDotUsedY = 0;
 
 	/**
 	 * @param name

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -197,12 +198,18 @@ public class PenClient {
 	}
 
 	/**
+	 * Connects to the socket and gets an inputstream.
+	 * 
 	 * @return
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
 	private BufferedReader setupSocketAndReader() throws UnknownHostException, IOException {
 		System.out.println("PenClient: Trying to connect to " + machineName + ":" + portNumber);
+		final InetAddress addr = InetAddress.getByName(machineName);
+		final String hostName = addr.getCanonicalHostName();
+		DebugUtils.println("The resolved host name of this pen is: " + hostName);
+
 		clientSocket = new Socket(machineName, portNumber);
 		final InputStream inputStream = clientSocket.getInputStream();
 		final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));

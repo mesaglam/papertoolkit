@@ -69,6 +69,8 @@ public class Device {
 	 * 
 	 */
 	public void connect() {
+		
+		
 		sender = new ActionSender(hostNameOrIPAddr, ActionReceiver.DEFAULT_JAVA_PORT,
 				ClientServerType.JAVA);
 	}

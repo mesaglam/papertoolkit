@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
+import edu.stanford.hci.r3.actions.remote.ActionReceiver;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Pixels;
@@ -47,18 +48,6 @@ public class Configuration extends Properties {
 	}
 
 	/**
-	 * @param propertyName
-	 * @return
-	 * @throws IOException
-	 */
-	private static InputStream getConfigFileStream(String propertyName) throws IOException {
-		final String resourceName = get(propertyName);
-		// System.out.println("Configuration.java: Resource is " + resourceName);
-		final URL resource = Configuration.class.getResource(resourceName);
-		return resource.openStream();
-	}
-
-	/**
 	 * TODO: Works for now, but won't work once we package it in a JAR.
 	 * 
 	 * @param propertyName
@@ -76,6 +65,18 @@ public class Configuration extends Properties {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * @param propertyName
+	 * @return
+	 * @throws IOException
+	 */
+	private static InputStream getConfigFileStream(String propertyName) throws IOException {
+		final String resourceName = get(propertyName);
+		// System.out.println("Configuration.java: Resource is " + resourceName);
+		final URL resource = Configuration.class.getResource(resourceName);
+		return resource.openStream();
 	}
 
 	/**
@@ -120,9 +121,10 @@ public class Configuration extends Properties {
 	 */
 	private void setDefaultConfig() {
 		// part of the resources in the JAR File (or export directory)
-		setProperty(Pixels.CONFIG_FILE, "/config/PixelsPerInch.xml");
-		setProperty(RegionRenderer.CONFIG_FILE, "/config/RegionRenderer.xml");
-		setProperty(TiledPatternGenerator.CONFIG_PATH, "/pattern/");
+		setProperty(Pixels.CONFIG_FILE_KEY, Pixels.CONFIG_FILE_VALUE);
+		setProperty(RegionRenderer.CONFIG_FILE_KEY, RegionRenderer.CONFIG_FILE_VALUE);
+		setProperty(TiledPatternGenerator.CONFIG_PATH_KEY, TiledPatternGenerator.CONFIG_PATH_VALUE);
+		setProperty(ActionReceiver.CONFIG_FILE_KEY, ActionReceiver.CONFIG_FILE_VALUE);
 	}
 
 }

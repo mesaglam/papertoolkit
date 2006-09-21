@@ -4,14 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.actions.R3Action;
+import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -29,6 +35,13 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class ActionReceiver {
 
 	/**
+	 * Read our trusted senders from this config file (see Configuration.java).
+	 */
+	public static final String CONFIG_FILE_KEY = "actionreceiver.trustedsenders";
+
+	public static final String CONFIG_FILE_VALUE = "/config/ActionReceiver.xml";
+
+	/**
 	 * Will listen on this port for Java XML objects.
 	 */
 	public static final int DEFAULT_JAVA_PORT = 11035;
@@ -42,6 +55,8 @@ public class ActionReceiver {
 	 * 
 	 */
 	private static ActionReceiver javaDaemon;
+
+	private static final String PROPERTY_NAME = "trustedClients";
 
 	/**
 	 * 
@@ -129,7 +144,7 @@ public class ActionReceiver {
 	/**
 	 * Will only accept actions from this list of remote senders.
 	 */
-	private ArrayList<String> trustedSenders = new ArrayList<String>();
+	private Set<String> trustedSenders = new HashSet<String>();
 
 	/**
 	 * Will only accept actions from the localhost.
@@ -143,11 +158,13 @@ public class ActionReceiver {
 
 	/**
 	 * @param trusted
-	 *           a list of IPs, DNSs, or (todo) subnets that we trust...
+	 *            a list of IPs, DNSs, or (todo) subnets that we trust...
 	 */
 	public ActionReceiver(int tcpipPort, ClientServerType type, String... trusted) {
 		trustedSenders.addAll(Arrays.asList(trusted));
-		System.out.println("Trusted Client List: " + trustedSenders);
+		readTrustedClientsFromConfigFile();
+		DebugUtils.println("Trusted Client Set: " + trustedSenders);
+		
 		try {
 			serverSocket = new ServerSocket(tcpipPort);
 		} catch (IOException e) {
@@ -165,6 +182,7 @@ public class ActionReceiver {
 			e.printStackTrace();
 		}
 
+		
 		// start thread to accept connections
 		getDaemonThread().start();
 	}
@@ -195,8 +213,8 @@ public class ActionReceiver {
 							break;
 						}
 
-						log("ActionReceiver :: Waiting for a " + serverType + " connection on port ["
-								+ serverPort + "]");
+						log("ActionReceiver :: Waiting for a " + serverType
+								+ " connection on port [" + serverPort + "]");
 
 						client = serverSocket.accept();
 
@@ -216,7 +234,8 @@ public class ActionReceiver {
 						for (String nameOrAddress : trustedSenders) {
 							if (nameOrAddress.contains("*")) {
 								// 128.15.*.* --> 128.15.
-								nameOrAddress = nameOrAddress.substring(0, nameOrAddress.indexOf("*"));
+								nameOrAddress = nameOrAddress.substring(0, nameOrAddress
+										.indexOf("*"));
 							}
 
 							if (dnsName.toLowerCase().endsWith(nameOrAddress)
@@ -224,10 +243,12 @@ public class ActionReceiver {
 								// .stanford.edu
 								// 128.15.
 								// good enough for us!
-								DebugUtils.println("This is a trusted client. Matched: " + nameOrAddress);
+								DebugUtils.println("This is a trusted client. Matched: "
+										+ nameOrAddress);
 								clientIsOK = true;
 							} else {
-								DebugUtils.println("Untrusted client... next!");
+								DebugUtils.println("Untrusted client [" + nameOrAddress
+										+ "]... next!");
 							}
 						}
 						if (!clientIsOK) {
@@ -238,7 +259,8 @@ public class ActionReceiver {
 						// keep it around
 						clients.add(client);
 					} catch (IOException ioe) {
-						log("ActionReceiver :: Error with server socket: " + ioe.getLocalizedMessage());
+						log("ActionReceiver :: Error with server socket: "
+								+ ioe.getLocalizedMessage());
 					}
 
 					if (client != null) {
@@ -366,6 +388,18 @@ public class ActionReceiver {
 	 */
 	private void log(String msg) {
 		System.out.println(msg);
+	}
+
+	/**
+	 * 
+	 */
+	private void readTrustedClientsFromConfigFile() {
+		final String trustedClients = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
+				CONFIG_FILE_KEY);
+		final String[] clients = trustedClients.split("[,]");
+		for (String client : clients) {
+			trustedSenders.add(client.trim());
+		}
 	}
 
 	/**

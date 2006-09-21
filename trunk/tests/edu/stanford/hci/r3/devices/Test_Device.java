@@ -11,7 +11,7 @@ import javax.swing.JFrame;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class Test_Device {
-	
+
 	private static Device device;
 
 	/**
@@ -22,14 +22,15 @@ public class Test_Device {
 	}
 
 	private static void connectToADevice() {
-		device = new Device("localhost", "My Computer");
+		// device = new Device("localhost", "My Desktop");
+		device = new Device("171.66.32.119", "My Laptop");
 		if (device.isAlive()) {
 			device.connect();
 		}
-		
+
 		JFrame f = new JFrame("Test");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setSize(640,480);
+		f.setSize(640, 480);
 		f.setVisible(true);
 	}
 }
