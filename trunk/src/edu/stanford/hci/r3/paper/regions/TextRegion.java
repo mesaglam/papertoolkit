@@ -68,6 +68,19 @@ public class TextRegion extends Region {
 	private Points widthInPoints;
 
 	/**
+	 * True if the text should be automatically line wrapped to the width
+	 * of the region.  If this is true, the lines will not go beyond the region
+	 * in either dimension.
+	 */
+	private boolean isLineWrapped = false;
+	
+	/**
+	 * Maximum number of lines to typeset.  If <= 0, all lines will be
+	 * typeset (up to the size of the region)
+	 */
+	private int maxLines = -1;
+	
+	/**
 	 * 
 	 * @param theText
 	 *            What text is displayed.
@@ -190,6 +203,36 @@ public class TextRegion extends Region {
 		color = c;
 	}
 
+	/**
+	 * @param b whether automatic line wrapping should occur.  If ture, the text will be
+	 * constrained to the region boundaries.
+	 */
+	public void setLineWrapped(boolean b) {
+		isLineWrapped = b;
+	}
+	
+	/**
+	 * @return whether automatic line wrapping should occur.  If true, the text will be
+	 * constrained to the region boundaries.
+	 */
+	public boolean isLineWrapped() {
+		return isLineWrapped;
+	}
+	
+	/**
+	 * @param i the maximum number of lies to set.  If <= 0, all lines will be set.
+	 */
+	public void setMaxLines(int i) {
+		maxLines = i;
+	}
+	
+	/**
+	 * @return the maximum number of lines to be set.  If <= 0, all lines will be set.
+	 */
+	public int getMaxLines() {
+		return maxLines;
+	}
+	
 	/**
 	 * @see edu.stanford.hci.r3.paper.Region#toString()
 	 */
