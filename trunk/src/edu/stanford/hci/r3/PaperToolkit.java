@@ -542,31 +542,11 @@ public class PaperToolkit {
 				public void actionPerformed(ActionEvent arg0) {
 					final Application selectedApp = (Application) listOfApps.getSelectedValue();
 					if (selectedApp != null) {
-						new Thread(new Runnable() {
-							public void run() {
-								final File folderToSavePDFs = getFolderToSavePDFs();
-								if (folderToSavePDFs != null) { // user approved
-									// an endless progress bar
-									progress = new EndlessProgressDialog(appManager,
-											"Creating the PDF",
-											"Please wait while your PDF is generated.");
-									// start rendering
-									selectedApp
-											.renderToPDF(folderToSavePDFs, selectedApp.getName());
-									DebugUtils.println("Done Rendering.");
-
-									// open the folder in explorer! =)
-									try {
-										Desktop.getDesktop().open(folderToSavePDFs);
-									} catch (IOException e) {
-										e.printStackTrace();
-									}
-
-									progress.setVisible(false);
-									progress = null;
-								}
-							}
-						}).start();
+						if (selectedApp.isUserChoosingDestinationForPDF()) {
+							renderToSpecificFolder(selectedApp);
+						} else {
+							selectedApp.renderToPDF();
+						}
 						listOfApps.repaint();
 					}
 				}
@@ -649,6 +629,35 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @param selectedApp
+	 */
+	private void renderToSpecificFolder(final Application selectedApp) {
+		new Thread(new Runnable() {
+			public void run() {
+				final File folderToSavePDFs = getFolderToSavePDFs();
+				if (folderToSavePDFs != null) { // user approved
+					// an endless progress bar
+					progress = new EndlessProgressDialog(appManager, "Creating the PDF",
+							"Please wait while your PDF is generated.");
+					// start rendering
+					selectedApp.renderToPDF(folderToSavePDFs, selectedApp.getName());
+					DebugUtils.println("Done Rendering.");
+
+					// open the folder in explorer! =)
+					try {
+						Desktop.getDesktop().open(folderToSavePDFs);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					progress.setVisible(false);
+					progress = null;
+				}
+			}
+		}).start();
+	}
+
+	/**
 	 * Start this application and register all live pens with the event engine. The event engine
 	 * will then start dispatching events for this application until the application is stopped.
 	 * 
@@ -661,7 +670,7 @@ public class PaperToolkit {
 
 		// run any initializers that need to happen before we begin
 		paperApp.initializeBeforeStarting();
-		
+
 		// get all the pens and start them in live mode...
 		// we assume we have decided where each pen server will run
 		// start live mode will connect to that pen server.

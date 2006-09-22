@@ -133,9 +133,9 @@ public class SheetRenderer {
 			if (!r.isActive()) {
 				continue;
 			}
-			
+
 			DebugUtils.println("-------------");
-			
+
 			// add the region's offset from the top left corner of the sheet
 			Coordinates regionOffset = sheet.getRegionOffset(r);
 
@@ -162,7 +162,7 @@ public class SheetRenderer {
 			// we should be able to assign a tile configuration to each region
 			final TiledPatternCoordinateConverter tiledPatternInRegion = patternInformation
 					.getPatternBoundsOfRegion(r);
-			
+
 			// set all the information here
 			tiledPatternInRegion.setPatternInformationByReadingItFrom(pattern);
 			// now, this object is modified
@@ -204,14 +204,13 @@ public class SheetRenderer {
 		// render each region
 		for (Region r : regions) {
 			// Weird. g2d.getTransform SHOULD give us a copy....
-			final AffineTransform currTransform = new AffineTransform(g2d.getTransform()); // a
-			// real
-			// copy
+			// a real copy
+			final AffineTransform currTransform = new AffineTransform(g2d.getTransform());
 			DebugUtils.println("Rendering " + r.getName());
 			final Coordinates regionOffset = sheet.getRegionOffset(r);
 			final double xOffsetPts = regionOffset.getX().getValueInPoints();
 			final double yOffsetPts = regionOffset.getY().getValueInPoints();
-			System.out.println(xOffsetPts);
+			// System.out.println(xOffsetPts);
 			// g2d.transform(AffineTransform.getTranslateInstance(xOffsetPts, yOffsetPts));
 			g2d.translate((int) xOffsetPts, (int) yOffsetPts);
 			r.getRenderer().renderToG2D(g2d);

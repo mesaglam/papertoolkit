@@ -121,6 +121,11 @@ public class Application {
 	private Map<Sheet, PatternLocationToSheetLocationMapping> sheetToPatternMap = new HashMap<Sheet, PatternLocationToSheetLocationMapping>();
 
 	/**
+	 * Should the user decide where to render the PDF?
+	 */
+	private boolean userChoosesPDFDestination = false;
+
+	/**
 	 * @param theName
 	 */
 	public Application(String theName) {
@@ -235,10 +240,25 @@ public class Application {
 	}
 
 	/**
+	 * @return whether to let the user choose where to render the Sheets...
+	 */
+	public boolean isUserChoosingDestinationForPDF() {
+		return userChoosesPDFDestination;
+	}
+
+	/**
 	 * @param beh
 	 */
 	public void removeBatchEventHandler(BatchEventHandler beh) {
 		batchEventHandlers.remove(beh);
+	}
+
+	/**
+	 * Feel free to OVERRIDE this too. It is called if the userChoosesPDFDestination flag is set to
+	 * false, and the user presses the Render PDF Button in the App Manager.
+	 */
+	public void renderToPDF() {
+		renderToPDF(new File("."), getName());
 	}
 
 	/**
@@ -253,6 +273,9 @@ public class Application {
 	 * |_fileName_3.pdf <br>
 	 * |_fileName_4.pdf <br>
 	 * </code>
+	 * 
+	 * Feel Free to OVERRIDE this method if you want to attach different behavior to the App
+	 * Manager's RenderPDF Button.
 	 */
 	public void renderToPDF(File parentDirectory, String fileNameWithoutExtension) {
 		DebugUtils.println("Rendering PDFs...");
@@ -274,6 +297,13 @@ public class Application {
 	 */
 	public void saveToDisk(File appFile) {
 		PaperToolkit.toXML(this, appFile);
+	}
+
+	/**
+	 * @param flag
+	 */
+	public void setUserChoosesPDFDestinationFlag(boolean flag) {
+		userChoosesPDFDestination = flag;
 	}
 
 	/**
