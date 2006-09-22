@@ -1,19 +1,29 @@
-package edu.stanford.hci.r3.gesture;
+package edu.stanford.hci.r3.pen.gesture;
 
 import java.util.ArrayList;
 
 import edu.stanford.hci.r3.pen.streaming.PenSample;
 
 
+/**
+ * <p>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
+ * </p>
+ * 
+ * @author Avi Robinson-Mosher
+ */
 public class ShapeContext {
 	
 	ArrayList<PenSample> controlPoints = new ArrayList<PenSample>();
 
-	public ShapeContext(ArrayList<PenSample> controlPointsInput)
+	public ShapeContext(ArrayList<PenSample> controlPointsInput) 
 	{
 		controlPoints = controlPointsInput;
 		// there's me ANN done
-		//ANN ann = new ANN();
+		// ANN ann = new ANN();
 	}
 	
 	public int size()
@@ -100,7 +110,7 @@ public class ShapeContext {
 		  case 3:
 		      return ((t-1)*t*t)/2;
 		  }
-		  return 0; //we only get here if an invalid i is specified
+		  return 0; // we only get here if an invalid i is specified
 	  }
 
 	  float dblend_du(int i, float t) {
@@ -114,11 +124,11 @@ public class ShapeContext {
 		  case 3:
 			  return (3*t*t-2*t)/2;
 		  }
-		  return 0; //we only get here if an invalid i is specified
+		  return 0; // we only get here if an invalid i is specified
 	  }
 
 	  
-	  // all I actually need is x and y, or even angle.  but this will do
+	  // all I actually need is x and y, or even angle. but this will do
 	  PenSample tangent(int i, float t)
 	  {
 			PenSample[] samples = new PenSample[4];
@@ -147,7 +157,7 @@ public class ShapeContext {
 		  int dummy_points = this.controlPoints.size();
 		  ArrayList<ShapeHistogram> histograms = new ArrayList<ShapeHistogram>();
 		  ArrayList<PenSample> samples = resample(dummy_points);
-		  ArrayList<PenSample> tangents = new ArrayList<PenSample>();//tangents(points);
+		  ArrayList<PenSample> tangents = new ArrayList<PenSample>();// tangents(points);
 		  for (int i=0; i<samples.size();i++) {
 			  PenSample last,next;
 			  if(i==0) last = samples.get(0);
@@ -161,7 +171,8 @@ public class ShapeContext {
 		  bins[0] = 5; // log r
 		  bins[1] = 12; // theta
 		  bins[2] = 2; // t (for the moment, only before/after)
-		  // want a bin for "component" - how to discretize? connected ought to be fine.  this may be redundant with time...somewhat
+		  // want a bin for "component" - how to discretize? connected ought to be fine. this may
+			// be redundant with time...somewhat
 		  double[] mins = new double[3];
 		  mins[0] = Double.MAX_VALUE; // not; calc this based on actual min
 		  mins[1] = -Math.PI; // yup
@@ -176,7 +187,9 @@ public class ShapeContext {
 		  double timestamp_max=-Double.MAX_VALUE;
 		  double sum = 0;
 		  for (PenSample sample : samples) {
-			  if (sample.timestamp < timestamp_min) timestamp_min = sample.timestamp; // wrong, should be considering deltas.  Alt, normalize all the times ahead.
+			  	// wrong, should be considering deltas.
+				// Alt, normalize all the times ahead.
+			  if (sample.timestamp < timestamp_min) timestamp_min = sample.timestamp; 
 			  if (sample.timestamp > timestamp_max) timestamp_max = sample.timestamp;
 			  for (PenSample secondSample : samples) {
 				  if (sample.equals(secondSample)) continue;
@@ -192,17 +205,19 @@ public class ShapeContext {
 		  maxes[0] = Math.log(distance_max)+.01;
 		  mins[2] = timestamp_min - timestamp_max;
 		  maxes[2] = -mins[2];
-		  //mins[0] = Math.log(distance_min);
-		  //maxes[0] = Math.log(distance_max);
+		  // mins[0] = Math.log(distance_min);
+		  // maxes[0] = Math.log(distance_max);
 		  for (PenSample sample : samples) {
 			  ShapeHistogram histogram = new ShapeHistogram(bins, mins, maxes, bands);
 			  PenSample tangent = tangents.get(samples.indexOf(sample)); // sue me, I'm lax
 			  double theta = Math.atan2(tangent.y, tangent.x);
 			  for (PenSample secondSample : samples) {
 				  if (sample.equals(secondSample)) continue;
-				  // for rotation invariance, adjust angles by setting normal to curve to some axis.  slightly tricky, but not too bad.
-				  // I guess I'll do this the easy way (via spline lookups and calculation).  Is there an analytic way?  Probably.  But I'm lazy.
-				  histogram.addPoint(logPolarAndTime(sample, secondSample, mins[0]/*sum * sum*/, theta));
+				  // for rotation invariance, adjust angles by setting normal to curve to some
+					// axis. slightly tricky, but not too bad.
+				  // I guess I'll do this the easy way (via spline lookups and calculation). Is
+					// there an analytic way? Probably. But I'm lazy.
+				  histogram.addPoint(logPolarAndTime(sample, secondSample, mins[0]/* sum * sum */, theta));
 			  }
 			  histograms.add(histogram);
 		  }
@@ -214,7 +229,8 @@ public class ShapeContext {
 	  
 	  static double[] logPolarAndTime(PenSample first, PenSample second, double distanceScaling, double baseRotation)
 	  {
-		  // normalize the times.  actually, probably ought to normalize all of them - scale-invariance? not theta, though.
+		  // normalize the times. actually, probably ought to normalize all of them -
+			// scale-invariance? not theta, though.
 		  double dx = second.x - first.x;
 		  double dy = second.y - first.y;
 		  double[] results = new double[3];
@@ -223,7 +239,7 @@ public class ShapeContext {
 			  results[1] = 0;
 		  }
 		  else {
-			  results[0] = .5 * Math.log((dx*dx + dy*dy)/* / distanceScaling*/);
+			  results[0] = .5 * Math.log((dx*dx + dy*dy)/* / distanceScaling */);
 			  results[1] = renormalize(Math.atan2(dy, dx) - baseRotation);
 		  }
 		  results[2] = second.timestamp - first.timestamp;
@@ -231,7 +247,7 @@ public class ShapeContext {
 	  }
 	  
 	  static double renormalize(double theta)
-	  { // cast into -PI to PI
+	   { // cast into -PI to PI
 		  if(theta < -Math.PI) return theta+2*Math.PI;
 		  if(theta > Math.PI) return theta-2*Math.PI;
 		  return theta;
@@ -240,16 +256,14 @@ public class ShapeContext {
 // pseudocode
 	/*
 	 * 
-	 constructor(points[])
-	 {create shapehistogram for each point}
-	 
-	 double[] logpolar(point1,point2)
-	 given input points, gets logpolar offset
-	 
-	 distance(ShapeContext)
-	 need to be able to sample a pointset to get the right number of points to match.  do this via spline interpolation
-	 
-	 
-	 bipartite matching
+	 * constructor(points[]) {create shapehistogram for each point}
+	 * 
+	 * double[] logpolar(point1,point2) given input points, gets logpolar offset
+	 * 
+	 * distance(ShapeContext) need to be able to sample a pointset to get the right number of points
+	 * to match. do this via spline interpolation
+	 * 
+	 * 
+	 * bipartite matching
 	 */
 }

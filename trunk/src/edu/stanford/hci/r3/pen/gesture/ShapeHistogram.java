@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.gesture;
+package edu.stanford.hci.r3.pen.gesture;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,18 @@ import cern.colt.matrix.linalg.Algebra;
 import cern.colt.matrix.linalg.SingularValueDecomposition;
 
 
+/**
+ * <p>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
+ * </p>
+ * 
+ * @author Avi Robinson-Mosher
+ * 
+ * 
+ */
 public class ShapeHistogram {
 	int[] data;
 	int[] bins;
@@ -17,7 +29,7 @@ public class ShapeHistogram {
 	
 	public ShapeHistogram(int[] bins, double[] mins, double[] maxes, int bands)
 	{
-		// old-fashioned it.  More convenient for ANN anyway
+		// old-fashioned it. More convenient for ANN anyway
 		int size = 1;
 		for(int i = 0; i < bands; i++)
 			size *= bins[i];
@@ -92,10 +104,10 @@ public class ShapeHistogram {
 	// http://www.public.iastate.edu/~ddoty/HungarianAlgorithm.html
 	static public int[] munkres(int n, double[][] costs)
 	{
-		//n : constant integer := 20;
-		//C : is array(1..n,1..n) of float;
-		//M : is array(1..n,1..n) of integer;
-		//Row,Col : is array(1..n) of integer;
+		// n : constant integer := 20;
+		// C : is array(1..n,1..n) of float;
+		// M : is array(1..n,1..n) of integer;
+		// Row,Col : is array(1..n) of integer;
 		int stepnum;
 		boolean done;
 		double[][] C = new double[n][n];
@@ -478,11 +490,10 @@ public class ShapeHistogram {
 /*
  * 
  * Pseudocode
- 
- 	constructor(bins[],mins[],maxes[],bands(=length bins))
- 	
- 	add(double values[])
- 	{increment all relevant bins}
- 	
+ * 
+ * constructor(bins[],mins[],maxes[],bands(=length bins))
+ * 
+ * add(double values[]) {increment all relevant bins}
+ * 
  */
 }
