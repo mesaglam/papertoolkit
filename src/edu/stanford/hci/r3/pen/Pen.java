@@ -176,14 +176,14 @@ public class Pen {
 				PenServer.startJavaServer();
 			}
 		}
-		
+
 		// start a client to listen to the pen...
 		if (livePenClient == null && !isLive()) {
 			livePenClient = new PenClient(hostDomainNameOrIPAddr, PenServer.DEFAULT_JAVA_PORT,
 					ClientServerType.JAVA);
 			livePenClient.connect();
 			liveMode = true;
-			
+
 			// add all the cached listeners now
 			for (PenListener pl : penListenersToAdd) {
 				DebugUtils.println("Adding cached pen listeners...");

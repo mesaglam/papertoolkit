@@ -85,7 +85,7 @@ public class ShapeContext {
 			samples[0] = controlPoints.get(0);
 		else samples[0] = controlPoints.get(i-1);
 		samples[1] = controlPoints.get(i);
-		samples[2] = controlPoints.get(i+1);
+    		samples[2] = controlPoints.get(i+1);
 		if (i + 2 >= controlPoints.size())
 			samples[3] = controlPoints.get(controlPoints.size() - 1);
 		else
@@ -253,17 +253,19 @@ public class ShapeContext {
 		  return theta;
 		  
 	  }
-// pseudocode
-	/*
-	 * 
-	 * constructor(points[]) {create shapehistogram for each point}
-	 * 
-	 * double[] logpolar(point1,point2) given input points, gets logpolar offset
-	 * 
-	 * distance(ShapeContext) need to be able to sample a pointset to get the right number of points
-	 * to match. do this via spline interpolation
-	 * 
-	 * 
-	 * bipartite matching
-	 */
+	  
+	  // pseudocode
+		/*
+		 * 
+		 * constructor(points[]) {create shapehistogram for each point}
+		 * 
+		 * double[] logpolar(point1,point2) given input points, gets logpolar offset
+		 * 
+		 * distance(ShapeContext) need to be able to sample a pointset to get the right number of
+		 * points to match. do this via spline interpolation
+		 * 
+		 * 
+		 * bipartite matching
+		 */
+
 }
