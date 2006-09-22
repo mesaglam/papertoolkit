@@ -78,9 +78,9 @@ public class FlutterbyNet extends Application {
 	 * It's sort of weird we have to recompile in between designing, rendering, and running. Fix
 	 * this.
 	 * 
-	 * @see edu.stanford.hci.r3.Application#initialize()
+	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
 	 */
-	protected void initialize() {
+	protected void initializeAfterConstructor() {
 		poster = new PDFSheet(new File("data/Posters/FlutterbyNet.pdf"));
 		poster.addRegions(new File("data/Posters/FlutterbyNet.regions.xml"));
 

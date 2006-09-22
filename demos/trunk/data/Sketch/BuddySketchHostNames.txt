@@ -1,0 +1,7 @@
+// each line must have a comment
+// the parser expects it, and will
+// take the IP address OR hostname from before the two-slash comment...
+// white space is OK
+
+171.66.32.119	// Ron's Laptop (VeracruzX)
+171.64.77.175	// Bananaslug

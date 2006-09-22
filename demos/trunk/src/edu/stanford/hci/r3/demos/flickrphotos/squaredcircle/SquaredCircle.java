@@ -143,11 +143,11 @@ public class SquaredCircle extends Application {
 	/**
 	 * Called by the constructor.
 	 * 
-	 * @see edu.stanford.hci.r3.Application#initialize()
+	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void initialize() {
+	protected void initializeAfterConstructor() {
 		System.out.println("Initializing Paper UI...");
 		final Sheet poster = new Sheet(WIDTH_IN_INCHES, HEIGHT_IN_INCHES);
 		poster.registerConfigurationPath(new File("data/Flickr/"));

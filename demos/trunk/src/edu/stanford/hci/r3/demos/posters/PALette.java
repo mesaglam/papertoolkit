@@ -75,9 +75,9 @@ public class PALette extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#initialize()
+	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
 	 */
-	protected void initialize() {
+	protected void initializeAfterConstructor() {
 		poster = new PDFSheet(new File("data/Posters/PALette.pdf"));
 		// for some stupid reason, PowerPoint and PDF kept giving me a rotated page... Boo. We need
 		// to support this in the future, instead of manually rotating the XML files.

@@ -73,7 +73,7 @@ public class LetterSizedGrid extends Application {
 	/**
 	 * Called automatically by the super's constructor.
 	 */
-	protected void initialize() {
+	protected void initializeAfterConstructor() {
 		sheet = new Sheet(8.5, 11); // Letter Sized
 
 		final Font font = new Font("Tahoma", Font.PLAIN, 18);

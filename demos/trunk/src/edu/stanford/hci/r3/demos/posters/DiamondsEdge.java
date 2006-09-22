@@ -115,7 +115,7 @@ public class DiamondsEdge extends Application {
 	 * 
 	 * It is called by the constructor.
 	 */
-	protected void initialize() {
+	protected void initializeAfterConstructor() {
 		poster = new PDFSheet(new File("data/Posters/DiamondsEdge.pdf"));
 		poster.addRegions(new File("data/Posters/DiamondsEdge.regions.xml"));
 		// DebugUtils.println(poster.getRegionNames());
