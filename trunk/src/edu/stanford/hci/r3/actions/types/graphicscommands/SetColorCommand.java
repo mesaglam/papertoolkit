@@ -1,10 +1,10 @@
 package edu.stanford.hci.r3.actions.types.graphicscommands;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
  * <p>
- * Fills a rectangle into the provided g2d.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -13,32 +13,21 @@ import java.awt.Graphics2D;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class FillRectMethod extends GraphicsCommand {
+public class SetColorCommand implements GraphicsCommand {
 
-	private int h;
-
-	private int w;
-
-	private int x;
-
-	private int y;
+	private Color color;
 
 	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @param w
-	 * @param h
+	 * @param c
 	 */
-	public FillRectMethod(int xVal, int yVal, int wVal, int hVal) {
-		x = xVal;
-		y = yVal;
-		w = wVal;
-		h = hVal;
+	public SetColorCommand(Color c) {
+		color = c;
 	}
 
-	@Override
+	/**
+	 * @see edu.stanford.hci.r3.actions.types.graphicscommands.GraphicsCommand#invoke(java.awt.Graphics2D)
+	 */
 	public void invoke(Graphics2D g2d) {
-		g2d.fillRect(x, y, w, h);
+		g2d.setColor(color);
 	}
 }

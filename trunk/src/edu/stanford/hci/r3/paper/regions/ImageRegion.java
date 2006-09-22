@@ -31,6 +31,9 @@ public class ImageRegion extends Region {
 	 */
 	private Rectangle2D imageRect;
 
+	/**
+	 * 
+	 */
 	private double pixelsPerInch;
 
 	/**
@@ -51,7 +54,8 @@ public class ImageRegion extends Region {
 	 * @param originY
 	 * @param pixelConversion
 	 */
-	public ImageRegion(String name, File imgFile, Units originX, Units originY, Pixels pixelConversion) {
+	public ImageRegion(String name, File imgFile, Units originX, Units originY,
+			Pixels pixelConversion) {
 		super(name, originX); // initialize units
 
 		// figure out the shape of this image, by loading it and determining the dimensions

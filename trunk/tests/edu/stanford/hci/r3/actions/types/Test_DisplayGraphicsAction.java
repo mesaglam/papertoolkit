@@ -19,7 +19,7 @@ public class Test_DisplayGraphicsAction {
 	private static final File XML_FILE = new File("data/testFiles/output/DisplayAction.xml");
 
 	public static void main(String[] args) {
-		// serializeDisplayAction();
+		serializeDisplayAction();
 		unserializeDisplayAction();
 	}
 
@@ -33,6 +33,7 @@ public class Test_DisplayGraphicsAction {
 		DisplayGraphicsAction displayAction = new DisplayGraphicsAction();
 		displayAction.fillRect(10, 20, 50, 30);
 		displayAction.setExitOnClose(true);
+		displayAction.drawImage(new File("data/testFiles/dragon.jpg"), 10, 20);
 		PaperToolkit.toXML(displayAction, XML_FILE);
 	}
 

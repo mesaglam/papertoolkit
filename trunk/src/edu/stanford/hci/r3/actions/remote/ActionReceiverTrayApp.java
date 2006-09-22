@@ -2,6 +2,7 @@ package edu.stanford.hci.r3.actions.remote;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.CheckboxMenuItem;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.MenuItem;
@@ -109,6 +110,8 @@ public class ActionReceiverTrayApp {
 	 */
 	private boolean receiverRunning = false;
 
+	private CheckboxMenuItem setShowConnectionMessageItem;
+
 	/**
 	 * 
 	 */
@@ -167,6 +170,17 @@ public class ActionReceiverTrayApp {
 		trustedClientsFrame.setVisible(true);
 	}
 
+	private ActionReceiverConnectionListener getConnectionListener() {
+		return new ActionReceiverConnectionListener() {
+			public void newConnectionFrom(String hostName, String ipAddr) {
+				if (setShowConnectionMessageItem.getState()) {
+					trayIcon.displayMessage("New Connection",
+							hostName + ipAddr + " has connected.", TrayIcon.MessageType.INFO);
+				}
+			}
+		};
+	}
+
 	/**
 	 * @return action that exits the tray app.
 	 */
@@ -197,8 +211,8 @@ public class ActionReceiverTrayApp {
 				trustedClientsFrame.setVisible(false);
 			}
 		});
-		trustedClientsTextField.setBorder(BorderFactory.createCompoundBorder(trustedClientsTextField
-				.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+		trustedClientsTextField.setBorder(BorderFactory.createCompoundBorder(
+				trustedClientsTextField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		// a message to tell the user what to do
 		final JLabel message = new JLabel(DIRECTIONS_FOR_SETTING_LIST_OF_TRUSTED_CLIENTS);
@@ -208,10 +222,11 @@ public class ActionReceiverTrayApp {
 		final JPanel controls = new JPanel();
 		controls.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		controls.setLayout(new BorderLayout());
-		JButton hideButton = new JButton("Minimize this Window to the System Tray");
+		JButton hideButton = new JButton("Start Running and Minimize to the Tray");
 		hideButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				trustedClientsFrame.setVisible(false);
+				startRunning();
 			}
 		});
 		final JButton exitButton = new JButton("Exit the Action Receiver");
@@ -230,24 +245,29 @@ public class ActionReceiverTrayApp {
 	 * @return the menu when you right-click the system tray icon.
 	 */
 	private PopupMenu getPopupMenu() {
-		final PopupMenu popup = new PopupMenu();
+		final PopupMenu popup = new PopupMenu("Action Receiver Options");
 
+		// exit the application
 		final MenuItem exitItem = new MenuItem("Exit");
 		exitItem.addActionListener(getExitListener());
 
+		// turn the server on or off
 		onOffItem = new MenuItem(START_MSG);
 		onOffItem.addActionListener(getToggleServerStateListener());
 
 		// modify the list of trusted clients
-		final MenuItem setTrustedClients = new MenuItem("Set Trusted Clients");
-		setTrustedClients.addActionListener(new ActionListener() {
+		final MenuItem setTrustedClientsItem = new MenuItem("Set Trusted Clients");
+		setTrustedClientsItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				trustedClientsFrame.setVisible(true);
 			}
 		});
 
-		popup.add(setTrustedClients);
+		setShowConnectionMessageItem = new CheckboxMenuItem("Show Message When Clients Connect");
+
+		popup.add(setTrustedClientsItem);
 		popup.add(onOffItem);
+		popup.add(setShowConnectionMessageItem);
 		popup.add(new MenuItem("-")); // separator
 		popup.add(exitItem);
 
@@ -271,36 +291,7 @@ public class ActionReceiverTrayApp {
 						onOffItem.setLabel(START_MSG);
 						receiverRunning = false;
 					} else {
-						String trustedClientsList = trustedClientsTextField.getText();
-						String[] clientNames = trustedClientsList.split(",");
-						for (int i = 0; i < clientNames.length; i++) {
-							clientNames[i] = clientNames[i].trim();
-						}
-
-						actionReceiver = new ActionReceiver(ActionReceiver.DEFAULT_JAVA_PORT,
-								ClientServerType.JAVA, clientNames);
-
-						actionReceiver.setConnectionListener(new ActionReceiverConnectionListener() {
-							public void newConnectionFrom(String hostName, String ipAddr) {
-								trayIcon.displayMessage("New Connection", hostName + ipAddr
-										+ " has connected.", TrayIcon.MessageType.INFO);
-							}
-						});
-
-						// invokes the actions
-						actionReceiver.addActionHandler(new ActionHandler());
-
-						final String hostAddress = actionReceiver.getHostAddress();
-						final String hostName = actionReceiver.getHostName();
-
-						// show a balloon in the windows tray.
-						trayIcon.displayMessage("Action Receiver is Online",
-								"Waiting for commands. This receiver's name/address is: " + hostName + "/"
-										+ hostAddress, TrayIcon.MessageType.INFO);
-						currentStatus = STATUS_ON;
-						trayIcon.setImage(imageON);
-						onOffItem.setLabel(STOP_MSG);
-						receiverRunning = true;
+						startRunning();
 					}
 					trayIcon.setToolTip(DESCRIPTION + currentStatus);
 				}
@@ -309,4 +300,33 @@ public class ActionReceiverTrayApp {
 		}
 		return iconListener;
 	}
+
+	private void startRunning() {
+		String trustedClientsList = trustedClientsTextField.getText();
+		String[] clientNames = trustedClientsList.split(",");
+		for (int i = 0; i < clientNames.length; i++) {
+			clientNames[i] = clientNames[i].trim();
+		}
+
+		actionReceiver = new ActionReceiver(ActionReceiver.DEFAULT_JAVA_PORT,
+				ClientServerType.JAVA, clientNames);
+
+		actionReceiver.setConnectionListener(getConnectionListener());
+
+		// invokes the actions
+		actionReceiver.addActionHandler(new ActionHandler());
+
+		final String hostAddress = actionReceiver.getHostAddress();
+		final String hostName = actionReceiver.getHostName();
+
+		// show a balloon in the windows tray.
+		trayIcon.displayMessage("Action Receiver is Online",
+				"Waiting for commands. This receiver's name/address is: " + hostName + "/"
+						+ hostAddress, TrayIcon.MessageType.INFO);
+		currentStatus = STATUS_ON;
+		trayIcon.setImage(imageON);
+		onOffItem.setLabel(STOP_MSG);
+		receiverRunning = true;
+	}
+
 }

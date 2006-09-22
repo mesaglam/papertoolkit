@@ -322,8 +322,8 @@ public class ActionReceiver {
 					}
 				} catch (IOException e) {
 					DebugUtils.println(e);
-					DebugUtils.println("Perhaps the client "
-							+ clientSocket.getInetAddress().getHostName() + " has disconnected?");
+					DebugUtils.println("The client " + clientSocket.getInetAddress().getHostName()
+							+ " has probably disconnected...");
 				}
 			}
 		};

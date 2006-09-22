@@ -24,15 +24,10 @@ import java.awt.Graphics2D;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class GraphicsCommand {
-
-	/**
-	 */
-	public GraphicsCommand() {
-	}
+public interface GraphicsCommand {
 
 	/**
 	 * @param g2d
 	 */
-	public abstract void invoke(Graphics2D g2d);
+	public void invoke(Graphics2D g2d);
 }

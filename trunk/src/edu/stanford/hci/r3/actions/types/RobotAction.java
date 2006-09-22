@@ -11,6 +11,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.KeyStroke;
+
 import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.util.graphics.ImageUtils;
 
@@ -49,6 +51,20 @@ public class RobotAction implements R3Action {
 	}
 
 	/**
+	 * Embodies a robot method and its arguments.
+	 */
+	public static class RobotCommand {
+		private Object[] arguments; // make sure they are of the right type!
+		private RobotMethod method;
+		
+		public RobotCommand(RobotMethod m, Object...args) {
+			method = m;
+			arguments = args;
+		}
+	}
+
+	
+	/**
 	 * Different things you can ask a robot to do.
 	 */
 	public static enum RobotMethod {
@@ -57,6 +73,7 @@ public class RobotAction implements R3Action {
 		GET_PIXEL_COLOR("GetPixelColor"),
 		KEY_PRESS("KPress"),
 		KEY_RELEASE("KRelease"),
+		KEY_TYPE("KType"),
 		MOUSE_MOVE("MMove"),
 		MOUSE_PRESS("MPress"),
 		MOUSE_RELEASE("MRelease"),
@@ -73,20 +90,6 @@ public class RobotAction implements R3Action {
 		
 		public String getCommand() {
 			return command;
-		}
-	}
-
-	
-	/**
-	 * Embodies a robot method and its arguments.
-	 */
-	public static class RobotCommand {
-		private Object[] arguments; // make sure they are of the right type!
-		private RobotMethod method;
-		
-		public RobotCommand(RobotMethod m, Object...args) {
-			method = m;
-			arguments = args;
 		}
 	}
 
@@ -244,6 +247,14 @@ public class RobotAction implements R3Action {
 	}
 
 	/**
+	 * @param keycode
+	 */
+	public void keyType(int keycode) {
+		keyPress(keycode);
+		keyRelease(keycode);
+	}
+	
+	/**
 	 * Queue up a mouseMove.
 	 * 
 	 * @param x
@@ -252,7 +263,7 @@ public class RobotAction implements R3Action {
 	public void mouseMove(int x, int y) {
 		commandsToRun.add(new RobotCommand(RobotMethod.MOUSE_MOVE, x, y));
 	}
-
+	
 	/**
 	 * InputEvent.BUTTON1_MASK, InputEvent.BUTTON2_MASK, InputEvent.BUTTON3_MASK
 	 * 
@@ -298,6 +309,16 @@ public class RobotAction implements R3Action {
 	 */
 	public void setScreenDevice(int requestedDevice) {
 		deviceToControl = requestedDevice;
+	}
+
+	/**
+	 * @param text
+	 */
+	public void typeString(String text) {
+		char[] cs = text.toCharArray();
+		for (char key : cs) {
+			keyType(KeyStroke.getKeyStroke(key).getKeyCode());
+		}
 	}
 
 	/**

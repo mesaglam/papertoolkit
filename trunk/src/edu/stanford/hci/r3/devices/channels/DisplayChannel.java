@@ -1,6 +1,11 @@
 package edu.stanford.hci.r3.devices.channels;
 
+import java.awt.Dimension;
+import java.io.File;
+
 import edu.stanford.hci.r3.devices.Device;
+import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.graphics.ImageUtils;
 
 /**
  * <p>
@@ -22,10 +27,47 @@ import edu.stanford.hci.r3.devices.Device;
  */
 public class DisplayChannel {
 
+	/**
+	 * <p>
+	 * </p>
+	 */
+	public enum ImageLocation {
+		NORTH,
+		SOUTH,
+		EAST,
+		WEST,
+		NORTH_EAST,
+		NORTH_WEST,
+		SOUTH_EAST,
+		SOUTH_WEST
+	}
+	
+	/**
+	 * 
+	 */
 	private Device parentDevice;
 
+	/**
+	 * @param device
+	 */
 	public DisplayChannel(Device device) {
 		parentDevice = device;
 	}
-	
+
+	/**
+	 * 
+	 */
+	public void showInk() {
+
+	}
+
+	/**
+	 * @param imgFile
+	 */
+	public void displayImage(File imgFile, double maxWidthAsPercentageOfDisplay,
+			double maxHeightAsPercentageOfDisplay, ImageLocation where) {
+		final Dimension dimension = ImageUtils.readSize(imgFile);
+		DebugUtils.println(dimension);
+		// do nothing for now....
+	}
 }
