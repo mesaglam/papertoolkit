@@ -30,6 +30,6 @@
 	<classpathentry path="/PaperToolkit/lib/freetts/freetts.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/swingx.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/freetts/jsapi.jar" kind="lib"/>
-	<classpathentry path="/jickr" combineaccessrules="false" kind="src"/>
+	<classpathentry path="lib/jickr.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
