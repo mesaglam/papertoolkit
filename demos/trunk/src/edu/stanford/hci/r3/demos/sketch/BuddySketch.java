@@ -75,17 +75,20 @@ public class BuddySketch extends Application {
 	 */
 	public BuddySketch() {
 		super("Buddy Sketch Application");
-		PaperToolkit.initializeLookAndFeel();
 		System.out.println("Welcome to Buddy Sketch!");
+		PaperToolkit.initializeLookAndFeel();
+		setUserChoosesPDFDestinationFlag(false);
 
 		// set up the GIGAprint application
 		paperUI = new BuddySketchPaperUI();
 		addSheet(paperUI);
 
+		
+		renderToPDF();
 		// load it up and start!
-		PaperToolkit r3 = new PaperToolkit();
-		r3.useApplicationManager(true);
-		r3.loadApplication(this);
+		// PaperToolkit r3 = new PaperToolkit();
+		// r3.useApplicationManager(true);
+		// r3.loadApplication(this);
 	}
 
 	/**
@@ -172,5 +175,14 @@ public class BuddySketch extends Application {
 			e.printStackTrace();
 		}
 		return hostNames.toArray(new HostNameWithComment[] {});
+	}
+
+	/**
+	 * Disregard the input...
+	 * 
+	 * @see edu.stanford.hci.r3.Application#renderToPDF(java.io.File, java.lang.String)
+	 */
+	public void renderToPDF() {
+		paperUI.getRenderer().renderToPDF(new File("data/Sketch/BuddySketchUI.pdf"));
 	}
 }
