@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.actions.types.graphicscommands;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 
 /**
  * <p>
@@ -12,14 +13,21 @@ import java.awt.Graphics2D;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class DrawRectMethod extends GraphicsCommand {
+public class DrawShape implements GraphicsCommand {
 
-	public DrawRectMethod() {
+	private Shape shape;
+
+	/**
+	 * @param s
+	 */
+	public DrawShape(Shape s) {
+		shape = s;
 	}
 
-	@Override
+	/**
+	 * @see edu.stanford.hci.r3.actions.types.graphicscommands.GraphicsCommand#invoke(java.awt.Graphics2D)
+	 */
 	public void invoke(Graphics2D g2d) {
-		// TODO Auto-generated method stub
-
+		g2d.draw(shape);
 	}
 }

@@ -3,6 +3,10 @@ package edu.stanford.hci.r3.actions.types;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +15,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import edu.stanford.hci.r3.actions.R3Action;
-import edu.stanford.hci.r3.actions.types.graphicscommands.FillRectMethod;
+import edu.stanford.hci.r3.actions.types.graphicscommands.DrawImageCommand;
+import edu.stanford.hci.r3.actions.types.graphicscommands.DrawRectCommand;
+import edu.stanford.hci.r3.actions.types.graphicscommands.DrawShape;
+import edu.stanford.hci.r3.actions.types.graphicscommands.FillRectCommand;
 import edu.stanford.hci.r3.actions.types.graphicscommands.GraphicsCommand;
+import edu.stanford.hci.r3.actions.types.graphicscommands.SetColorCommand;
 import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
@@ -88,6 +96,7 @@ public class DisplayGraphicsAction implements R3Action {
 						super.paintComponent(g);
 						final Graphics2D g2d = (Graphics2D) g;
 						g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+
 						// run my commands....
 						for (GraphicsCommand gcmd : commands) {
 							gcmd.invoke(g2d);
@@ -107,15 +116,68 @@ public class DisplayGraphicsAction implements R3Action {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private List<GraphicsCommand> commandsToRun = new ArrayList<GraphicsCommand>();
 
+	/**
+	 * 
+	 */
 	private boolean exitOnCloseFlag;
+
+	private int extendedState = JFrame.NORMAL;
+
+	private int frameHeight = 600;
+
+	private Point frameOrigin;
+
+	private int frameWidth = 800;
+
+	private boolean bringToFront;
 
 	/**
 	 * 
 	 */
 	public DisplayGraphicsAction() {
 
+	}
+
+	/**
+	 * @param imgFile
+	 * @param x
+	 * @param y
+	 */
+	public void drawImage(File imgFile, int x, int y) {
+		commandsToRun.add(new DrawImageCommand(imgFile, x, y));
+	}
+
+	/**
+	 * @param imgFile
+	 * @param x
+	 * @param y
+	 * @param scaleFactor
+	 */
+	public void drawImage(File imgFile, int x, int y, double scaleFactor) {
+		commandsToRun.add(new DrawImageCommand(imgFile, x, y, AffineTransform.getScaleInstance(
+				scaleFactor, scaleFactor)));
+	}
+
+	/**
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 */
+	public void drawRect(int x, int y, int w, int h) {
+		commandsToRun.add(new DrawRectCommand(x, y, w, h));
+	}
+
+	/**
+	 * @param s
+	 */
+	public void drawShape(Shape s) {
+		commandsToRun.add(new DrawShape(s));
 	}
 
 	/**
@@ -127,7 +189,7 @@ public class DisplayGraphicsAction implements R3Action {
 	 * @param h
 	 */
 	public void fillRect(int x, int y, int w, int h) {
-		commandsToRun.add(new FillRectMethod(x, y, w, h));
+		commandsToRun.add(new FillRectCommand(x, y, w, h));
 	}
 
 	/**
@@ -137,14 +199,69 @@ public class DisplayGraphicsAction implements R3Action {
 	 */
 	public void invoke() {
 		LocalDisplay display = LocalDisplay.getInstance();
+		display.setSize(frameWidth, frameHeight);
+		display.setLocation(frameOrigin);
+		display.setExtendedState(extendedState);
 		if (exitOnCloseFlag) {
 			display.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		} else {
+			display.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		}
+
 		display.addRenderingCommands(commandsToRun);
 		display.setVisible(true); // if it's already visible, nothing changes
+		if (bringToFront) {
+			// a hack to bring the window to the top...
+			display.setAlwaysOnTop(true);
+			display.setAlwaysOnTop(false);
+		}
 	}
 
+	/**
+	 * 
+	 */
+	public void maximizeFrame() {
+		extendedState = JFrame.MAXIMIZED_BOTH;
+	}
+
+	/**
+	 * 
+	 */
+	public void minimizeFrame() {
+		extendedState = JFrame.ICONIFIED;
+	}
+
+	/**
+	 * 
+	 */
+	public void restoreFrame() {
+		extendedState = JFrame.NORMAL;
+	}
+
+	/**
+	 * @param col
+	 */
+	public void setColor(Color col) {
+		commandsToRun.add(new SetColorCommand(col));
+	}
+
+	/**
+	 * @param flag
+	 */
 	public void setExitOnClose(boolean flag) {
 		exitOnCloseFlag = flag;
+	}
+
+	public void setFrameLocation(Point windowOrigin) {
+		frameOrigin = windowOrigin;
+	}
+
+	public void setFrameSize(int w, int h) {
+		frameWidth = w;
+		frameHeight = h;
+	}
+
+	public void setBringToFront(boolean flag) {
+		bringToFront = flag;
 	}
 }

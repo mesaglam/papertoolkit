@@ -21,6 +21,9 @@ public class RunAppAction implements R3Action {
 
 	private String executablePath;
 
+	/**
+	 * @param execFile
+	 */
 	public RunAppAction(File execFile) {
 		executablePath = execFile.getPath();
 	}

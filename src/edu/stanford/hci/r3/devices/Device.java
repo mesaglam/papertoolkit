@@ -3,8 +3,10 @@ package edu.stanford.hci.r3.devices;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.actions.remote.ActionReceiver;
 import edu.stanford.hci.r3.actions.remote.ActionSender;
+import edu.stanford.hci.r3.devices.channels.ActionChannel;
 import edu.stanford.hci.r3.devices.channels.AudioChannel;
 import edu.stanford.hci.r3.devices.channels.DisplayChannel;
 import edu.stanford.hci.r3.networking.ClientServerType;
@@ -32,6 +34,21 @@ public class Device {
 	/**
 	 * 
 	 */
+	private ActionChannel actionChannel;
+
+	/**
+	 * 
+	 */
+	private AudioChannel audioChannel;
+
+	/**
+	 * 
+	 */
+	private DisplayChannel displayChannel;
+
+	/**
+	 * 
+	 */
 	private String hostNameOrIPAddr;
 
 	/**
@@ -39,11 +56,10 @@ public class Device {
 	 */
 	private String name;
 
+	/**
+	 * 
+	 */
 	private ActionSender sender;
-
-	private AudioChannel audioChannel;
-
-	private DisplayChannel displayChannel;
 
 	/**
 	 * 
@@ -54,25 +70,7 @@ public class Device {
 	}
 
 	/**
-	 * Instead of pinging, we check if a device is "reachable" by making sure it has a host address.
-	 * 
-	 * @return
-	 */
-	public boolean isAlive() {
-		try {
-			DebugUtils.println("Checking if Device is Alive and Reachable...");
-			InetAddress address = InetAddress.getByName(hostNameOrIPAddr);
-			DebugUtils.println("Device Hostname: " + address.getHostName());
-			DebugUtils.println("Device Address: " + address.getHostAddress());
-			return true;
-		} catch (UnknownHostException e) {
-			DebugUtils.println(e);
-		}
-		return false;
-	}
-
-	/**
-	 * 
+	 * Once we have connected, we can start sending this device commands....
 	 */
 	public void connect() {
 		sender = new ActionSender(hostNameOrIPAddr, ActionReceiver.DEFAULT_JAVA_PORT,
@@ -80,10 +78,29 @@ public class Device {
 	}
 
 	/**
-	 * We will also provide convenience functions to easily play audio on this device. But, if you
-	 * need to access the channel directly, here you go.
 	 * 
-	 * @return allows us to send audio to this device...
+	 */
+	public void disconnect() {
+		sender.disconnect();
+		sender = null;
+	}
+
+	/**
+	 * @return
+	 */
+	public ActionChannel getActionChannel() {
+		if (actionChannel == null) {
+			actionChannel = new ActionChannel(this);
+		}
+		return actionChannel;
+	}
+
+	/**
+	 * The audio channel provides convenience functions to easily play audio or read text on this
+	 * device. But, if you need to access the sender directly, you can always call the lower level
+	 * invokeAction(...).
+	 * 
+	 * @return a channel that allows us to send audio to this device...
 	 */
 	public AudioChannel getAudioChannel() {
 		if (audioChannel == null) {
@@ -102,5 +119,43 @@ public class Device {
 			displayChannel = new DisplayChannel(this);
 		}
 		return displayChannel;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Send actions directly to the device.
+	 * 
+	 * @param action
+	 */
+	public void invokeAction(R3Action action) {
+		if (sender != null) {
+			sender.invokeRemoteAction(action);
+		} else {
+			DebugUtils.println("Sender is null.");
+		}
+	}
+
+	/**
+	 * Instead of pinging, we check if a device is "reachable" by making sure it has a host address.
+	 * 
+	 * @return
+	 */
+	public boolean isAlive() {
+		try {
+			DebugUtils.println("Checking if Device is Alive and Reachable...");
+			InetAddress address = InetAddress.getByName(hostNameOrIPAddr);
+			DebugUtils.println("Device Hostname: " + address.getHostName());
+			DebugUtils.println("Device Address: " + address.getHostAddress());
+			return true;
+		} catch (UnknownHostException e) {
+			DebugUtils.println(e);
+		}
+		return false;
 	}
 }

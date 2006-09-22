@@ -1,5 +1,9 @@
 package edu.stanford.hci.r3.devices.channels;
 
+import java.io.File;
+
+import edu.stanford.hci.r3.actions.types.PlaySoundAction;
+import edu.stanford.hci.r3.actions.types.TextToSpeechAction;
 import edu.stanford.hci.r3.devices.Device;
 
 /**
@@ -14,7 +18,25 @@ import edu.stanford.hci.r3.devices.Device;
  */
 public class AudioChannel {
 
+	private Device parentDevice;
+
 	public AudioChannel(Device device) {
+		parentDevice = device;
 	}
 
+	/**
+	 * @param sound
+	 */
+	public void playSoundFile(File sound) {
+		PlaySoundAction action = new PlaySoundAction(sound);
+		parentDevice.invokeAction(action);
+	}
+
+	/**
+	 * @param text
+	 */
+	public void readTextOutLoud(String text) {
+		TextToSpeechAction action = new TextToSpeechAction(text);
+		parentDevice.invokeAction(action);
+	}
 }
