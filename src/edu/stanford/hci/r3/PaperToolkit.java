@@ -659,6 +659,9 @@ public class PaperToolkit {
 			loadApplication(paperApp);
 		}
 
+		// run any initializers that need to happen before we begin
+		paperApp.initializeBeforeStarting();
+		
 		// get all the pens and start them in live mode...
 		// we assume we have decided where each pen server will run
 		// start live mode will connect to that pen server.

@@ -125,7 +125,7 @@ public class Application {
 	 */
 	public Application(String theName) {
 		name = theName;
-		initialize();
+		initializeAfterConstructor();
 	}
 
 	/**
@@ -177,7 +177,8 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet, File patternInfoFile) {
 		sheets.add(sheet);
-		sheetToPatternMap.put(sheet, sheet.getPatternLocationToSheetLocationMapping(patternInfoFile));
+		sheetToPatternMap.put(sheet, sheet
+				.getPatternLocationToSheetLocationMapping(patternInfoFile));
 	}
 
 	/**
@@ -221,7 +222,15 @@ public class Application {
 	 * 
 	 * It is called by the constructor.
 	 */
-	protected void initialize() {
+	protected void initializeAfterConstructor() {
+		// do nothing, unless it is overridden.
+	}
+
+	/**
+	 * Called right before an applications starts. Override to do anything you like right after a
+	 * person clicks start, and right before the application actually starts.
+	 */
+	protected void initializeBeforeStarting() {
 		// do nothing, unless it is overridden.
 	}
 

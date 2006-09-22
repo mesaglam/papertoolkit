@@ -31,5 +31,7 @@
 	<classpathentry path="lib/swingx.jar" kind="lib"/>
 	<classpathentry path="lib/freetts/freetts.jar" kind="lib"/>
 	<classpathentry path="lib/freetts/jsapi.jar" kind="lib"/>
+	<classpathentry path="lib/colt/colt.jar" kind="lib"/>
+	<classpathentry path="lib/colt/concurrent.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
