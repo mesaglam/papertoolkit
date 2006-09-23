@@ -1,16 +1,20 @@
 package edu.stanford.hci.r3.util.files;
 
 import java.awt.Component;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -210,4 +214,38 @@ public class FileUtils {
 		}
 		writeStringToFile(string, file);
 	}
+	
+	public static void downloadUrlToFile(URL url, File result) throws IOException {
+		IOException exception = null;
+		InputStream is = null;
+		DataInputStream dis = null;
+		FileOutputStream fos = null;
+		
+		byte[] buf = new byte[1024];
+		try {
+			is = url.openStream();
+			dis = new DataInputStream(new BufferedInputStream(is));
+			fos = new FileOutputStream(result);
+			int bytesRead;
+			bytesRead = dis.read(buf);
+			while (bytesRead > 0) {
+				fos.write(buf, 0, bytesRead);
+				bytesRead = dis.read(buf);
+			}
+		}
+		catch (IOException ioe) {
+			exception = ioe;
+		}
+		finally {
+			try {
+				if (is != null) is.close();
+			} catch (IOException ioe) { }
+			
+			try {
+				if (fos != null) fos.close();
+			} catch (IOException ioe) { }
+			if (exception != null) throw exception;
+		}
+	}
+	
 }
