@@ -195,54 +195,6 @@
     <RegionID>
       <height class="Points">
         <unitName>Points</unitName>
-        <value>192.0710449999999</value>
-      </height>
-      <name>PackardPhotos</name>
-      <originX class="Points">
-        <unitName>Points</unitName>
-        <value>717.443604</value>
-      </originX>
-      <originY class="Points">
-        <unitName>Points</unitName>
-        <value>592.359985</value>
-      </originY>
-      <width class="Points">
-        <unitName>Points</unitName>
-        <value>188.49890099999993</value>
-      </width>
-    </RegionID>
-    <TiledPatternCoordinateConverter>
-      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
-      <dotsPerTileVertical>932</dotsPerTileVertical>
-      <maxX>1.8402264E8</maxX>
-      <maxY>7703.0</maxY>
-      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
-      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
-      <numTiles>1</numTiles>
-      <numTilesAcross>1</numTilesAcross>
-      <numTilesDown>1</numTilesDown>
-      <numTotalDotsAcross>222.0</numTotalDotsAcross>
-      <numTotalDotsAcrossObj>
-        <unitName>PatternDots</unitName>
-        <value>222.0</value>
-      </numTotalDotsAcrossObj>
-      <numTotalDotsDown>226.0</numTotalDotsDown>
-      <numTotalDotsDownObj>
-        <unitName>PatternDots</unitName>
-        <value>226.0</value>
-      </numTotalDotsDownObj>
-      <originX>1.84022418E8</originX>
-      <originY>7477.0</originY>
-      <regionName>PackardPhotos</regionName>
-      <startingTile>0</startingTile>
-      <tileHeightIncludingPadding>226.0</tileHeightIncludingPadding>
-      <tileWidthIncludingPadding>222.0</tileWidthIncludingPadding>
-    </TiledPatternCoordinateConverter>
-  </entry>
-  <entry>
-    <RegionID>
-      <height class="Points">
-        <unitName>Points</unitName>
         <value>195.65002400000003</value>
       </height>
       <name>Gates</name>
@@ -291,48 +243,48 @@
     <RegionID>
       <height class="Points">
         <unitName>Points</unitName>
-        <value>87.62524400000007</value>
+        <value>192.0710449999999</value>
       </height>
-      <name>WhereAmI</name>
+      <name>PackardPhotos</name>
       <originX class="Points">
         <unitName>Points</unitName>
-        <value>1942.573364</value>
+        <value>717.443604</value>
       </originX>
       <originY class="Points">
         <unitName>Points</unitName>
-        <value>210.55187999999998</value>
+        <value>592.359985</value>
       </originY>
       <width class="Points">
         <unitName>Points</unitName>
-        <value>1145.208374</value>
+        <value>188.49890099999993</value>
       </width>
     </RegionID>
     <TiledPatternCoordinateConverter>
       <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
       <dotsPerTileVertical>932</dotsPerTileVertical>
-      <maxX>1.84028276E8</maxX>
-      <maxY>7593.0</maxY>
+      <maxX>1.8402264E8</maxX>
+      <maxY>7703.0</maxY>
       <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
       <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
-      <numTiles>2</numTiles>
-      <numTilesAcross>2</numTilesAcross>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
       <numTilesDown>1</numTilesDown>
-      <numTotalDotsAcross>1348.0</numTotalDotsAcross>
+      <numTotalDotsAcross>222.0</numTotalDotsAcross>
       <numTotalDotsAcrossObj>
         <unitName>PatternDots</unitName>
-        <value>1348.0</value>
+        <value>222.0</value>
       </numTotalDotsAcrossObj>
-      <numTotalDotsDown>103.0</numTotalDotsDown>
+      <numTotalDotsDown>226.0</numTotalDotsDown>
       <numTotalDotsDownObj>
         <unitName>PatternDots</unitName>
-        <value>103.0</value>
+        <value>226.0</value>
       </numTotalDotsDownObj>
-      <originX>1.84025616E8</originX>
-      <originY>7490.0</originY>
-      <regionName>WhereAmI</regionName>
-      <startingTile>2</startingTile>
-      <tileHeightIncludingPadding>103.0</tileHeightIncludingPadding>
-      <tileWidthIncludingPadding>1330.0</tileWidthIncludingPadding>
+      <originX>1.84022418E8</originX>
+      <originY>7477.0</originY>
+      <regionName>PackardPhotos</regionName>
+      <startingTile>0</startingTile>
+      <tileHeightIncludingPadding>226.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>222.0</tileWidthIncludingPadding>
     </TiledPatternCoordinateConverter>
   </entry>
   <entry>
@@ -387,6 +339,54 @@
     <RegionID>
       <height class="Points">
         <unitName>Points</unitName>
+        <value>87.62524400000007</value>
+      </height>
+      <name>WhereAmI</name>
+      <originX class="Points">
+        <unitName>Points</unitName>
+        <value>1942.573364</value>
+      </originX>
+      <originY class="Points">
+        <unitName>Points</unitName>
+        <value>210.55187999999998</value>
+      </originY>
+      <width class="Points">
+        <unitName>Points</unitName>
+        <value>1145.208374</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84028276E8</maxX>
+      <maxY>7593.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>2</numTiles>
+      <numTilesAcross>2</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>1348.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>1348.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>103.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>103.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84025616E8</originX>
+      <originY>7490.0</originY>
+      <regionName>WhereAmI</regionName>
+      <startingTile>2</startingTile>
+      <tileHeightIncludingPadding>103.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>1330.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Points">
+        <unitName>Points</unitName>
         <value>197.42797799999994</value>
       </height>
       <name>History</name>
@@ -435,54 +435,6 @@
     <RegionID>
       <height class="Points">
         <unitName>Points</unitName>
-        <value>190.285995</value>
-      </height>
-      <name>ChurchPhotos</name>
-      <originX class="Points">
-        <unitName>Points</unitName>
-        <value>1479.859985</value>
-      </originX>
-      <originY class="Points">
-        <unitName>Points</unitName>
-        <value>1349.506012</value>
-      </originY>
-      <width class="Points">
-        <unitName>Points</unitName>
-        <value>190.29003899999998</value>
-      </width>
-    </RegionID>
-    <TiledPatternCoordinateConverter>
-      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
-      <dotsPerTileVertical>932</dotsPerTileVertical>
-      <maxX>1.84022642E8</maxX>
-      <maxY>7991.0</maxY>
-      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
-      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
-      <numTiles>1</numTiles>
-      <numTilesAcross>1</numTilesAcross>
-      <numTilesDown>1</numTilesDown>
-      <numTotalDotsAcross>224.0</numTotalDotsAcross>
-      <numTotalDotsAcrossObj>
-        <unitName>PatternDots</unitName>
-        <value>224.0</value>
-      </numTotalDotsAcrossObj>
-      <numTotalDotsDown>224.0</numTotalDotsDown>
-      <numTotalDotsDownObj>
-        <unitName>PatternDots</unitName>
-        <value>224.0</value>
-      </numTotalDotsDownObj>
-      <originX>1.84022418E8</originX>
-      <originY>7767.0</originY>
-      <regionName>ChurchPhotos</regionName>
-      <startingTile>0</startingTile>
-      <tileHeightIncludingPadding>224.0</tileHeightIncludingPadding>
-      <tileWidthIncludingPadding>224.0</tileWidthIncludingPadding>
-    </TiledPatternCoordinateConverter>
-  </entry>
-  <entry>
-    <RegionID>
-      <height class="Points">
-        <unitName>Points</unitName>
         <value>192.0710449999999</value>
       </height>
       <name>GenericPhotos</name>
@@ -525,6 +477,54 @@
       <startingTile>0</startingTile>
       <tileHeightIncludingPadding>226.0</tileHeightIncludingPadding>
       <tileWidthIncludingPadding>226.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Points">
+        <unitName>Points</unitName>
+        <value>190.285995</value>
+      </height>
+      <name>ChurchPhotos</name>
+      <originX class="Points">
+        <unitName>Points</unitName>
+        <value>1479.859985</value>
+      </originX>
+      <originY class="Points">
+        <unitName>Points</unitName>
+        <value>1349.506012</value>
+      </originY>
+      <width class="Points">
+        <unitName>Points</unitName>
+        <value>190.29003899999998</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84022642E8</maxX>
+      <maxY>7991.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>224.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>224.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>224.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>224.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84022418E8</originX>
+      <originY>7767.0</originY>
+      <regionName>ChurchPhotos</regionName>
+      <startingTile>0</startingTile>
+      <tileHeightIncludingPadding>224.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>224.0</tileWidthIncludingPadding>
     </TiledPatternCoordinateConverter>
   </entry>
   <entry>
