@@ -122,7 +122,16 @@ public class PatternLocationToSheetLocationMapping {
 	 */
 	public PatternLocationToSheetLocationMapping(Sheet s) {
 		sheet = s;
-		initializeMap(s.getRegions());
+
+		final List<Region> regions = s.getRegions();
+		// at this point, the sheet has to have regions...
+		// for now, warn, if there are no regions
+		if (regions.size() == 0) {
+			System.err
+					.println("PatternLocationToSheetLocationMapping :: There aren't any regions. "
+							+ "Did you perhaps add the regions _after_ you added the sheet to the application?");
+		}
+		initializeMap(regions);
 
 		// check to see if the pattern configuration file exists.
 		// if it does, load it automatically
