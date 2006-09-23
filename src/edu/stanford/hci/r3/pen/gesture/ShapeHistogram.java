@@ -22,35 +22,50 @@ import cern.colt.matrix.linalg.SingularValueDecomposition;
  */
 public class ShapeHistogram {
 	int[] data;
-	int[] bins;
+	int[] bin_counts;
+	boolean[] explicit_binning;
+	double[][] bins;
 	double[] mins;
 	double[] maxes;
 	int bands;
 	
-	public ShapeHistogram(int[] bins, double[] mins, double[] maxes, int bands)
+	// n+1 values for each dimension with explicit binning
+	public ShapeHistogram(int[] bin_counts, double[] mins, double[] maxes, boolean[] explicit_binning, double[][] bins, int bands)
 	{
 		// old-fashioned it. More convenient for ANN anyway
 		int size = 1;
 		for(int i = 0; i < bands; i++)
-			size *= bins[i];
+			size *= bin_counts[i];
 		data = new int[size];
 		this.bands = bands;
 		this.bins = bins;
+		this.bin_counts = bin_counts;
 		this.mins = mins;
 		this.maxes = maxes;
+		this.explicit_binning = explicit_binning;
 	}
 	
-	public void addPoint(double[] input)
+	public boolean addPoint(double[] input)
 	{
 		assert(input.length == bands);
 		int multiplier = 1;
 		int index = 0;
 		for (int i = 0; i < bands; i++) {
-			int subindex = Math.min((int)(((input[i] - mins[i]) / (maxes[i] - mins[i])) * bins[i]), bins[i] - 1);
+			int subindex;
+			int bin_count = bin_counts[i];
+			if(explicit_binning[i]) {
+				for(subindex = 0; subindex < bin_counts[i]; subindex++)
+					if(input[i] <= bins[i][subindex])
+						break;
+				if (subindex == bin_counts[i]) return false;
+			}
+			else
+				subindex = Math.min((int)(((input[i] - mins[i]) / (maxes[i] - mins[i])) * bin_count), bin_count - 1);
 			index += multiplier * subindex;
-			multiplier *= bins[i];
+			multiplier *= bin_count;
 		}
 		data[index]++;
+		return true;
 	}
 	
 	static public double[][] computeCostMatrix(ArrayList<ShapeHistogram> first, ArrayList<ShapeHistogram> second)
@@ -121,7 +136,6 @@ public class ShapeHistogram {
 	    done = false;
 	    stepnum = 1;
 	    while(!done) {
-	    	System.out.println("Step " + stepnum);
 	    	switch(stepnum) {
 		    	case 1: stepnum = step1(n, C, M, Row, Col);break;
 		    	case 2: stepnum = step2(n, C, M, Row, Col);break;
@@ -465,8 +479,8 @@ public class ShapeHistogram {
 		else if (X1.length < X2.length) {
 			double[][] X2_new = new double[X1.length][2];
 			for(int i=0;i<X1.length;i++) {
-				X2_new[count][0] = X2[matching[i]][0];
-				X2_new[count][1] = X2[matching[i]][1];
+				X2_new[i][0] = X2[matching[i]][0];
+				X2_new[i][1] = X2[matching[i]][1];
 			}
 			X2 = X2_new;
 		}
