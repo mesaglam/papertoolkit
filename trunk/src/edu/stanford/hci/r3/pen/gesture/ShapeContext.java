@@ -1,5 +1,8 @@
 package edu.stanford.hci.r3.pen.gesture;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import edu.stanford.hci.r3.pen.streaming.PenSample;
@@ -21,7 +24,17 @@ public class ShapeContext {
 
 	public ShapeContext(ArrayList<PenSample> controlPointsInput) 
 	{
-		controlPoints = controlPointsInput;
+		// filter this for dupes
+		for(int i=0;i<controlPointsInput.size();i++) {
+			PenSample sample = controlPointsInput.get(i);
+			boolean duplicate = false;
+			for(PenSample old_sample : controlPoints)
+				if(sample.x == old_sample.x && sample.y == old_sample.y) { // can't duplicate samples, unfortunately
+					duplicate = true; break;
+				}
+			if (duplicate) continue;
+			controlPoints.add(sample);
+		}
 		// there's me ANN done
 		// ANN ann = new ANN();
 	}
@@ -153,6 +166,7 @@ public class ShapeContext {
 	  
 	  public ArrayList<ShapeHistogram> generateShapeHistogram(int points)
 	  {
+		  boolean rotation_invariant = true;
 		  // histogram for each point
 		  int dummy_points = this.controlPoints.size();
 		  ArrayList<ShapeHistogram> histograms = new ArrayList<ShapeHistogram>();
@@ -166,11 +180,14 @@ public class ShapeContext {
 			  else next = samples.get(i+1);
 			  tangents.add(new PenSample(0,next.x-last.x,next.y-last.y,0)); // crude
 		  }
-		  int bands = 3;
-		  int[] bins = new int[3];
-		  bins[0] = 5; // log r
-		  bins[1] = 12; // theta
-		  bins[2] = 2; // t (for the moment, only before/after)
+		  int bands = 2;
+		  double[][] bins = new double[3][];
+		  int[] bin_counts = new int[3];
+		  boolean[] explicit_binning = new boolean[3];
+		  explicit_binning[0] = true; // log scaled distances
+		  bin_counts[0] = 5; // log r
+		  bin_counts[1] = 12; // theta
+		  bin_counts[2] = 2; // t (for the moment, only before/after)
 		  // want a bin for "component" - how to discretize? connected ought to be fine. this may
 			// be redundant with time...somewhat
 		  double[] mins = new double[3];
@@ -185,7 +202,7 @@ public class ShapeContext {
 		  double distance_max=-Double.MAX_VALUE;
 		  double timestamp_min=Double.MAX_VALUE;
 		  double timestamp_max=-Double.MAX_VALUE;
-		  double sum = 0;
+		  double mean_distance = 0;
 		  for (PenSample sample : samples) {
 			  	// wrong, should be considering deltas.
 				// Alt, normalize all the times ahead.
@@ -194,13 +211,21 @@ public class ShapeContext {
 			  for (PenSample secondSample : samples) {
 				  if (sample.equals(secondSample)) continue;
 				  double distance = Math.sqrt(Math.pow(sample.x - secondSample.x, 2) + Math.pow(sample.y - secondSample.y, 2));
-				  sum += distance;
+				  mean_distance += distance;
 				  if (distance > 0) {
 					  distance_min = Math.min(distance_min, distance);
 					  distance_max = Math.max(distance_max, distance);}
 			  }
 		  }
-		  sum /= (dummy_points * (dummy_points - 1)) / 2;
+		  mean_distance /= (dummy_points * (dummy_points - 1)) / 2;
+		  double inner_threshold = Math.log10(3);
+		  double outer_threshold = Math.log10(mean_distance);
+		  double logscale = (outer_threshold - inner_threshold) / (bin_counts[0] - 1);
+		  // log scale it
+		  bins[0] = new double[bin_counts[0]];
+		  for (int i = 0; i < bin_counts[0]; i++) {
+			  bins[0][i] = Math.pow(10, inner_threshold + i * logscale);
+		  }
 		  mins[0] = Math.log(distance_min)-.01;
 		  maxes[0] = Math.log(distance_max)+.01;
 		  mins[2] = timestamp_min - timestamp_max;
@@ -208,9 +233,9 @@ public class ShapeContext {
 		  // mins[0] = Math.log(distance_min);
 		  // maxes[0] = Math.log(distance_max);
 		  for (PenSample sample : samples) {
-			  ShapeHistogram histogram = new ShapeHistogram(bins, mins, maxes, bands);
+			  ShapeHistogram histogram = new ShapeHistogram(bin_counts, mins, maxes, explicit_binning, bins, bands);
 			  PenSample tangent = tangents.get(samples.indexOf(sample)); // sue me, I'm lax
-			  double theta = Math.atan2(tangent.y, tangent.x);
+			  double theta = rotation_invariant?Math.atan2(tangent.y, tangent.x):0;
 			  for (PenSample secondSample : samples) {
 				  if (sample.equals(secondSample)) continue;
 				  // for rotation invariance, adjust angles by setting normal to curve to some
@@ -222,7 +247,7 @@ public class ShapeContext {
 			  histograms.add(histogram);
 		  }
 		  for (int i = 0; i < points - samples.size(); i++) {
-			  histograms.add(new ShapeHistogram(bins, mins, maxes, bands)); // blank histograms
+			  histograms.add(new ShapeHistogram(bin_counts, mins, maxes, explicit_binning, bins, bands)); // blank histograms
 		  }
 		  return histograms;
 	  }
@@ -239,7 +264,8 @@ public class ShapeContext {
 			  results[1] = 0;
 		  }
 		  else {
-			  results[0] = .5 * Math.log((dx*dx + dy*dy)/* / distanceScaling */);
+			  results[0] = Math.sqrt(dx*dx + dy*dy) / distanceScaling;
+			  //results[0] = .5 * Math.log((dx*dx + dy*dy)/* / distanceScaling */);
 			  results[1] = renormalize(Math.atan2(dy, dx) - baseRotation);
 		  }
 		  results[2] = second.timestamp - first.timestamp;
@@ -253,7 +279,27 @@ public class ShapeContext {
 		  return theta;
 		  
 	  }
+	 
 	  
+	  public void quillWrite(Writer writer) throws IOException
+	  {
+		  final DecimalFormat df = new DecimalFormat("#");
+		  boolean normalized = false;
+	      writer.write("normalized\t" + normalized + "\n");
+	      writer.write("points\t" + controlPoints.size() + "\n");
+	      int x = Integer.MAX_VALUE;
+	      int y = Integer.MAX_VALUE;
+	      for(PenSample sample : controlPoints) {
+	    	  x = (int)Math.min(x, sample.x);
+	    	  y = (int)Math.min(y, sample.y);
+	      }
+	      for (int i = 0; i < controlPoints.size(); i++) {
+	    	  PenSample sample = controlPoints.get(i);
+	    	  writer.write("\t" + df.format(sample.x-x) + "\t" + df.format(sample.y-y) +
+	  		   "\t" + df.format(sample.timestamp) + "\n");
+	      }
+	      writer.write("endgesture\n");
+	  }
 	  // pseudocode
 		/*
 		 * 
