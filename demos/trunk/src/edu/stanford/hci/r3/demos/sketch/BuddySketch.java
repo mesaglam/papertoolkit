@@ -68,6 +68,9 @@ public class BuddySketch extends Application {
 	 */
 	private Device device = null;
 
+	/**
+	 * 
+	 */
 	private BuddySketchPaperUI paperUI;
 
 	/**
@@ -131,13 +134,6 @@ public class BuddySketch extends Application {
 		System.out.println("You chose " + hostNameWComment);
 	}
 
-	/**
-	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
-	 */
-	@Override
-	protected void initializeAfterConstructor() {
-
-	}
 
 	/**
 	 * @see edu.stanford.hci.r3.Application#initializeBeforeStarting()

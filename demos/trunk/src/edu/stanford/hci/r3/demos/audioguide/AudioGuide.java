@@ -32,13 +32,13 @@ public class AudioGuide extends Application {
 	 */
 	public AudioGuide() {
 		super("Audio Guide");
+		initializePaperUI();
 	}
 
 	/**
 	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
 	 */
-	@Override
-	protected void initializeAfterConstructor() {
+	public void initializePaperUI() {
 		sheet = new PDFSheet(new File("data/AudioGuide/StanfordMapLight.pdf"));
 
 		// will crash if after addSheet(...)

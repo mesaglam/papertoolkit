@@ -8,12 +8,13 @@ import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
- * </p>
- * 
  * A GIGAprint with a Programming Languages timeline by O'Reilly. See <a
  * href="http://www.oreilly.com/pub/a/oreilly/news/languageposter_0504.html">the O'Reilly Poster</a>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */

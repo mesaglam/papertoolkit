@@ -17,7 +17,6 @@ import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.CompoundRegion;
 import edu.stanford.hci.r3.paper.regions.ImageRegion;
-import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Units;
@@ -92,6 +91,7 @@ public class SquaredCircle extends Application {
 	 */
 	public SquaredCircle() {
 		super("Squared Circle Viewer");
+		initializePaperUI();
 	}
 
 	/**
@@ -145,9 +145,8 @@ public class SquaredCircle extends Application {
 	 * 
 	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
 	 */
-	@Override
 	@SuppressWarnings("unchecked")
-	protected void initializeAfterConstructor() {
+	protected void initializePaperUI() {
 		System.out.println("Initializing Paper UI...");
 		final Sheet poster = new Sheet(WIDTH_IN_INCHES, HEIGHT_IN_INCHES);
 		poster.registerConfigurationPath(new File("data/Flickr/"));
