@@ -154,7 +154,7 @@ public class GestureDatabase {
 	    writer.close();
 	}
 
-	public String test(ShapeContext context) {
+	public String test(ShapeContext context, boolean verbose) {
 		// do KNN
 		int k = 3;
 		double[] distance = new double[k];
@@ -169,10 +169,11 @@ public class GestureDatabase {
 			//double d = gestures.get(i).bestMatch(context);
 			//System.out.println("Category " + i + "(" + gestures.get(i).size() + " items): " + d);
 		}
-		/*System.out.println("Best matches are:");
-		for(int i=0;i<k;i++)
-			System.out.println(i + ": category " + clazz[i] + " with distance " + distance[i] + " using " + context.size() + " points.");
-			*/
+		if (verbose) {
+			System.out.println("Best matches are:");
+			for(int i=0;i<k;i++)
+				System.out.println(i + ": category " + clazz[i] + " with distance " + distance[i] + " using " + context.size() + " points.");
+		}
 		HashMap<String,Integer> counts = new HashMap<String,Integer>();
 		HashMap<String,Double> costs = new HashMap<String,Double>();
 		int max_count = 1;
@@ -224,11 +225,13 @@ public class GestureDatabase {
 			Gesture testGesture = testGestures.get(i);
 			for (ShapeContext context : testGesture.contexts) {
 				tested++;
-				String assignment = test(context);
+				String assignment = test(context, false);
 				if (assignment.compareTo(gesture.name) == 0)
 					correct++;
-				else
+				else {
+					test(context, true);
 					System.out.println(gesture.name + " misclassified as " + assignment);
+				}
 			}
 		}
 		System.out.println("Tested " + tested + " contexts, " + correct + " correct.");

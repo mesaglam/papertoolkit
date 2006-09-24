@@ -48,7 +48,7 @@ public class PenGestureListener implements PenListener {
 		}
 		else if (samples != null && samples.size() > gestureThreshold && database != null) {
 			ShapeContext context = new ShapeContext(samples);
-			database.test(context);
+			database.test(context, true);
 		}
 		samples = null;
 	}
