@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.designer.acrobat;
+package edu.stanford.hci.r3.design.acrobat;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

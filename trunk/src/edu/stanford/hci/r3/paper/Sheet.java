@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
+import edu.stanford.hci.r3.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Inches;

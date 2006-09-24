@@ -45,8 +45,8 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
-import edu.stanford.hci.r3.designer.acrobat.AcrobatDesignerLauncher;
-import edu.stanford.hci.r3.designer.acrobat.RegionConfiguration;
+import edu.stanford.hci.r3.design.acrobat.AcrobatDesignerLauncher;
+import edu.stanford.hci.r3.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
