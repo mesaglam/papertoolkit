@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.designer;
+package edu.stanford.hci.r3.design;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

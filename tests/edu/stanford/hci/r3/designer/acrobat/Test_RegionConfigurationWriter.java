@@ -2,6 +2,8 @@ package edu.stanford.hci.r3.designer.acrobat;
 
 import java.io.File;
 
+import edu.stanford.hci.r3.design.acrobat.RegionConfigurationWriter;
+
 /**
  * 
  * <p>
