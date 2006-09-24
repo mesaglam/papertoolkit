@@ -29,8 +29,14 @@ import edu.stanford.hci.r3.util.StringUtils;
  */
 public class RegionRenderer {
 
+	/**
+	 * 
+	 */
 	public static final String CONFIG_FILE_KEY = "regionrenderer.debugregions.file";
 
+	/**
+	 * 
+	 */
 	public static final String CONFIG_FILE_VALUE = "/config/RegionRenderer.xml";
 
 	/**
@@ -65,7 +71,8 @@ public class RegionRenderer {
 	 * @return whether or not the debug flag is set to TRUE
 	 */
 	private static boolean readDebugFlagFromConfigFile() {
-		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE_KEY);
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
+				CONFIG_FILE_KEY);
 		final boolean debug = Boolean.parseBoolean(property);
 		return debug;
 	}
@@ -109,6 +116,15 @@ public class RegionRenderer {
 		g2d.setStroke(OUTLINE);
 		g2d.setColor(region.getStrokeColor());
 		g2d.drawRect(finalX, finalY, finalW, finalH);
+
+		final double opacity = region.getOpacity();
+		// should we render the fill of this region?
+		if (opacity > 0) {
+			Color fillColor = region.getFillColor();
+			g2d.setColor(new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(),
+					MathUtils.rint(opacity * 255)));
+			g2d.fillRect(finalX, finalY, finalW, finalH);
+		}
 
 		if (DEBUG_REGIONS) { // draw some debug text and fill in the region
 			DebugUtils.println("Debugging regions in renderToG2D(...)");
