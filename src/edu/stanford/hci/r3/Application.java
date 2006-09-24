@@ -253,8 +253,8 @@ public class Application {
 	/**
 	 * <p>
 	 * Renders all of the sheets to different PDF files... If there are four Sheets, it will make
-	 * files as follows:<p/>
-	 * 
+	 * files as follows:
+	 * </p>
 	 * <code>
 	 * parentDirectory <br>
 	 * |_fileName_1.pdf <br>
@@ -262,20 +262,31 @@ public class Application {
 	 * |_fileName_3.pdf <br>
 	 * |_fileName_4.pdf <br>
 	 * </code>
-	 * 
+	 * <p>
 	 * Feel Free to OVERRIDE this method if you want to attach different behavior to the App
 	 * Manager's RenderPDF Button.
+	 * </p>
 	 */
 	public void renderToPDF(File parentDirectory, String fileNameWithoutExtension) {
-		DebugUtils.println("Rendering PDFs...");
-		for (int i = 0; i < sheets.size(); i++) {
-			final Sheet sheet = sheets.get(i);
-			final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + "_Sheet_"
-					+ i + ".pdf");
+		if (sheets.size() == 1) {
+			DebugUtils.println("Rendering PDF...");
+			final Sheet sheet = sheets.get(0);
+			final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + ".pdf");
 			System.out.println("Rendering: " + destPDFFile.getAbsolutePath());
 			final SheetRenderer renderer = sheet.getRenderer();
 			renderer.renderToPDF(destPDFFile);
+		} else {
+			DebugUtils.println("Rendering PDFs...");
+			for (int i = 0; i < sheets.size(); i++) {
+				final Sheet sheet = sheets.get(i);
+				final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension
+						+ "_Sheet_" + i + ".pdf");
+				System.out.println("Rendering: " + destPDFFile.getAbsolutePath());
+				final SheetRenderer renderer = sheet.getRenderer();
+				renderer.renderToPDF(destPDFFile);
+			}
 		}
+
 	}
 
 	/**
