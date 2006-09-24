@@ -130,7 +130,6 @@ public class Application {
 	 */
 	public Application(String theName) {
 		name = theName;
-		initializeAfterConstructor();
 	}
 
 	/**
@@ -219,16 +218,6 @@ public class Application {
 	 */
 	public List<Sheet> getSheets() {
 		return sheets;
-	}
-
-	/**
-	 * This is an empty initialization method that developers can override if they choose to
-	 * subclass an Application instead of creating an empty App and adding sheets to it.
-	 * 
-	 * It is called by the constructor.
-	 */
-	protected void initializeAfterConstructor() {
-		// do nothing, unless it is overridden.
 	}
 
 	/**

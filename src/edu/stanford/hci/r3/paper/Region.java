@@ -42,6 +42,8 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  */
 public class Region {
 
+	private static final Color LIGHT_LIGHT_GRAY = new Color(240, 240, 240);
+
 	/**
 	 * String constant for a warning message.
 	 */
@@ -72,10 +74,26 @@ public class Region {
 	private List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
 
 	/**
+	 * If we want to have a fully transparent background for this Rectangular Region, we will set
+	 * the opacity to 0.0 (default). Otherwise, we will fill it with this color, with the correct
+	 * alpha (set opacity to > 0.0).
+	 */
+	private Color fillColor = LIGHT_LIGHT_GRAY;
+
+	/**
 	 * The name of the region (e.g., Public/Private Button). Useful for debugging. Initialized with
 	 * a simple default.
 	 */
 	private String name;
+
+	/**
+	 * Should range from 0.0 to 1.0. 1.0 means the fillColor will be fully opaque. Any smaller means
+	 * that it will be translucent. 0.0 means that you will not see the fillColor. By Default,
+	 * regions are totally transparent. A good practice would be to set the region to 66% opacity
+	 * with a fill. This means that you will usually lighten up the background image so that you can
+	 * layer pattern on top of it.
+	 */
+	private double opacity = 0;
 
 	/**
 	 * This is used only to interpret the shape's true physical size. The value of the units object
@@ -104,6 +122,9 @@ public class Region {
 	 */
 	private Shape shape;
 
+	/**
+	 * If we are rendering region outlines, we will render the stroke color in this color.
+	 */
 	private Color strokeColor = Color.BLACK;
 
 	/**
@@ -201,6 +222,13 @@ public class Region {
 	/**
 	 * @return
 	 */
+	public Color getFillColor() {
+		return fillColor;
+	}
+
+	/**
+	 * @return
+	 */
 	public Units getHeight() {
 		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight()
 				* scaleY);
@@ -218,6 +246,14 @@ public class Region {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return how opaque this region's background will be. If it's 0, we will not render the
+	 *         background fillColor at all.
+	 */
+	public double getOpacity() {
+		return opacity;
 	}
 
 	/**
@@ -403,12 +439,32 @@ public class Region {
 	}
 
 	/**
+	 * @param theFillColor
+	 */
+	public void setFillColor(Color theFillColor) {
+		fillColor = theFillColor;
+	}
+
+	/**
 	 * @param theName
 	 *            the name of the region. Name it something useful, like "Blue Button for Changing
 	 *            Pen Colors"
 	 */
 	public void setName(String theName) {
 		name = theName;
+	}
+
+	/**
+	 * @param theOpacityFrom0To1
+	 *            bounds checked from 0.0 to 1.0
+	 */
+	public void setOpacity(double theOpacityFrom0To1) {
+		if (theOpacityFrom0To1 > 1) {
+			theOpacityFrom0To1 = 1;
+		} else if (theOpacityFrom0To1 < 0) {
+			theOpacityFrom0To1 = 0;
+		}
+		opacity = theOpacityFrom0To1;
 	}
 
 	/**

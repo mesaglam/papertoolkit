@@ -51,7 +51,7 @@ public class PDFSheetRenderer extends SheetRenderer {
 	 * @param g2d
 	 */
 	public void renderToG2D(Graphics2D g2d) {
-		// TODO: FIX THIS NOW
+		// TODO: FIX THIS AT SOME POINT...
 		// render the PDF to the g2d's background (do we need to do this? since we are using a stamper???)
 		PdfReader reader = pdfSheet.getReader();
 
