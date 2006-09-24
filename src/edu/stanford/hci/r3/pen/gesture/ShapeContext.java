@@ -24,6 +24,7 @@ public class ShapeContext {
 	public ShapeContext(ArrayList<InkSample> controlPointsInput) 
 	{
 		// filter this for dupes
+		double[] times = new double[controlPointsInput.size()];
 		for(int i=0;i<controlPointsInput.size();i++) {
 			InkSample sample = controlPointsInput.get(i);
 			boolean duplicate = false;
@@ -32,7 +33,12 @@ public class ShapeContext {
 					duplicate = true; break;
 				}
 			if (duplicate) continue;
+			times[controlPoints.size()] = sample.timestamp;
 			controlPoints.add(sample);
+		}
+		// smooth time values, cuz the times from the pen streaming stink:
+		for(int i=1;i<controlPoints.size() - 1;i++) {
+			controlPoints.get(i).timestamp = (long)((times[i-1]+times[i]+times[i+1])/3);
 		}
 		// there's me ANN done
 		// ANN ann = new ANN();
@@ -63,11 +69,29 @@ public class ShapeContext {
 		ArrayList<InkSample> sampledPoints = new ArrayList<InkSample>();
 		assert(controlPoints.size() > 1);
 		// sampling in time is a little weird; I'll sample in "space"
-		float fraction = (controlPoints.size()-1)/(float)(samples);
+		/*double fraction = (controlPoints.size()-1)/(double)(samples);
 		for(int i=0; i < samples; i++) {
-			float position = fraction * i;
+			double position = fraction * i;
 			int truncated = (int)position;
-			float remainder = position - truncated;
+			double remainder = position - truncated;
+			sampledPoints.add(blendHelper(truncated, remainder));
+		}*/
+		// resample for even spacing in time
+		int points = controlPoints.size();
+		for(int i=1; i < points; i++) {
+			while (controlPoints.get(i).timestamp <= controlPoints.get(i - 1).timestamp)
+				controlPoints.get(i).timestamp++;
+		}
+		double t0 = controlPoints.get(0).timestamp;
+		double t1 = controlPoints.get(points - 1).timestamp;
+		double fraction = (t1-t0)/(samples-1);
+		for(int i=0; i < samples; i++) {
+			double t = t0 + fraction * i;
+			int truncated = 0;
+			while (truncated + 1 < points && controlPoints.get(truncated + 1).timestamp < t) truncated++;
+			double start = controlPoints.get(truncated).timestamp;
+			double end = controlPoints.get(truncated+1).timestamp;
+			double remainder = (t-start) / (end - start);
 			sampledPoints.add(blendHelper(truncated, remainder));
 		}
 		return sampledPoints;
@@ -79,18 +103,18 @@ public class ShapeContext {
 		ArrayList<InkSample> sampledPoints = new ArrayList<InkSample>();
 		assert(controlPoints.size() > 1);
 		// sampling in time is a little weird; I'll sample in "space"
-		float fraction = (controlPoints.size()-1)/(float)(samples);
+		double fraction = (controlPoints.size()-1)/(double)(samples);
 		for(int i=0; i < samples; i++) {
-			float position = fraction * i;
+			double position = fraction * i;
 			int truncated = (int)position;
-			float remainder = position - truncated;
+			double remainder = position - truncated;
 			sampledPoints.add(tangent(truncated, remainder));
 		}
 		return sampledPoints;
 	}
 
 	// Catmull-Rom FTW
-	InkSample blendHelper(int i, float t)
+	InkSample blendHelper(int i, double t)
 	{
 		InkSample[] samples = new InkSample[4];
 		InkSample blendedSample = new InkSample(0, 0, 0, 0);
@@ -104,7 +128,7 @@ public class ShapeContext {
 		else
 			samples[3] = controlPoints.get(i+2);
 		for(int ii=0; ii<4; ii++) {
-			float b = blend(ii, t);
+			double b = blend(ii, t);
 			blendedSample.x += samples[ii].x * b;
 			blendedSample.y += samples[ii].y * b;
 			blendedSample.timestamp += samples[ii].timestamp * b;
@@ -112,7 +136,7 @@ public class ShapeContext {
 		return blendedSample;
 	}
 	
-	  float blend(int i, float t) {
+	  double blend(int i, double t) {
 		  switch (i) {
 		  case 0:
 			  return ((-t+2)*t-1)*t/2;
@@ -126,7 +150,7 @@ public class ShapeContext {
 		  return 0; // we only get here if an invalid i is specified
 	  }
 
-	  float dblend_du(int i, float t) {
+	  double dblend_du(int i, double t) {
 		  switch (i) {
 		  case 0:
 			  return (4*t-1-3*t*t)/2;
@@ -142,7 +166,7 @@ public class ShapeContext {
 
 	  
 	  // all I actually need is x and y, or even angle. but this will do
-	  InkSample tangent(int i, float t)
+	  InkSample tangent(int i, double t)
 	  {
 			InkSample[] samples = new InkSample[4];
 			InkSample blendedSample = new InkSample(0, 0, 0, 0);
@@ -156,7 +180,7 @@ public class ShapeContext {
 			else
 				samples[3] = controlPoints.get(i+2);
 			for(int ii=0; ii<4; ii++) {
-				float b = dblend_du(ii, t);
+				double b = dblend_du(ii, t);
 				blendedSample.x += samples[ii].x * b;
 				blendedSample.y += samples[ii].y * b;
 				blendedSample.timestamp += samples[ii].timestamp * b;

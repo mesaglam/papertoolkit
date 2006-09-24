@@ -477,22 +477,22 @@ public class ShapeHistogram {
 		// dummy value must vary as function of number of points used
 		double[][] costs = computeCostMatrix(histogram1, histogram2, shape1.size(), shape2.size(), 4);
 		int[] matching = munkres(N, costs);
-		double[][] X1 = shape1.points();
-		double[][] X2 = shape2.points();
+		double[][] X1_new = shape1.points();
+		double[][] X2_new = shape2.points();
 		// take the NON-dummy points from both
 		// a point in X1 should not be matched to a dummy point; a point in X2 should not be matched from a dummy
 		int count=0;
-		double[][] X1_new = new double[n - dummy_padding][2];
-		double[][] X2_new = new double[n - dummy_padding][2];
+		double[][] X1 = new double[n - dummy_padding][2];
+		double[][] X2 = new double[n - dummy_padding][2];
 		boolean[] good_rows = new boolean[N];
 		boolean[] good_columns = new boolean[N];
 		double mean_x1 = 0, mean_x2 = 0, mean_y1 = 0, mean_y2 = 0;
-		for(int i=0;i<X1.length;i++)
-			if(matching[i] < X2.length) { // if this one is matched to a non-dummy
-				X1_new[count][0] = X1[i][0];
-				X1_new[count][1] = X1[i][1];
-				X2_new[count][0] = X2[matching[i]][0];
-				X2_new[count][1] = X2[matching[i]][1];
+		for(int i=0;i<X1_new.length;i++)
+			if(matching[i] < X2_new.length) { // if this one is matched to a non-dummy
+				X1[count][0] = X1_new[i][0];
+				X1[count][1] = X1_new[i][1];
+				X2[count][0] = X2_new[matching[i]][0];
+				X2[count][1] = X2_new[matching[i]][1];
 				mean_x1 += X1[count][0];
 				mean_y1 += X1[count][1];
 				mean_x2 += X2[count][0];
@@ -505,8 +505,8 @@ public class ShapeHistogram {
 		mean_y1 /= count;
 		mean_x2 /= count;
 		mean_y2 /= count;
-		X1 = X1_new;
-		X2 = X2_new;
+		//X1 = X1_new;
+		//X2 = X2_new;
 		for (int i=0;i<count;i++) {
 			X1[i][0] -= mean_x1;
 			X1[i][1] -= mean_y1;
@@ -540,6 +540,7 @@ public class ShapeHistogram {
 			dist += Math.sqrt(Math.pow(X1[i][0]-X1[j][0],2)+Math.pow(X1[i][1]-X1[j][1],2));
 		dist /= (n*(n-1))/2;
 		double beta_k = Math.pow(dist,2)*100000;
+		beta_k++;
 		DoubleMatrix2D c = bookstein(count, X1, X2, beta_k, E);
 		double sc_cost = shapeContextCost(N, costs, good_rows, good_columns, count);
 		double[][] Xwarped = warp(X1, X2, c, count);
