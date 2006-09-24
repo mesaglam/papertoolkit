@@ -21,6 +21,7 @@ import edu.stanford.hci.r3.pen.streaming.PenSample;
 public class ShapeContext {
 	
 	ArrayList<PenSample> controlPoints = new ArrayList<PenSample>();
+	public static int bands = 3;
 
 	public ShapeContext(ArrayList<PenSample> controlPointsInput) 
 	{
@@ -166,7 +167,7 @@ public class ShapeContext {
 	  
 	  public ArrayList<ShapeHistogram> generateShapeHistogram(int points)
 	  {
-		  boolean rotation_invariant = true;
+		  boolean rotation_invariant = false;
 		  // histogram for each point
 		  int dummy_points = this.controlPoints.size();
 		  ArrayList<ShapeHistogram> histograms = new ArrayList<ShapeHistogram>();
@@ -180,7 +181,6 @@ public class ShapeContext {
 			  else next = samples.get(i+1);
 			  tangents.add(new PenSample(0,next.x-last.x,next.y-last.y,0)); // crude
 		  }
-		  int bands = 2;
 		  double[][] bins = new double[3][];
 		  int[] bin_counts = new int[3];
 		  boolean[] explicit_binning = new boolean[3];
