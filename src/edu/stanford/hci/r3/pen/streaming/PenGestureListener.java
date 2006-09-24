@@ -16,7 +16,7 @@ public class PenGestureListener implements PenListener {
 	ArrayList<Gesture> gestures = new ArrayList<Gesture>();
 	ArrayList<ShapeContext> contexts = new ArrayList<ShapeContext>();
 	ArrayList<PenSample> samples = null;
-	int gestureThreshold = 4;
+	int gestureThreshold = 10;
 	int remainingContexts = 0;
 	private GestureDatabase database;
 	
@@ -37,6 +37,7 @@ public class PenGestureListener implements PenListener {
 	{
 		final double categoryThreshold = 20;
 		if (samples != null && samples.size() > gestureThreshold && remainingContexts > 0) {
+			System.out.println("Gesture accepted.");
 			remainingContexts--;
 			int index = -1;
 			double distance = Double.MAX_VALUE;

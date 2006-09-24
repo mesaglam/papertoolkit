@@ -27,6 +27,24 @@ public class Gesture {
 		return distance;
 	}
 	
+	public void knnMatch(ShapeContext context, int k, double[] distance, String[] clazz)
+	{
+		for(ShapeContext gesture : contexts) {
+			double d = ShapeHistogram.shapeContextMetric(context, gesture);
+			for(int i=0;i<k;i++) {
+				if(d < distance[i]) {
+					for(int j=k-1;j>i;j--) {
+						distance[j]=distance[j-1];
+						clazz[j]=clazz[j-1];
+					}
+					distance[i] = d;
+					clazz[i] = name;
+					break;
+				}
+			}
+		}
+	}
+	
 	public int size()
 	{
 		return contexts.size();
@@ -35,7 +53,8 @@ public class Gesture {
 	public void quillWrite(Writer writer) throws IOException
 	{
 		// gesture category
-	    writer.write("name\t" + name + "\n");
+		String stripTestName = name.replace("TEST", "");
+	    writer.write("name\t" + stripTestName + "\n");
 	    boolean directionInvariant = false;
 	    boolean orientationInvariant = false;
 	    boolean sizeInvariant = false;
