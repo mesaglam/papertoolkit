@@ -42,12 +42,13 @@ public class ShapeContext {
 	
 	public int size()
 	{
-		return controlPoints.size();
+		return 2*controlPoints.size();
 	}
 	
 	public double[][] points()
 	{
 		int N = size();
+		ArrayList<PenSample> controlPoints = resample(N);
 		double[][] pts = new double[N][2];
 		for(int i=0;i<N;i++) {
 			pts[i][0] = controlPoints.get(i).x;
@@ -169,7 +170,7 @@ public class ShapeContext {
 	  {
 		  boolean rotation_invariant = false;
 		  // histogram for each point
-		  int dummy_points = this.controlPoints.size();
+		  int dummy_points = size();
 		  ArrayList<ShapeHistogram> histograms = new ArrayList<ShapeHistogram>();
 		  ArrayList<PenSample> samples = resample(dummy_points);
 		  ArrayList<PenSample> tangents = new ArrayList<PenSample>();// tangents(points);
@@ -218,8 +219,8 @@ public class ShapeContext {
 			  }
 		  }
 		  mean_distance /= (dummy_points * (dummy_points - 1)) / 2;
-		  double inner_threshold = Math.log10(3);
-		  double outer_threshold = Math.log10(mean_distance);
+		  double inner_threshold = Math.log10(mean_distance / 8);
+		  double outer_threshold = Math.log10(2 * mean_distance);
 		  double logscale = (outer_threshold - inner_threshold) / (bin_counts[0] - 1);
 		  // log scale it
 		  bins[0] = new double[bin_counts[0]];

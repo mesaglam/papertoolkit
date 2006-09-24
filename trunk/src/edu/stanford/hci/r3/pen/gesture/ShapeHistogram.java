@@ -68,7 +68,8 @@ public class ShapeHistogram {
 		return true;
 	}
 	
-	static public double[][] computeCostMatrix(ArrayList<ShapeHistogram> first, ArrayList<ShapeHistogram> second)
+	static public double[][] computeCostMatrix(ArrayList<ShapeHistogram> first, ArrayList<ShapeHistogram> second,
+			int size1, int size2, double dummy_epsilon)
 	{
 		assert(first.size() == second.size()); // perhaps I should do those dummy points
 		int points = first.size();
@@ -76,6 +77,10 @@ public class ShapeHistogram {
 		for(int i = 0; i < points; i++) {
 			ShapeHistogram s1 = first.get(i);
 			for(int j = 0; j < points; j++) {
+				if(i >= size1 || j >= size2) {
+					cost[i][j] = dummy_epsilon;
+					continue;
+				}
 				ShapeHistogram s2 = second.get(j);
 				double sum = 0;
 				for (int k = 0; k < s1.data.length; k++) {
@@ -84,7 +89,7 @@ public class ShapeHistogram {
 					if (s1k == s2k) continue;
 					sum += Math.pow(s1k - s2k, 2) / (double)(s1k + s2k);
 				}
-				cost[i][j] = .5 * sum + Math.random() * .1;
+				cost[i][j] = .5 * sum;// + Math.random() * .1;
 			}
 		}
 		return cost;
@@ -352,11 +357,11 @@ public class ShapeHistogram {
 	}
 
 	// ah, point arrays
-	static public DoubleMatrix2D bookstein(double[][] X, double[][] X2, double beta_k, double[] E)
+	static public DoubleMatrix2D bookstein(int N, double[][] X, double[][] X2, double beta_k, double[] E)
 	{
-		int N = X.length;
-		int Nb = X2.length;
-		assert(N == Nb);
+		//int N = X.length;
+		//int Nb = X2.length;
+		//assert(N == Nb);
 		double[][] r2 = new double[N+3][N+3];
 		for(int i=0;i<N;i++) for(int j=i;j<N;j++)
 			r2[i][j] = r2[j][i] = Math.pow(X[i][0]-X[j][0], 2) + Math.pow(X[i][1]-X[j][1], 2);
@@ -402,23 +407,25 @@ public class ShapeHistogram {
 		return result;
 	}
 	
-	static public double shapeContextCost(int N, double[][] costs)
+	static public double shapeContextCost(int N, double[][] costs, boolean[] good_rows, boolean[] good_columns, int good_count)
 	{
 		double rowMin = 0, colMin = 0;
 		for(int i=0;i<N;i++) {
+			if (!good_rows[i]) continue;
 			double m = Double.MAX_VALUE;
 			for(int j=0;j<N;j++)
-				if (costs[i][j] < m) m = costs[i][j];
+				if (good_columns[j] && costs[i][j] < m) m = costs[i][j];
 			colMin += m;
 		}
-		colMin /= N;
+		colMin /= good_count;
 		for(int j=0;j<N;j++) {
+			if (!good_columns[j]) continue;
 			double m = Double.MAX_VALUE;
 			for(int i=0;i<N;i++)
-				if (costs[i][j] < m) m = costs[i][j];
+				if (good_rows[i] && costs[i][j] < m) m = costs[i][j];
 			rowMin += m;
 		}
-		rowMin /= N;
+		rowMin /= good_count;
 		return Math.max(rowMin, colMin);
 	}
 
@@ -455,17 +462,37 @@ public class ShapeHistogram {
 
 	public static double shapeContextMetric(ShapeContext shape1, ShapeContext shape2)
 	{
-		int N = Math.max(shape1.size(), shape2.size());
-		int n = Math.min(shape1.size(), shape2.size());
+		int dummy_padding = 2;
+		int N = Math.max(shape1.size(), shape2.size()) + dummy_padding;
+		int n = Math.min(shape1.size(), shape2.size()) + dummy_padding;
 		ArrayList<ShapeHistogram> histogram1 = shape1.generateShapeHistogram(N);
 		ArrayList<ShapeHistogram> histogram2 = shape2.generateShapeHistogram(N);
-		double[][] costs = computeCostMatrix(histogram1, histogram2);
+		// dummy value must vary as function of number of points used
+		double[][] costs = computeCostMatrix(histogram1, histogram2, shape1.size(), shape2.size(), 3);
 		int[] matching = munkres(N, costs);
 		double[][] X1 = shape1.points();
 		double[][] X2 = shape2.points();
 		// take the NON-dummy points from both
+		// a point in X1 should not be matched to a dummy point; a point in X2 should not be matched from a dummy
 		int count=0;
-		if (X1.length > X2.length) {
+		double[][] X1_new = new double[n - dummy_padding][2];
+		double[][] X2_new = new double[n - dummy_padding][2];
+		boolean[] good_rows = new boolean[N];
+		boolean[] good_columns = new boolean[N];
+		for(int i=0;i<X1.length;i++)
+			if(matching[i] < X2.length) { // if this one is matched to a non-dummy
+				X1_new[count][0] = X1[i][0];
+				X1_new[count][1] = X1[i][1];
+				X2_new[count][0] = X2[matching[i]][0];
+				X2_new[count][1] = X2[matching[i]][1];
+				good_rows[i] = true;
+				good_columns[matching[i]] = true;
+				count++;
+			}
+		X1 = X1_new;
+		X2 = X2_new;
+
+		/*if (X1.length > X2.length) {
 			// X2 stays normal;
 			double[][] X1_new = new double[X2.length][2];
 			for(int i=0;i<X1.length;i++)
@@ -483,23 +510,25 @@ public class ShapeHistogram {
 				X2_new[i][1] = X2[matching[i]][1];
 			}
 			X2 = X2_new;
-		}
+		}*/
 		double[] E = new double[2];
 		double dist = 0;
-		for(int i=0;i<X1.length;i++) for(int j=i+1;j<X1.length;j++)
+		for(int i=0;i<count;i++) for(int j=i+1;j<count;j++)
 			dist += Math.sqrt(Math.pow(X1[i][0]-X1[j][0],2)+Math.pow(X1[i][1]-X1[j][1],2));
 		dist /= (n*(n-1))/2;
 		double beta_k = Math.pow(dist,2);
-		DoubleMatrix2D c = bookstein(X1, X2, beta_k, E);
-		double sc_cost = shapeContextCost(N, costs);
-		double[][] Xwarped = warp(X1, X2, c, n);
+		DoubleMatrix2D c = bookstein(count, X1, X2, beta_k, E);
+		double sc_cost = shapeContextCost(N, costs, good_rows, good_columns, count);
+		double[][] Xwarped = warp(X1, X2, c, count);
 		double mean_squared_error = 0;
-		for(int i=0;i<n;i++) {
+		for(int i=0;i<count;i++) {
 			mean_squared_error += Math.sqrt(Math.pow(Xwarped[i][0] - X2[i][0],2) + Math.pow(Xwarped[i][1] - X2[i][1],2));
 		}
-		mean_squared_error /= n;
+		mean_squared_error /= count;
 		// using digit distance function from paper
-		return 1.6 * E[0] + sc_cost + .3 * E[1];
+		//System.out.println("Distance based on bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
+		return sc_cost + .3 * E[1]; // just bending energy
+		//return 1.6 * E[0] + sc_cost + .3 * E[1];
 	}
 /*
  * 
