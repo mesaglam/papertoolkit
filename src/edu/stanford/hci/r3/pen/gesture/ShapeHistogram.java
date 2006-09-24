@@ -399,12 +399,13 @@ public class ShapeHistogram {
 		a[1][1] = c.getQuick(N+2, 1);
 		SingularValueDecomposition s = new SingularValueDecomposition(new DenseDoubleMatrix2D(a));
 		E[1] = Math.log(s.cond());
-		DoubleMatrix2D result = new DenseDoubleMatrix2D(N, 2);
+		/*DoubleMatrix2D result = new DenseDoubleMatrix2D(N, 2);
 		for(int i=0;i<N;i++) {
 			result.setQuick(i, 0, c.getQuick(i, 0));
 			result.setQuick(i, 1, c.getQuick(i, 1));
 		}
-		return result;
+		return result;*/
+		return c;
 	}
 	
 	static public double shapeContextCost(int N, double[][] costs, boolean[] good_rows, boolean[] good_columns, int good_count)
@@ -435,15 +436,21 @@ public class ShapeHistogram {
 		double[][] d2 = new double[N][N];
 		final double eps = 1e-10;
 		for(int i=0;i<N;i++) for(int j=i;j<N;j++) {
-			double tmp = Math.pow(X[i][0]-X2[j][0], 2) + Math.pow(X[i][1]-X2[j][1], 2);
+			double tmp = Math.pow(X[i][0]-X[j][0], 2) + Math.pow(X[i][1]-X[j][1], 2);
 			d2[i][j] = d2[j][i] = tmp * Math.log(tmp + eps);
 		}
-		DoubleMatrix2D warped = algebra.mult(algebra.transpose(c), new DenseDoubleMatrix2D(d2));
+		DoubleMatrix2D cCoord = new DenseDoubleMatrix2D(N, 2);
+		for(int i=0;i<N;i++) {
+			cCoord.setQuick(i, 0, c.getQuick(i, 0));
+			cCoord.setQuick(i, 1, c.getQuick(i, 1));
+		}
+
+		DoubleMatrix2D warped = algebra.mult(algebra.transpose(cCoord), new DenseDoubleMatrix2D(d2));
 		
 		DoubleMatrix2D partial = new DenseDoubleMatrix2D(2, 3);
 		for(int i=0;i<3;i++) {
-			partial.setQuick(0, i, c.getQuick(i, 0));
-			partial.setQuick(1, i, c.getQuick(i, 1));
+			partial.setQuick(0, i, c.getQuick(N+i, 0));
+			partial.setQuick(1, i, c.getQuick(N+i, 1));
 		}
 		double[][] paddedX = new double[3][N];
 		for(int i=0;i<N;i++) {
@@ -468,7 +475,7 @@ public class ShapeHistogram {
 		ArrayList<ShapeHistogram> histogram1 = shape1.generateShapeHistogram(N);
 		ArrayList<ShapeHistogram> histogram2 = shape2.generateShapeHistogram(N);
 		// dummy value must vary as function of number of points used
-		double[][] costs = computeCostMatrix(histogram1, histogram2, shape1.size(), shape2.size(), 3);
+		double[][] costs = computeCostMatrix(histogram1, histogram2, shape1.size(), shape2.size(), 4);
 		int[] matching = munkres(N, costs);
 		double[][] X1 = shape1.points();
 		double[][] X2 = shape2.points();
@@ -479,18 +486,34 @@ public class ShapeHistogram {
 		double[][] X2_new = new double[n - dummy_padding][2];
 		boolean[] good_rows = new boolean[N];
 		boolean[] good_columns = new boolean[N];
+		double mean_x1 = 0, mean_x2 = 0, mean_y1 = 0, mean_y2 = 0;
 		for(int i=0;i<X1.length;i++)
 			if(matching[i] < X2.length) { // if this one is matched to a non-dummy
 				X1_new[count][0] = X1[i][0];
 				X1_new[count][1] = X1[i][1];
 				X2_new[count][0] = X2[matching[i]][0];
 				X2_new[count][1] = X2[matching[i]][1];
+				mean_x1 += X1[count][0];
+				mean_y1 += X1[count][1];
+				mean_x2 += X2[count][0];
+				mean_y2 += X2[count][1];
 				good_rows[i] = true;
 				good_columns[matching[i]] = true;
 				count++;
 			}
+		mean_x1 /= count;
+		mean_y1 /= count;
+		mean_x2 /= count;
+		mean_y2 /= count;
 		X1 = X1_new;
 		X2 = X2_new;
+		for (int i=0;i<count;i++) {
+			X1[i][0] -= mean_x1;
+			X1[i][1] -= mean_y1;
+			X2[i][0] -= mean_x2;
+			X2[i][1] -= mean_y2;
+			
+		}
 
 		/*if (X1.length > X2.length) {
 			// X2 stays normal;
@@ -516,7 +539,7 @@ public class ShapeHistogram {
 		for(int i=0;i<count;i++) for(int j=i+1;j<count;j++)
 			dist += Math.sqrt(Math.pow(X1[i][0]-X1[j][0],2)+Math.pow(X1[i][1]-X1[j][1],2));
 		dist /= (n*(n-1))/2;
-		double beta_k = Math.pow(dist,2);
+		double beta_k = Math.pow(dist,2)*100000;
 		DoubleMatrix2D c = bookstein(count, X1, X2, beta_k, E);
 		double sc_cost = shapeContextCost(N, costs, good_rows, good_columns, count);
 		double[][] Xwarped = warp(X1, X2, c, count);
@@ -525,9 +548,10 @@ public class ShapeHistogram {
 			mean_squared_error += Math.sqrt(Math.pow(Xwarped[i][0] - X2[i][0],2) + Math.pow(Xwarped[i][1] - X2[i][1],2));
 		}
 		mean_squared_error /= count;
+		//System.out.println("mse: " + mean_squared_error);
 		// using digit distance function from paper
 		//System.out.println("Distance based on bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
-		return sc_cost + .3 * E[1]; // just bending energy
+		return sc_cost + .3 * E[0]; // just bending energy
 		//return 1.6 * E[0] + sc_cost + .3 * E[1];
 	}
 /*
