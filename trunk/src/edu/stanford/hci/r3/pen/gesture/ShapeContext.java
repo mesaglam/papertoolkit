@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
-import edu.stanford.hci.r3.pen.streaming.PenSample;
-
+import edu.stanford.hci.r3.pen.ink.InkSample;
 
 /**
  * <p>
@@ -20,16 +18,16 @@ import edu.stanford.hci.r3.pen.streaming.PenSample;
  */
 public class ShapeContext {
 	
-	ArrayList<PenSample> controlPoints = new ArrayList<PenSample>();
+	ArrayList<InkSample> controlPoints = new ArrayList<InkSample>();
 	public static int bands = 3;
 
-	public ShapeContext(ArrayList<PenSample> controlPointsInput) 
+	public ShapeContext(ArrayList<InkSample> controlPointsInput) 
 	{
 		// filter this for dupes
 		for(int i=0;i<controlPointsInput.size();i++) {
-			PenSample sample = controlPointsInput.get(i);
+			InkSample sample = controlPointsInput.get(i);
 			boolean duplicate = false;
-			for(PenSample old_sample : controlPoints)
+			for(InkSample old_sample : controlPoints)
 				if(sample.x == old_sample.x && sample.y == old_sample.y) { // can't duplicate samples, unfortunately
 					duplicate = true; break;
 				}
@@ -48,7 +46,7 @@ public class ShapeContext {
 	public double[][] points()
 	{
 		int N = size();
-		ArrayList<PenSample> controlPoints = resample(N);
+		ArrayList<InkSample> controlPoints = resample(N);
 		double[][] pts = new double[N][2];
 		for(int i=0;i<N;i++) {
 			pts[i][0] = controlPoints.get(i).x;
@@ -57,12 +55,12 @@ public class ShapeContext {
 		return pts;
 	}
 	
-	public ArrayList<PenSample> resample(int samples)
+	public ArrayList<InkSample> resample(int samples)
 	{
 		// special case
-		if (samples == controlPoints.size()) return (ArrayList<PenSample>)controlPoints.clone();
+		if (samples == controlPoints.size()) return (ArrayList<InkSample>)controlPoints.clone();
 		// want to return something with time information
-		ArrayList<PenSample> sampledPoints = new ArrayList<PenSample>();
+		ArrayList<InkSample> sampledPoints = new ArrayList<InkSample>();
 		assert(controlPoints.size() > 1);
 		// sampling in time is a little weird; I'll sample in "space"
 		float fraction = (controlPoints.size()-1)/(float)(samples);
@@ -75,10 +73,10 @@ public class ShapeContext {
 		return sampledPoints;
 	}
 
-	public ArrayList<PenSample> tangents(int samples)
+	public ArrayList<InkSample> tangents(int samples)
 	{
 		// want to return something with time information
-		ArrayList<PenSample> sampledPoints = new ArrayList<PenSample>();
+		ArrayList<InkSample> sampledPoints = new ArrayList<InkSample>();
 		assert(controlPoints.size() > 1);
 		// sampling in time is a little weird; I'll sample in "space"
 		float fraction = (controlPoints.size()-1)/(float)(samples);
@@ -92,10 +90,10 @@ public class ShapeContext {
 	}
 
 	// Catmull-Rom FTW
-	PenSample blendHelper(int i, float t)
+	InkSample blendHelper(int i, float t)
 	{
-		PenSample[] samples = new PenSample[4];
-		PenSample blendedSample = new PenSample(0, 0, 0, 0);
+		InkSample[] samples = new InkSample[4];
+		InkSample blendedSample = new InkSample(0, 0, 0, 0);
 		if (i == 0) // double up the first
 			samples[0] = controlPoints.get(0);
 		else samples[0] = controlPoints.get(i-1);
@@ -144,10 +142,10 @@ public class ShapeContext {
 
 	  
 	  // all I actually need is x and y, or even angle. but this will do
-	  PenSample tangent(int i, float t)
+	  InkSample tangent(int i, float t)
 	  {
-			PenSample[] samples = new PenSample[4];
-			PenSample blendedSample = new PenSample(0, 0, 0, 0);
+			InkSample[] samples = new InkSample[4];
+			InkSample blendedSample = new InkSample(0, 0, 0, 0);
 			if (i == 0) // double up the first
 				samples[0] = controlPoints.get(0);
 			else samples[0] = controlPoints.get(i-1);
@@ -172,15 +170,15 @@ public class ShapeContext {
 		  // histogram for each point
 		  int dummy_points = size();
 		  ArrayList<ShapeHistogram> histograms = new ArrayList<ShapeHistogram>();
-		  ArrayList<PenSample> samples = resample(dummy_points);
-		  ArrayList<PenSample> tangents = new ArrayList<PenSample>();// tangents(points);
+		  ArrayList<InkSample> samples = resample(dummy_points);
+		  ArrayList<InkSample> tangents = new ArrayList<InkSample>();// tangents(points);
 		  for (int i=0; i<samples.size();i++) {
-			  PenSample last,next;
+			  InkSample last,next;
 			  if(i==0) last = samples.get(0);
 			  else last = samples.get(i-1);
 			  if(i==dummy_points-1) next = samples.get(dummy_points-1);
 			  else next = samples.get(i+1);
-			  tangents.add(new PenSample(0,next.x-last.x,next.y-last.y,0)); // crude
+			  tangents.add(new InkSample(next.x-last.x,next.y-last.y,0,0)); // crude
 		  }
 		  double[][] bins = new double[3][];
 		  int[] bin_counts = new int[3];
@@ -204,12 +202,12 @@ public class ShapeContext {
 		  double timestamp_min=Double.MAX_VALUE;
 		  double timestamp_max=-Double.MAX_VALUE;
 		  double mean_distance = 0;
-		  for (PenSample sample : samples) {
+		  for (InkSample sample : samples) {
 			  	// wrong, should be considering deltas.
 				// Alt, normalize all the times ahead.
 			  if (sample.timestamp < timestamp_min) timestamp_min = sample.timestamp; 
 			  if (sample.timestamp > timestamp_max) timestamp_max = sample.timestamp;
-			  for (PenSample secondSample : samples) {
+			  for (InkSample secondSample : samples) {
 				  if (sample.equals(secondSample)) continue;
 				  double distance = Math.sqrt(Math.pow(sample.x - secondSample.x, 2) + Math.pow(sample.y - secondSample.y, 2));
 				  mean_distance += distance;
@@ -233,11 +231,11 @@ public class ShapeContext {
 		  maxes[2] = -mins[2];
 		  // mins[0] = Math.log(distance_min);
 		  // maxes[0] = Math.log(distance_max);
-		  for (PenSample sample : samples) {
+		  for (InkSample sample : samples) {
 			  ShapeHistogram histogram = new ShapeHistogram(bin_counts, mins, maxes, explicit_binning, bins, bands);
-			  PenSample tangent = tangents.get(samples.indexOf(sample)); // sue me, I'm lax
+			  InkSample tangent = tangents.get(samples.indexOf(sample)); // sue me, I'm lax
 			  double theta = rotation_invariant?Math.atan2(tangent.y, tangent.x):0;
-			  for (PenSample secondSample : samples) {
+			  for (InkSample secondSample : samples) {
 				  if (sample.equals(secondSample)) continue;
 				  // for rotation invariance, adjust angles by setting normal to curve to some
 					// axis. slightly tricky, but not too bad.
@@ -253,7 +251,7 @@ public class ShapeContext {
 		  return histograms;
 	  }
 	  
-	  static double[] logPolarAndTime(PenSample first, PenSample second, double distanceScaling, double baseRotation)
+	  static double[] logPolarAndTime(InkSample first, InkSample second, double distanceScaling, double baseRotation)
 	  {
 		  // normalize the times. actually, probably ought to normalize all of them -
 			// scale-invariance? not theta, though.
@@ -290,12 +288,12 @@ public class ShapeContext {
 	      writer.write("points\t" + controlPoints.size() + "\n");
 	      int x = Integer.MAX_VALUE;
 	      int y = Integer.MAX_VALUE;
-	      for(PenSample sample : controlPoints) {
+	      for(InkSample sample : controlPoints) {
 	    	  x = (int)Math.min(x, sample.x);
 	    	  y = (int)Math.min(y, sample.y);
 	      }
 	      for (int i = 0; i < controlPoints.size(); i++) {
-	    	  PenSample sample = controlPoints.get(i);
+	    	  InkSample sample = controlPoints.get(i);
 	    	  writer.write("\t" + df.format(sample.x-x) + "\t" + df.format(sample.y-y) +
 	  		   "\t" + df.format(sample.timestamp) + "\n");
 	      }

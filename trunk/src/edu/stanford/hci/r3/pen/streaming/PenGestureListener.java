@@ -1,8 +1,6 @@
 package edu.stanford.hci.r3.pen.streaming;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
@@ -11,11 +9,12 @@ import java.util.ArrayList;
 import edu.stanford.hci.r3.pen.gesture.Gesture;
 import edu.stanford.hci.r3.pen.gesture.GestureDatabase;
 import edu.stanford.hci.r3.pen.gesture.ShapeContext;
+import edu.stanford.hci.r3.pen.ink.InkSample;
 
 public class PenGestureListener implements PenListener {
 	ArrayList<Gesture> gestures = new ArrayList<Gesture>();
 	ArrayList<ShapeContext> contexts = new ArrayList<ShapeContext>();
-	ArrayList<PenSample> samples = null;
+	ArrayList<InkSample> samples = null;
 	int gestureThreshold = 10;
 	int remainingContexts = 0;
 	private GestureDatabase database;
@@ -24,7 +23,7 @@ public class PenGestureListener implements PenListener {
 	
 	public void penDown(PenSample sample)
 	{
-		samples = new ArrayList<PenSample>();
+		samples = new ArrayList<InkSample>();
 	}
 	
 	public void setContexts(ArrayList<ShapeContext> contexts, int remainingContexts)
@@ -55,7 +54,8 @@ public class PenGestureListener implements PenListener {
 	
 	public void sample(PenSample sample)
 	{
-		samples.add(sample);
+		InkSample inkSample = new InkSample(sample.x, sample.y, sample.force, sample.timestamp);
+		samples.add(inkSample);
 	}
 	
 	public void quillWrite(Writer writer) throws IOException
