@@ -70,6 +70,9 @@ public class Sheet {
 	 */
 	private List<Region> regions = new ArrayList<Region>();
 
+	/**
+	 * Offsets for Regions on this sheet.
+	 */
 	private Map<Region, Coordinates> regionsAndRelativeLocations = new HashMap<Region, Coordinates>();
 
 	/**
@@ -122,7 +125,7 @@ public class Sheet {
 	 */
 	public void addRegion(Region r, Units xOffset, Units yOffset) {
 		addRegion(r);
-		regionsAndRelativeLocations.put(r, new Coordinates(xOffset, yOffset));
+		setRegionOffset(r, xOffset, yOffset);
 	}
 
 	/**
@@ -270,6 +273,15 @@ public class Sheet {
 		// register the fact that we loaded a configuration file from this directory
 		configurationPaths.add(configPath);
 		// DebugUtils.println("Configuration Paths: " + configurationPaths);
+	}
+
+	/**
+	 * @param r
+	 * @param xOffset
+	 * @param yOffset
+	 */
+	public void setRegionOffset(Region r, Units xOffset, Units yOffset) {
+		regionsAndRelativeLocations.put(r, new Coordinates(xOffset, yOffset));
 	}
 
 	/**

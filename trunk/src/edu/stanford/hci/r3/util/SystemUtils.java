@@ -62,7 +62,14 @@ public class SystemUtils {
 	public static double getFreeMemoryInMB() {
 		return Runtime.getRuntime().freeMemory() / BYTES_PER_MB;
 	}
-	
+
+	/**
+	 * @return where new File(".").getAbsolutePath() points...
+	 */
+	public static File getWorkingDirectory() {
+		return new File(System.getProperty("user.dir"));
+	}
+
 	/**
 	 * http://developer.apple.com/technotes/tn2002/tn2110.html
 	 * 
@@ -81,4 +88,26 @@ public class SystemUtils {
 		return lcOSName.startsWith("windows");
 	}
 
+	/**
+	 * Sets the user.dir property, so that you can make code dealing with files easier to type/read.
+	 * WARNING: Java seems to have a usability bug in this manner.... Do not use this method for
+	 * now.
+	 * 
+	 * <code>
+	 * SystemUtils.setWorkingDirectory(new File("data/Flickr/"));
+	 * // argh! Setting the Working Directory doesn't work for files in this manner. 
+	 * // Quite Stupid, in fact. 
+	 * System.out.println(new File("Twistr1.xml").exists()); // returns false
+	 * System.out.println(new File("Twistr1.xml").getAbsoluteFile().exists()); // returns true
+	 * </code>
+	 * 
+	 * This is a KNOWN Java bug: http://bugs.sun.com/bugdatabase/view_bug.do;:YfiG?bug_id=4117557
+	 * Phooey. That means you have to call getAbsoluteFile() at every point in which you read a file
+	 * stream. I will have to instrument SystemUtils & FileUtils to handle this.
+	 * 
+	 * @param file
+	 */
+	public static void setWorkingDirectory(File file) {
+		System.setProperty("user.dir", file.getAbsolutePath());
+	}
 }
