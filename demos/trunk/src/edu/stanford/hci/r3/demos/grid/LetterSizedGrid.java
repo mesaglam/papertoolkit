@@ -68,6 +68,7 @@ public class LetterSizedGrid extends Application {
 	 */
 	public LetterSizedGrid() {
 		super("A Letter-Sized Grid of Pattern Boxes");
+		initializeAfterConstructor();
 	}
 
 	/**

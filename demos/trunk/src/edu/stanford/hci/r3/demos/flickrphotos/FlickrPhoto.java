@@ -123,4 +123,11 @@ public class FlickrPhoto {
 		return url;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return fileLarge.getName() + " " + url.toString();
+	}
+
 }
