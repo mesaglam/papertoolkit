@@ -33,5 +33,7 @@
 	<classpathentry path="lib/freetts/jsapi.jar" kind="lib"/>
 	<classpathentry path="lib/colt/colt.jar" kind="lib"/>
 	<classpathentry path="lib/colt/concurrent.jar" kind="lib"/>
+	<classpathentry path="lib/piccolo/piccolo.jar" kind="lib"/>
+	<classpathentry path="lib/piccolo/piccolox.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

@@ -149,6 +149,9 @@ public class PaperToolkit {
 	public static void initializeLookAndFeel() {
 		// WindowUtils.setNativeLookAndFeel();
 
+		// I can't visually tell the difference... Wonder why. Maybe Java 6 does it automatically?
+		System.setProperty("swing.aatext", "true");
+
 		// JGoodies Look and Feel
 		try {
 			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
