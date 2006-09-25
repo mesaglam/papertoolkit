@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.demos.flickrphotos.FlickrPhoto;
 import edu.stanford.hci.r3.demos.flickrphotos.PhotoDownloadr;
@@ -57,6 +58,8 @@ public class Twistr {
 
 	private int numPhotos;
 
+	private Application application;
+
 	/**
 	 * 
 	 */
@@ -70,6 +73,16 @@ public class Twistr {
 		numPhotos = listOfPhotos.size();
 		DebugUtils.println(numPhotos + " photos in this game");
 		setupFrame();
+		setupApp();
+	}
+
+	private void setupApp() {
+		application = new Application("Twistr");
+		application.addSheet(new TwistrPrint(), new File("data/Flickr/Twistr.patternInfo.xml"));
+
+		// load it
+		PaperToolkit p = new PaperToolkit(true);
+		p.startApplication(application);
 	}
 
 	/**
@@ -94,17 +107,17 @@ public class Twistr {
 		int p3 = (int) (numPhotos * r3);
 		int p4 = (int) (numPhotos * r4);
 
-		
 		FlickrPhoto photo1 = listOfPhotos.get(p1);
 		FlickrPhoto photo2 = listOfPhotos.get(p2);
 		FlickrPhoto photo3 = listOfPhotos.get(p3);
 		FlickrPhoto photo4 = listOfPhotos.get(p4);
-		
+
 		DebugUtils.println(photo1);
 		DebugUtils.println(photo2);
 		DebugUtils.println(photo3);
 		DebugUtils.println(photo4);
-		
-		frame.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(), photo3.getFileLarge(), photo4.getFileLarge());
+
+		frame.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(), photo3.getFileLarge(),
+				photo4.getFileLarge());
 	}
 }
