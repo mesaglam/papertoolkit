@@ -308,13 +308,13 @@ public class SheetRenderer {
 		final float wPoints = (float) width.getValueInPoints();
 		final float hPoints = (float) height.getValueInPoints();
 
-		// bottom layer for regions
-		final Graphics2D g2dUnder = bottomLayer.createGraphicsShapes(wPoints, hPoints);
+		// top layer for regions (changed from bottom layer)
+		final Graphics2D g2dOver = topLayer.createGraphicsShapes(wPoints, hPoints);
 		// now that we have a G2D, we can just use our other G2D rendering method
-		renderToG2D(g2dUnder);
+		renderToG2D(g2dOver);
 
 		// an efficient dispose, because we are not within a Java paint() method
-		g2dUnder.dispose();
+		g2dOver.dispose();
 
 		// should this be moved to regions???
 		if (renderActiveRegionsWithPattern) {
