@@ -1,10 +1,13 @@
 package edu.stanford.hci.r3.examples.paperui;
 
+import java.awt.Font;
 import java.io.File;
 
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.paper.regions.TextRegion;
 import edu.stanford.hci.r3.render.SheetRenderer;
+import edu.stanford.hci.r3.units.Inches;
 
 /**
  * <p>
@@ -50,8 +53,19 @@ public class EmptyPaperUI {
 	 */
 	public static void main(String[] args) {
 		Sheet s = new Sheet(4, 4);
-		Region r = new Region("4x4", 0, 0, 4, 4);
-		r.setActive(true);
+		
+		String myString = "This is a really long string that should get wrapped lots and lots I hope.  We'll see how it goes, I guess.\n\nHopefully it'll work out...";
+		Font myFont = new Font("Helvetica", Font.BOLD, 12);
+		Inches origX = new Inches(0.5); 
+		Inches origY = new Inches(0.5);
+		Inches width = new Inches(3);
+		Inches height = new Inches(2);
+		
+		TextRegion r = new TextRegion("Wrapping_Test", myString, myFont, origX, origY, width, height);
+		r.setLineWrapped(true);
+		//r.setActive(true);
+		r.setMaxLines(5);
+		
 		s.addRegion(r);
 		SheetRenderer renderer = new SheetRenderer(s);
 		renderer.renderToPDF(new File("data/General/4x4.pdf"));
