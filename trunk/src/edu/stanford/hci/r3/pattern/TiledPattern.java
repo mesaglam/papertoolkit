@@ -102,8 +102,8 @@ public class TiledPattern {
 	private PatternPackage patternPackage;
 
 	/**
-	 * The creator of this object has to calculate exactly how many dots it needs. This class
-	 * doesn't have smarts. It will give you exactly what you ask for.
+	 * The creator of this object has to calculate exactly how many dots it needs. This class doesn't
+	 * have smarts. It will give you exactly what you ask for.
 	 * 
 	 * @param thePatternPackage
 	 * @param initialPatternFileN
@@ -196,11 +196,19 @@ public class TiledPattern {
 		return lastPatternFileUsed;
 	}
 
+	public int getNumDotsXFromRightMostTiles() {
+		return numDotsXRightMost;
+	}
+
 	/**
 	 * @return
 	 */
 	public int getNumDotsXPerFullTile() {
 		return numDotsXPerFullTile;
+	}
+
+	public int getNumDotsYFromBottomMostTiles() {
+		return numDotsYBottomMost;
 	}
 
 	/**
@@ -356,9 +364,9 @@ public class TiledPattern {
 	 */
 	public String toString() {
 		return "Tiling Information {\n" //
-				+ "\t" + patternCoordinateOfOrigin + "\n" + "\tDotsX: "
-				+ numTotalColumns
-				+ " DotsY: " + numTotalRows + "\n" + "\t" + numTilesX
+				+ "\t" + patternCoordinateOfOrigin + "\n" + "\tDotsX: " + numTotalColumns
+				+ " DotsY: "
+				+ numTotalRows + "\n" + "\t" + numTilesX
 				+ " Tile(s) in X, with "
 				+ numDotsXRightMost
 				+ " horizontal dots from the rightmost tiles.\n" //

@@ -174,8 +174,8 @@ public class ActionReceiverTrayApp {
 		return new ActionReceiverConnectionListener() {
 			public void newConnectionFrom(String hostName, String ipAddr) {
 				if (setShowConnectionMessageItem.getState()) {
-					trayIcon.displayMessage("New Connection",
-							hostName + ipAddr + " has connected.", TrayIcon.MessageType.INFO);
+					trayIcon.displayMessage("New Connection", hostName + ipAddr + " has connected.",
+							TrayIcon.MessageType.INFO);
 				}
 			}
 		};
@@ -211,8 +211,8 @@ public class ActionReceiverTrayApp {
 				trustedClientsFrame.setVisible(false);
 			}
 		});
-		trustedClientsTextField.setBorder(BorderFactory.createCompoundBorder(
-				trustedClientsTextField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+		trustedClientsTextField.setBorder(BorderFactory.createCompoundBorder(trustedClientsTextField
+				.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		// a message to tell the user what to do
 		final JLabel message = new JLabel(DIRECTIONS_FOR_SETTING_LIST_OF_TRUSTED_CLIENTS);
@@ -301,6 +301,9 @@ public class ActionReceiverTrayApp {
 		return iconListener;
 	}
 
+	/**
+	 * 
+	 */
 	private void startRunning() {
 		String trustedClientsList = trustedClientsTextField.getText();
 		String[] clientNames = trustedClientsList.split(",");
@@ -308,8 +311,8 @@ public class ActionReceiverTrayApp {
 			clientNames[i] = clientNames[i].trim();
 		}
 
-		actionReceiver = new ActionReceiver(ActionReceiver.DEFAULT_JAVA_PORT,
-				ClientServerType.JAVA, clientNames);
+		actionReceiver = new ActionReceiver(ActionReceiver.DEFAULT_JAVA_PORT, ClientServerType.JAVA,
+				clientNames);
 
 		actionReceiver.setConnectionListener(getConnectionListener());
 

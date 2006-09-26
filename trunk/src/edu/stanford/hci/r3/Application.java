@@ -3,16 +3,9 @@ package edu.stanford.hci.r3;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import edu.stanford.hci.r3.actions.types.OpenFileAction;
-import edu.stanford.hci.r3.actions.types.OpenURLAction;
-import edu.stanford.hci.r3.actions.types.PlaySoundAction;
-import edu.stanford.hci.r3.actions.types.TextToSpeechAction;
+import edu.stanford.hci.r3.actions.types.*;
 import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -46,6 +39,10 @@ public class Application {
 	// actions from the actions.* package.
 	// ////////////////////////////////////////////////////////////////////////////////////////
 
+	private static LinkedList<PlaySoundAction> queuedSounds = new LinkedList<PlaySoundAction>();
+
+	private static PlaySoundAction playSoundAction;
+
 	/**
 	 * @param file
 	 */
@@ -69,10 +66,31 @@ public class Application {
 	/**
 	 * Plays a sound file. Returns the object in case you need to stop it.
 	 */
+	// public static PlaySoundAction doPlaySound(File soundFile) {
+	// final PlaySoundAction playSoundAction = new PlaySoundAction(soundFile);
+	// playSoundAction.addStopListener(new PlaySoundAction.PlaySoundListener() {
+	// public void soundStopped() {
+	// queuedSounds.remove(playSoundAction); // remove myself
+	// if (queuedSounds.size() > 0) {
+	// // if there are any left... play the next guy
+	// queuedSounds.getFirst().invoke();
+	// }
+	// }
+	// });
+	// queuedSounds.addLast(playSoundAction);
+	// if (queuedSounds.size() == 1) {
+	// playSoundAction.invoke();
+	// }
+	//
+	// return playSoundAction;
+	// }
 	public static PlaySoundAction doPlaySound(File soundFile) {
-		final PlaySoundAction psa = new PlaySoundAction(soundFile);
-		psa.invoke();
-		return psa;
+		if (playSoundAction != null) {
+			playSoundAction.stop();
+		}
+		playSoundAction = new PlaySoundAction(soundFile);
+		playSoundAction.invoke();
+		return playSoundAction;
 	}
 
 	/**
@@ -156,8 +174,8 @@ public class Application {
 	}
 
 	/**
-	 * When a sheet is added to an application, we will need to determine how the pattern maps to
-	 * the sheet. We will create a PatternLocationToSheetLocationMapping object from this sheet.
+	 * When a sheet is added to an application, we will need to determine how the pattern maps to the
+	 * sheet. We will create a PatternLocationToSheetLocationMapping object from this sheet.
 	 * 
 	 * WARNING: The current design REQUIRES you to add the sheet AFTER you have added regions to the
 	 * sheet. This is an unfortunate design (ordering constraints), and should be changed _if
@@ -181,8 +199,7 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet, File patternInfoFile) {
 		sheets.add(sheet);
-		sheetToPatternMap.put(sheet, sheet
-				.getPatternLocationToSheetLocationMapping(patternInfoFile));
+		sheetToPatternMap.put(sheet, sheet.getPatternLocationToSheetLocationMapping(patternInfoFile));
 	}
 
 	/**
@@ -279,8 +296,8 @@ public class Application {
 			DebugUtils.println("Rendering PDFs...");
 			for (int i = 0; i < sheets.size(); i++) {
 				final Sheet sheet = sheets.get(i);
-				final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension
-						+ "_Sheet_" + i + ".pdf");
+				final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + "_Sheet_"
+						+ i + ".pdf");
 				System.out.println("Rendering: " + destPDFFile.getAbsolutePath());
 				final SheetRenderer renderer = sheet.getRenderer();
 				renderer.renderToPDF(destPDFFile);
