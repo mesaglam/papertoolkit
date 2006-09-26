@@ -20,7 +20,7 @@ public class BoingBoingPaperApp extends Application {
 
 	private final boolean RENDER_NEW_STORIES = false;
 	private final boolean OUTPUT_PDF = true;
-	private final boolean OUTPUT_ACTIVE_PDF = true;
+	private final boolean OUTPUT_ACTIVE_PDF = false;
 	
 	private final Color BB_RED = new Color(191,0,0);
 	
@@ -76,12 +76,13 @@ public class BoingBoingPaperApp extends Application {
 		
 		// Then, setup the regions
 		layoutRegions(entries.length);
+
+		// Add handlers to regions
+		initializePaperUI(entries);
+
 		
 		// must go after addRegions
 		addSheet(sheet);
-		
-		// Add handlers to regions
-		initializePaperUI(entries);
 		
 		if (RENDER_NEW_STORIES || OUTPUT_PDF) { // we rendered new stories, so we have to render the PDF
 			sheet.getRenderer().renderToPDF(new File("data/Blog/bb_stories.pdf"));
@@ -108,7 +109,7 @@ public class BoingBoingPaperApp extends Application {
 			r = new Region("Comment" + i, 0.25 + xOffset, 6.25 + yOffset, 8.5, 8.5);
 			if (OUTPUT_ACTIVE_PDF) {
 				r.setStrokeColor(new Color(0,0,0,0));
-				r.setActive(true);
+//				r.setActive(true); // will this break pattern rendering???
 			}
 			sheet.addRegion(r);
 		}
