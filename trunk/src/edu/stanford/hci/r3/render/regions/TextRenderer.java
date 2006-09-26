@@ -81,11 +81,11 @@ public class TextRenderer extends RegionRenderer {
 		// so that we can reset it later
 		final Font oldFont = g2d.getFont();
 
+		g2d.setColor(textColor);
+		
 		if (!tr.isLineWrapped()) {
 			g2d.setFont(tr.getFont());
 			// System.out.println(tr.getFont());
-
-			g2d.setColor(textColor);
 
 			final double offset = getAscentInPoints().getValue();
 			final double textLineHeight = getLineHeightInPoints().getValue();
@@ -100,7 +100,7 @@ public class TextRenderer extends RegionRenderer {
 			}
 
 		} else {  // isLineWrapped is true
-			float xOffset, yOffset, maxYOffset, wrappingWidth;
+			float xOffset, yOffset, maxYOffset, wrappingWidth, linebreakOffset;
 			xOffset = (float) tr.getX().getValueInPoints();
 			yOffset = (float) tr.getY().getValueInPoints();
 			maxYOffset = yOffset + (float) tr.getHeight().getValueInPoints();
@@ -116,6 +116,7 @@ public class TextRenderer extends RegionRenderer {
 			//   - We set the number of lines specified by maxLines (when maxLines > 0)
 			boolean done = false;
 			int lineCount = 0;
+			linebreakOffset = 0.0f;
 			for (String line : linesOfText) {
 				// Can't layout an empty string (this will happen with consecutive newlines)
 				// so if we have one, make it a space instead.
@@ -131,7 +132,7 @@ public class TextRenderer extends RegionRenderer {
 				while (measurer.getPosition() < styledTextIterator.getEndIndex()) {
 					// Layout the next line of text
 					TextLayout layout = measurer.nextLayout(wrappingWidth);
-
+					linebreakOffset = (layout.getAscent() + layout.getDescent() + layout.getLeading())/2;
 					yOffset += (layout.getAscent());
 					float dx = layout.isLeftToRight() ? 0 : (wrappingWidth - layout.getAdvance());
 
@@ -152,6 +153,9 @@ public class TextRenderer extends RegionRenderer {
 						break;
 					}
 				}
+				
+				yOffset += linebreakOffset;
+				
 				if (done) break;
 			}
 
