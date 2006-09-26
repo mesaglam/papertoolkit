@@ -3,14 +3,10 @@ package edu.stanford.hci.r3.actions.types;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.media.CannotRealizeException;
-import javax.media.ControllerEvent;
-import javax.media.ControllerListener;
-import javax.media.Manager;
-import javax.media.NoPlayerException;
-import javax.media.Player;
-import javax.media.StopEvent;
+import javax.media.*;
 
 import com.sun.media.codec.audio.mp3.JavaDecoder;
 
@@ -29,6 +25,16 @@ import edu.stanford.hci.r3.actions.R3Action;
  */
 public class PlaySoundAction implements R3Action {
 
+	private List<PlaySoundListener> notifyOnStop = new ArrayList<PlaySoundListener>();
+
+	public static interface PlaySoundListener {
+		public void soundStopped();
+	}
+
+	public void addStopListener(PlaySoundListener psl) {
+		notifyOnStop.add(psl);
+	}
+
 	static {
 		// register the MP3 plugin for JMF.
 		JavaDecoder.main(new String[] {});
@@ -36,12 +42,12 @@ public class PlaySoundAction implements R3Action {
 				+ "It is printed out by the JavaDecoder while registering the mp3 plugin.");
 	}
 
+	private Player player;
+
 	/**
 	 * The file to play (from the local file system).
 	 */
 	private File sound;
-
-	private Player player;
 
 	/**
 	 * @param soundFile
@@ -64,6 +70,9 @@ public class PlaySoundAction implements R3Action {
 						System.out.println("PlaySoundAction Stopped at: "
 								+ se.getMediaTime().getSeconds() + " seconds");
 						stop();
+						for (PlaySoundListener psl : notifyOnStop) {
+							psl.soundStopped();
+						}
 					}
 				}
 			});
@@ -80,10 +89,21 @@ public class PlaySoundAction implements R3Action {
 	}
 
 	/**
+	 * 
+	 */
+	public void pause() {
+		player.stop();
+	}
+
+	/**
 	 * Stops the audio player and disposes resources.
 	 */
 	public void stop() {
 		player.stop();
 		player.close();
+	}
+
+	public void unpause() {
+		player.start();
 	}
 }

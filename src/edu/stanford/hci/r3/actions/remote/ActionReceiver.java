@@ -161,7 +161,7 @@ public class ActionReceiver {
 
 	/**
 	 * @param trusted
-	 *            a list of IPs, DNSs, or (todo) subnets that we trust...
+	 *           a list of IPs, DNSs, or (todo) subnets that we trust...
 	 */
 	public ActionReceiver(int tcpipPort, ClientServerType type, String... trusted) {
 		trustedSenders.addAll(Arrays.asList(trusted));
@@ -215,8 +215,8 @@ public class ActionReceiver {
 							break;
 						}
 
-						log("ActionReceiver :: Waiting for a " + serverType
-								+ " connection on port [" + serverPort + "]");
+						log("ActionReceiver :: Waiting for a " + serverType + " connection on port ["
+								+ serverPort + "]");
 
 						client = serverSocket.accept();
 
@@ -236,8 +236,7 @@ public class ActionReceiver {
 						for (String nameOrAddress : trustedSenders) {
 							if (nameOrAddress.contains("*")) {
 								// 128.15.*.* --> 128.15.
-								nameOrAddress = nameOrAddress.substring(0, nameOrAddress
-										.indexOf("*"));
+								nameOrAddress = nameOrAddress.substring(0, nameOrAddress.indexOf("*"));
 							}
 
 							if (dnsName.toLowerCase().endsWith(nameOrAddress)
@@ -245,12 +244,11 @@ public class ActionReceiver {
 								// .stanford.edu
 								// 128.15.
 								// good enough for us!
-								DebugUtils.println("This is a trusted client. Matched: "
-										+ nameOrAddress);
+								DebugUtils.println("This is a trusted client. Matched: " + nameOrAddress);
 								clientIsOK = true;
 							} else {
-								DebugUtils.println("Untrusted client [" + nameOrAddress
-										+ "]... next!");
+								DebugUtils.println("Did not match our client. Filter [" + nameOrAddress
+										+ "] does not match " + dnsName + " next!");
 							}
 						}
 						if (!clientIsOK) {
@@ -261,8 +259,7 @@ public class ActionReceiver {
 						// keep it around
 						clients.add(client);
 					} catch (IOException ioe) {
-						log("ActionReceiver :: Error with server socket: "
-								+ ioe.getLocalizedMessage());
+						log("ActionReceiver :: Error with server socket: " + ioe.getLocalizedMessage());
 					}
 
 					if (client != null) {
@@ -393,7 +390,7 @@ public class ActionReceiver {
 	}
 
 	/**
-	 * 
+	 * Stored in the XML.
 	 */
 	private void readTrustedClientsFromConfigFile() {
 		final String trustedClients = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
