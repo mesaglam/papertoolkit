@@ -193,6 +193,9 @@ public class PatternLocationToSheetLocationMapping {
 	 * @return the converter that enables you to figure out where on the region a sample falls.
 	 */
 	public TiledPatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
+		DebugUtils.println(regionToPatternBounds.size() + " " + r.getName() + " "
+				+ regionToPatternBounds);
+
 		return regionToPatternBounds.get(r);
 	}
 

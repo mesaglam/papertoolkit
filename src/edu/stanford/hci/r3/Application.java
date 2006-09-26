@@ -159,7 +159,7 @@ public class Application {
 	 * When a sheet is added to an application, we will need to determine how the pattern maps to
 	 * the sheet. We will create a PatternLocationToSheetLocationMapping object from this sheet.
 	 * 
-	 * WARNING: The current design requires you to add the sheet AFTER you have added regions to the
+	 * WARNING: The current design REQUIRES you to add the sheet AFTER you have added regions to the
 	 * sheet. This is an unfortunate design (ordering constraints), and should be changed _if
 	 * possible_.
 	 * 
