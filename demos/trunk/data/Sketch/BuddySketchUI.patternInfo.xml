@@ -1,1 +1,386 @@
-<map/>
+<map>
+  <entry>
+    <RegionID>
+      <height class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.6</value>
+      </height>
+      <name>YellowLady</name>
+      <originX class="Inches">
+        <unitName>Inches</unitName>
+        <value>40.25</value>
+      </originX>
+      <originY class="Inches">
+        <unitName>Inches</unitName>
+        <value>16.095277777777778</value>
+      </originY>
+      <width class="Inches">
+        <unitName>Inches</unitName>
+        <value>3.472222222222222</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84041332E8</maxX>
+      <maxY>7676.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>294.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>294.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>51.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>51.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84041038E8</originX>
+      <originY>7625.0</originY>
+      <regionName>YellowLady</regionName>
+      <startingTile>14</startingTile>
+      <tileHeightIncludingPadding>51.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>294.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.6</value>
+      </height>
+      <name>Snowboarder</name>
+      <originX class="Inches">
+        <unitName>Inches</unitName>
+        <value>40.25</value>
+      </originX>
+      <originY class="Inches">
+        <unitName>Inches</unitName>
+        <value>3.1041666666666665</value>
+      </originY>
+      <width class="Inches">
+        <unitName>Inches</unitName>
+        <value>3.472222222222222</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84041332E8</maxX>
+      <maxY>7384.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>294.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>294.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>51.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>51.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84041038E8</originX>
+      <originY>7333.0</originY>
+      <regionName>Snowboarder</regionName>
+      <startingTile>14</startingTile>
+      <tileHeightIncludingPadding>51.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>294.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.6</value>
+      </height>
+      <name>Horses</name>
+      <originX class="Inches">
+        <unitName>Inches</unitName>
+        <value>40.25</value>
+      </originX>
+      <originY class="Inches">
+        <unitName>Inches</unitName>
+        <value>13.215555555555556</value>
+      </originY>
+      <width class="Inches">
+        <unitName>Inches</unitName>
+        <value>3.472222222222222</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84041656E8</maxX>
+      <maxY>7530.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>294.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>294.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>51.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>51.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84041362E8</originX>
+      <originY>7479.0</originY>
+      <regionName>Horses</regionName>
+      <startingTile>14</startingTile>
+      <tileHeightIncludingPadding>51.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>294.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.6</value>
+      </height>
+      <name>Rainbow</name>
+      <originX class="Inches">
+        <unitName>Inches</unitName>
+        <value>40.25</value>
+      </originX>
+      <originY class="Inches">
+        <unitName>Inches</unitName>
+        <value>22.98666666666666</value>
+      </originY>
+      <width class="Inches">
+        <unitName>Inches</unitName>
+        <value>3.472222222222222</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84041332E8</maxX>
+      <maxY>7822.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>294.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>294.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>51.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>51.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84041038E8</originX>
+      <originY>7771.0</originY>
+      <regionName>Rainbow</regionName>
+      <startingTile>14</startingTile>
+      <tileHeightIncludingPadding>51.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>294.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Inches">
+        <unitName>Inches</unitName>
+        <value>23.0</value>
+      </height>
+      <name>Drawing Region</name>
+      <originX class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.5</value>
+      </originX>
+      <originY class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.5</value>
+      </originY>
+      <width class="Inches">
+        <unitName>Inches</unitName>
+        <value>39.5</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84042368E8</maxX>
+      <maxY>8119.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>15</numTiles>
+      <numTilesAcross>5</numTilesAcross>
+      <numTilesDown>3</numTilesDown>
+      <numTotalDotsAcross>3349.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>3349.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>1950.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>1950.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84022418E8</originX>
+      <originY>7187.0</originY>
+      <regionName>Drawing Region</regionName>
+      <startingTile>0</startingTile>
+      <tileHeightIncludingPadding>932.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>1330.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.6</value>
+      </height>
+      <name>Hand</name>
+      <originX class="Inches">
+        <unitName>Inches</unitName>
+        <value>40.25</value>
+      </originX>
+      <originY class="Inches">
+        <unitName>Inches</unitName>
+        <value>9.460833333333333</value>
+      </originY>
+      <width class="Inches">
+        <unitName>Inches</unitName>
+        <value>3.472222222222222</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84041332E8</maxX>
+      <maxY>7530.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>294.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>294.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>51.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>51.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84041038E8</originX>
+      <originY>7479.0</originY>
+      <regionName>Hand</regionName>
+      <startingTile>14</startingTile>
+      <tileHeightIncludingPadding>51.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>294.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.6</value>
+      </height>
+      <name>Pouty Girl</name>
+      <originX class="Inches">
+        <unitName>Inches</unitName>
+        <value>40.25</value>
+      </originX>
+      <originY class="Inches">
+        <unitName>Inches</unitName>
+        <value>6.136666666666667</value>
+      </originY>
+      <width class="Inches">
+        <unitName>Inches</unitName>
+        <value>3.472222222222222</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84041656E8</maxX>
+      <maxY>7384.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>294.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>294.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>51.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>51.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84041362E8</originX>
+      <originY>7333.0</originY>
+      <regionName>Pouty Girl</regionName>
+      <startingTile>14</startingTile>
+      <tileHeightIncludingPadding>51.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>294.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Inches">
+        <unitName>Inches</unitName>
+        <value>0.6</value>
+      </height>
+      <name>In Flight</name>
+      <originX class="Inches">
+        <unitName>Inches</unitName>
+        <value>40.25</value>
+      </originX>
+      <originY class="Inches">
+        <unitName>Inches</unitName>
+        <value>19.43333333333333</value>
+      </originY>
+      <width class="Inches">
+        <unitName>Inches</unitName>
+        <value>3.472222222222222</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84041656E8</maxX>
+      <maxY>7676.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>294.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>294.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>51.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>51.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84041362E8</originX>
+      <originY>7625.0</originY>
+      <regionName>In Flight</regionName>
+      <startingTile>14</startingTile>
+      <tileHeightIncludingPadding>51.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>294.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+</map>

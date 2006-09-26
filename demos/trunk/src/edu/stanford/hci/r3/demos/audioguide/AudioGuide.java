@@ -166,6 +166,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Math.");
+				doPlaySound(new File("data/AudioGuide/audio/MathCorner.wav"));
 			}
 		});
 	}

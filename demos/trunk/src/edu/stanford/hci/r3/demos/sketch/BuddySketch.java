@@ -84,14 +84,16 @@ public class BuddySketch extends Application {
 
 		// set up the GIGAprint application
 		paperUI = new BuddySketchPaperUI();
-		addSheet(paperUI);
+		addSheet(paperUI, new File("data/Sketch/BuddySketchUI.patternInfo.xml"));
 
-		
-		renderToPDF();
-		// load it up and start!
-		// PaperToolkit r3 = new PaperToolkit();
-		// r3.useApplicationManager(true);
-		// r3.loadApplication(this);
+		if (false) {
+			renderToPDF();
+		} else {
+			// load it up and start!
+			PaperToolkit r3 = new PaperToolkit();
+			r3.useApplicationManager(true);
+			r3.loadApplication(this);
+		}
 	}
 
 	/**
@@ -133,7 +135,6 @@ public class BuddySketch extends Application {
 
 		System.out.println("You chose " + hostNameWComment);
 	}
-
 
 	/**
 	 * @see edu.stanford.hci.r3.Application#initializeBeforeStarting()

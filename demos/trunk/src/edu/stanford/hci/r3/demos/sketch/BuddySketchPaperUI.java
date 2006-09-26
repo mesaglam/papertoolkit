@@ -4,10 +4,15 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.stanford.hci.r3.events.ContentFilterListener;
+import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.filters.InkCollector;
+import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ImageRegion;
 import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -24,6 +29,8 @@ import edu.stanford.hci.r3.units.Inches;
  */
 public class BuddySketchPaperUI extends Sheet {
 
+	private InkCollector inkWell;
+
 	/**
 	 * 
 	 */
@@ -38,8 +45,38 @@ public class BuddySketchPaperUI extends Sheet {
 	 */
 	private void addDrawingRegion() {
 		Region drawingRegion = new Region("Drawing Region", 0.5, 0.5, 39.5, 23);
-		// drawingRegion.setActive(true);
+		inkWell = new InkCollector();
+		inkWell.addListener(new ContentFilterListener() {
+			public void contentArrived() {
+				DebugUtils.println("Content Arrived");
+				DebugUtils.println(inkWell.getNumStrokesCollected());
+			}
+		});
+		drawingRegion.addContentFilter(inkWell);
+
+		drawingRegion.addEventHandler(new ClickHandler() {
+
+			@Override
+			public void clicked(PenEvent e) {
+				DebugUtils.println("Drawing Region " + e.getPercentageLocation());
+			}
+
+			@Override
+			public void pressed(PenEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void released(PenEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
+
 		addRegion(drawingRegion);
+
 	}
 
 	/**
@@ -73,6 +110,23 @@ public class BuddySketchPaperUI extends Sheet {
 
 			final Region retrieveOrHide = new Region(desc, xInches, new Inches(yInches), imgRegion
 					.getWidth(), new Inches(0.6));
+			retrieveOrHide.addEventHandler(new ClickHandler() {
+
+				@Override
+				public void clicked(PenEvent e) {
+					DebugUtils.println("Clicked " + fileName + " at " + e.getPercentageLocation());
+				}
+
+				@Override
+				public void pressed(PenEvent e) {
+
+				}
+
+				@Override
+				public void released(PenEvent e) {
+
+				}
+			});
 			addRegion(retrieveOrHide);
 
 			// all in inches!
