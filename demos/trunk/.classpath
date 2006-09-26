@@ -34,5 +34,6 @@
 	<classpathentry path="lib/rome-0.8.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/piccolo/piccolo.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/piccolo/piccolox.jar" kind="lib"/>
+	<classpathentry path="lib/jdom.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
