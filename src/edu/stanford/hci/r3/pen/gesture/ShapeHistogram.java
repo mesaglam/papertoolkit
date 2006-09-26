@@ -246,6 +246,7 @@ public class ShapeHistogram {
 	}
 	
 	static Pair Z0;
+	public static double costWeighting = .3;
 	
 	static public int step4(int n, double[][] C, int[][] M, int[] R_cov, int[] C_cov)
 	{
@@ -468,18 +469,18 @@ public class ShapeHistogram {
 	}
 
 	public static double shapeContextMetric(ShapeContext shape1, ShapeContext shape2,
-			boolean rotationInvariant, boolean timeSensitive)
+			boolean rotationInvariant, boolean timeSensitive, boolean verbose)
 	{
-		int dummy_padding = 2;
+		int dummy_padding = 6;
 		int N = Math.max(shape1.size(), shape2.size()) + dummy_padding;
-		int n = Math.min(shape1.size(), shape2.size()) + dummy_padding;
-		ArrayList<ShapeHistogram> histogram1 = shape1.generateShapeHistogram(N, rotationInvariant, timeSensitive);
-		ArrayList<ShapeHistogram> histogram2 = shape2.generateShapeHistogram(N, rotationInvariant, timeSensitive);
+		int n = N;//Math.min(shape1.size(), shape2.size()) + dummy_padding;
+		ArrayList<ShapeHistogram> histogram1 = shape1.generateShapeHistogram(N, dummy_padding, rotationInvariant, timeSensitive);
+		ArrayList<ShapeHistogram> histogram2 = shape2.generateShapeHistogram(N, dummy_padding, rotationInvariant, timeSensitive);
 		// dummy value must vary as function of number of points used
-		double[][] costs = computeCostMatrix(histogram1, histogram2, shape1.size(), shape2.size(), 4);
+		double[][] costs = computeCostMatrix(histogram1, histogram2, shape1.size(), shape2.size(), 10);
 		int[] matching = munkres(N, costs);
-		double[][] X1_new = shape1.points();
-		double[][] X2_new = shape2.points();
+		double[][] X1_new = shape1.points(N - dummy_padding);
+		double[][] X2_new = shape2.points(N - dummy_padding);
 		// take the NON-dummy points from both
 		// a point in X1 should not be matched to a dummy point; a point in X2 should not be matched from a dummy
 		int count=0;
@@ -540,7 +541,7 @@ public class ShapeHistogram {
 		for(int i=0;i<count;i++) for(int j=i+1;j<count;j++)
 			dist += Math.sqrt(Math.pow(X1[i][0]-X1[j][0],2)+Math.pow(X1[i][1]-X1[j][1],2));
 		dist /= (n*(n-1))/2;
-		double beta_k = Math.pow(dist,2)*1000000000;
+		double beta_k = Math.pow(dist,2)*100;
 		beta_k++;
 		DoubleMatrix2D c = bookstein(count, X1, X2, beta_k, E);
 		double sc_cost = shapeContextCost(N, costs, good_rows, good_columns, count);
@@ -552,8 +553,11 @@ public class ShapeHistogram {
 		mean_squared_error /= count;
 		//System.out.println("mse: " + mean_squared_error);
 		// using digit distance function from paper
-		double total_cost = sc_cost + .3 * E[0];
-		//System.out.println("Total cost: " + total_cost + " bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
+		double total_cost = sc_cost + costWeighting * E[0];
+		if (verbose) {
+			System.out.println("Total cost: " + total_cost + " bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
+			System.out.println("Discarded " + (N - count - dummy_padding) + " points.");
+		}
 		return total_cost; // just bending energy
 		//return 1.6 * E[0] + sc_cost + .3 * E[1];
 	}

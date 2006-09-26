@@ -53,7 +53,11 @@ public class ShapeContext {
 	
 	public double[][] points()
 	{
-		int N = size();
+		return points(size());
+	}
+
+	public double[][] points(int N)
+	{
 		ArrayList<InkSample> controlPoints = resample(N);
 		double[][] pts = new double[N][2];
 		for(int i=0;i<N;i++) {
@@ -62,7 +66,7 @@ public class ShapeContext {
 		}
 		return pts;
 	}
-	
+
 	public ArrayList<InkSample> resample(int samples)
 	{
 		// special case
@@ -190,10 +194,10 @@ public class ShapeContext {
 			return blendedSample;
 	  }
 	  
-	  public ArrayList<ShapeHistogram> generateShapeHistogram(int points, boolean rotationInvariant, boolean timeSensitive)
+	  public ArrayList<ShapeHistogram> generateShapeHistogram(int points, int dummy_padding, boolean rotationInvariant, boolean timeSensitive)
 	  {
 		  // histogram for each point
-		  int dummy_points = size();
+		  int dummy_points = points - dummy_padding;//size();
 		  ArrayList<ShapeHistogram> histograms = new ArrayList<ShapeHistogram>();
 		  ArrayList<InkSample> samples = resample(dummy_points);
 		  ArrayList<InkSample> tangents = new ArrayList<InkSample>();// tangents(points);
