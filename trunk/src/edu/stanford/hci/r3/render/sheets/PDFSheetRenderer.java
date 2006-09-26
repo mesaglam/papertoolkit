@@ -58,8 +58,8 @@ public class PDFSheetRenderer extends SheetRenderer {
 		// deleted some code from here... about PDF Imported Page
 
 		// call the super's renderToG2D to paint all the other regions
-		DebugUtils.println("Commented Out Super.RenderToG2D");
-		// super.renderToG2D(g2d);
+		// DebugUtils.println("Commented Out Super.RenderToG2D"); (uncommented, obviously)
+		super.renderToG2D(g2d);
 	}
 
 	/**
