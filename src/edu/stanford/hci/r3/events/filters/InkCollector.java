@@ -90,7 +90,7 @@ public class InkCollector extends ContentFilter {
 	 * @return list of ALL the pen strokes.
 	 */
 	public Ink getInk() {
-		return new Ink(strokes);
+		return new Ink(new ArrayList<InkStroke>(strokes));
 	}
 
 	/**
