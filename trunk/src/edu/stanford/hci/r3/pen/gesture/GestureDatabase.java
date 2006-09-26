@@ -39,20 +39,20 @@ public class GestureDatabase implements ActionListener, FocusListener{
 	ArrayList<Gesture> gestures = new ArrayList<Gesture>();
 	ArrayList<ShapeContext> unlabeledContexts = new ArrayList<ShapeContext>();
 	ArrayList<Gesture> testGestures = new ArrayList<Gesture>();
-	private static BufferedReader stdin = new BufferedReader(new InputStreamReader( System.in ) );
+	private transient static BufferedReader stdin = new BufferedReader(new InputStreamReader( System.in ) );
 	PenGestureListener listener;
 	String databaseName;
-	private boolean commandMode;
-	private String inputString;
+	private transient boolean commandMode;
+	private transient String inputString;
 	private transient static JFrame inkDisplay;
 	private transient static InkPanel inkPanel;
 	private transient static JPanel mainPanel;
 	private transient static JPanel statusPanel;
 	private transient static JTextField entryField;
 	transient static GestureDatabase instance;
-	private static JLabel labelField;
+	private transient static JLabel labelField;
 	private transient Thread commandThread;
-	private boolean inputAvailable;
+	private transient boolean inputAvailable;
 	private ArrayList<ShapeContext> unlabeledTestContexts = new ArrayList<ShapeContext>();
 	
 	public GestureDatabase(String databaseName)
@@ -118,12 +118,13 @@ public class GestureDatabase implements ActionListener, FocusListener{
 					System.out.println("Gesture " + testGestures.get(i).name + ": " + testGestures.get(i).size());
 				break;
 			case 4:
+				listener.setContexts(null, 0);
 				listener.setDatabase(this);
 				print("Hit enter to end test.");
 				getString();
 				listener.setDatabase(null);
 			case 5: // add test examples to a gesture
-				System.out.print("Name: ");
+				print("Name: ");
 				name = getString();
 				gesture = null;
 				for (Gesture g : testGestures)
@@ -131,7 +132,7 @@ public class GestureDatabase implements ActionListener, FocusListener{
 						gesture = g;
 						break;
 					}
-				System.out.print("Examples: ");
+				print("Examples: ");
 				count = Integer.parseInt(getString());
 				listener.setContexts(gesture.contexts, count);
 				break;
@@ -166,6 +167,9 @@ public class GestureDatabase implements ActionListener, FocusListener{
 				listener.setContexts(unlabeledTestContexts, 1000);
 				print("Hit enter to end test.");
 				getString();
+				break;
+			case 11:
+				leaveOneOutOptimizeCostWeighting();
 				break;
 			case -1:
 				System.out.println("Exiting.");
@@ -242,7 +246,7 @@ public class GestureDatabase implements ActionListener, FocusListener{
 			index[i] = -1;
 		}
 		for(int i=0;i<gestures.size();i++) {
-			gestures.get(i).knnMatch(context, k, distance, clazz);
+			gestures.get(i).knnMatch(context, k, distance, clazz, verbose);
 			//double d = gestures.get(i).bestMatch(context);
 			//System.out.println("Category " + i + "(" + gestures.get(i).size() + " items): " + d);
 		}
@@ -376,6 +380,7 @@ public class GestureDatabase implements ActionListener, FocusListener{
 					"8: Assign class labels to unlabeled gestures",
 					"9: Add unlabeled gestures",
 					"10: Add unlabeled test gestures",
+					"11: Optimize cost weighting",
 					"-1: Exit",
 					"Option: "
 			};
@@ -534,6 +539,30 @@ public class GestureDatabase implements ActionListener, FocusListener{
 				}
 			}
 		}
+	}
+	
+	public void leaveOneOutOptimizeCostWeighting()
+	{
+		// try a range from .1 to 2 for kicks
+		int[] errors = new int[11];
+		for(int i=1;i<=10;i++) {
+			ShapeHistogram.costWeighting = i * .1;
+			for (Gesture gesture : gestures) {
+				for (int j=gesture.contexts.size()-1; j >= 0; j--) {
+					ShapeContext context = gesture.contexts.get(j);
+					gesture.contexts.remove(context);
+					String assignment = test(context, false);
+					if (assignment.compareTo(gesture.name) != 0) {
+						errors[i]++;
+						test(context, true);
+						System.out.println(gesture.name + " misclassified as " + assignment);
+					}
+					gesture.addGesture(context);
+				}
+			}
+			System.out.println("Error with cost weighting " + ShapeHistogram.costWeighting + ": " + errors[i]);
+		}
+		ShapeHistogram.costWeighting = .3;
 	}
 
 	public void actionPerformed(ActionEvent e) {

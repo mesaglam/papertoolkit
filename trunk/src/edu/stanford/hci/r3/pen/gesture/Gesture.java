@@ -24,15 +24,15 @@ public class Gesture {
 	{
 		double distance = Double.MAX_VALUE;
 		for(ShapeContext gesture : contexts) {
-			distance = Math.min(distance, ShapeHistogram.shapeContextMetric(context, gesture, rotationInvariant, timeSensitive));
+			distance = Math.min(distance, ShapeHistogram.shapeContextMetric(context, gesture, rotationInvariant, timeSensitive, false));
 		}
 		return distance;
 	}
 	
-	public void knnMatch(ShapeContext context, int k, double[] distance, String[] clazz)
+	public void knnMatch(ShapeContext context, int k, double[] distance, String[] clazz, boolean verbose)
 	{
 		for(ShapeContext gesture : contexts) {
-			double d = ShapeHistogram.shapeContextMetric(context, gesture, rotationInvariant, timeSensitive);
+			double d = ShapeHistogram.shapeContextMetric(context, gesture, rotationInvariant, timeSensitive, verbose);
 			for(int i=0;i<k;i++) {
 				if(d < distance[i]) {
 					for(int j=k-1;j>i;j--) {
@@ -57,7 +57,7 @@ public class Gesture {
 			ShapeContext context = contexts.get(i);
 			for(int j=0;j<contexts.size();j++) {
 				if (i==j) continue;
-				dNoRotationNoTime += ShapeHistogram.shapeContextMetric(context, contexts.get(j), false, false);
+				dNoRotationNoTime += ShapeHistogram.shapeContextMetric(context, contexts.get(j), false, false, false);
 			}
 		}
 		dNoRotationNoTime /= N*(N-1); 
@@ -67,7 +67,7 @@ public class Gesture {
 			ShapeContext context = contexts.get(i);
 			for(int j=0;j<contexts.size();j++) {
 				if (i==j) continue;
-				dRotationNoTime += ShapeHistogram.shapeContextMetric(context, contexts.get(j), true, false);
+				dRotationNoTime += ShapeHistogram.shapeContextMetric(context, contexts.get(j), true, false, false);
 			}
 		}
 		dRotationNoTime /= N*(N-1);
@@ -77,7 +77,7 @@ public class Gesture {
 			ShapeContext context = contexts.get(i);
 			for(int j=0;j<contexts.size();j++) {
 				if (i==j) continue;
-				dNoRotationTime += ShapeHistogram.shapeContextMetric(context, contexts.get(j), false, true);
+				dNoRotationTime += ShapeHistogram.shapeContextMetric(context, contexts.get(j), false, true, false);
 			}
 		}
 		dNoRotationTime /= N*(N-1);
@@ -87,7 +87,7 @@ public class Gesture {
 			ShapeContext context = contexts.get(i);
 			for(int j=0;j<contexts.size();j++) {
 				if (i==j) continue;
-				dRotationTime += ShapeHistogram.shapeContextMetric(context, contexts.get(j), true, true);
+				dRotationTime += ShapeHistogram.shapeContextMetric(context, contexts.get(j), true, true, false);
 			}
 		}
 		dRotationTime /= N*(N-1);
