@@ -20,9 +20,11 @@ public class ShapeContext {
 	
 	ArrayList<InkSample> controlPoints = new ArrayList<InkSample>();
 	public static int bands = 3;
+	String authorName;
 
-	public ShapeContext(ArrayList<InkSample> controlPointsInput) 
+	public ShapeContext(ArrayList<InkSample> controlPointsInput, String authorName) 
 	{
+		this.authorName = authorName;
 		// filter this for dupes
 		double[] times = new double[controlPointsInput.size()];
 		for(int i=0;i<controlPointsInput.size();i++) {
@@ -88,7 +90,7 @@ public class ShapeContext {
 		for(int i=0; i < samples; i++) {
 			double t = t0 + fraction * i;
 			int truncated = 0;
-			while (truncated + 1 < points && controlPoints.get(truncated + 1).timestamp < t) truncated++;
+			while (truncated + 2 < points && controlPoints.get(truncated + 1).timestamp < t) truncated++;
 			double start = controlPoints.get(truncated).timestamp;
 			double end = controlPoints.get(truncated+1).timestamp;
 			double remainder = (t-start) / (end - start);
@@ -188,9 +190,8 @@ public class ShapeContext {
 			return blendedSample;
 	  }
 	  
-	  public ArrayList<ShapeHistogram> generateShapeHistogram(int points)
+	  public ArrayList<ShapeHistogram> generateShapeHistogram(int points, boolean rotationInvariant, boolean timeSensitive)
 	  {
-		  boolean rotation_invariant = false;
 		  // histogram for each point
 		  int dummy_points = size();
 		  ArrayList<ShapeHistogram> histograms = new ArrayList<ShapeHistogram>();
@@ -204,6 +205,7 @@ public class ShapeContext {
 			  else next = samples.get(i+1);
 			  tangents.add(new InkSample(next.x-last.x,next.y-last.y,0,0)); // crude
 		  }
+		  int bands = timeSensitive?3:2;
 		  double[][] bins = new double[3][];
 		  int[] bin_counts = new int[3];
 		  boolean[] explicit_binning = new boolean[3];
@@ -258,7 +260,7 @@ public class ShapeContext {
 		  for (InkSample sample : samples) {
 			  ShapeHistogram histogram = new ShapeHistogram(bin_counts, mins, maxes, explicit_binning, bins, bands);
 			  InkSample tangent = tangents.get(samples.indexOf(sample)); // sue me, I'm lax
-			  double theta = rotation_invariant?Math.atan2(tangent.y, tangent.x):0;
+			  double theta = rotationInvariant?Math.atan2(tangent.y, tangent.x):0;
 			  for (InkSample secondSample : samples) {
 				  if (sample.equals(secondSample)) continue;
 				  // for rotation invariance, adjust angles by setting normal to curve to some

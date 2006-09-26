@@ -467,13 +467,14 @@ public class ShapeHistogram {
 		return result;
 	}
 
-	public static double shapeContextMetric(ShapeContext shape1, ShapeContext shape2)
+	public static double shapeContextMetric(ShapeContext shape1, ShapeContext shape2,
+			boolean rotationInvariant, boolean timeSensitive)
 	{
 		int dummy_padding = 2;
 		int N = Math.max(shape1.size(), shape2.size()) + dummy_padding;
 		int n = Math.min(shape1.size(), shape2.size()) + dummy_padding;
-		ArrayList<ShapeHistogram> histogram1 = shape1.generateShapeHistogram(N);
-		ArrayList<ShapeHistogram> histogram2 = shape2.generateShapeHistogram(N);
+		ArrayList<ShapeHistogram> histogram1 = shape1.generateShapeHistogram(N, rotationInvariant, timeSensitive);
+		ArrayList<ShapeHistogram> histogram2 = shape2.generateShapeHistogram(N, rotationInvariant, timeSensitive);
 		// dummy value must vary as function of number of points used
 		double[][] costs = computeCostMatrix(histogram1, histogram2, shape1.size(), shape2.size(), 4);
 		int[] matching = munkres(N, costs);
@@ -539,7 +540,7 @@ public class ShapeHistogram {
 		for(int i=0;i<count;i++) for(int j=i+1;j<count;j++)
 			dist += Math.sqrt(Math.pow(X1[i][0]-X1[j][0],2)+Math.pow(X1[i][1]-X1[j][1],2));
 		dist /= (n*(n-1))/2;
-		double beta_k = Math.pow(dist,2)*100000;
+		double beta_k = Math.pow(dist,2)*1000000000;
 		beta_k++;
 		DoubleMatrix2D c = bookstein(count, X1, X2, beta_k, E);
 		double sc_cost = shapeContextCost(N, costs, good_rows, good_columns, count);
@@ -551,8 +552,9 @@ public class ShapeHistogram {
 		mean_squared_error /= count;
 		//System.out.println("mse: " + mean_squared_error);
 		// using digit distance function from paper
-		//System.out.println("Distance based on bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
-		return sc_cost + .3 * E[0]; // just bending energy
+		double total_cost = sc_cost + .3 * E[0];
+		//System.out.println("Total cost: " + total_cost + " bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
+		return total_cost; // just bending energy
 		//return 1.6 * E[0] + sc_cost + .3 * E[1];
 	}
 /*

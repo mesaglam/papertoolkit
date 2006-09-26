@@ -18,6 +18,7 @@ public class PenGestureListener implements PenListener {
 	int gestureThreshold = 10;
 	int remainingContexts = 0;
 	private GestureDatabase database;
+	private String author;
 	
 	private static BufferedReader stdin = new BufferedReader(new InputStreamReader( System.in ) );
 	
@@ -36,17 +37,30 @@ public class PenGestureListener implements PenListener {
 	{
 		final double categoryThreshold = 20;
 		if (samples != null && samples.size() > gestureThreshold && remainingContexts > 0) {
+			// normalize samples by first in space, maybe time
+			double min_x = Double.MAX_VALUE, min_y = Double.MAX_VALUE;
+			long min_t = Long.MAX_VALUE;
+			for (InkSample inksample : samples) {
+				min_x = Math.min(min_x, inksample.x);
+				min_y = Math.min(min_y, inksample.y);
+				min_t = Math.min(min_t, inksample.timestamp);
+			}
+			for (InkSample inksample : samples) {
+				inksample.x -= min_x;
+				inksample.y -= min_y;
+				inksample.timestamp -= min_t;
+			}
 			System.out.println("Gesture accepted.");
 			remainingContexts--;
 			int index = -1;
 			double distance = Double.MAX_VALUE;
-			ShapeContext context = new ShapeContext(samples);
+			ShapeContext context = new ShapeContext(samples, author);
 			contexts.add(context);
 			if(remainingContexts == 0)
 				System.out.println("Done reading gestures.");
 		}
 		else if (samples != null && samples.size() > gestureThreshold && database != null) {
-			ShapeContext context = new ShapeContext(samples);
+			ShapeContext context = new ShapeContext(samples, "");
 			database.test(context, true);
 		}
 		samples = null;
@@ -84,5 +98,10 @@ public class PenGestureListener implements PenListener {
 	public void setDatabase(GestureDatabase database) {
 		// TODO Auto-generated method stub
 		this.database = database;
+	}
+
+	public void setAuthor(String author) {
+		// TODO Auto-generated method stub
+		this.author = author;
 	}
 }
