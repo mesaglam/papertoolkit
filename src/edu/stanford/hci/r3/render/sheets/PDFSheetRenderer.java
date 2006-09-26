@@ -1,19 +1,24 @@
 package edu.stanford.hci.r3.render.sheets;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
+import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.render.SheetRenderer;
+import edu.stanford.hci.r3.units.coordinates.Coordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
@@ -51,6 +56,7 @@ public class PDFSheetRenderer extends SheetRenderer {
 	 * @param g2d
 	 */
 	public void renderToG2D(Graphics2D g2d) {
+		/*
 		// TODO: FIX THIS AT SOME POINT...
 		// render the PDF to the g2d's background (do we need to do this? since we are using a stamper???)
 		PdfReader reader = pdfSheet.getReader();
@@ -58,8 +64,31 @@ public class PDFSheetRenderer extends SheetRenderer {
 		// deleted some code from here... about PDF Imported Page
 
 		// call the super's renderToG2D to paint all the other regions
-		// DebugUtils.println("Commented Out Super.RenderToG2D"); (uncommented, obviously)
+		//DebugUtils.println("Commented Out Super.RenderToG2D"); //(uncommented, obviously)
 		super.renderToG2D(g2d);
+		*/
+		
+		// anti-aliased, high quality rendering
+		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+
+		final List<Region> regions = sheet.getRegions();
+
+		// render each region
+		for (Region r : regions) {
+			if (r.isActive()) continue;
+			// Weird. g2d.getTransform SHOULD give us a copy....
+			// a real copy
+			final AffineTransform currTransform = new AffineTransform(g2d.getTransform());
+			DebugUtils.println("Rendering " + r.getName());
+			final Coordinates regionOffset = sheet.getRegionOffset(r);
+			final double xOffsetPts = regionOffset.getX().getValueInPoints();
+			final double yOffsetPts = regionOffset.getY().getValueInPoints();
+			// System.out.println(xOffsetPts);
+			// g2d.transform(AffineTransform.getTranslateInstance(xOffsetPts, yOffsetPts));
+			g2d.translate((int) xOffsetPts, (int) yOffsetPts);
+			r.getRenderer().renderToG2D(g2d);
+			g2d.setTransform(currTransform);
+		}
 	}
 
 	/**
