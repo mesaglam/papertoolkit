@@ -31,11 +31,15 @@ public class BuddySketchPaperUI extends Sheet {
 
 	private InkCollector inkWell;
 
+	private BuddySketch sketchApp;
+
 	/**
+	 * @param sketch
 	 * 
 	 */
-	public BuddySketchPaperUI() {
+	public BuddySketchPaperUI(BuddySketch sketch) {
 		super(44, 24); // inches
+		sketchApp = sketch;
 		addDrawingRegion();
 		addPhotoRegions();
 	}
@@ -100,7 +104,8 @@ public class BuddySketchPaperUI extends Sheet {
 
 		for (String desc : files.keySet()) {
 			final String fileName = files.get(desc);
-			final ImageRegion imgRegion = new ImageRegion(desc, new File(parentDir, fileName), //
+			final File imgFile = new File(parentDir, fileName);
+			final ImageRegion imgRegion = new ImageRegion(desc, imgFile, //
 					xInches, new Inches(yInches));
 			imgRegion.setScale(0.5, 0.5);
 
@@ -115,6 +120,7 @@ public class BuddySketchPaperUI extends Sheet {
 				@Override
 				public void clicked(PenEvent e) {
 					DebugUtils.println("Clicked " + fileName + " at " + e.getPercentageLocation());
+					sketchApp.displayImage(imgFile);
 				}
 
 				@Override

@@ -1,10 +1,6 @@
 package edu.stanford.hci.r3.demos.sketch;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +8,12 @@ import javax.swing.JOptionPane;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.actions.R3Action;
+import edu.stanford.hci.r3.actions.remote.*;
+import edu.stanford.hci.r3.actions.types.ProcessInformationAction;
 import edu.stanford.hci.r3.devices.Device;
+import edu.stanford.hci.r3.networking.ClientServerType;
+import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.components.EndlessProgressDialog;
 
@@ -63,15 +64,24 @@ public class BuddySketch extends Application {
 		new BuddySketch();
 	}
 
+	private ActionReceiver actionReceiver;
+
+	/**
+	 * The frame.
+	 */
+	private BuddySketchGUI buddySketchGUI;
+
+	/**
+	 * This has got to be the worst name ever. It's a wonder I got into this business.
+	 */
+	private BuddySketchPaperUI buddySketchPUI;
+
 	/**
 	 * The device we want to connect to...
 	 */
 	private Device device = null;
 
-	/**
-	 * 
-	 */
-	private BuddySketchPaperUI paperUI;
+	private Pen myPen;
 
 	/**
 	 * 
@@ -83,8 +93,10 @@ public class BuddySketch extends Application {
 		setUserChoosesPDFDestinationFlag(false);
 
 		// set up the GIGAprint application
-		paperUI = new BuddySketchPaperUI();
-		addSheet(paperUI, new File("data/Sketch/BuddySketchUI.patternInfo.xml"));
+		buddySketchPUI = new BuddySketchPaperUI(this);
+		addSheet(buddySketchPUI, new File("data/Sketch/BuddySketchUI.patternInfo.xml"));
+
+		addLocalPen();
 
 		if (false) {
 			renderToPDF();
@@ -92,15 +104,27 @@ public class BuddySketch extends Application {
 			// load it up and start!
 			PaperToolkit r3 = new PaperToolkit();
 			r3.useApplicationManager(true);
-			r3.loadApplication(this);
+			r3.startApplication(this);
 		}
 	}
 
 	/**
 	 * 
 	 */
-	private void connectToTheOtherComputer() {
-		final HostNameWithComment[] availableHosts = loadIPAddressesFromFile();
+	private void addLocalPen() {
+		myPen = new Pen("Local Pen");
+		addPen(myPen);
+	}
+
+	/**
+	 * 
+	 */
+	private void chooseOtherComputer() {
+
+		HostNameWithComment[] availableHosts = loadIPAddressesFromPrivateFile();
+		if (availableHosts.length == 0) {
+			availableHosts = loadIPAddressesFromFile();
+		}
 
 		HostNameWithComment hostNameWComment = null;
 		boolean hostAddressable = false;
@@ -109,8 +133,8 @@ public class BuddySketch extends Application {
 		while (!hostAddressable) {
 			hostNameWComment = (HostNameWithComment) JOptionPane.showInputDialog(null,
 					"Please enter the hostname or " + "IP Address of your friend's computer.",
-					"Connect to which computer?", JOptionPane.QUESTION_MESSAGE, null,
-					availableHosts, availableHosts[0]);
+					"Connect to which computer?", JOptionPane.QUESTION_MESSAGE, null, availableHosts,
+					availableHosts[0]);
 			if (hostNameWComment == null) {
 				DebugUtils.println("You decided not to run Remote Sketch!");
 				System.exit(0);
@@ -137,11 +161,34 @@ public class BuddySketch extends Application {
 	}
 
 	/**
+	 * @return
+	 */
+	private ActionReceiverConnectionListener getConnectionListener() {
+		return new ActionReceiverConnectionListener() {
+			public void newConnectionFrom(String hostName, String ipAddr) {
+				DebugUtils.println("New Connection From: " + hostName + " " + ipAddr);
+			}
+		};
+	}
+
+	/**
 	 * @see edu.stanford.hci.r3.Application#initializeBeforeStarting()
 	 */
 	@Override
 	protected void initializeBeforeStarting() {
-		connectToTheOtherComputer();
+		startLocalActionReceiver();
+
+		// pause here at the dialog box! =)
+		chooseOtherComputer();
+
+		// start up my GUI... where my Ink & Photos display and also where the other person's Ink &
+		// Photos display
+		buddySketchGUI = new BuddySketchGUI(this);
+
+		// connect!
+		device.connect();
+		ProcessInformationAction a = new ProcessInformationAction("File", new File("."));
+		device.invokeAction(a);
 	}
 
 	/**
@@ -175,11 +222,90 @@ public class BuddySketch extends Application {
 	}
 
 	/**
+	 * @return
+	 */
+	private HostNameWithComment[] loadIPAddressesFromPrivateFile() {
+		List<HostNameWithComment> hostNames = new ArrayList<HostNameWithComment>();
+		try {
+			File f = new File("data/Sketch/BuddySketchPrivateHostNames.txt");
+			if (f.exists()) {
+				BufferedReader br = new BufferedReader(new FileReader(f));
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					if (!line.contains("//")) {
+						continue; // next!
+					}
+					String ipAddr = line.substring(0, line.indexOf("//")).trim();
+					if (ipAddr.length() == 0) {
+						// not a well formed IP or hostname
+						continue;
+					}
+
+					String comment = line.substring(line.indexOf("//"));
+					hostNames.add(new HostNameWithComment(ipAddr, comment));
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return hostNames.toArray(new HostNameWithComment[] {});
+	}
+
+	/**
 	 * Disregard the input...
 	 * 
 	 * @see edu.stanford.hci.r3.Application#renderToPDF(java.io.File, java.lang.String)
 	 */
 	public void renderToPDF() {
-		paperUI.getRenderer().renderToPDF(new File("data/Sketch/BuddySketchUI.pdf"));
+		buddySketchPUI.getRenderer().renderToPDF(new File("data/Sketch/BuddySketchUI.pdf"));
+	}
+
+	/**
+	 * 
+	 */
+	private void startLocalActionReceiver() {
+		actionReceiver = new ActionReceiver(ActionReceiver.DEFAULT_JAVA_PORT, ClientServerType.JAVA,
+				new String[] { "localhost", "*" }); // trust everyone!
+
+		actionReceiver.setConnectionListener(getConnectionListener());
+
+		// invokes the actions
+		actionReceiver.addActionHandler(new ActionHandler() {
+
+			/**
+			 * @see edu.stanford.hci.r3.actions.remote.ActionHandler#receivedAction(edu.stanford.hci.r3.actions.R3Action)
+			 */
+			@Override
+			public void receivedAction(R3Action action) {
+				if (action instanceof ProcessInformationAction) {
+					ProcessInformationAction p = (ProcessInformationAction) action;
+					Object msgVal = p.getInformation();
+					String msgName = p.getName();
+
+					System.err.println(msgName + " " + msgVal);
+
+				} else {
+					action.invoke();
+				}
+			}
+
+			/**
+			 * @see edu.stanford.hci.r3.actions.remote.ActionHandler#receivedActionText(java.lang.String)
+			 */
+			@Override
+			public void receivedActionText(String line) {
+				super.receivedActionText(line);
+			}
+
+		});
+	}
+
+	/**
+	 * @param imgFile
+	 */
+	public void displayImage(File imgFile) {
+		buddySketchGUI.displayPhoto(imgFile);
 	}
 }

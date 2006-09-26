@@ -3,5 +3,16 @@
 // take the IP address OR hostname from before the two-slash comment...
 // white space is OK
 
+localhost		// For Debugging
 171.66.32.119	// Ron's Laptop (VeracruzX)
 171.64.77.175	// Bananaslug
+192.168.1.2		// Red
+192.168.1.3		// Blue & Silver
+192.168.1.4		// Green
+192.168.1.5		// Yellow
+192.168.1.6
+192.168.1.100	// Ron's Laptop (VeracruzX) at Home
+192.168.1.101	// ...at Home
+192.168.1.102	// Blue & Silver at Home
+192.168.1.103	// Ron's Laptop (VeracruzX) at Home
+192.168.1.104	// ...at Home
