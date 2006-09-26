@@ -7,32 +7,26 @@ import java.util.List;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ImageRegion;
 import edu.stanford.hci.r3.paper.regions.TextRegion;
-import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 public class BoingBoingPaperApp extends Application {
 
-	private final boolean RENDER_NEW_STORIES = false;
-	private final boolean OUTPUT_PDF = true;
-	private final boolean OUTPUT_ACTIVE_PDF = true;
-	private final boolean ADD_HANDLERS = true;
+	private final boolean RENDER_NEW_STORIES = true;
+	private final boolean MAKE_ACTIVE = false;
 	
 	private final Color BB_RED = new Color(191,0,0);
 	
 	private final Font TITLE_FONT = new Font("Trebuchet MS", Font.BOLD, 36);
 	private final Font BODY_FONT = new Font("Trebuchet MS", Font.PLAIN, 14);
 	private final Font BYLINE_FONT = new Font("Trebuchet MS", Font.PLAIN, 12);
-	
-	/**
-	 * 
-	 */
-	private File file;
 
 	/**
 	 * 
@@ -42,10 +36,22 @@ public class BoingBoingPaperApp extends Application {
 	public BoingBoingPaperApp() {
 		super("BoingBoing");
 		
+		// For using a PDF in the background instead of a Jpeg
 		// file = new File("data/Blog/bb_blank.pdf");
 		// sheet = new PDFSheet(file);
 		
 		sheet = new Sheet(51, 38);
+		
+		sheet.registerConfigurationPath(new File("data/Blog/"));
+		
+		// Put the background on the sheet
+		File background = new File("data/Blog/bb_blank.jpg");
+		if (background.exists()) {
+			ImageRegion ir = new ImageRegion("background", background, new Inches(1), new Inches(1));
+			double imageScale = 36.0 / ir.getHeightVal();
+			ir.setScale(imageScale, imageScale);
+			sheet.addRegion(ir);
+		}
 		
 		// First, get the BoingBoing entries we're going to use
 		BoingBoingEntry entries[];
@@ -72,24 +78,18 @@ public class BoingBoingPaperApp extends Application {
 			entries = (BoingBoingEntry[]) PaperToolkit.fromXML(new File("data/Blog/bb_stories.xml"));
 		}
 		
-		if (RENDER_NEW_STORIES || OUTPUT_PDF || OUTPUT_ACTIVE_PDF) {
-			// Layout the entries themselves
-			layoutEntries(entries);
-			// Then, setup the regions
-			layoutRegions(entries.length);
-		}
+		// Layout the entries themselves
+		layoutEntries(entries);
+		// Then, setup the regions
+		layoutRegions(entries.length);
 		
-		if (OUTPUT_ACTIVE_PDF || ADD_HANDLERS) {
+		if (MAKE_ACTIVE) {
 			// Add handlers to regions
 			initializePaperUI(entries);
 		}
 		
 		// must go after adding all regions and event handlers
 		addSheet(sheet);
-		
-		if (RENDER_NEW_STORIES || OUTPUT_PDF) { // we rendered new stories, so we have to render the PDF
-			sheet.getRenderer().renderToPDF(new File("data/Blog/bb_stories.pdf"));
-		}
 		
 	}
 	
@@ -164,13 +164,22 @@ public class BoingBoingPaperApp extends Application {
 	private void initializePaperUI(BoingBoingEntry[] entries) {
 		for (int i = 0 ; i < entries.length; i++) {
 			final String link = entries[i].link;
+			final String title = entries[i].title;
 			sheet.getRegion("Link" + i).addEventHandler(new ClickAdapter() {
 				public void pressed(PenEvent e) {
 					Application.doOpenURL(link);
+					DebugUtils.println("Clicked on link for story \"" + title + "\", opening URL: " + link);
 				}
 			});
 			
-			sheet.getRegion("Comment" + i).addContentFilter(new CommentCollector(entries[i], i));
+			CommentCollector cc = new CommentCollector(entries[i], i);
+			sheet.getRegion("Comment" + i).addContentFilter(cc);
+			cc.addListener(new ContentFilterListener() {
+				public void contentArrived() {
+					DebugUtils.println("Comments are being made on story \"" + title + "\"");	
+				}
+			});
+			
 			
 		}
 		
@@ -179,7 +188,7 @@ public class BoingBoingPaperApp extends Application {
 	public static void main(String[] args) {
 		BoingBoingPaperApp print = new BoingBoingPaperApp();
 		
-		PaperToolkit p = new PaperToolkit(false);
+		PaperToolkit p = new PaperToolkit(true);
 		p.loadApplication(print);
 	}
 	

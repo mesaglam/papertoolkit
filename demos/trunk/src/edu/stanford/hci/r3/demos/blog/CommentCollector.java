@@ -7,6 +7,7 @@ import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 public class CommentCollector extends InkCollector {
 
@@ -52,7 +53,7 @@ public class CommentCollector extends InkCollector {
 		r.renderToJPEG(comment_image, new Pixels(1), new Inches(8.5), new Inches(8.5));
 
 		// TODO: Update RSS feed here
-
+		DebugUtils.println("Stored comment for story \"" + bbentry.title + "\"");
 		count++;
 
 	}
