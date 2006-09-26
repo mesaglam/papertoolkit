@@ -18,9 +18,10 @@ import edu.stanford.hci.r3.units.Inches;
 
 public class BoingBoingPaperApp extends Application {
 
-	private final boolean RENDER_NEW_STORIES = false;
+	private final boolean RENDER_NEW_STORIES = true;
 	private final boolean OUTPUT_PDF = true;
 	private final boolean OUTPUT_ACTIVE_PDF = false;
+	private final boolean ADD_HANDLERS = false;
 	
 	private final Color BB_RED = new Color(191,0,0);
 	
@@ -69,19 +70,19 @@ public class BoingBoingPaperApp extends Application {
 			entries = (BoingBoingEntry[]) PaperToolkit.fromXML(new File("data/Blog/bb_stories.xml"));
 		}
 		
-		if (RENDER_NEW_STORIES || OUTPUT_PDF) {
+		if (RENDER_NEW_STORIES || OUTPUT_PDF || OUTPUT_ACTIVE_PDF) {
 			// Layout the entries themselves
 			layoutEntries(entries);
+			// Then, setup the regions
+			layoutRegions(entries.length);
 		}
 		
-		// Then, setup the regions
-		layoutRegions(entries.length);
-
-		// Add handlers to regions
-		initializePaperUI(entries);
-
+		if (OUTPUT_ACTIVE_PDF || ADD_HANDLERS) {
+			// Add handlers to regions
+			initializePaperUI(entries);
+		}
 		
-		// must go after addRegions
+		// must go after adding all regions and event handlers
 		addSheet(sheet);
 		
 		if (RENDER_NEW_STORIES || OUTPUT_PDF) { // we rendered new stories, so we have to render the PDF
@@ -100,16 +101,15 @@ public class BoingBoingPaperApp extends Application {
 			
 			// add link
 			r = new Region("Link" + i, 0.25 + xOffset, 5.125 + yOffset, 0.625, 0.625);
-			//pr.setStrokeThickness(0);
-			r.setStrokeColor(new Color(128,128,128,255));
-			//pr.setActive(true);
+			if (OUTPUT_ACTIVE_PDF) { // don't draw a border if we're drawing actual Anoto
+				r.setStrokeColor(new Color(0,0,0,0));
+			}
 			sheet.addRegion(r);
 			
 			// add comments section
 			r = new Region("Comment" + i, 0.25 + xOffset, 6.25 + yOffset, 8.5, 8.5);
-			if (OUTPUT_ACTIVE_PDF) {
+			if (OUTPUT_ACTIVE_PDF) { // don't draw a border if we're drawing actual Anoto
 				r.setStrokeColor(new Color(0,0,0,0));
-//				r.setActive(true); // will this break pattern rendering???
 			}
 			sheet.addRegion(r);
 		}
