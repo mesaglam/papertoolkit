@@ -10,6 +10,17 @@ import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.util.DebugUtils;
 
+/**
+ * <p>
+ * Task 3 of the CHI 2007 Studies.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ */
 public class AudioGuide extends Application {
 
 	/**
@@ -18,8 +29,8 @@ public class AudioGuide extends Application {
 	public static void main(String[] args) {
 		AudioGuide guide = new AudioGuide();
 		PaperToolkit p = new PaperToolkit();
-		p.useApplicationManager(true);
-		p.loadApplication(guide);
+		p.useApplicationManager(true); // flip to false later on
+		p.loadApplication(guide); // just call start later on
 	}
 
 	/**
@@ -33,6 +44,14 @@ public class AudioGuide extends Application {
 	public AudioGuide() {
 		super("Audio Guide");
 		initializePaperUI();
+	}
+
+	/**
+	 * @see edu.stanford.hci.r3.Application#initializeBeforeStarting()
+	 */
+	@Override
+	protected void initializeBeforeStarting() {
+
 	}
 
 	/**
@@ -69,14 +88,6 @@ public class AudioGuide extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#initializeBeforeStarting()
-	 */
-	@Override
-	protected void initializeBeforeStarting() {
-
-	}
-
-	/**
 	 * @see edu.stanford.hci.r3.Application#renderToPDF()
 	 */
 	public void renderToPDF() {
@@ -91,6 +102,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Church Photos.");
+				doPlaySound(new File("data/AudioGuide/audio/MemorialChurch.wav"));
 			}
 		});
 	}
@@ -103,6 +115,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Gates Building.");
+				doPlaySound(new File("data/AudioGuide/audio/Gates.wav"));
 			}
 		});
 	}
@@ -112,6 +125,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Generic Photos.");
+				doPlaySound(new File("data/AudioGuide/audio/SEQ.wav"));
 			}
 		});
 	}
@@ -121,6 +135,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Geology.");
+				doPlaySound(new File("data/AudioGuide/audio/GeologyCorner.wav"));
 			}
 		});
 	}
@@ -130,6 +145,8 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on Gilbert and Herrin.");
+				doPlaySound(new File("data/AudioGuide/audio/Bio1.wav"));
+				// doPlaySound(new File("data/AudioGuide/audio/Bio2.wav"));
 			}
 		});
 	}
@@ -139,6 +156,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the GSB.");
+				doPlaySound(new File("data/AudioGuide/audio/GSB.wav"));
 			}
 		});
 	}
@@ -148,6 +166,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the History.");
+				doPlaySound(new File("data/AudioGuide/audio/History.wav"));
 			}
 		});
 	}
@@ -157,6 +176,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Language.");
+				doPlaySound(new File("data/AudioGuide/audio/LanguageCorner.wav"));
 			}
 		});
 	}
@@ -176,6 +196,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Oval.");
+				doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
 			}
 		});
 	}
@@ -194,6 +215,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Packard Photos.");
+				doPlaySound(new File("data/AudioGuide/audio/SEQ.wav"));
 			}
 		});
 	}
@@ -203,6 +225,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Quad.");
+				doPlaySound(new File("data/AudioGuide/audio/MainQuad.wav"));
 			}
 		});
 	}
@@ -221,6 +244,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Tressider.");
+				doPlaySound(new File("data/AudioGuide/audio/Tressider.wav"));
 			}
 		});
 	}
@@ -231,6 +255,7 @@ public class AudioGuide extends Application {
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Where Am I.");
 				System.out.println(e.getPercentageLocation());
+				doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
 			}
 		});
 	}
@@ -241,6 +266,8 @@ public class AudioGuide extends Application {
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the White Plaza.");
 				System.out.println(e.getPercentageLocation());
+				doPlaySound(new File("data/AudioGuide/audio/WhitePlaza1.wav"));
+				// doPlaySound(new File("data/AudioGuide/audio/WhietPlaza2.wav"));
 			}
 		});
 	}
