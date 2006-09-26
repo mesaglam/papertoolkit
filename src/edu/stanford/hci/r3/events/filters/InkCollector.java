@@ -111,6 +111,17 @@ public class InkCollector extends ContentFilter {
 	}
 
 	/**
+	 * @return timestamp that last stroke was completed, in milliseconds, or -1 if there are no strokes.
+	 */
+	public long getLastTimestamp() {
+		if (strokes != null && strokes.size() >= 1) {
+			return strokes.get(strokes.size() - 1).getLastTimestamp();
+		} else {
+			return -1;
+		}
+	}
+	
+	/**
 	 * @param xmlFile
 	 */
 	public void saveToXMLFile(File xmlFile) {
