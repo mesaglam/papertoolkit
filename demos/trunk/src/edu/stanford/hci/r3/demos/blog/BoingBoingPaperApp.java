@@ -19,8 +19,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 public class BoingBoingPaperApp extends Application {
 
-	private final boolean RENDER_NEW_STORIES = true;
-	private final boolean MAKE_ACTIVE = false;
+	private final boolean RENDER_NEW_STORIES = false;
+	private final boolean MAKE_ACTIVE = true;
 	
 	private final Color BB_RED = new Color(191,0,0);
 	
@@ -42,7 +42,7 @@ public class BoingBoingPaperApp extends Application {
 		
 		sheet = new Sheet(51, 38);
 		
-		sheet.registerConfigurationPath(new File("data/Blog/"));
+		sheet.registerConfigurationPath(new File("./data/Blog/"));
 		
 		// Put the background on the sheet
 		File background = new File("data/Blog/bb_blank.jpg");
@@ -171,7 +171,7 @@ public class BoingBoingPaperApp extends Application {
 					DebugUtils.println("Clicked on link for story \"" + title + "\", opening URL: " + link);
 				}
 			});
-			
+
 			CommentCollector cc = new CommentCollector(entries[i], i);
 			sheet.getRegion("Comment" + i).addContentFilter(cc);
 			cc.addListener(new ContentFilterListener() {
@@ -179,7 +179,6 @@ public class BoingBoingPaperApp extends Application {
 					DebugUtils.println("Comments are being made on story \"" + title + "\"");	
 				}
 			});
-			
 			
 		}
 		
