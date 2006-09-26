@@ -1,12 +1,17 @@
 package edu.stanford.hci.r3.demos.blog;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.syndication.feed.synd.*;
+import com.sun.syndication.feed.synd.SyndContent;
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
+
+import edu.stanford.hci.r3.util.files.FileUtils;
 
 public class BoingBoingReader {
 
@@ -40,6 +45,14 @@ public class BoingBoingReader {
 			for (SyndEntry entry : entries) {
 				bbentries.add(parseBoingBoingEntry(entry));
 			}
+			
+			for (BoingBoingEntry bbentry : bbentries) {
+				if (bbentry.image.toLowerCase().endsWith(".jpg") || bbentry.image.toLowerCase().endsWith(".jpeg")) {
+					String filename = bbentry.image.substring(bbentry.image.lastIndexOf("/") + 1);
+					FileUtils.downloadUrlToFile(new URL(bbentry.image), new File("data/Blog/images/" + filename));
+				}
+			}
+			
 			return bbentries;
 		}
 		catch (Exception ex) {
@@ -53,17 +66,20 @@ public class BoingBoingReader {
 		BoingBoingEntry bbentry = new BoingBoingEntry();
 		bbentry.title = entry.getTitle();
 		bbentry.link = entry.getUri();
+		bbentry.date = entry.getPublishedDate();
 
 		if (entry.getContents().size() > 0) {
 			String content = ((SyndContent) (entry.getContents().get(0))).getValue();
 			int p, q;
 
+			bbentry.html = content;
+			
 			// first, we get the author out
 			p = content.indexOf("<strong>");
 			q = content.indexOf("</strong>");
 			bbentry.author = content.substring(p + 8, q);
 			content = content.substring(q+10);
-
+			
 			// next, we get an image URL
 			p = content.indexOf("<img src=\"");
 			q = content.indexOf("\"", p+10);
@@ -72,6 +88,10 @@ public class BoingBoingReader {
 			// finally, we strip the content of all HTML tags, and store it in the body
 			content = content.replaceAll("\n", "");
 			content = content.replaceAll("<p>", "\n");
+			content = content.replaceAll("<P>", "\n");
+			content = content.replaceAll("<br>", "\n");
+			content = content.replaceAll("<BR>", "\n");
+			
 			q = -1;
 			p = content.indexOf("<");
 			while (p >= 0) {
@@ -79,10 +99,14 @@ public class BoingBoingReader {
 					if (bbentry.body.length() > 0 &&
 						bbentry.body.charAt(bbentry.body.length()-1) != ' ' &&
 						bbentry.body.charAt(bbentry.body.length()-1) != '\n' &&
+						bbentry.body.charAt(bbentry.body.length()-1) != '(' &&
 						content.charAt(q+1) != ' ' && 
 						content.charAt(q+1) != ',' &&
 						content.charAt(q+1) != ';' &&
-						content.charAt(q+1) != ':') {
+						content.charAt(q+1) != ':' &&
+						content.charAt(q+1) != '.' &&
+						content.charAt(q+1) != '!' &&
+						content.charAt(q+1) != ')') {
 						bbentry.body = bbentry.body + " ";
 					}
 					bbentry.body = bbentry.body + content.substring(q+1, p);
@@ -103,22 +127,4 @@ public class BoingBoingReader {
 		return bbentry;
 	}
 
-}
-
-class BoingBoingEntry {
-	String title = "";
-	String author = "";
-	String body = "";
-	String image = "";
-	String link = "";
-
-	public String toString() {
-		String result = "BoingBoingEntry:\n";
-		result = result + "  Title:  [" + title + "]\n";
-		result = result + "  Author: [" + author + "]\n";
-		result = result + "  Image:  [" + image + "]\n";
-		result = result + "  Link:   [" + link + "]\n";
-		result = result + "  Body:\n" + body;
-		return result;
-	}
 }
