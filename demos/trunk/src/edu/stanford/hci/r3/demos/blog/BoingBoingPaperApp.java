@@ -42,8 +42,10 @@ public class BoingBoingPaperApp extends Application {
 	public BoingBoingPaperApp() {
 		super("BoingBoing");
 		
-		file = new File("data/Blog/bb_blank.pdf");
-		sheet = new PDFSheet(file);
+		// file = new File("data/Blog/bb_blank.pdf");
+		// sheet = new PDFSheet(file);
+		
+		sheet = new Sheet(51, 38);
 		
 		// First, get the BoingBoing entries we're going to use
 		BoingBoingEntry entries[];
@@ -103,11 +105,9 @@ public class BoingBoingPaperApp extends Application {
 			r = new Region("Link" + i, 0.25 + xOffset, 5.125 + yOffset, 0.625, 0.625);
 			sheet.addRegion(r);
 			
-			/*
 			// add comments section
 			r = new Region("Comment" + i, 0.25 + xOffset, 6.25 + yOffset, 8.5, 8.5);
 			sheet.addRegion(r);
-			*/
 		}
 	}
 	
@@ -170,7 +170,7 @@ public class BoingBoingPaperApp extends Application {
 				}
 			});
 			
-			// sheet.getRegion("Comment" + i).addContentFilter(new CommentCollector(entries[i], i));
+			sheet.getRegion("Comment" + i).addContentFilter(new CommentCollector(entries[i], i));
 			
 		}
 		
