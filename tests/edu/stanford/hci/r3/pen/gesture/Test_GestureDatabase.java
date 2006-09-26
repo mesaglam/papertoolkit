@@ -30,17 +30,35 @@ public class Test_GestureDatabase {
 		} catch (FileNotFoundException e1) {
 			database = new GestureDatabase(databaseName);
 		}
+		GestureDatabase.instance = database;
 		Pen pen = new Pen();
 		pen.startLiveMode();
 		pen.addLivePenListener(database.getListener());
-		try {
+	    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                GestureDatabase.getInkDisplay();
+            }
+        });
+	    /*Thread thread = new Thread(new Runnable() {
+	    	public void run() {
+	    		try {
+					GestureDatabase.instance.command();
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	    	}
+	    });
+	    thread.start();*/
+	    /*try {
 			database.buildDatabase();
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.exit(0);
+		System.exit(0);*/
 	}
 
 }
