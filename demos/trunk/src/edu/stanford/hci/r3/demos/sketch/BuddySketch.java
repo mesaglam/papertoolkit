@@ -60,6 +60,8 @@ public class BuddySketch extends Application {
 
 	private static final String DISPLAY_PHOTO = "DISPLAYPHOTO";
 
+	private static final String DISPLAY_INK = "DISPLAYINK";
+
 	/**
 	 * @param args
 	 */
@@ -278,8 +280,12 @@ public class BuddySketch extends Application {
 	/**
 	 * @param newInkOnly
 	 */
-	public void sendInkToLocalGUI(Ink newInkOnly) {
+	public void sendInkToGUI(Ink newInkOnly) {
 		buddySketchGUI.addInkToCanvas(newInkOnly);
+
+		// tell the OTHER device to display this ink too!
+		ProcessInformationAction a = new ProcessInformationAction(DISPLAY_INK, newInkOnly);
+		device.invokeAction(a);
 	}
 
 	/**
@@ -308,12 +314,13 @@ public class BuddySketch extends Application {
 						DebugUtils.println("Displaying Photo!");
 						File f = (File) msgVal;
 						DebugUtils.println("Photo Exists? " + f.exists());
-						
+
 						// display it in my own window...
 						buddySketchGUI.displayBuddyPhoto(f);
 
-					} else {
-						
+					} else if (msgName.equals(DISPLAY_INK)) {
+						Ink i = (Ink) msgVal;
+						buddySketchGUI.addBuddyInkToCanvas(i);
 					}
 				} else {
 					action.invoke();

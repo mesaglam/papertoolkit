@@ -57,7 +57,7 @@ public class BuddySketchPaperUI extends Sheet {
 				DebugUtils.println("Num Strokes Total: " + inkWell.getNumStrokesCollected());
 
 				// display this ink in our local GUI...
-				sketchApp.sendInkToLocalGUI(inkWell.getNewInkOnly());
+				sketchApp.sendInkToGUI(inkWell.getNewInkOnly());
 			}
 		});
 		drawingRegion.addContentFilter(inkWell);

@@ -31,6 +31,10 @@ public class BuddySketchGUI extends JFrame {
 		SPACE_BAR;
 	}
 
+	public static final Color DEFAULT_BUDDY_INK_COLOR = new Color(0.95f, 0.85f, .75f, 0.8f);
+
+	public static final Color DEFAULT_MY_INK_COLOR = new Color(0.75f, 0.85f, .95f, 0.8f);
+
 	private static final int H_PADDING = 10;
 
 	private static final Font LOWER_PANEL_FONT = new Font("Trebuchet MS", Font.BOLD, 30);
@@ -101,10 +105,19 @@ public class BuddySketchGUI extends JFrame {
 	}
 
 	/**
-	 * @param newInkOnly
+	 * @param ink
 	 */
-	public void addInkToCanvas(Ink newInkOnly) {
-		mainCanvas.addInk(newInkOnly);
+	public void addBuddyInkToCanvas(Ink ink) {
+		ink.setColor(DEFAULT_BUDDY_INK_COLOR);
+		mainCanvas.addInk(ink);
+	}
+
+	/**
+	 * @param ink
+	 */
+	public void addInkToCanvas(Ink ink) {
+		ink.setColor(DEFAULT_MY_INK_COLOR);
+		mainCanvas.addInk(ink);
 	}
 
 	/**
