@@ -206,6 +206,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on The Oval Photos.");
+				doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
 			}
 		});
 	}
@@ -235,6 +236,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Tourists.");
+				doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
 			}
 		});
 	}
@@ -267,7 +269,7 @@ public class AudioGuide extends Application {
 				DebugUtils.println("You clicked on the White Plaza.");
 				System.out.println(e.getPercentageLocation());
 				doPlaySound(new File("data/AudioGuide/audio/WhitePlaza1.wav"));
-				// doPlaySound(new File("data/AudioGuide/audio/WhietPlaza2.wav"));
+				// doPlaySound(new File("data/AudioGuide/audio/WhitePlaza2.wav"));
 			}
 		});
 	}
