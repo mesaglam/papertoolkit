@@ -43,8 +43,8 @@ public class EventEngine {
 	private PercentageCoordinates lastKnownLocation;
 
 	/**
-	 * Used by penUp to notify content filters. This is because a pen up event has no coordinates,
-	 * so we cannot figure out what region it belongs to.
+	 * Used by penUp to notify content filters. This is because a pen up event has no coordinates, so
+	 * we cannot figure out what region it belongs to.
 	 */
 	private List<ContentFilter> mostRecentContentFilters = new ArrayList<ContentFilter>();
 
@@ -203,6 +203,7 @@ public class EventEngine {
 			final PercentageCoordinates relativeLocation = coordinateConverter
 					.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
 			penEvent.setPercentageLocation(relativeLocation);
+
 			lastKnownLocation = relativeLocation;
 
 			// does this region have any event handler?
@@ -285,7 +286,7 @@ public class EventEngine {
 
 	/**
 	 * @param pen
-	 *            removes this pen from our internal lists without updating the registration count.
+	 *           removes this pen from our internal lists without updating the registration count.
 	 * @param listener
 	 */
 	private void removePenFromInternalLists(Pen pen, PenListener listener) {

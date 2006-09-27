@@ -90,6 +90,7 @@ public abstract class ContentFilter {
 		return active;
 	}
 
+
 	/**
 	 * 
 	 */
@@ -101,7 +102,7 @@ public abstract class ContentFilter {
 
 	/**
 	 * @param r
-	 *            the region to monitor
+	 *           the region to monitor
 	 */
 	public void setRegion(Region r) {
 		region = r;
