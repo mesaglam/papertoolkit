@@ -7,13 +7,10 @@ import java.util.List;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkSample;
-import edu.stanford.hci.r3.pen.ink.InkStroke;
-import edu.stanford.hci.r3.units.PatternDots;
-import edu.stanford.hci.r3.units.Pixels;
-import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.pen.ink.*;
+import edu.stanford.hci.r3.units.*;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -51,6 +48,14 @@ public class InkCollector extends ContentFilter {
 	 */
 	private List<InkStroke> strokes = new ArrayList<InkStroke>();
 
+	private long lastPenUpTime;
+
+	private long currPenDownTime;
+
+	private long diff;
+
+	private InkNotifier lastInkNotifier;
+
 	/**
 	 * Clear the buffers.
 	 */
@@ -58,6 +63,42 @@ public class InkCollector extends ContentFilter {
 		strokes.clear();
 		currentStrokeSamples.clear();
 		newInkMarker = 0;
+	}
+
+	private static final int MILLIS_TO_DELAY = 20;
+
+	private class InkNotifier implements Runnable {
+
+		private boolean doNotNotify;
+
+		public InkNotifier() {
+
+		}
+
+		/**
+		 * @see java.lang.Runnable#run()
+		 */
+		public void run() {
+			try {
+				Thread.sleep(MILLIS_TO_DELAY);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (doNotNotify) {
+				// someone told us to cancel
+				return;
+			}
+			// System.out.println(currentStrokeSamples.size() + " samples in this stroke.");
+			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
+			notifyAllListenersOfNewContent();
+		}
+
+		/**
+		 * @param b
+		 */
+		public void setDoNotNotify(boolean b) {
+			doNotNotify = b;
+		}
 	}
 
 	/**
@@ -72,13 +113,29 @@ public class InkCollector extends ContentFilter {
 
 		// collect the ink strokes
 		if (event.isPenDown()) {
-			currentStrokeSamples.clear();
-			currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128,
-					timestamp));
+			currPenDownTime = System.currentTimeMillis();
+			diff = currPenDownTime - lastPenUpTime;
+			DebugUtils.println(diff + " in milliseconds");
+
+			// say 20 milliseconds (1/50 of a second) is probably faster than a human can go up and
+			// down =)
+			if (diff > 20 /* millis */) {
+				currentStrokeSamples.clear();
+				currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128,
+						timestamp));
+				lastInkNotifier = null; // let it run
+			} else {
+				currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128,
+						timestamp));
+				lastInkNotifier.setDoNotNotify(true); // let it run
+			}
 		} else if (event.isPenUp()) {
-			// System.out.println(currentStrokeSamples.size() + " samples in this stroke.");
-			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
-			notifyAllListenersOfNewContent();
+			lastPenUpTime = System.currentTimeMillis();
+
+			lastInkNotifier = new InkNotifier();
+			// notify after a short delay, because we may actually update the content
+			new Thread(lastInkNotifier).start();
+
 			// System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
 			currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128,
@@ -97,8 +154,7 @@ public class InkCollector extends ContentFilter {
 	 * @return
 	 */
 	public Ink getNewInkOnly() {
-		Ink newInk = new Ink(
-				new ArrayList<InkStroke>(strokes.subList(newInkMarker, strokes.size())));
+		Ink newInk = new Ink(new ArrayList<InkStroke>(strokes.subList(newInkMarker, strokes.size())));
 		newInkMarker = strokes.size();
 		return newInk;
 	}
@@ -111,7 +167,8 @@ public class InkCollector extends ContentFilter {
 	}
 
 	/**
-	 * @return timestamp that last stroke was completed, in milliseconds, or -1 if there are no strokes.
+	 * @return timestamp that last stroke was completed, in milliseconds, or -1 if there are no
+	 *         strokes.
 	 */
 	public long getLastTimestamp() {
 		if (strokes != null && strokes.size() >= 1) {
@@ -120,7 +177,7 @@ public class InkCollector extends ContentFilter {
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * @param xmlFile
 	 */

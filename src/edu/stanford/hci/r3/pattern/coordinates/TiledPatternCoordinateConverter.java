@@ -117,6 +117,9 @@ public class TiledPatternCoordinateConverter {
 	 */
 	private String regionName;
 
+	/**
+	 * 
+	 */
 	private int rightMostVoidSpaceInDots;
 
 	/**
@@ -232,14 +235,17 @@ public class TiledPatternCoordinateConverter {
 			tileHeightIncludingPadding = numTotalDotsDown;
 			maxY = originY + numTotalDotsDown;
 		} else if (numDotsVerticalBetweenTiles < dotsPerTileVertical) { // dY = 0
+			// only one vertical tile, like bnet's pattern
 			tileHeightIncludingPadding = dotsPerTileVertical;
-			maxY = originY + dotsPerTileVertical - bottomMostVoidSpaceInDots; // only one vertical
-			// tile, like bnet's
-			// pattern
+			maxY = originY + dotsPerTileVertical - bottomMostVoidSpaceInDots;
 		} else { // bigger than the height
 			tileHeightIncludingPadding = numDotsVerticalBetweenTiles;
 			maxY = originY + numDotsVerticalBetweenTiles * numTiles - bottomMostVoidSpaceInDots;
 		}
+
+		DebugUtils.println(regionName);
+		DebugUtils.println("Void Space in X: " + rightMostVoidSpaceInDots);
+		DebugUtils.println("Void Space in Y: " + bottomMostVoidSpaceInDots);
 	}
 
 	/**
@@ -414,11 +420,11 @@ public class TiledPatternCoordinateConverter {
 	 *           the tiled pattern object produced by sheet renderers.
 	 */
 	public void setPatternInformationByReadingItFrom(TiledPattern p) {
+		final int voidX = p.getNumDotsXPerFullTile() - p.getNumDotsXFromRightMostTiles();
+		final int voidY = p.getNumDotsYPerFullTile() - p.getNumDotsYFromBottomMostTiles();
 
-		setNumDotsFromRightMostTilesThatAreNotIncluded(p.getNumDotsXPerFullTile()
-				- p.getNumDotsXFromRightMostTiles());
-		setNumDotsFromBottomMostTilesThatAreNotIncluded(p.getNumDotsYPerFullTile()
-				- p.getNumDotsYFromBottomMostTiles());
+		setNumDotsFromRightMostTilesThatAreNotIncluded(voidX);
+		setNumDotsFromBottomMostTilesThatAreNotIncluded(voidY);
 
 		setOriginInDots(p.getOriginXInDots(), p.getOriginYInDots());
 		setStartingTile(p.getInitialPatternFileNumber());

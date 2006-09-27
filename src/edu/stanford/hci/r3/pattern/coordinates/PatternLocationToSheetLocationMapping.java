@@ -13,6 +13,7 @@ import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
@@ -73,9 +74,8 @@ public class PatternLocationToSheetLocationMapping {
 		public boolean equals(Object o) {
 			if (o instanceof RegionID) {
 				RegionID r = (RegionID) o;
-				return name.equals(r.name) && originX.equals(r.originX)
-						&& originY.equals(r.originY) && width.equals(r.width)
-						&& height.equals(r.height);
+				return name.equals(r.name) && originX.equals(r.originX) && originY.equals(r.originY)
+						&& width.equals(r.width) && height.equals(r.height);
 			}
 			return false;
 		}
@@ -89,8 +89,8 @@ public class PatternLocationToSheetLocationMapping {
 		 * @see java.lang.Object#hashCode()
 		 */
 		public int hashCode() {
-			return (int) (name.hashCode() + originX.getValue() + originY.getValue()
-					+ width.getValue() + height.getValue());
+			return (int) (name.hashCode() + originX.getValue() + originY.getValue() + width.getValue() + height
+					.getValue());
 		}
 
 		/**
@@ -114,9 +114,9 @@ public class PatternLocationToSheetLocationMapping {
 	private Sheet sheet;
 
 	/**
-	 * One mapping object per sheet. Create this object after you have added all the regions that
-	 * you need to the sheet. This class will maintain a mapping of Regions to physical (streaming)
-	 * and logical (batched) pen coordinates.
+	 * One mapping object per sheet. Create this object after you have added all the regions that you
+	 * need to the sheet. This class will maintain a mapping of Regions to physical (streaming) and
+	 * logical (batched) pen coordinates.
 	 * 
 	 * @param s
 	 */
@@ -127,9 +127,8 @@ public class PatternLocationToSheetLocationMapping {
 		// at this point, the sheet has to have regions...
 		// for now, warn, if there are no regions
 		if (regions.size() == 0) {
-			System.err
-					.println("PatternLocationToSheetLocationMapping :: There aren't any regions. "
-							+ "Did you perhaps add the regions _after_ you added the sheet to the application?");
+			System.err.println("PatternLocationToSheetLocationMapping :: There aren't any regions. "
+					+ "Did you perhaps add the regions _after_ you added the sheet to the application?");
 		}
 		initializeMap(regions);
 
@@ -179,9 +178,23 @@ public class PatternLocationToSheetLocationMapping {
 	public TiledPatternCoordinateConverter getCoordinateConverterForSample(PenSample sample) {
 		for (Region r : regionToPatternBounds.keySet()) {
 			TiledPatternCoordinateConverter converter = regionToPatternBounds.get(r);
-			if (converter.contains(new StreamedPatternCoordinates(sample))) {
+			final StreamedPatternCoordinates coord = new StreamedPatternCoordinates(sample);
+			if (converter.contains(coord)) {
 				// DebugUtils.println("Sample is on: " + r.getName());
-				return converter;
+
+				// where are we on this region?
+				final PercentageCoordinates relativeLocation = converter.getRelativeLocation(coord);
+
+				// currently, this is a FALLBACK HACK to check whether we are actually outside the
+				// region later on, we must fix this and catch it earlier in the process
+				if (relativeLocation.getPercentageInXDirection() > 100
+						|| relativeLocation.getPercentageInYDirection() > 100) {
+					DebugUtils.println("FALLBACK HACK. It's actually outside the bounds. "
+							+ "Going on to check the next region...");
+					continue;
+				} else {
+					return converter;
+				}
 			}
 		}
 		return null; // couldn't find any
@@ -189,7 +202,7 @@ public class PatternLocationToSheetLocationMapping {
 
 	/**
 	 * @param r
-	 *            find the coordinate converter for this region.
+	 *           find the coordinate converter for this region.
 	 * @return the converter that enables you to figure out where on the region a sample falls.
 	 */
 	public TiledPatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
@@ -252,8 +265,8 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * Due to xstream's inability to serial/unserialize really complicated classes, we will save
-	 * only a regionName+origin --> pattern info mapping
+	 * Due to xstream's inability to serial/unserialize really complicated classes, we will save only
+	 * a regionName+origin --> pattern info mapping
 	 * 
 	 * @param xmlFile
 	 */
