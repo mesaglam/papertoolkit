@@ -1,25 +1,11 @@
 package edu.stanford.hci.r3.demos.flickrphotos.twistr;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.Box;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.graphics.ImageCache;
@@ -47,13 +33,13 @@ public class PhotoDisplay extends JFrame {
 
 	private static final int HSPACE = 50;
 
-	private static final Font LOWER_PANEL_FONT = new Font("Trebuchet MS", Font.BOLD, 52);
+	private static final Font LOWER_PANEL_FONT = new Font("Trebuchet MS", Font.BOLD, 36);
 
 	// private static final Color TWISTR_COLOR = new Color(254, 153, 41);
 	// private static final Color TWISTR_COLOR = new Color(120, 198, 121);
 	private static final Color TWISTR_COLOR = new Color(116, 169, 207);
 
-	private static final Font UPPER_PANEL_FONT = new Font("Trebuchet MS", Font.BOLD, 72);
+	private static final Font UPPER_PANEL_FONT = new Font("Trebuchet MS", Font.BOLD, 52);
 
 	private static final int V_PADDING = 20;
 
@@ -109,26 +95,36 @@ public class PhotoDisplay extends JFrame {
 
 		setSize(800, 600);
 		setUndecorated(true);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 
 	private Component getInfoLabel() {
 		if (infoLabel == null) {
-			infoLabel = new JLabel("Twistr");
+			infoLabel = new JLabel();
 			infoLabel.setFont(UPPER_PANEL_FONT);
 			infoLabel.setForeground(TWISTR_COLOR);
+			updateInfoLabel();
 		}
 		return infoLabel;
 	}
 
-	private Component getInfoPanel() {
+	/**
+	 * 
+	 */
+	private void updateInfoLabel() {
+		infoLabel.setText("Twistr :: [" + numPointsThisTurn + "]");
+	}
+
+	private Component getTopPanel() {
 		if (infoPanel == null) {
 			infoPanel = new JPanel();
+			infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			infoPanel.setOpaque(false);
-			infoPanel.add(getInfoLabel());
-			infoPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			infoPanel.setLayout(new BorderLayout());
+			infoPanel.add(getInfoLabel(), BorderLayout.WEST);
+			infoPanel.add(getPlayer1Score(), BorderLayout.EAST);
 		}
 		return infoPanel;
 	}
@@ -141,18 +137,50 @@ public class PhotoDisplay extends JFrame {
 			mainPanel = new JPanel();
 			mainPanel.setBackground(Color.BLACK);
 			mainPanel.setLayout(new BorderLayout());
-			mainPanel.add(getInfoPanel(), BorderLayout.NORTH);
+			mainPanel.add(getTopPanel(), BorderLayout.NORTH);
 			mainPanel.add(getPictureCanvas(), BorderLayout.CENTER);
-			mainPanel.add(getScorePanel(), BorderLayout.SOUTH);
+			mainPanel.add(getBottomPanel(), BorderLayout.SOUTH);
 		}
 		return mainPanel;
 	}
 
+	private int numPointsThisTurn = 0;
+
+	private JPanel numTurnsLeftPanel;
+
+	private JLabel turnsRemaining;
+
+	private int numTurnsLeft = 30;
+
+	/**
+	 * @return
+	 */
 	private Action getNextTurnAction() {
 		if (nextTurnAction == null) {
 			nextTurnAction = new AbstractAction() {
+
 				public void actionPerformed(ActionEvent ae) {
+					
+					if (Math.random() > 0.5) {
+						twistr.p1WonThisTurn(numPointsThisTurn);
+					} else {
+						twistr.p2WonThisTurn(numPointsThisTurn);
+					}
+					
 					DebugUtils.println("NEXT TURN");
+					updateScores();
+					numTurnsLeft = twistr.nextTurn();
+					if (numTurnsLeft == 0) {
+						// declare the winner!
+						DebugUtils.println("Declare Winner Now");
+						twistr.declareWinner();
+						return;
+					}
+					numPointsThisTurn = twistr.getPointsForThisTurn();
+
+					updateTurnsRemainingLabel();
+					updateInfoLabel();
+					
 					twistr.getPhotos();
 				}
 			};
@@ -198,12 +226,39 @@ public class PhotoDisplay extends JFrame {
 			playerName.setFont(LOWER_PANEL_FONT);
 			playerName.setForeground(TWISTR_COLOR);
 			final JLabel points = getPointsPanelP2();
-			p2Score.add(points);
-			p2Score.add(Box.createHorizontalStrut(HSPACE));
 			p2Score.add(playerName);
+			p2Score.add(Box.createHorizontalStrut(HSPACE));
+			p2Score.add(points);
 
 		}
 		return p2Score;
+	}
+
+	private Component getNumTurnsLeftPanel() {
+		if (numTurnsLeftPanel == null) {
+			numTurnsLeftPanel = new JPanel();
+			numTurnsLeftPanel.setOpaque(false);
+			final JLabel turnsLabel = new JLabel("Turns Remaining: ");
+			turnsLabel.setFont(LOWER_PANEL_FONT);
+			turnsLabel.setForeground(TWISTR_COLOR);
+			turnsRemaining = new JLabel(numTurnsLeft + " ");
+			turnsRemaining.setFont(LOWER_PANEL_FONT);
+			turnsRemaining.setForeground(TWISTR_COLOR);
+			numTurnsLeftPanel.setLayout(new FlowLayout());
+			numTurnsLeftPanel.add(turnsLabel);
+			numTurnsLeftPanel.add(Box.createHorizontalStrut(HSPACE));
+			numTurnsLeftPanel.add(turnsRemaining);
+
+			updateTurnsRemainingLabel();
+		}
+		return numTurnsLeftPanel;
+	}
+
+	/**
+	 * 
+	 */
+	private void updateTurnsRemainingLabel() {
+		turnsRemaining.setText(numTurnsLeft + " ");
 	}
 
 	/**
@@ -211,7 +266,7 @@ public class PhotoDisplay extends JFrame {
 	 */
 	private JLabel getPointsPanelP1() {
 		if (pointsPanelP1 == null) {
-			pointsPanelP1 = new JLabel("23");
+			pointsPanelP1 = new JLabel("0");
 			pointsPanelP1.setFont(LOWER_PANEL_FONT);
 			pointsPanelP1.setForeground(Color.LIGHT_GRAY);
 		}
@@ -223,22 +278,27 @@ public class PhotoDisplay extends JFrame {
 	 */
 	private JLabel getPointsPanelP2() {
 		if (pointsPanelP2 == null) {
-			pointsPanelP2 = new JLabel("2");
+			pointsPanelP2 = new JLabel("0");
 			pointsPanelP2.setFont(LOWER_PANEL_FONT);
 			pointsPanelP2.setForeground(Color.LIGHT_GRAY);
 		}
 		return pointsPanelP2;
 	}
 
+	private void updateScores() {
+		pointsPanelP1.setText(twistr.getP1Score() + "");
+		pointsPanelP2.setText(twistr.getP2Score() + "");
+	}
+
 	/**
 	 * @return
 	 */
-	private Component getScorePanel() {
+	private Component getBottomPanel() {
 		if (scorePanel == null) {
 			scorePanel = new JPanel();
 			scorePanel.setOpaque(false);
 			scorePanel.setLayout(new BorderLayout());
-			scorePanel.add(getPlayer1Score(), BorderLayout.WEST);
+			scorePanel.add(getNumTurnsLeftPanel(), BorderLayout.WEST);
 			scorePanel.add(getPlayer2Score(), BorderLayout.EAST);
 		}
 		return scorePanel;
@@ -306,19 +366,17 @@ public class PhotoDisplay extends JFrame {
 			pimg.setOffset(H_PADDING + centeringOffsetX, V_PADDING + centeringOffsetY);
 			break;
 		case 1:
-			pimg.setOffset(maxImageW + 3 * H_PADDING + centeringOffsetX, V_PADDING
-					+ centeringOffsetY);
+			pimg.setOffset(maxImageW + 3 * H_PADDING + centeringOffsetX, V_PADDING + centeringOffsetY);
 			break;
 		case 2:
-			pimg.setOffset(H_PADDING + centeringOffsetX, maxImageH + 3 * V_PADDING
-					+ centeringOffsetY);
+			pimg.setOffset(H_PADDING + centeringOffsetX, maxImageH + 3 * V_PADDING + centeringOffsetY);
 			break;
 		case 3:
 			pimg.setOffset(maxImageW + 3 * H_PADDING + centeringOffsetX, maxImageH + 3 * V_PADDING
 					+ centeringOffsetY);
 			break;
 		}
-		
+
 		pictures.addChild(pimg);
 		return pimg;
 	}

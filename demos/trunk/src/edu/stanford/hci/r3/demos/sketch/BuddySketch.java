@@ -321,7 +321,11 @@ public class BuddySketch extends Application {
 					} else if (msgName.equals(DISPLAY_INK)) {
 						Ink i = (Ink) msgVal;
 						buddySketchGUI.addBuddyInkToCanvas(i);
+					} else {
+						
 					}
+					
+					DebugUtils.println("Got a ProcessInformationAction");
 				} else {
 					action.invoke();
 				}

@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.sun.corba.se.internal.Interceptors.PIORB;
+
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.demos.flickrphotos.FlickrPhoto;
 import edu.stanford.hci.r3.demos.flickrphotos.PhotoDownloadr;
+import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -52,13 +55,29 @@ public class Twistr {
 		new Twistr();
 	}
 
-	private List<FlickrPhoto> listOfPhotos;
+	private Application application;
 
 	private PhotoDisplay frame;
 
+	private int lastTurnScore = 100;
+
+	private List<FlickrPhoto> listOfPhotos;
+
 	private int numPhotos;
 
-	private Application application;
+	private int numTurns = 30;
+
+	/**
+	 * Keep track of the scores here.
+	 */
+	private int p1Score = 0;
+
+	/**
+	 * 
+	 */
+	private int p2Score = 0;
+
+	private int[] possibleScores = new int[] { 5, 10, 20, 40, 50, 30 };
 
 	/**
 	 * 
@@ -76,20 +95,31 @@ public class Twistr {
 		setupApp();
 	}
 
-	private void setupApp() {
-		application = new Application("Twistr");
-		application.addSheet(new TwistrPrint(), new File("data/Flickr/Twistr.patternInfo.xml"));
-
-		// load it
-		PaperToolkit p = new PaperToolkit(true);
-		p.startApplication(application);
-	}
-
 	/**
 	 * 
 	 */
-	private void setupFrame() {
-		frame = new PhotoDisplay(this);
+	public void declareWinner() {
+		if (p1Score > p2Score) {
+			new WinnerFrame(p1Score, p2Score, "Player 1");
+			DebugUtils.println("Player 1 is is the better twistrr!");
+		} else if (p1Score < p2Score) {
+			new WinnerFrame(p2Score, p1Score, "Player 2");
+			DebugUtils.println("Player 2 is awesome!");
+		} else {
+			new WinnerFrame(p2Score, p1Score);
+			DebugUtils.println("There was a TIE!!!!");
+		}
+	}
+
+	public int getP1Score() {
+		return p1Score;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getP2Score() {
+		return p2Score;
 	}
 
 	/**
@@ -120,4 +150,76 @@ public class Twistr {
 		frame.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(), photo3.getFileLarge(),
 				photo4.getFileLarge());
 	}
+
+	/**
+	 * 
+	 */
+	public int getPointsForThisTurn() {
+		// random, but bigger near the end...
+		if (numTurns == 1) {
+			// last turn!
+			return lastTurnScore;
+		} else {
+			int index = (int) (Math.random() * possibleScores.length);
+			if (numTurns < 10) {
+				index += 2;
+			} else if (numTurns < 20) {
+				index++;
+			}
+			if (index >= possibleScores.length) {
+				index = possibleScores.length - 1;
+			}
+			return possibleScores[index];
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public int nextTurn() {
+		numTurns--;
+		if (numTurns < 0) {
+			numTurns = 0;
+		}
+		return numTurns;
+	}
+
+	/**
+	 * @param numPointsThisTurn
+	 * 
+	 */
+	public void p1WonThisTurn(int numPointsThisTurn) {
+		p1Score += numPointsThisTurn;
+	}
+
+	public void p2WonThisTurn(int numPointsThisTurn) {
+		p2Score += numPointsThisTurn;
+	}
+
+	private void setupApp() {
+		application = new Application("Twistr");
+		application.addSheet(new TwistrPrint(), new File("data/Flickr/Twistr.patternInfo.xml"));
+
+		Pen pen2L = new Pen("P2Left", "localhost");
+		Pen pen1L = new Pen("P1Left", "192.168.1.2");
+		Pen pen1R = new Pen("P1Right", "192.168.1.3");
+		Pen pen2R = new Pen("P2Right", "192.168.1.4");
+
+		application.addPen(pen2R);
+		application.addPen(pen1R);
+		application.addPen(pen1L);
+		application.addPen(pen2L);
+
+		// load it
+		PaperToolkit p = new PaperToolkit(true);
+		p.startApplication(application);
+	}
+
+	/**
+	 * 
+	 */
+	private void setupFrame() {
+		frame = new PhotoDisplay(this);
+	}
+
 }
