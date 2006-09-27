@@ -555,8 +555,8 @@ public class ShapeHistogram {
 		// using digit distance function from paper
 		double total_cost = sc_cost + costWeighting * E[0];
 		if (verbose) {
-			System.out.println("Total cost: " + total_cost + " bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
-			System.out.println("Discarded " + (N - count - dummy_padding) + " points.");
+			//System.out.println("Total cost: " + total_cost + " bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
+			//System.out.println("Discarded " + (N - count - dummy_padding) + " points.");
 		}
 		return total_cost; // just bending energy
 		//return 1.6 * E[0] + sc_cost + .3 * E[1];
