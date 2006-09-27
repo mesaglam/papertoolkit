@@ -67,7 +67,7 @@ public class Twistr {
 
 	private Application application;
 
-	private PhotoDisplay frame;
+	private PhotoDisplay display;
 
 	private int lastTurnScore = 100;
 
@@ -188,8 +188,8 @@ public class Twistr {
 		DebugUtils.println(photo3);
 		DebugUtils.println(photo4);
 
-		frame.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(), photo3.getFileLarge(),
-				photo4.getFileLarge());
+		display.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(),
+				photo3.getFileLarge(), photo4.getFileLarge());
 	}
 
 	/**
@@ -243,8 +243,19 @@ public class Twistr {
 		if (numTurns < 0) {
 			numTurns = 0;
 		}
+		if (numTurns == 1) {
+			Application.doPlaySound(new File("data/Flickr/Twistr/audio/For100points.wav"));
+		} else if (numTurns == 29) {
+			Application.doPlaySound(new File("data/Flickr/Twistr/audio/LetsGo.wav"));
+		}
 		return numTurns;
 	}
+
+	private String[] p1Sounds = new String[] { "sacrebleu.wav", "en-garde.wav", "gitmemore.wav",
+			"sweet.wav", "sorrylove.wav", "vamos.wav" };
+
+	private String[] p2Sounds = new String[] { "touche.wav", "bon.wav", "bravo.wav", "cool.wav",
+			"gorgeous.wav", "shock.wav", "wabamm.wav" };
 
 	/**
 	 * @param numPointsThisTurn
@@ -252,10 +263,18 @@ public class Twistr {
 	 */
 	public void p1WonThisTurn(int numPointsThisTurn) {
 		p1Score += numPointsThisTurn;
+
+		String name = p1Sounds[(int) (Math.random() * p1Sounds.length)];
+		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
+		Application.doPlaySound(soundFile);
 	}
 
 	public void p2WonThisTurn(int numPointsThisTurn) {
 		p2Score += numPointsThisTurn;
+
+		String name = p2Sounds[(int) (Math.random() * p2Sounds.length)];
+		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
+		Application.doPlaySound(soundFile);
 	}
 
 	/**
@@ -271,29 +290,52 @@ public class Twistr {
 	 * @param fileName
 	 */
 	public void penPressed(String penName, String fileName) {
-		if (penName.equals(P1_LEFT) && fileName.equals(p1LeftPhotoName)) {
-			p1LeftOK = true;
-		} else if (penName.equals(P2_RIGHT) && fileName.equals(p2RightPhotoName)) {
-			p2RightOK = true;
-		} else if (penName.equals(P2_LEFT) && fileName.equals(p2LeftPhotoName)) {
-			p2LeftOK = true;
-		} else if (penName.equals(P1_RIGHT) && fileName.equals(p1RightPhotoName)) {
-			p1RightOK = true;
+		if (penName.equals(P1_LEFT)) {
+			if (fileName.equals(p1LeftPhotoName)) {
+				p1LeftOK = true;
+				display.highlightP1LImage(true);
+			} else {
+				p1LeftOK = false;
+				display.highlightP1LImage(false);
+			}
+		} else if (penName.equals(P2_RIGHT)) {
+			if (fileName.equals(p2RightPhotoName)) {
+				p2RightOK = true;
+				display.highlightP2RImage(true);
+			} else {
+				p2RightOK = false;
+				display.highlightP2RImage(false);
+			}
+
+		} else if (penName.equals(P2_LEFT)) {
+			if (fileName.equals(p2LeftPhotoName)) {
+				p2LeftOK = true;
+			} else {
+				p2LeftOK = false;
+			}
+
+		} else if (penName.equals(P1_RIGHT)) {
+			if (fileName.equals(p1RightPhotoName)) {
+				p1RightOK = true;
+			} else {
+				p1RightOK = false;
+			}
+			// highlight that picture and play a sound!
 		}
 
 		if (p1LeftOK && p1RightOK && p2LeftOK && p2RightOK) {
 			// both scored at the same time!
 			// this should never happen...
 			p1And2TiedThisTurn(numPointsThisTurn);
-			frame.nextTurn();
+			display.nextTurn();
 		} else if (p1LeftOK && p1RightOK) {
 			// p1 scores
 			p1WonThisTurn(numPointsThisTurn);
-			frame.nextTurn();
+			display.nextTurn();
 		} else if (p2LeftOK && p2RightOK) {
 			// p2 scores
 			p2WonThisTurn(numPointsThisTurn);
-			frame.nextTurn();
+			display.nextTurn();
 		}
 	}
 
@@ -307,6 +349,7 @@ public class Twistr {
 		} else if (penName.equals(P1_RIGHT)) {
 			p1RightOK = false;
 		} else if (penName.equals(P1_LEFT)) {
+			display.clearHighlightP1LImage();
 			p1LeftOK = false;
 		} else if (penName.equals(P2_RIGHT)) {
 			p2RightOK = false;
@@ -344,6 +387,6 @@ public class Twistr {
 	 * 
 	 */
 	private void setupFrame() {
-		frame = new PhotoDisplay(this);
+		display = new PhotoDisplay(this);
 	}
 }

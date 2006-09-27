@@ -108,6 +108,26 @@ public class PhotoDisplay extends JFrame {
 		setVisible(true);
 	}
 
+	public void clearHighlightP1LImage() {
+		p1Limg.setSelected(false);
+		p1Limg.setIncorrectlySelected(false);
+	}
+
+	public void clearHighlightP1RImage() {
+		p1Rimg.setSelected(false);
+		p1Rimg.setIncorrectlySelected(false);
+	}
+
+	public void clearHighlightP2LImage() {
+		p2Limg.setSelected(false);
+		p2Limg.setIncorrectlySelected(false);
+	}
+
+	public void clearHighlightP2RImage() {
+		p2Rimg.setSelected(false);
+		p2Rimg.setIncorrectlySelected(false);
+	}
+
 	/**
 	 * @return
 	 */
@@ -155,9 +175,6 @@ public class PhotoDisplay extends JFrame {
 			nextTurnAction = new AbstractAction() {
 
 				public void actionPerformed(ActionEvent ae) {
-
-					// 
-
 					DebugUtils.println("NEXT TURN");
 					updateScores();
 					numTurnsLeft = twistr.nextTurn();
@@ -284,6 +301,54 @@ public class PhotoDisplay extends JFrame {
 		return infoPanel;
 	}
 
+	public void highlightP1LImage(boolean OK) {
+		if (p1Limg != null) {
+			if (OK) {
+				p1Limg.setSelected(true);
+				p1Limg.setIncorrectlySelected(false);
+			} else {
+				p1Limg.setSelected(false);
+				p1Limg.setIncorrectlySelected(true);
+			}
+		}
+	}
+
+	public void highlightP1RImage(boolean OK) {
+		if (p1Rimg != null) {
+			if (OK) {
+				p1Rimg.setSelected(true);
+				p1Rimg.setIncorrectlySelected(false);
+			} else {
+				p1Rimg.setSelected(false);
+				p1Rimg.setIncorrectlySelected(true);
+			}
+		}
+	}
+
+	public void highlightP2LImage(boolean OK) {
+		if (p2Limg != null) {
+			if (OK) {
+				p2Limg.setSelected(true);
+				p2Limg.setIncorrectlySelected(false);
+			} else {
+				p2Limg.setSelected(false);
+				p2Limg.setIncorrectlySelected(true);
+			}
+		}
+	}
+
+	public void highlightP2RImage(boolean OK) {
+		if (p2Rimg != null) {
+			if (OK) {
+				p2Rimg.setSelected(true);
+				p2Rimg.setIncorrectlySelected(false);
+			} else {
+				p2Rimg.setSelected(false);
+				p2Rimg.setIncorrectlySelected(true);
+			}
+		}
+	}
+
 	public void nextTurn() {
 		getNextTurnAction().actionPerformed(null);
 	}
@@ -314,6 +379,7 @@ public class PhotoDisplay extends JFrame {
 			p1Limg = placeSinglePhoto(p1Limg, p1Left, 0); // upper left
 			p1Rimg = placeSinglePhoto(p1Rimg, p1Right, 1); // upper right
 		}
+		pictures.repaint();
 	}
 
 	/**
