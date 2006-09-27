@@ -54,7 +54,7 @@ public abstract class ClickHandler implements EventHandler {
 		}
 	}
 
-	private static final long MILLIS_TO_DELAY = 25;
+	private static final long MILLIS_TO_DELAY = 30;
 
 	/**
 	 * Use this variable to see if there was a double click, while handing a clicked() event.
