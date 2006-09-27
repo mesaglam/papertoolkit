@@ -15,7 +15,7 @@ public class PenGestureListener implements PenListener {
 	ArrayList<Gesture> gestures = new ArrayList<Gesture>();
 	ArrayList<ShapeContext> contexts = new ArrayList<ShapeContext>();
 	ArrayList<InkSample> samples = null;
-	int gestureThreshold = 10;
+	int gestureThreshold = 4;
 	int remainingContexts = 0;
 	private GestureDatabase database;
 	private String author;

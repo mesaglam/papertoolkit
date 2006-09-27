@@ -116,6 +116,8 @@ public class GestureDatabase implements ActionListener, FocusListener{
 				System.out.println("Tests:");
 				for(int i = 0; i < testGestures.size(); i++)
 					System.out.println("Gesture " + testGestures.get(i).name + ": " + testGestures.get(i).size());
+				System.out.println("Queued gestures: " + unlabeledContexts.size());
+				System.out.println("Queued test gestures: " + unlabeledTestContexts.size());
 				break;
 			case 4:
 				listener.setContexts(null, 0);
@@ -176,6 +178,7 @@ public class GestureDatabase implements ActionListener, FocusListener{
 				System.exit(0); // no automatic save on exit
 			case 2:
 				Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\"+databaseName+".gp"));
+				int stuff = 1;
 				quillWrite(writer);
 				Save(new FileWriter(new File(databaseName + ".xml")));
 				break;
