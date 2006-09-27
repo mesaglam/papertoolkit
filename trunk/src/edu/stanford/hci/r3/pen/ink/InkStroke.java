@@ -54,8 +54,8 @@ public class InkStroke {
 	private double[] y = null;
 
 	/**
-	 * Copies the samples into our own arrays. The reference unit enables us to interpret the
-	 * samples correctly.
+	 * Copies the samples into our own arrays. The reference unit enables us to interpret the samples
+	 * correctly.
 	 * 
 	 * @param currentStrokeSamples
 	 * @param reference
@@ -171,6 +171,9 @@ public class InkStroke {
 		return y;
 	}
 
+	/**
+	 * @return
+	 */
 	public int[] getYSamplesAsInts() {
 		int[] yInts = new int[numSamples];
 		for (int i = 0; i < numSamples; i++) {
@@ -194,7 +197,7 @@ public class InkStroke {
 
 	/**
 	 * @param mxX
-	 *            the maxX to set
+	 *           the maxX to set
 	 */
 	public void setMaxX(float mxX) {
 		maxX = mxX;
@@ -202,7 +205,7 @@ public class InkStroke {
 
 	/**
 	 * @param mxY
-	 *            the maxY to set
+	 *           the maxY to set
 	 */
 	public void setMaxY(float mxY) {
 		maxY = mxY;
@@ -210,7 +213,7 @@ public class InkStroke {
 
 	/**
 	 * @param mnX
-	 *            the minX to set
+	 *           the minX to set
 	 */
 	public void setMinX(float mnX) {
 		minX = mnX;
@@ -218,7 +221,7 @@ public class InkStroke {
 
 	/**
 	 * @param mnY
-	 *            the minY to set
+	 *           the minY to set
 	 */
 	public void setMinY(float mnY) {
 		minY = mnY;

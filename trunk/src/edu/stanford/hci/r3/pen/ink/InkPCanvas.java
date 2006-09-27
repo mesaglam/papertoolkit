@@ -22,8 +22,14 @@ import edu.umd.cs.piccolo.nodes.PPath;
  */
 public class InkPCanvas extends PCanvas {
 
+	/**
+	 * Probably shouldn't be off white!
+	 */
 	public static final Color DEFAULT_INK_COLOR = new Color(0.85f, 0.85f, .95f, 0.8f);
 
+	/**
+	 * 
+	 */
 	private static final BasicStroke DEFAULT_STROKE = new BasicStroke(2.0f, BasicStroke.CAP_ROUND,
 			BasicStroke.JOIN_ROUND);
 
@@ -53,7 +59,7 @@ public class InkPCanvas extends PCanvas {
 	public void addInk(Ink ink) {
 		inkWell.add(ink);
 
-		addInkPaths(ink.getStrokes());
+		addInkPaths(ink.getStrokes(), ink.getColor());
 
 		getLayer().repaint();
 	}
@@ -61,7 +67,7 @@ public class InkPCanvas extends PCanvas {
 	/**
 	 * @param strokes
 	 */
-	private void addInkPaths(List<InkStroke> strokes) {
+	private void addInkPaths(List<InkStroke> strokes, Color inkColor) {
 		// Each Stroke will be One PPath (it's just more efficient this way)
 		for (final InkStroke s : strokes) {
 
@@ -72,7 +78,7 @@ public class InkPCanvas extends PCanvas {
 			// ink stroke style
 			strokePath.setStroke(DEFAULT_STROKE);
 			// the ink color
-			strokePath.setStrokePaint(DEFAULT_INK_COLOR);
+			strokePath.setStrokePaint(inkColor);
 			strokePath.addAttribute("timestamp", new Long(s.getFirstTimestamp()));
 			strokesContainer.addChild(strokePath);
 
