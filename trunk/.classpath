@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry path="src" kind="src"/>
-	<classpathentry excluding="testFiles/private/" path="data" kind="src"/>
-	<classpathentry path="tests" kind="src"/>
+	<classpathentry excluding="**/.svn/" path="src" kind="src"/>
+	<classpathentry excluding="**/.svn/|testFiles/private/" path="data" kind="src"/>
+	<classpathentry excluding="**/.svn/" path="tests" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
 	<classpathentry path="lib/epsgraphics.jar" kind="lib">
 		<attributes>
