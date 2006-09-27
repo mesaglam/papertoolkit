@@ -21,7 +21,8 @@ import edu.umd.cs.piccolo.PLayer;
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a>
+ *         (ronyeh(AT)cs.stanford.edu)
  */
 public class PhotoDisplay extends JFrame {
 
@@ -117,6 +118,9 @@ public class PhotoDisplay extends JFrame {
 		infoLabel.setText("Twistr :: [" + numPointsThisTurn + "]");
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getTopPanel() {
 		if (infoPanel == null) {
 			infoPanel = new JPanel();

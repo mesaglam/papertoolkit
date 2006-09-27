@@ -16,15 +16,17 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * A Twistr game with Flickr photos. This is used as the first task in the GIGAprints study. We
- * should log actions to a file, so we can calculate the acquisition times...
+ * A Twistr game with Flickr photos. This is used as the first task in the
+ * GIGAprints study. We should log actions to a file, so we can calculate the
+ * acquisition times...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a>
+ *         (ronyeh(AT)cs.stanford.edu)
  */
 public class Twistr {
 
@@ -40,8 +42,8 @@ public class Twistr {
 
 		// download photos
 		PhotoDownloadr p = new PhotoDownloadr();
-		p.downloadInterestingPhotos(3, startDay, 30, new File("data/Flickr/Twistr/"), new File(
-				"data/Flickr/TwistrTemp.xml"));
+		p.downloadInterestingPhotos(3, startDay, 30, new File(
+				"data/Flickr/Twistr/"), new File("data/Flickr/TwistrTemp.xml"));
 	}
 
 	/**
@@ -106,7 +108,7 @@ public class Twistr {
 			new WinnerFrame(p2Score, p1Score, "Player 2");
 			DebugUtils.println("Player 2 is awesome!");
 		} else {
-			new WinnerFrame(p2Score, p1Score);
+			new WinnerFrame(p1Score);
 			DebugUtils.println("There was a TIE!!!!");
 		}
 	}
@@ -147,8 +149,8 @@ public class Twistr {
 		DebugUtils.println(photo3);
 		DebugUtils.println(photo4);
 
-		frame.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(), photo3.getFileLarge(),
-				photo4.getFileLarge());
+		frame.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(),
+				photo3.getFileLarge(), photo4.getFileLarge());
 	}
 
 	/**
@@ -198,7 +200,11 @@ public class Twistr {
 
 	private void setupApp() {
 		application = new Application("Twistr");
-		application.addSheet(new TwistrPrint(), new File("data/Flickr/Twistr.patternInfo.xml"));
+		TwistrPrint print = new TwistrPrint();
+		application.addSheet(print, new File(
+				"data/Flickr/Twistr.patternInfo.xml"));
+
+		print.setParent(this);
 
 		Pen pen2L = new Pen("P2Left", "localhost");
 		Pen pen1L = new Pen("P1Left", "192.168.1.2");
