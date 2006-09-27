@@ -310,15 +310,19 @@ public class Twistr {
 		} else if (penName.equals(P2_LEFT)) {
 			if (fileName.equals(p2LeftPhotoName)) {
 				p2LeftOK = true;
+				display.highlightP2LImage(true);
 			} else {
 				p2LeftOK = false;
+				display.highlightP2LImage(false);
 			}
 
 		} else if (penName.equals(P1_RIGHT)) {
 			if (fileName.equals(p1RightPhotoName)) {
 				p1RightOK = true;
+				display.highlightP1RImage(true);
 			} else {
 				p1RightOK = false;
+				display.highlightP1RImage(false);
 			}
 			// highlight that picture and play a sound!
 		}
@@ -328,15 +332,25 @@ public class Twistr {
 			// this should never happen...
 			p1And2TiedThisTurn(numPointsThisTurn);
 			display.nextTurn();
+			resetOKFlags();
 		} else if (p1LeftOK && p1RightOK) {
 			// p1 scores
-			p1WonThisTurn(numPointsThisTurn);
+			p1WonThisTurn(2 * numPointsThisTurn);
 			display.nextTurn();
+			resetOKFlags();
 		} else if (p2LeftOK && p2RightOK) {
 			// p2 scores
-			p2WonThisTurn(numPointsThisTurn);
+			p2WonThisTurn(2 * numPointsThisTurn);
 			display.nextTurn();
+			resetOKFlags();
 		}
+	}
+
+	private void resetOKFlags() {
+		p2LeftOK = false;
+		p2RightOK = false;
+		p1LeftOK = false;
+		p1RightOK = false;
 	}
 
 	/**
@@ -345,13 +359,28 @@ public class Twistr {
 	 */
 	public void penReleased(String penName, String fileName) {
 		if (penName.equals(P2_LEFT)) {
+			display.clearHighlightP2LImage();
+			if (p2LeftOK) {
+				p2WonThisTurn(numPointsThisTurn);
+			}
 			p2LeftOK = false;
 		} else if (penName.equals(P1_RIGHT)) {
+			display.clearHighlightP1RImage();
+			if (p1RightOK) {
+				p1WonThisTurn(numPointsThisTurn);
+			}
 			p1RightOK = false;
 		} else if (penName.equals(P1_LEFT)) {
 			display.clearHighlightP1LImage();
+			if (p1LeftOK) {
+				p1WonThisTurn(numPointsThisTurn);
+			}
 			p1LeftOK = false;
 		} else if (penName.equals(P2_RIGHT)) {
+			display.clearHighlightP2RImage();
+			if (p2RightOK) {
+				p2WonThisTurn(numPointsThisTurn);
+			}
 			p2RightOK = false;
 		}
 	}
