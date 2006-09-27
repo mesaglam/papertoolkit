@@ -26,8 +26,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a>
- *         (ronyeh(AT)cs.stanford.edu)
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class TwistrPrint extends Sheet {
 
@@ -73,38 +72,37 @@ public class TwistrPrint extends Sheet {
 			final double scaleFactor = TARGET_HEIGHT_IN_INCHES / heightInInches;
 			r.setScale(scaleFactor, scaleFactor);
 
-			final Region rButton = new Region(fileName + "_Button", ZERO, ZERO,
-					r.getWidth(), new Inches(HEIGHT_OF_BUTTON));
+			final Region rButton = new Region(fileName + "_Button", ZERO, ZERO, r.getWidth(),
+					new Inches(HEIGHT_OF_BUTTON));
 			rButton.addEventHandler(new ClickHandler() {
 				public void clicked(PenEvent e) {
-					DebugUtils.println("Clicked on " + fileName + " :: "
-							+ photo.getTitle());
+					DebugUtils.println("Clicked on " + fileName + " :: " + photo.getTitle());
 				}
 
 				public void pressed(PenEvent e) {
-					DebugUtils.println("Pressed on " + fileName + " :: "
-							+ photo.getTitle());
+					DebugUtils.println("Pressed on " + fileName + " :: " + photo.getTitle());
 					DebugUtils.println("Pen ID: " + e.getPenID());
 					DebugUtils.println("Pen Name: " + e.getPenName());
+
+					twistr.penPressed(e.getPenName(), fileName);
 				}
 
 				public void released(PenEvent e) {
-					DebugUtils.println("Released on " + fileName + " :: "
-							+ photo.getTitle());
+					DebugUtils.println("Released on " + fileName + " :: " + photo.getTitle());
+
+					twistr.penReleased(e.getPenName(), fileName);
 				}
 			});
 
 			// add the cluster
-			final RegionGroup rg = new RegionGroup(fileName + "Group",
-					new Inches(0), new Inches(0));
+			final RegionGroup rg = new RegionGroup(fileName + "Group", new Inches(0), new Inches(0));
 			rg.addRegion(r, new Coordinates(ZERO, ZERO));
 			rg.addRegion(rButton, new Coordinates(ZERO, r.getHeight()));
 			regionGroups.add(rg);
 		}
 
-		FlowPaperLayout.layoutRegionGroups(this, regionGroups, new Coordinates(
-				new Inches(0.25), new Inches(0.25)), new Inches(43.5),
-				new Inches(33.5), H_PADDING, V_PADDING);
+		FlowPaperLayout.layoutRegionGroups(this, regionGroups, new Coordinates(new Inches(0.25),
+				new Inches(0.25)), new Inches(43.5), new Inches(33.5), H_PADDING, V_PADDING);
 
 	}
 

@@ -21,8 +21,7 @@ import edu.umd.cs.piccolo.PLayer;
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a>
- *         (ronyeh(AT)cs.stanford.edu)
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PhotoDisplay extends JFrame {
 
@@ -56,6 +55,12 @@ public class PhotoDisplay extends JFrame {
 
 	private AbstractAction nextTurnAction;
 
+	private int numPointsThisTurn = 0;
+
+	private int numTurnsLeft = 30;
+
+	private JPanel numTurnsLeftPanel;
+
 	private PImageWithHighlight p1Limg;
 
 	private PImageWithHighlight p1Rimg;
@@ -82,6 +87,8 @@ public class PhotoDisplay extends JFrame {
 
 	private JPanel scorePanel;
 
+	private JLabel turnsRemaining;
+
 	private Twistr twistr;
 
 	/**
@@ -101,6 +108,20 @@ public class PhotoDisplay extends JFrame {
 		setVisible(true);
 	}
 
+	/**
+	 * @return
+	 */
+	private Component getBottomPanel() {
+		if (scorePanel == null) {
+			scorePanel = new JPanel();
+			scorePanel.setOpaque(false);
+			scorePanel.setLayout(new BorderLayout());
+			scorePanel.add(getNumTurnsLeftPanel(), BorderLayout.WEST);
+			scorePanel.add(getPlayer2Score(), BorderLayout.EAST);
+		}
+		return scorePanel;
+	}
+
 	private Component getInfoLabel() {
 		if (infoLabel == null) {
 			infoLabel = new JLabel();
@@ -109,28 +130,6 @@ public class PhotoDisplay extends JFrame {
 			updateInfoLabel();
 		}
 		return infoLabel;
-	}
-
-	/**
-	 * 
-	 */
-	private void updateInfoLabel() {
-		infoLabel.setText("Twistr :: [" + numPointsThisTurn + "]");
-	}
-
-	/**
-	 * @return
-	 */
-	private Component getTopPanel() {
-		if (infoPanel == null) {
-			infoPanel = new JPanel();
-			infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-			infoPanel.setOpaque(false);
-			infoPanel.setLayout(new BorderLayout());
-			infoPanel.add(getInfoLabel(), BorderLayout.WEST);
-			infoPanel.add(getPlayer1Score(), BorderLayout.EAST);
-		}
-		return infoPanel;
 	}
 
 	/**
@@ -148,14 +147,6 @@ public class PhotoDisplay extends JFrame {
 		return mainPanel;
 	}
 
-	private int numPointsThisTurn = 0;
-
-	private JPanel numTurnsLeftPanel;
-
-	private JLabel turnsRemaining;
-
-	private int numTurnsLeft = 30;
-
 	/**
 	 * @return
 	 */
@@ -164,13 +155,9 @@ public class PhotoDisplay extends JFrame {
 			nextTurnAction = new AbstractAction() {
 
 				public void actionPerformed(ActionEvent ae) {
-					
-					if (Math.random() > 0.5) {
-						twistr.p1WonThisTurn(numPointsThisTurn);
-					} else {
-						twistr.p2WonThisTurn(numPointsThisTurn);
-					}
-					
+
+					// 
+
 					DebugUtils.println("NEXT TURN");
 					updateScores();
 					numTurnsLeft = twistr.nextTurn();
@@ -184,12 +171,32 @@ public class PhotoDisplay extends JFrame {
 
 					updateTurnsRemainingLabel();
 					updateInfoLabel();
-					
+
 					twistr.getPhotos();
 				}
 			};
 		}
 		return nextTurnAction;
+	}
+
+	private Component getNumTurnsLeftPanel() {
+		if (numTurnsLeftPanel == null) {
+			numTurnsLeftPanel = new JPanel();
+			numTurnsLeftPanel.setOpaque(false);
+			final JLabel turnsLabel = new JLabel("Turns Remaining: ");
+			turnsLabel.setFont(LOWER_PANEL_FONT);
+			turnsLabel.setForeground(TWISTR_COLOR);
+			turnsRemaining = new JLabel(numTurnsLeft + " ");
+			turnsRemaining.setFont(LOWER_PANEL_FONT);
+			turnsRemaining.setForeground(TWISTR_COLOR);
+			numTurnsLeftPanel.setLayout(new FlowLayout());
+			numTurnsLeftPanel.add(turnsLabel);
+			numTurnsLeftPanel.add(Box.createHorizontalStrut(HSPACE));
+			numTurnsLeftPanel.add(turnsRemaining);
+
+			updateTurnsRemainingLabel();
+		}
+		return numTurnsLeftPanel;
 	}
 
 	/**
@@ -238,33 +245,6 @@ public class PhotoDisplay extends JFrame {
 		return p2Score;
 	}
 
-	private Component getNumTurnsLeftPanel() {
-		if (numTurnsLeftPanel == null) {
-			numTurnsLeftPanel = new JPanel();
-			numTurnsLeftPanel.setOpaque(false);
-			final JLabel turnsLabel = new JLabel("Turns Remaining: ");
-			turnsLabel.setFont(LOWER_PANEL_FONT);
-			turnsLabel.setForeground(TWISTR_COLOR);
-			turnsRemaining = new JLabel(numTurnsLeft + " ");
-			turnsRemaining.setFont(LOWER_PANEL_FONT);
-			turnsRemaining.setForeground(TWISTR_COLOR);
-			numTurnsLeftPanel.setLayout(new FlowLayout());
-			numTurnsLeftPanel.add(turnsLabel);
-			numTurnsLeftPanel.add(Box.createHorizontalStrut(HSPACE));
-			numTurnsLeftPanel.add(turnsRemaining);
-
-			updateTurnsRemainingLabel();
-		}
-		return numTurnsLeftPanel;
-	}
-
-	/**
-	 * 
-	 */
-	private void updateTurnsRemainingLabel() {
-		turnsRemaining.setText(numTurnsLeft + " ");
-	}
-
 	/**
 	 * @return
 	 */
@@ -289,23 +269,23 @@ public class PhotoDisplay extends JFrame {
 		return pointsPanelP2;
 	}
 
-	private void updateScores() {
-		pointsPanelP1.setText(twistr.getP1Score() + "");
-		pointsPanelP2.setText(twistr.getP2Score() + "");
-	}
-
 	/**
 	 * @return
 	 */
-	private Component getBottomPanel() {
-		if (scorePanel == null) {
-			scorePanel = new JPanel();
-			scorePanel.setOpaque(false);
-			scorePanel.setLayout(new BorderLayout());
-			scorePanel.add(getNumTurnsLeftPanel(), BorderLayout.WEST);
-			scorePanel.add(getPlayer2Score(), BorderLayout.EAST);
+	private Component getTopPanel() {
+		if (infoPanel == null) {
+			infoPanel = new JPanel();
+			infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			infoPanel.setOpaque(false);
+			infoPanel.setLayout(new BorderLayout());
+			infoPanel.add(getInfoLabel(), BorderLayout.WEST);
+			infoPanel.add(getPlayer1Score(), BorderLayout.EAST);
 		}
-		return scorePanel;
+		return infoPanel;
+	}
+
+	public void nextTurn() {
+		getNextTurnAction().actionPerformed(null);
 	}
 
 	/**
@@ -342,7 +322,8 @@ public class PhotoDisplay extends JFrame {
 	 * @param location
 	 * @return
 	 */
-	private PImageWithHighlight placeSinglePhoto(PImageWithHighlight pimg, File imgFile, int location) {
+	private PImageWithHighlight placeSinglePhoto(PImageWithHighlight pimg, File imgFile,
+			int location) {
 		if (pimg != null) {
 			pictures.removeChild(pimg);
 		}
@@ -370,10 +351,12 @@ public class PhotoDisplay extends JFrame {
 			pimg.setOffset(H_PADDING + centeringOffsetX, V_PADDING + centeringOffsetY);
 			break;
 		case 1:
-			pimg.setOffset(maxImageW + 3 * H_PADDING + centeringOffsetX, V_PADDING + centeringOffsetY);
+			pimg.setOffset(maxImageW + 3 * H_PADDING + centeringOffsetX, V_PADDING
+					+ centeringOffsetY);
 			break;
 		case 2:
-			pimg.setOffset(H_PADDING + centeringOffsetX, maxImageH + 3 * V_PADDING + centeringOffsetY);
+			pimg.setOffset(H_PADDING + centeringOffsetX, maxImageH + 3 * V_PADDING
+					+ centeringOffsetY);
 			break;
 		case 3:
 			pimg.setOffset(maxImageW + 3 * H_PADDING + centeringOffsetX, maxImageH + 3 * V_PADDING
@@ -391,5 +374,24 @@ public class PhotoDisplay extends JFrame {
 
 		ActionMap actionMap = getMainPanel().getActionMap();
 		actionMap.put(ActionKeys.SPACE_BAR_NEXT_TURN, getNextTurnAction());
+	}
+
+	/**
+	 * 
+	 */
+	private void updateInfoLabel() {
+		infoLabel.setText("Twistr :: [" + numPointsThisTurn + "]");
+	}
+
+	private void updateScores() {
+		pointsPanelP1.setText(twistr.getP1Score() + "");
+		pointsPanelP2.setText(twistr.getP2Score() + "");
+	}
+
+	/**
+	 * 
+	 */
+	private void updateTurnsRemainingLabel() {
+		turnsRemaining.setText(numTurnsLeft + " ");
 	}
 }
