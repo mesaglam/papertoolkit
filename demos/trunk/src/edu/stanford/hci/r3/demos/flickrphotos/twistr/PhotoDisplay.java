@@ -57,7 +57,7 @@ public class PhotoDisplay extends JFrame {
 
 	private int numPointsThisTurn = 0;
 
-	private int numTurnsLeft = 30;
+	private int numTurnsLeft = Twistr.MAX_NUM_TURNS;
 
 	private JPanel numTurnsLeftPanel;
 

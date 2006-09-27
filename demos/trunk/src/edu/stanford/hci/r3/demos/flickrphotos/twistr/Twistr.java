@@ -75,7 +75,9 @@ public class Twistr {
 
 	private int numPhotos;
 
-	private int numTurns = 30;
+	public static final int MAX_NUM_TURNS = 15;
+
+	private int numTurns = MAX_NUM_TURNS;
 
 	private String p1leftIPAddr;
 
@@ -204,9 +206,9 @@ public class Twistr {
 			return lastTurnScore;
 		} else {
 			int index = (int) (Math.random() * possibleScores.length);
-			if (numTurns < 10) {
+			if (numTurns < MAX_NUM_TURNS / 3.0) {
 				index += 2;
-			} else if (numTurns < 20) {
+			} else if (numTurns < 2 * MAX_NUM_TURNS / 3.0) {
 				index++;
 			}
 			if (index >= possibleScores.length) {
@@ -245,7 +247,7 @@ public class Twistr {
 		}
 		if (numTurns == 1) {
 			Application.doPlaySound(new File("data/Flickr/Twistr/audio/For100points.wav"));
-		} else if (numTurns == 29) {
+		} else if (numTurns == MAX_NUM_TURNS - 1) {
 			Application.doPlaySound(new File("data/Flickr/Twistr/audio/LetsGo.wav"));
 		}
 		return numTurns;
@@ -267,7 +269,7 @@ public class Twistr {
 		String name = p1Sounds[(int) (Math.random() * p1Sounds.length)];
 		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
 		Application.doPlaySound(soundFile);
-		
+
 		display.nextTurn();
 	}
 
@@ -277,7 +279,7 @@ public class Twistr {
 		String name = p2Sounds[(int) (Math.random() * p2Sounds.length)];
 		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
 		Application.doPlaySound(soundFile);
-		
+
 		display.nextTurn();
 	}
 
