@@ -7,6 +7,8 @@ import java.io.File;
 
 import javax.swing.*;
 
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkPCanvas;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.graphics.ImageCache;
 import edu.umd.cs.piccolo.PCanvas;
@@ -26,12 +28,10 @@ import edu.umd.cs.piccolo.nodes.PImage;
 public class BuddySketchGUI extends JFrame {
 
 	public enum ActionKeys {
-		SPACE_BAR_NEXT_TURN;
+		SPACE_BAR;
 	}
 
 	private static final int H_PADDING = 10;
-
-	private static final int HSPACE = 50;
 
 	private static final Font LOWER_PANEL_FONT = new Font("Trebuchet MS", Font.BOLD, 30);
 
@@ -43,7 +43,7 @@ public class BuddySketchGUI extends JFrame {
 	// private static final Color TWISTR_COLOR = new Color(120, 198, 121);
 	private static final Color TWISTR_COLOR = new Color(116, 169, 207);
 
-	private static final Font UPPER_PANEL_FONT = new Font("Trebuchet MS", Font.BOLD, 72);
+	private static final Font UPPER_PANEL_FONT = new Font("Trebuchet MS", Font.BOLD, 56);
 
 	private static final int V_PADDING = 20;
 
@@ -55,37 +55,33 @@ public class BuddySketchGUI extends JFrame {
 
 	private JPanel infoPanel;
 
+	private File lastBuddyFileDisplayed;
+
+	private PImage lastBuddyImage;
+
+	private File lastFileDisplayed;
+
+	private PImage lastImage;
+
+	private InkPCanvas mainCanvas;
+
+	private PLayer mainCanvasContentLayer;
+
 	private JPanel mainPanel;
 
 	private double maxImageH = 200;
 
 	private double maxImageW = 200;
 
-	private AbstractAction nextTurnAction;
+	private JLabel message;
 
-	private PImage p1Limg;
-
-	private PImage p1Rimg;
-
-	private JPanel p1Score;
-
-	private PImage p2Limg;
-
-	private PImage p2Rimg;
-
-	private double panelH;
-
-	private double panelW;
-
-	private PCanvas picCanvas;
-
-	private PLayer pictures;
-
-	private JLabel pointsPanelP1;
+	final int MONITOR_WIDTH = 1024;
 
 	private JPanel scorePanel;
 
-	private PImage lastImage;
+	private JPanel status;
+
+	private AbstractAction toggleZoomAction;
 
 	/**
 	 * @param buddyApp
@@ -102,6 +98,35 @@ public class BuddySketchGUI extends JFrame {
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+	}
+
+	/**
+	 * @param newInkOnly
+	 */
+	public void addInkToCanvas(Ink newInkOnly) {
+		mainCanvas.addInk(newInkOnly);
+	}
+
+	/**
+	 * @param f
+	 */
+	public void displayBuddyPhoto(File imgFile) {
+		if (!imgFile.exists()) {
+			DebugUtils.println("File Does not exist: " + imgFile.getAbsolutePath());
+		}
+		final PImage p = new PImage(ImageCache.loadBufferedImage(imgFile));
+		placeBuddyPhoto(p, imgFile);
+	}
+
+	/**
+	 * @param imgFile
+	 */
+	public void displayPhoto(File imgFile) {
+		if (!imgFile.exists()) {
+			DebugUtils.println("File Does not exist: " + imgFile.getAbsolutePath());
+		}
+		final PImage p = new PImage(ImageCache.loadBufferedImage(imgFile));
+		placeMyPhoto(p, imgFile);
 	}
 
 	private Component getInfoLabel() {
@@ -126,54 +151,54 @@ public class BuddySketchGUI extends JFrame {
 	/**
 	 * @return
 	 */
+	private PCanvas getMainCanvas() {
+		if (mainCanvas == null) {
+			mainCanvas = new InkPCanvas();
+			mainCanvas.setBackground(new Color(40, 40, 40));
+			mainCanvasContentLayer = mainCanvas.getLayer();
+		}
+		return mainCanvas;
+	}
+
+	/**
+	 * @return
+	 */
 	private JPanel getMainPanel() {
 		if (mainPanel == null) {
 			mainPanel = new JPanel();
 			mainPanel.setBackground(Color.BLACK);
 			mainPanel.setLayout(new BorderLayout());
 			mainPanel.add(getInfoPanel(), BorderLayout.NORTH);
-			mainPanel.add(getPictureCanvas(), BorderLayout.CENTER);
+			mainPanel.add(getMainCanvas(), BorderLayout.CENTER);
 			mainPanel.add(getStatusPanel(), BorderLayout.SOUTH);
 		}
 		return mainPanel;
 	}
 
 	private Action getNextTurnAction() {
-		if (nextTurnAction == null) {
-			nextTurnAction = new AbstractAction() {
+		if (toggleZoomAction == null) {
+			toggleZoomAction = new AbstractAction() {
 				public void actionPerformed(ActionEvent ae) {
-					DebugUtils.println("NEXT TURN");
+					DebugUtils.println("TOGGLE ZOOM...");
 				}
 			};
 		}
-		return nextTurnAction;
-	}
-
-	/**
-	 * @return
-	 */
-	private PCanvas getPictureCanvas() {
-		if (picCanvas == null) {
-			picCanvas = new PCanvas();
-			picCanvas.setBackground(new Color(40, 40, 40));
-			pictures = picCanvas.getLayer();
-		}
-		return picCanvas;
+		return toggleZoomAction;
 	}
 
 	/**
 	 * @return
 	 */
 	private Component getStatusMessageFromOtherPerson() {
-		if (p1Score == null) {
-			p1Score = new JPanel();
-			p1Score.setOpaque(false);
-			final JLabel playerName = new JLabel(WAITING);
-			playerName.setFont(LOWER_PANEL_FONT);
-			playerName.setForeground(TWISTR_COLOR);
-			p1Score.add(playerName);
+		if (status == null) {
+			status = new JPanel();
+			status.setOpaque(false);
+			message = new JLabel(WAITING);
+			message.setFont(LOWER_PANEL_FONT);
+			message.setForeground(TWISTR_COLOR);
+			status.add(message);
 		}
-		return p1Score;
+		return status;
 	}
 
 	/**
@@ -192,12 +217,17 @@ public class BuddySketchGUI extends JFrame {
 	/**
 	 * @param pimg
 	 * @param imgFile
-	 * @param location
-	 * @return
 	 */
-	private PImage placeSinglePhoto(PImage pimg, File imgFile) {
-		if (lastImage != null) {
-			pictures.removeChild(lastImage);
+	private void placeBuddyPhoto(PImage pimg, File imgFile) {
+		message.setText(PICKED_PHOTO);
+
+		if (lastBuddyImage != null) {
+			mainCanvasContentLayer.getCamera(0).removeChild(lastBuddyImage);
+			lastBuddyImage = null;
+			if (imgFile.equals(lastBuddyFileDisplayed)) {
+				// hide the file instead, because it was tapped twice
+				return;
+			}
 		}
 		pimg = new PImage(ImageCache.loadBufferedImage(imgFile));
 
@@ -212,28 +242,57 @@ public class BuddySketchGUI extends JFrame {
 
 		pimg.setScale(scaleFactor);
 
-		pimg.setOffset(0, 0);
+		pimg.setOffset(MONITOR_WIDTH - (scaleFactor * w) - H_PADDING, V_PADDING);
 
-		pictures.addChild(pimg);
+		mainCanvasContentLayer.getCamera(0).addChild(pimg);
+		lastBuddyImage = pimg;
+		mainCanvasContentLayer.getCamera(0).repaint(); // update the canvas
+
+		lastBuddyFileDisplayed = imgFile;
+	}
+
+	/**
+	 * @param pimg
+	 * @param imgFile
+	 * @param location
+	 * @return
+	 */
+	private void placeMyPhoto(PImage pimg, File imgFile) {
+		if (lastImage != null) {
+			mainCanvasContentLayer.getCamera(0).removeChild(lastImage);
+			lastImage = null;
+			if (imgFile.equals(lastFileDisplayed)) {
+				// hide the file instead, because it was tapped twice
+				return;
+			}
+		}
+		pimg = new PImage(ImageCache.loadBufferedImage(imgFile));
+
+		double w = pimg.getWidth();
+		double h = pimg.getHeight();
+
+		double scaleX = maxImageW / w;
+		double scaleY = maxImageH / h;
+
+		// choose the smaller of the two...
+		double scaleFactor = Math.min(scaleX, scaleY);
+
+		pimg.setScale(scaleFactor);
+
+		pimg.setOffset(H_PADDING, V_PADDING);
+
+		mainCanvasContentLayer.getCamera(0).addChild(pimg);
 		lastImage = pimg;
-		pictures.repaint(); // update the canvas
-		return pimg;
+		mainCanvasContentLayer.getCamera(0).repaint(); // update the canvas
+
+		lastFileDisplayed = imgFile;
 	}
 
 	private void setupInputHandling() {
 		InputMap inputMap = getMainPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), ActionKeys.SPACE_BAR_NEXT_TURN);
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), ActionKeys.SPACE_BAR);
 
 		ActionMap actionMap = getMainPanel().getActionMap();
-		actionMap.put(ActionKeys.SPACE_BAR_NEXT_TURN, getNextTurnAction());
-	}
-
-	/**
-	 * @param imgFile
-	 */
-	public void displayPhoto(File imgFile) {
-		DebugUtils.println("File Exists: " + imgFile.exists());
-		PImage p = new PImage(ImageCache.loadBufferedImage(imgFile));
-		placeSinglePhoto(p, imgFile);
+		actionMap.put(ActionKeys.SPACE_BAR, getNextTurnAction());
 	}
 }

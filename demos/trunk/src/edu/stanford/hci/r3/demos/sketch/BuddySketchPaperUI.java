@@ -7,11 +7,12 @@ import java.util.Map;
 import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.filters.InkCollector;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ImageRegion;
 import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -53,30 +54,22 @@ public class BuddySketchPaperUI extends Sheet {
 		inkWell.addListener(new ContentFilterListener() {
 			public void contentArrived() {
 				DebugUtils.println("Content Arrived");
-				DebugUtils.println(inkWell.getNumStrokesCollected());
+				DebugUtils.println("Num Strokes Total: " + inkWell.getNumStrokesCollected());
+
+				// display this ink in our local GUI...
+				sketchApp.sendInkToLocalGUI(inkWell.getNewInkOnly());
 			}
 		});
 		drawingRegion.addContentFilter(inkWell);
 
-		drawingRegion.addEventHandler(new ClickHandler() {
-
+		drawingRegion.addEventHandler(new ClickAdapter() {
 			@Override
 			public void clicked(PenEvent e) {
-				DebugUtils.println("Drawing Region " + e.getPercentageLocation());
+				DebugUtils.println("Drawing Region CLICK " + e.getPercentageLocation());
+				DebugUtils.println("Drawing Region CLICK "
+						+ e.getPercentageLocation().getX().getValueIn(Pixels.ONE) + ", "
+						+ e.getPercentageLocation().getY().getValueIn(Pixels.ONE));
 			}
-
-			@Override
-			public void pressed(PenEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void released(PenEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
 		});
 
 		addRegion(drawingRegion);
@@ -115,22 +108,11 @@ public class BuddySketchPaperUI extends Sheet {
 
 			final Region retrieveOrHide = new Region(desc, xInches, new Inches(yInches), imgRegion
 					.getWidth(), new Inches(0.6));
-			retrieveOrHide.addEventHandler(new ClickHandler() {
-
+			retrieveOrHide.addEventHandler(new ClickAdapter() {
 				@Override
 				public void clicked(PenEvent e) {
 					DebugUtils.println("Clicked " + fileName + " at " + e.getPercentageLocation());
 					sketchApp.displayImage(imgFile);
-				}
-
-				@Override
-				public void pressed(PenEvent e) {
-
-				}
-
-				@Override
-				public void released(PenEvent e) {
-
 				}
 			});
 			addRegion(retrieveOrHide);

@@ -80,8 +80,14 @@ public class Sketch {
 
 	private JFrame inkDisplay;
 
+	/**
+	 * Renders Ink
+	 */
 	private InkPanel inkPanel;
 
+	/**
+	 * Captures ink from the streaming pen.
+	 */
 	private InkCollector inkWell;
 
 	private JPanel mainPanel;
@@ -215,8 +221,8 @@ public class Sketch {
 			inkDisplay = new JFrame("Sketch! Display");
 			inkDisplay.setContentPane(getMainPanel());
 			inkDisplay.setSize(690, 740);
-			inkDisplay.setLocation(WindowUtils.getWindowOrigin(inkDisplay,
-					WindowUtils.DESKTOP_CENTER));
+			inkDisplay
+					.setLocation(WindowUtils.getWindowOrigin(inkDisplay, WindowUtils.DESKTOP_CENTER));
 			inkDisplay.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			inkDisplay.setVisible(true);
 		}

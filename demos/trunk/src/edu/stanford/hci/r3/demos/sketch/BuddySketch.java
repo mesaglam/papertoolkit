@@ -14,6 +14,7 @@ import edu.stanford.hci.r3.actions.types.ProcessInformationAction;
 import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.components.EndlessProgressDialog;
 
@@ -56,6 +57,8 @@ public class BuddySketch extends Application {
 			return hostName + "    " + comment;
 		}
 	}
+
+	private static final String DISPLAY_PHOTO = "DISPLAYPHOTO";
 
 	/**
 	 * @param args
@@ -161,6 +164,18 @@ public class BuddySketch extends Application {
 	}
 
 	/**
+	 * @param imgFile
+	 */
+	public void displayImage(File imgFile) {
+		// display it in my own window...
+		buddySketchGUI.displayPhoto(imgFile);
+
+		// tell the OTHER device to display it too!
+		ProcessInformationAction a = new ProcessInformationAction(DISPLAY_PHOTO, imgFile);
+		device.invokeAction(a);
+	}
+
+	/**
 	 * @return
 	 */
 	private ActionReceiverConnectionListener getConnectionListener() {
@@ -187,8 +202,6 @@ public class BuddySketch extends Application {
 
 		// connect!
 		device.connect();
-		ProcessInformationAction a = new ProcessInformationAction("File", new File("."));
-		device.invokeAction(a);
 	}
 
 	/**
@@ -263,6 +276,13 @@ public class BuddySketch extends Application {
 	}
 
 	/**
+	 * @param newInkOnly
+	 */
+	public void sendInkToLocalGUI(Ink newInkOnly) {
+		buddySketchGUI.addInkToCanvas(newInkOnly);
+	}
+
+	/**
 	 * 
 	 */
 	private void startLocalActionReceiver() {
@@ -284,8 +304,17 @@ public class BuddySketch extends Application {
 					Object msgVal = p.getInformation();
 					String msgName = p.getName();
 
-					System.err.println(msgName + " " + msgVal);
+					if (msgName.equals(DISPLAY_PHOTO)) {
+						DebugUtils.println("Displaying Photo!");
+						File f = (File) msgVal;
+						DebugUtils.println("Photo Exists? " + f.exists());
+						
+						// display it in my own window...
+						buddySketchGUI.displayBuddyPhoto(f);
 
+					} else {
+						
+					}
 				} else {
 					action.invoke();
 				}
@@ -300,12 +329,5 @@ public class BuddySketch extends Application {
 			}
 
 		});
-	}
-
-	/**
-	 * @param imgFile
-	 */
-	public void displayImage(File imgFile) {
-		buddySketchGUI.displayPhoto(imgFile);
 	}
 }
