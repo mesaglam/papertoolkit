@@ -130,6 +130,7 @@ public class EventEngine {
 				// make an event object and send it to the event handler
 				PenEvent event = new PenEvent(penID, System.currentTimeMillis());
 				event.setOriginalSample(sample);
+				event.setPenName(pen.getName());
 				return event;
 			}
 
