@@ -267,6 +267,8 @@ public class Twistr {
 		String name = p1Sounds[(int) (Math.random() * p1Sounds.length)];
 		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
 		Application.doPlaySound(soundFile);
+		
+		display.nextTurn();
 	}
 
 	public void p2WonThisTurn(int numPointsThisTurn) {
@@ -275,14 +277,22 @@ public class Twistr {
 		String name = p2Sounds[(int) (Math.random() * p2Sounds.length)];
 		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
 		Application.doPlaySound(soundFile);
+		
+		display.nextTurn();
 	}
 
 	/**
 	 * @param numPointsThisTurn
 	 */
 	public void p1And2TiedThisTurn(int numPointsThisTurn) {
-		p1WonThisTurn(numPointsThisTurn);
-		p2WonThisTurn(numPointsThisTurn);
+		p1Score += numPointsThisTurn;
+		p2Score += numPointsThisTurn;
+
+		String name = p1Sounds[(int) (Math.random() * p1Sounds.length)];
+		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
+		Application.doPlaySound(soundFile);
+
+		display.nextTurn();
 	}
 
 	/**
@@ -331,17 +341,14 @@ public class Twistr {
 			// both scored at the same time!
 			// this should never happen...
 			p1And2TiedThisTurn(numPointsThisTurn);
-			display.nextTurn();
 			resetOKFlags();
 		} else if (p1LeftOK && p1RightOK) {
 			// p1 scores
 			p1WonThisTurn(2 * numPointsThisTurn);
-			display.nextTurn();
 			resetOKFlags();
 		} else if (p2LeftOK && p2RightOK) {
 			// p2 scores
 			p2WonThisTurn(2 * numPointsThisTurn);
-			display.nextTurn();
 			resetOKFlags();
 		}
 	}
