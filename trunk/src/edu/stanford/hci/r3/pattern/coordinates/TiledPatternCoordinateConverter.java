@@ -243,9 +243,9 @@ public class TiledPatternCoordinateConverter {
 			maxY = originY + numDotsVerticalBetweenTiles * numTiles - bottomMostVoidSpaceInDots;
 		}
 
-		DebugUtils.println(regionName);
-		DebugUtils.println("Void Space in X: " + rightMostVoidSpaceInDots);
-		DebugUtils.println("Void Space in Y: " + bottomMostVoidSpaceInDots);
+		// DebugUtils.println(regionName);
+		// DebugUtils.println("Void Space in X: " + rightMostVoidSpaceInDots);
+		// DebugUtils.println("Void Space in Y: " + bottomMostVoidSpaceInDots);
 	}
 
 	/**
