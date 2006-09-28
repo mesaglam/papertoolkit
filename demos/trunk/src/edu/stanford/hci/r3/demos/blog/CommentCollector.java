@@ -44,11 +44,11 @@ public class CommentCollector extends InkCollector {
 		this.index = index;
 
 		feed = new SyndFeedImpl();
-		feed.setFeedType("RSS 2.0");
+		feed.setFeedType("rss_1.0");
 
 		feed.setTitle("BoingBoing GIGAprints Comments");
 		feed.setLink("http://hci.stanford.edu/gigaprints");
-		feed.setDescription("");
+		feed.setDescription("BoingBoing GIGAprints Comments");
 		
 		updater = new Thread() {
 
