@@ -34,4 +34,12 @@ public class InkSample {
 		force = f;
 		timestamp = ts;
 	}
+	
+	public InkSample(InkSample sample)
+	{
+		this.x = sample.x;
+		this.y = sample.y;
+		this.force = sample.force;
+		this.timestamp = sample.timestamp;
+	}
 }

@@ -1,11 +1,19 @@
 package edu.stanford.hci.r3.pen.gesture;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import cern.colt.matrix.linalg.Algebra;
 import cern.colt.matrix.linalg.SingularValueDecomposition;
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkRenderer;
+import edu.stanford.hci.r3.pen.ink.InkSample;
+import edu.stanford.hci.r3.pen.ink.InkStroke;
+import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.units.Points;
 
 
 /**
@@ -21,13 +29,18 @@ import cern.colt.matrix.linalg.SingularValueDecomposition;
  * 
  */
 public class ShapeHistogram {
-	int[] data;
-	int[] bin_counts;
-	boolean[] explicit_binning;
-	double[][] bins;
-	double[] mins;
-	double[] maxes;
+	int[] data = null;
+	int[] bin_counts = null;
+	boolean[] explicit_binning = null;
+	double[][] bins = null;
+	double[] mins = null;
+	double[] maxes = null;
 	int bands;
+	public static double costWeighting = .3;
+	
+	public ShapeHistogram()
+	{ // default constructor
+	}
 	
 	// n+1 values for each dimension with explicit binning
 	public ShapeHistogram(int[] bin_counts, double[] mins, double[] maxes, boolean[] explicit_binning, double[][] bins, int bands)
@@ -142,7 +155,7 @@ public class ShapeHistogram {
 	    stepnum = 1;
 	    while(!done) {
 	    	switch(stepnum) {
-		    	case 1: stepnum = step1(n, C, M, Row, Col);break;
+	    		case 1: stepnum = step1(n, C, M, Row, Col);break;
 		    	case 2: stepnum = step2(n, C, M, Row, Col);break;
 		    	case 3: stepnum = step3(n, C, M, Row, Col);break;
 		    	case 4: stepnum = step4(n, C, M, Row, Col);break;
@@ -163,7 +176,7 @@ public class ShapeHistogram {
 
 	static public int step1(int n, double[][] C, int[][] M, int[] Row, int[] Col)
 	{
-		double minval;
+		double minval = 0;
 		for (int i = 0; i < n; i++) {
 			minval = C[i][0];
 			for (int j = 1; j < n; j++) {
@@ -246,7 +259,6 @@ public class ShapeHistogram {
 	}
 	
 	static Pair Z0;
-	public static double costWeighting = .3;
 	
 	static public int step4(int n, double[][] C, int[][] M, int[] R_cov, int[] C_cov)
 	{
@@ -356,7 +368,7 @@ public class ShapeHistogram {
 			}
 		return 4;
 	}
-
+	
 	// ah, point arrays
 	static public DoubleMatrix2D bookstein(int N, double[][] X, double[][] X2, double beta_k, double[] E)
 	{
@@ -372,12 +384,13 @@ public class ShapeHistogram {
 			r2[i][j] = r2[j][i] = r2[j][i] * Math.log(r2[j][i]);
 		DoubleMatrix2D K = new DenseDoubleMatrix2D(r2); // too large, but I'm lazy
 		for(int i=0;i<N;i++) {
+			r2[i][i]+=beta_k;
 			r2[i][N] = r2[N][i] = 1;
 			r2[i][N+1] = r2[N+1][i] = X[i][0];
 			r2[i][N+2] = r2[N+2][i] = X[i][1];
 		}
-		for(int i=0;i<N;i++) for(int j=0;j<N;j++)
-			r2[i][j]+=beta_k;
+		//for(int i=0;i<N;i++) for(int j=0;j<N;j++)
+		//	r2[i][j]+=beta_k;
 		Algebra algebra = new Algebra();
 		DoubleMatrix2D L = new DenseDoubleMatrix2D(r2);
 		DoubleMatrix2D invL = algebra.inverse(L);
@@ -398,14 +411,10 @@ public class ShapeHistogram {
 		a[0][1] = c.getQuick(N+1, 1);
 		a[1][0] = c.getQuick(N+2, 0);
 		a[1][1] = c.getQuick(N+2, 1);
+		if(a[0][0] == Double.NaN)
+			System.exit(-1);
 		SingularValueDecomposition s = new SingularValueDecomposition(new DenseDoubleMatrix2D(a));
 		E[1] = Math.log(s.cond());
-		/*DoubleMatrix2D result = new DenseDoubleMatrix2D(N, 2);
-		for(int i=0;i<N;i++) {
-			result.setQuick(i, 0, c.getQuick(i, 0));
-			result.setQuick(i, 1, c.getQuick(i, 1));
-		}
-		return result;*/
 		return c;
 	}
 	
@@ -517,33 +526,13 @@ public class ShapeHistogram {
 			
 		}
 
-		/*if (X1.length > X2.length) {
-			// X2 stays normal;
-			double[][] X1_new = new double[X2.length][2];
-			for(int i=0;i<X1.length;i++)
-				if(matching[i] < X2.length) {
-					X1_new[count][0] = X1[i][0];
-					X1_new[count][1] = X1[i][1];
-					count++;
-				}
-			X1 = X1_new;
-		}
-		else if (X1.length < X2.length) {
-			double[][] X2_new = new double[X1.length][2];
-			for(int i=0;i<X1.length;i++) {
-				X2_new[i][0] = X2[matching[i]][0];
-				X2_new[i][1] = X2[matching[i]][1];
-			}
-			X2 = X2_new;
-		}*/
-		double[] E = new double[2];
+		double[] eArray = new double[2];
 		double dist = 0;
 		for(int i=0;i<count;i++) for(int j=i+1;j<count;j++)
 			dist += Math.sqrt(Math.pow(X1[i][0]-X1[j][0],2)+Math.pow(X1[i][1]-X1[j][1],2));
 		dist /= (n*(n-1))/2;
-		double beta_k = Math.pow(dist,2)*100;
-		beta_k++;
-		DoubleMatrix2D c = bookstein(count, X1, X2, beta_k, E);
+		double beta_k = Math.pow(dist,2)*1;
+		DoubleMatrix2D c = bookstein(count, X1, X2, beta_k, eArray);
 		double sc_cost = shapeContextCost(N, costs, good_rows, good_columns, count);
 		double[][] Xwarped = warp(X1, X2, c, count);
 		double mean_squared_error = 0;
@@ -553,11 +542,27 @@ public class ShapeHistogram {
 		mean_squared_error /= count;
 		//System.out.println("mse: " + mean_squared_error);
 		// using digit distance function from paper
-		double total_cost = sc_cost + costWeighting * E[0];
+		double total_cost = sc_cost + costWeighting * eArray[0];
 		if (verbose) {
 			//System.out.println("Total cost: " + total_cost + " bending cost: " + E[0] + " sc cost: " + sc_cost + " affine cost: " + E[1]);
+			//System.out.println(eArray[1]);
 			//System.out.println("Discarded " + (N - count - dummy_padding) + " points.");
 		}
+
+		/*if (false) {
+			ArrayList<InkSample> old = new ArrayList<InkSample>();
+			ArrayList<InkSample> neW = new ArrayList<InkSample>();
+			for(int i = 0; i < count; i++) {
+				old.add(new InkSample(X2[i][0]+20, X2[i][1]+20, 0, 0));
+				neW.add(new InkSample(Xwarped[i][0]+60, Xwarped[i][1]+60, 0, 0));
+			}
+			Random random = new Random();
+			Ink ink = new Ink();
+			ink.addStroke(new InkStroke(old, new Points()));
+			ink.addStroke(new InkStroke(neW, new Points()));
+	    	InkRenderer renderer = new InkRenderer(ink);
+	    	renderer.renderToJPEG(new File("warped_context_"+random.nextInt()+".jpg"), new Pixels(300), new Points(100), new Points(100));
+		}*/
 		return total_cost; // just bending energy
 		//return 1.6 * E[0] + sc_cost + .3 * E[1];
 	}

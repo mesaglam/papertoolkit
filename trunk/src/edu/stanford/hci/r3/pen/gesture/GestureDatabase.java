@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -28,10 +30,12 @@ import javax.swing.WindowConstants;
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkPanel;
+import edu.stanford.hci.r3.pen.ink.InkRenderer;
+import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.pen.streaming.PenGestureListener;
+import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.WindowUtils;
 
@@ -54,6 +58,8 @@ public class GestureDatabase implements ActionListener, FocusListener{
 	private transient Thread commandThread;
 	private transient boolean inputAvailable;
 	private ArrayList<ShapeContext> unlabeledTestContexts = new ArrayList<ShapeContext>();
+	private transient ArrayList<ShapeContext> bestExamples = null;
+	private transient ArrayList<Gesture> bestGestures = null;
 	
 	public GestureDatabase(String databaseName)
 	{
@@ -139,12 +145,12 @@ public class GestureDatabase implements ActionListener, FocusListener{
 				listener.setContexts(gesture.contexts, count);
 				break;
 			case 6:
-				System.out.println("Test without time: ");
-				ShapeContext.bands = 2;
-				autotest();
-				//System.out.println("Test using time: ");
-				//ShapeContext.bands = 3;
+				//System.out.println("Test without time: ");
+				//ShapeContext.bands = 2;
 				//autotest();
+				System.out.println("Test using time: ");
+				ShapeContext.bands = 3;
+				autotest();
 				break;
 			case 7:
 				determineClassParameters();
@@ -173,12 +179,32 @@ public class GestureDatabase implements ActionListener, FocusListener{
 			case 11:
 				leaveOneOutOptimizeCostWeighting();
 				break;
+			case 12:
+				leaveChunkOut(10);
+				break;
+			case 13:
+				moveAllToTrain();
+				break;
+			case 14:
+				leaveOneUserOut();
+				break;
+			case 15:
+				bestExamples();
+				break;
+			case 16:
+				testChunkOutOnBest(20);
+				break;
+			case 17:
+				createBestImage();
+				break;
+			case 18:
+				generateGesture();
+				break;
 			case -1:
 				System.out.println("Exiting.");
 				System.exit(0); // no automatic save on exit
 			case 2:
 				Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\"+databaseName+".gp"));
-				int stuff = 1;
 				quillWrite(writer);
 				Save(new FileWriter(new File(databaseName + ".xml")));
 				break;
@@ -188,7 +214,175 @@ public class GestureDatabase implements ActionListener, FocusListener{
 			commandMode = false;
 			labelField.setText("Option:");
 	}
+
+	private void moveAllToTrain()
+	{
+		for (int i = 0; i < gestures.size(); i++) {
+			ArrayList<ShapeContext> contexts = gestures.get(i).contexts;
+			ArrayList<ShapeContext> testContexts = testGestures.get(i).contexts;
+			for (int j = testContexts.size() - 1; j >= 0; j--) {
+				ShapeContext context = testContexts.get(j);
+				testContexts.remove(context);
+				contexts.add(context);
+			}
+		}
+	}
 	
+	private void bestExamples()
+	{
+		double totalN = 0;
+		int count = 0;
+		for (Gesture gesture : gestures) {
+			for (ShapeContext context : gesture.contexts) {
+				count++;
+				totalN += context.controlPoints.size();
+			}
+		}
+		System.out.println("Average points per context: " + totalN / count);
+		bestExamples = new ArrayList<ShapeContext>();
+		bestGestures = new ArrayList<Gesture>();
+		for (int i = 0; i < gestures.size(); i++) {
+			Gesture gesture = gestures.get(i);
+			ShapeContext best = null;
+			double distance = Double.MAX_VALUE;
+			System.out.println("Computing best example for " + gesture.name);
+			if (gesture.contexts.size() == 1)
+				best = gesture.contexts.get(0);
+			else {
+				for (int j=gesture.contexts.size()-1; j>=0; j--) {
+					ShapeContext context = gesture.contexts.get(j);
+					gesture.contexts.remove(context);
+					//double d = gesture.bestMatch(context); // dumb; this just tells me who's closest to their nearest neighbor.  We want centroid.
+					double d = gesture.averageMatch(context);
+					if (d < distance) {
+						distance = d;
+						best = context;
+					}
+					gesture.contexts.add(context);
+					// AVINOTE: remove this
+					break;
+				}
+			}
+			bestExamples.add(best);
+			Gesture bestGesture = new Gesture(gesture.name);
+			bestGesture.addGesture(best);
+			bestGestures.add(bestGesture);
+			print("Best example for " + gesture.name);
+			display(best, mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
+		}
+	}
+
+	private void leaveOneUserOut() throws IOException
+	{
+		// go through the users, pull one out into the test set at a time
+		moveAllToTrain();
+		Gesture gesture = gestures.get(0);
+		HashMap<String,Boolean> names = new HashMap<String,Boolean>();
+		for (int i = 0; i < gesture.contexts.size(); i++) {
+			names.put(gesture.contexts.get(i).authorName, true);
+		}
+		for (String name : names.keySet()) {
+			for (int i = 0; i < gestures.size(); i++) {
+				ArrayList<ShapeContext> contexts = gestures.get(i).contexts;
+				ArrayList<ShapeContext> testContexts = testGestures.get(i).contexts;
+				for (int j = contexts.size() - 1; j >= 0; j--) {
+					ShapeContext context = contexts.get(j);
+					if (context.authorName.compareTo(name) == 0) {
+						contexts.remove(context);
+						testContexts.add(context);
+					}
+				}
+			}
+			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\"+databaseName+"_" + name + ".gp"));
+			quillWrite(writer);
+			Save(new FileWriter(new File(databaseName + "_" + name + ".xml")));
+			Date before = new Date();
+			System.out.println("Beginning no-time run leaving out " + name);
+			ShapeContext.bands = 2;
+			autotest();
+			Date after = new Date();
+			double secondsElapsed = (after.getTime() - before.getTime())/1000.;
+			System.out.println("Elapsed time was: " + secondsElapsed);
+
+			before = new Date();
+			System.out.println("Beginning time run leaving out " + name);
+			ShapeContext.bands = 3;
+			autotest();
+			after = new Date();
+			secondsElapsed = (after.getTime() - before.getTime())/1000.;
+			System.out.println("Elapsed time was: " + secondsElapsed);
+		}
+	}
+
+	private void chunk(double threshold)
+	{
+		Random rand = new Random();
+		moveAllToTrain();
+		for (int i = 0; i < gestures.size(); i++) {
+			ArrayList<ShapeContext> contexts = gestures.get(i).contexts;
+			ArrayList<ShapeContext> testContexts = testGestures.get(i).contexts;
+			for (int j = contexts.size() - 1; j >= 0; j--) {
+				if (rand.nextDouble() < threshold) {
+					ShapeContext context = contexts.get(j);
+					contexts.remove(context);
+					testContexts.add(context);
+				}
+			}
+		}
+	}
+
+	private void leaveChunkOut(int trials) throws IOException
+	{
+		for (int trial = 0; trial < trials; trial++) {
+			chunk(.1);
+			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\"+databaseName+"_" + trial + ".gp"));
+			quillWrite(writer);
+			Save(new FileWriter(new File(databaseName + "_" + trial + ".xml")));
+			Date before = new Date();
+			System.out.println("Beginning no-time run leaving out " + trial);
+			ShapeContext.bands = 2;
+			autotest();
+			Date after = new Date();
+			double secondsElapsed = (after.getTime() - before.getTime())/1000.;
+			System.out.println("Elapsed time was: " + secondsElapsed);
+
+			before = new Date();
+			System.out.println("Beginning time run leaving out " + trial);
+			ShapeContext.bands = 3;
+			autotest();
+			after = new Date();
+			secondsElapsed = (after.getTime() - before.getTime())/1000.;
+			System.out.println("Elapsed time was: " + secondsElapsed);
+
+		}
+	}
+
+	private void testChunkOutOnBest(int trials) throws IOException
+	{
+		for (int trial = 0; trial < trials; trial++) {
+			chunk(.1);
+			bestExamples();
+			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\"+databaseName+"_best_" + trial + ".gp"));
+			quillWrite(writer);
+			Save(new FileWriter(new File(databaseName + "_best_" + trial + ".xml")));
+			Date before = new Date();
+			System.out.println("Beginning no-time run on best leaving out " + trial);
+			ShapeContext.bands = 2;
+			autotest(bestGestures);
+			Date after = new Date();
+			double secondsElapsed = (after.getTime() - before.getTime())/1000.;
+			System.out.println("Elapsed time was: " + secondsElapsed);
+
+			before = new Date();
+			System.out.println("Beginning time run on best leaving out " + trial);
+			ShapeContext.bands = 3;
+			autotest(bestGestures);
+			after = new Date();
+			secondsElapsed = (after.getTime() - before.getTime())/1000.;
+			System.out.println("Elapsed time was: " + secondsElapsed);
+		}
+	}
+
 	private void print(String string) {
 		labelField.setText(string);
 	}
@@ -217,7 +411,7 @@ public class GestureDatabase implements ActionListener, FocusListener{
 	    writer.write("training\n");
 	    // gesture set
 	    writer.write("name\t" + name + "\n");
-	    for(Gesture gesture : gestures) {
+	    for(Gesture gesture : (bestGestures == null?gestures:bestGestures)) {
 	    	writer.write("category\n");
 	    	gesture.quillWrite(writer);
 	    }
@@ -238,7 +432,12 @@ public class GestureDatabase implements ActionListener, FocusListener{
 	    writer.close();
 	}
 
-	public String test(ShapeContext context, boolean verbose) {
+	public String test(ShapeContext context, boolean verbose)
+	{
+		return test(context, verbose, gestures);
+	}
+	
+	public String test(ShapeContext context, boolean verbose, ArrayList<Gesture> gestures) {
 		// do KNN
 		int k = 3;
 		double[] distance = new double[k];
@@ -300,7 +499,7 @@ public class GestureDatabase implements ActionListener, FocusListener{
 		return min_clazz;
 	}
 	
-	public void autotest() {
+	public void autotest(ArrayList<Gesture> gestures) {
 		// use knn, most occurences or best average weight
 		int tested = 0;
 		int correct = 0;
@@ -309,16 +508,21 @@ public class GestureDatabase implements ActionListener, FocusListener{
 			Gesture testGesture = testGestures.get(i);
 			for (ShapeContext context : testGesture.contexts) {
 				tested++;
-				String assignment = test(context, false);
+				String assignment = test(context, false, gestures);
 				if (assignment.compareTo(gesture.name) == 0)
 					correct++;
 				else {
-					test(context, true);
+					test(context, true, gestures);
 					System.out.println(gesture.name + " misclassified as " + assignment);
 				}
 			}
 		}
 		System.out.println("Tested " + tested + " contexts, " + correct + " correct.");
+	}
+
+	public void autotest()
+	{
+		autotest(gestures);
 	}
 	
 	public void determineClassParameters()
@@ -384,6 +588,13 @@ public class GestureDatabase implements ActionListener, FocusListener{
 					"9: Add unlabeled gestures",
 					"10: Add unlabeled test gestures",
 					"11: Optimize cost weighting",
+					"12: Run leave-10%-out test",
+					"13: Move gestures out of test",
+					"14: Run leave-one-user-out test",
+					"15: Compute best examples per class",
+					"16: Run leave-10%-out test using only best examples",
+					"17: Create best image",
+					"18: Generate gesture",
 					"-1: Exit",
 					"Option: "
 			};
@@ -481,21 +692,69 @@ public class GestureDatabase implements ActionListener, FocusListener{
         Component c = parent.getComponent(row * cols + col);
         return layout.getConstraints(c);
     }
+
+    public void display(ShapeContext context, double w, double h)
+    {
+    	double min_x = Double.MAX_VALUE;
+    	double min_y = Double.MAX_VALUE;
+		for(InkSample sample : context.controlPoints) {
+			min_x = Math.min(sample.x, min_x);
+			min_y = Math.min(sample.y, min_y);
+		}
+		for(InkSample sample : context.controlPoints) {
+			sample.x += w - min_x;
+			sample.y += h - min_y;
+		}
+		InkStroke stroke = new InkStroke(context.controlPoints, new Points());
+		Ink ink = new Ink();
+		ink.addStroke(stroke);
+		inkPanel.clear();
+		inkPanel.addInk(ink);
+    }
+    
+    public void createBestImage()
+    {
+    	if (bestExamples == null) bestExamples();
+    	// write 'em out, staggered.
+    	Ink ink = new Ink();
+    	inkPanel.clear();
+    	double max_range_x = 0;
+    	double max_range_y = 0;
+    	for (int i = 0;i < bestExamples.size(); i++) {
+    		double min_x = Double.MAX_VALUE;
+    		double min_y = Double.MAX_VALUE;
+    		double max_x = Double.MIN_VALUE;
+    		double max_y = Double.MIN_VALUE;
+    		for(InkSample sample : bestExamples.get(i).controlPoints) {
+    			min_x = Math.min(sample.x, min_x);
+    			min_y = Math.min(sample.y, min_y);
+    			max_x = Math.max(sample.x, max_x);
+    			max_y = Math.max(sample.y, max_y);
+    			
+    		}
+    		max_range_x = Math.max(max_range_x, max_x - min_x);
+    		max_range_y = Math.max(max_range_y, max_y - min_y);
+    	}
+    	for (int i = 0;i < bestExamples.size(); i++) {
+    		ShapeContext context = bestExamples.get(i);
+    		display(context, max_range_x * (2*(i%3)+1), max_range_y * (2*(i/3)+1));
+    		ink.addStroke(new InkStroke(context.controlPoints, new Points()));
+    	}
+    	InkRenderer renderer = new InkRenderer(ink);
+    	renderer.renderToJPEG(new File("best.jpg"), new Pixels(300), new Points(max_range_x * 7), new Points(max_range_y * 7));
+    }
     
 	public void labelGestures()
 	{
 		labelField.setText("Class label:");
 		while (unlabeledContexts.size() > 0) {
 			ShapeContext context = unlabeledContexts.get(unlabeledContexts.size()-1);
-			for(InkSample sample : context.controlPoints) {
-				sample.x += mainPanel.getWidth() / 2;
-				sample.y += mainPanel.getHeight() / 2;
-			}
-			InkStroke stroke = new InkStroke(context.controlPoints, new Points());
-			Ink ink = new Ink();
-			ink.addStroke(stroke);
-			inkPanel.clear();
-			inkPanel.addInk(ink);
+			if (context.authorName.contains("jerry"))
+				for(InkSample sample : context.controlPoints) { // that clown
+					sample.x *= -1;
+					sample.y *= -1;
+				}
+			display(context, mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
 			String label = getString();
 			if (label.compareTo("-1") == 0) { // discard this gesture and continue
 				unlabeledContexts.remove(context);
@@ -516,15 +775,7 @@ public class GestureDatabase implements ActionListener, FocusListener{
 		labelField.setText("Class label (test):");
 		while (unlabeledTestContexts.size() > 0) {
 			ShapeContext context = unlabeledTestContexts.get(unlabeledTestContexts.size()-1);
-			for(InkSample sample : context.controlPoints) {
-				sample.x += mainPanel.getWidth() / 2;
-				sample.y += mainPanel.getHeight() / 2;
-			}
-			InkStroke stroke = new InkStroke(context.controlPoints, new Points());
-			Ink ink = new Ink();
-			ink.addStroke(stroke);
-			inkPanel.clear();
-			inkPanel.addInk(ink);
+			display(context, mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
 			String label = getString();
 			if (label.compareTo("-1") == 0) { // discard this gesture and continue
 				unlabeledTestContexts.remove(context);
@@ -568,6 +819,115 @@ public class GestureDatabase implements ActionListener, FocusListener{
 		ShapeHistogram.costWeighting = .3;
 	}
 
+	public void generateGesture()
+	{
+		if (bestExamples == null) bestExamples();
+		ShapeContext.bands = 3;
+		int max_points = 0;
+		for (ShapeContext context : bestExamples) {
+			max_points = Math.max(max_points, context.controlPoints.size());
+		}
+		Random random = new Random();
+		ArrayList<InkSample> newSamples = new ArrayList<InkSample>();
+		for (int i=0;i<max_points;i++) {
+			newSamples.add(new InkSample(random.nextDouble(), random.nextDouble(), 0, i));
+		}
+		ShapeContext noiseExample = new ShapeContext(newSamples, "noise");
+		max_points = 10;
+		ArrayList<InkSample> testSamples = new ArrayList<InkSample>();
+		for (int i=0;i<max_points;i++) {
+			testSamples.add(new InkSample(random.nextDouble() * max_points * max_points, random.nextDouble() * max_points * max_points, 0, i));
+		}
+		ShapeContext testExample = new ShapeContext(testSamples, "test");
+		double distanceMetric = -Double.MAX_VALUE;
+		int maxIteration = 1001;
+		int acceptedWeak = 0;
+		int scale = ((max_points*max_points)/8) * 2 + 1;
+		for (int i = 0; i < maxIteration ; i++) {
+			// pick a random point in testExample
+			int point = random.nextInt(max_points);
+			InkSample sample = testExample.controlPoints.get(point);
+			// scale is max_points
+			int dim = random.nextInt(2);
+			int mod = random.nextInt(scale) - (scale/2);
+			if (dim == 0) {
+				mod = Math.max((int)-sample.x, mod);
+				mod = Math.min((int)(max_points * max_points - sample.x), mod);
+				sample.x += mod;
+			}
+			else {
+				mod = Math.max((int)-sample.y, mod);
+				mod = Math.min((int)(max_points * max_points - sample.y), mod);
+				sample.y += mod;
+			}
+			double[] distances = new double[bestExamples.size()];
+			double average = 0;
+			for (int c = 0; c < bestExamples.size(); c++) {
+				ShapeContext context = bestExamples.get(c);
+				distances[c] = ShapeHistogram.shapeContextMetric(context, testExample, false, false, false);
+				average += distances[c];
+			}
+			average /= bestExamples.size();
+			// compute stddev distance
+			double stddev = 0;
+			for (int c = 0; c < bestExamples.size(); c++)
+				stddev += Math.pow(distances[c] - average, 2);
+			stddev /= bestExamples.size() - 1;
+			stddev = Math.sqrt(stddev);
+			double angleCost = 0;
+			for (int c = 1; c < max_points - 1; c++) {
+				// compute angles
+				InkSample first = testExample.controlPoints.get(c-1);
+				InkSample second = testExample.controlPoints.get(c);
+				InkSample third = testExample.controlPoints.get(c+1);
+				double x1 = second.x - first.x;
+				double y1 = second.y - first.y;
+				double x2 = third.x - second.x;
+				double y2 = third.y - second.y;
+				double dot = (x1 * x2 + y1 * y2) / Math.sqrt(x1 * x1 + y1 * y1) / Math.sqrt(x2 * x2 + y2 * y2);
+				// from -1 to 1
+				angleCost += dot;
+			}
+			angleCost /= (max_points - 2);
+			double springCost = 0;
+			double averageLength = 0;
+			double[] length = new double[max_points - 1];
+			for (int c = 1; c < max_points; c++) {
+				InkSample first = testExample.controlPoints.get(c-1);
+				InkSample second = testExample.controlPoints.get(c);
+				length[c-1] = Math.sqrt(Math.pow(first.x - second.x, 2) + Math.pow(first.y - second.y, 2));
+				averageLength += length[c-1];
+			}
+			averageLength /= max_points - 1;
+			for (int c = 0; c < max_points - 1; c++) {
+				springCost += Math.pow(length[c] - averageLength, 2);
+			}
+			springCost /= max_points - 2;
+			springCost = Math.sqrt(springCost);
+			double noiseDistance = ShapeHistogram.shapeContextMetric(noiseExample, testExample, false, false, false);
+			double metric = -10*stddev + noiseDistance + average/3 + angleCost * 10000 - springCost * 5000 + averageLength * 5000;
+			System.out.println("iteration " + i + " distance " + metric + " stddev " + stddev + " noise " + noiseDistance + " average " + average + " angle " + angleCost + " sc " + springCost + " al " + averageLength);
+			if (!Double.isNaN(metric) &&  (metric > distanceMetric || random.nextDouble() < /*Math.exp((-Math.abs(mod) - scale)*(2*i/(double)maxIteration)/5.)))*/Math.exp((metric - distanceMetric)/(3000 - i)))) {
+				if (metric < distanceMetric) acceptedWeak++;
+				distanceMetric = metric;
+			}
+			else {
+				if (dim == 0)
+					sample.x -= mod;
+				else
+					sample.y -= mod;
+			}
+			if (i%100 == 0) {
+				System.out.println("Accepted " + acceptedWeak + " weak samples.");
+				display(testExample, max_points * max_points, max_points * max_points);
+	    		Ink ink = new Ink();
+				ink.addStroke(new InkStroke(testExample.controlPoints, new Points()));
+		    	InkRenderer renderer = new InkRenderer(ink);
+		    	renderer.renderToJPEG(new File(databaseName + "_generated_"+(i/100)+".jpg"), new Pixels(300), new Points(max_points * max_points * 3), new Points(max_points * max_points * 3));
+			}
+		}
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		if (commandMode) {
 			inputString = e.getActionCommand();

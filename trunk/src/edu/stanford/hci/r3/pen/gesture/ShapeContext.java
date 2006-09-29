@@ -209,7 +209,7 @@ public class ShapeContext {
 			  else next = samples.get(i+1);
 			  tangents.add(new InkSample(next.x-last.x,next.y-last.y,0,0)); // crude
 		  }
-		  int bands = timeSensitive?3:2;
+		  //int bands = timeSensitive?3:2;
 		  double[][] bins = new double[3][];
 		  int[] bin_counts = new int[3];
 		  boolean[] explicit_binning = new boolean[3];
