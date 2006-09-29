@@ -20,7 +20,10 @@ public class Test_GestureDatabase {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
+		Gesture g = new Gesture("");
+		ShapeHistogram histogram = new ShapeHistogram();
 		String databaseName = stdin.readLine();
+
 		GestureDatabase database;
 		try {
 			File file = new File(databaseName + ".xml");

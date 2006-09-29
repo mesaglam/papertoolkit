@@ -31,7 +31,8 @@ public class Gesture {
 	
 	public void knnMatch(ShapeContext context, int k, double[] distance, String[] clazz, boolean verbose)
 	{
-		for(ShapeContext gesture : contexts) {
+		for (int c=0; c < contexts.size(); c++) {
+			ShapeContext gesture = contexts.get(c);
 			double d = ShapeHistogram.shapeContextMetric(context, gesture, rotationInvariant, timeSensitive, verbose);
 			for(int i=0;i<k;i++) {
 				if(d < distance[i]) {
@@ -92,6 +93,7 @@ public class Gesture {
 		}
 		dRotationTime /= N*(N-1);
 		System.out.println("Class " + name + ": NN: " + dNoRotationNoTime + " YN: " + dRotationNoTime + " NY: " + dNoRotationTime + " YY: " + dRotationTime);
+		System.out.println("Rotation score: " + dNoRotationNoTime / dRotationNoTime);
 	}
 	
 	public int size()
@@ -116,5 +118,14 @@ public class Gesture {
 	    }
 	    writer.write("endcategory\n");
 
+	}
+
+	public double averageMatch(ShapeContext context) {
+		// TODO Auto-generated method stub
+		double distance = 0;
+		for(ShapeContext gesture : contexts) {
+			distance += ShapeHistogram.shapeContextMetric(context, gesture, rotationInvariant, timeSensitive, false);
+		}
+		return distance / contexts.size();
 	}
 }
