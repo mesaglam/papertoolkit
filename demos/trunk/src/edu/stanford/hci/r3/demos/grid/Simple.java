@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.demos.grid;
 
+import java.io.File;
+
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.EventHandler;
@@ -28,7 +30,7 @@ public class Simple {
 		Region region = new Region("Button", 1, 1, 4, 2);
 		region.addEventHandler(getClickHandler());
 		sheet.addRegion(region);
-		application.addSheet(sheet);
+		application.addSheet(sheet, new File("data/Grid/Simple Paper App.patternInfo.xml"));
 		application.addPen(new Pen("Primary Pen"));
 		PaperToolkit toolkit = new PaperToolkit(true /* app manager */);
 		toolkit.loadApplication(application);
