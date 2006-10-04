@@ -43,7 +43,7 @@ public class AudioGuide extends Application {
 	 */
 	public AudioGuide() {
 		super("Audio Guide");
-		initializePaperUI();
+		// initializePaperUI();
 	}
 
 	/**

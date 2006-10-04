@@ -25,15 +25,15 @@ import edu.stanford.hci.r3.units.Inches;
 public class Simple {
 	
 	public static void main(String[] args) {
-		Application application = new Application("Simple Paper App");
-		Sheet sheet = new Sheet(new Inches(8.5), new Inches(11));
-		Region region = new Region("Button", 1, 1, 4, 2);
-		region.addEventHandler(getClickHandler());
-		sheet.addRegion(region);
-		application.addSheet(sheet, new File("data/Grid/Simple Paper App.patternInfo.xml"));
-		application.addPen(new Pen("Primary Pen"));
+		Application app = new Application("Simple App");
+		Sheet s = new Sheet(new Inches(8.5), new Inches(11));
+		Region r = new Region("Button", 1, 1, 4, 2);
+		r.addEventHandler(getClickHandler());
+		s.addRegion(r);
+		app.addSheet(s, new File("data/Grid/App.patternInfo.xml"));
+		app.addPen(new Pen("Primary Pen"));
 		PaperToolkit toolkit = new PaperToolkit(true /* app manager */);
-		toolkit.loadApplication(application);
+		toolkit.loadApplication(app);
 	}
 
 	private static EventHandler getClickHandler() {
