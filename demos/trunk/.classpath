@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.svn/" path="src" kind="src"/>
+	<classpathentry path="resources" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
 	<classpathentry path="/PaperToolkit" combineaccessrules="false" kind="src"/>
 	<classpathentry path="/PaperToolkit/lib/itext-1.4.3.jar" kind="lib"/>
@@ -35,5 +36,10 @@
 	<classpathentry path="/PaperToolkit/lib/piccolo/piccolo.jar" kind="lib"/>
 	<classpathentry path="/PaperToolkit/lib/piccolo/piccolox.jar" kind="lib"/>
 	<classpathentry path="lib/jdom.jar" kind="lib"/>
+	<classpathentry path="lib/swt/corecommands.jar" kind="lib"/>
+	<classpathentry path="lib/jogl.jar" kind="lib"/>
+	<classpathentry path="lib/swt/equinoxcommon.jar" kind="lib"/>
+	<classpathentry path="lib/swt/jface.jar" kind="lib"/>
+	<classpathentry sourcepath="lib/swt/swtsrc.zip" path="lib/swt/swt.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
