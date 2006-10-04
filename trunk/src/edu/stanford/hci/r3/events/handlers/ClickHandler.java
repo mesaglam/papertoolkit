@@ -17,6 +17,10 @@ import edu.stanford.hci.r3.events.PenEvent;
  */
 public abstract class ClickHandler implements EventHandler {
 
+	/**
+	 * <p>
+	 * </p>
+	 */
 	private class ClickNotifier implements Runnable {
 
 		private boolean doNotNotify;
@@ -54,6 +58,9 @@ public abstract class ClickHandler implements EventHandler {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private static final long MILLIS_TO_DELAY = 30;
 
 	/**
@@ -61,8 +68,14 @@ public abstract class ClickHandler implements EventHandler {
 	 */
 	protected int clickCount = 1;
 
+	/**
+	 * 
+	 */
 	private boolean filterJitteryPenEvents = true;
 
+	/**
+	 * 
+	 */
 	private ClickNotifier lastClickNotifier;
 
 	/**
