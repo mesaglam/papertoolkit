@@ -31,7 +31,8 @@ public abstract class GestureHandler implements EventHandler {
 		S, // -PI/2
 		SE, // -PI/4
 		SW, // -3PI/4
-		W // +/- PI (cone from -7PI/8 ... to -PI and from 7PI/8 to PI)
+		W
+		// +/- PI (cone from -7PI/8 ... to -PI and from 7PI/8 to PI)
 	}
 
 	private double dx;
@@ -43,9 +44,10 @@ public abstract class GestureHandler implements EventHandler {
 	private Units firstPercentageY;
 
 	/**
-	 * How many samples constitute a gesture?
+	 * How many samples constitute a gesture? The larger, the more strict we will be (i.e., longer
+	 * gestures only).
 	 */
-	private int gestureThreshold = 1;
+	private int gestureThreshold = 4;
 
 	private Units lastPercentageX;
 
@@ -71,11 +73,11 @@ public abstract class GestureHandler implements EventHandler {
 
 				// calculate the angle, and decide the compass direction
 				double theta = Math.atan2(dy, dx);
-				
+
 				// makes it easier to binary search
 				// we negate it because our y actually grows going DOWN the page.
 				// This is opposite from the standard cartesian coordinate system.
-				double testTheta = -theta + Math.PI/8; 
+				double testTheta = -theta + Math.PI / 8;
 
 				final double PI_4 = Math.PI / 4;
 				final double PI_2 = Math.PI / 2;
