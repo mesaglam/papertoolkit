@@ -38,13 +38,13 @@ public class RobotAction implements R3Action {
 	 */
 	public static enum MouseWheelDirection {
 		ROLL_WHEEL_DOWN(1), ROLL_WHEEL_UP(-1);
-		
+
 		private int value;
-		
+
 		private MouseWheelDirection(int val) {
 			value = val;
 		}
-		
+
 		public int getValue() {
 			return value;
 		}
@@ -55,45 +55,36 @@ public class RobotAction implements R3Action {
 	 */
 	public static class RobotCommand {
 		private Object[] arguments; // make sure they are of the right type!
+
 		private RobotMethod method;
-		
-		public RobotCommand(RobotMethod m, Object...args) {
+
+		public RobotCommand(RobotMethod m, Object... args) {
 			method = m;
 			arguments = args;
 		}
 	}
 
-	
 	/**
 	 * Different things you can ask a robot to do.
 	 */
 	public static enum RobotMethod {
 		CREATE_SCREEN_CAPTURE("CreateScreenCapture"), /* does nothing */
-		DELAY("Delay"),
-		GET_PIXEL_COLOR("GetPixelColor"),
-		KEY_PRESS("KPress"),
-		KEY_RELEASE("KRelease"),
-		KEY_TYPE("KType"),
-		MOUSE_MOVE("MMove"),
-		MOUSE_PRESS("MPress"),
-		MOUSE_RELEASE("MRelease"),
-		MOUSE_WHEEL("MWheel"),
-		SET_AUTO_DELAY("SADelay"),
-		SET_AUTO_WAIT_FOR_IDLE("SAWaitForIdle"),
-		WAIT_FOR_IDLE("WaitForIdle");
-		
+		DELAY("Delay"), GET_PIXEL_COLOR("GetPixelColor"), KEY_PRESS("KPress"), KEY_RELEASE("KRelease"), KEY_TYPE(
+				"KType"), MOUSE_MOVE("MMove"), MOUSE_PRESS("MPress"), MOUSE_RELEASE("MRelease"), MOUSE_WHEEL(
+				"MWheel"), SET_AUTO_DELAY("SADelay"), SET_AUTO_WAIT_FOR_IDLE("SAWaitForIdle"), WAIT_FOR_IDLE(
+				"WaitForIdle");
+
 		private String command;
 
 		private RobotMethod(String commandString) {
 			command = commandString;
 		}
-		
+
 		public String getCommand() {
 			return command;
 		}
 	}
 
-	
 	/**
 	 * Save up a list of commands to run in order.
 	 */
@@ -193,8 +184,8 @@ public class RobotAction implements R3Action {
 			case GET_PIXEL_COLOR: // args: int x, int y
 				final Color pixelColor = rob.getPixelColor((Integer) arguments[0],
 						(Integer) arguments[1]);
-				System.out.println("RobotAction :: Pixel Color at " + arguments[0] + ","
-						+ arguments[1] + " is " + pixelColor);
+				System.out.println("RobotAction :: Pixel Color at " + arguments[0] + "," + arguments[1]
+						+ " is " + pixelColor);
 				// TODO: Do something more interesting with this data
 				break;
 			case KEY_PRESS: // arg: int keycode to press
@@ -233,7 +224,7 @@ public class RobotAction implements R3Action {
 
 	/**
 	 * @param keycode
-	 *            e.g, KeyEvent.VK_A, or KeyEvent.VK_SHIFT
+	 *           e.g, KeyEvent.VK_A, or KeyEvent.VK_SHIFT
 	 */
 	public void keyPress(int keycode) {
 		commandsToRun.add(new RobotCommand(RobotMethod.KEY_PRESS, keycode));
@@ -248,12 +239,13 @@ public class RobotAction implements R3Action {
 
 	/**
 	 * @param keycode
+	 *           e.g, KeyEvent.VK_A, or KeyEvent.VK_SHIFT
 	 */
 	public void keyType(int keycode) {
 		keyPress(keycode);
 		keyRelease(keycode);
 	}
-	
+
 	/**
 	 * Queue up a mouseMove.
 	 * 
@@ -263,7 +255,7 @@ public class RobotAction implements R3Action {
 	public void mouseMove(int x, int y) {
 		commandsToRun.add(new RobotCommand(RobotMethod.MOUSE_MOVE, x, y));
 	}
-	
+
 	/**
 	 * InputEvent.BUTTON1_MASK, InputEvent.BUTTON2_MASK, InputEvent.BUTTON3_MASK
 	 * 
