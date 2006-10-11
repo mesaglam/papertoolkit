@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+	<properties>
+	<comment>If true, draw gray boxes to help visualize the regions.</comment>
+	<entry key="debugRegions">false</entry>
+</properties>

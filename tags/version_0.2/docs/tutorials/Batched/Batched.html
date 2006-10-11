@@ -1,0 +1,55 @@
+<html>
+<head><title>Accessing Pen Data in Batched Mode</title>
+<link href="../../resources/styles.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<script language="javascript" type="text/javascript" 
+  src="../../resources/header.js"></script>
+<p class="Heading"> Accessing Pen Data in Batched Mode </p>
+<p>Note: Install the Nokia (or Logitech) software before following these directions. The Anoto SDK may also be required, especially if you receive errors in step 5. </p>
+<ol><li>In this tutorial, we explain how to configure R3 so that pen data is uploaded to the toolkit every time you synchronize your pen with your PC. This works with both the Logitech IO2 and Nokia SU-1B pens. However, we will only use the Nokia in our example. The Logitech procedure is the same. </li>
+  <li>The Anoto system uses COM objects and the Windows Registry to figure out where to direct incoming pen data. When you install the Nokia software, the Windows Registry will point to the Nokia software. Thus, every time you plug your pen into the cradle, your handwritten data will show up in the Nokia browser. Since the Nokia and Logitech software are not programmable, we will want to redirect the handwritten data to R3. </li>
+  <li>To use the pen data through R3, we need to tell the Anoto server to send data to a different location.</li>
+  <li>Navigate to <span class="Code">PaperToolkit\penSynch\bin</span> (<span class="Code">PaperToolkit</span> is where you downloaded and compiled the R3 source code).<br>
+    <br>
+      <img src="Bin.png" alt="Bin" width="684" height="378"><br>
+  </li>
+  <li>Run <span class="Code">Registration.exe</span>.  A command-line window will pop up, asking you if you want to add some registry information to the Windows Registry. Click Yes.</li>
+  <li>Once the command-line window disappears, you are done!<br>
+    <br>
+  If you are curious what we added to the registry, open <span class="Code">PaperToolkit\penSynch\RegisterClassIDProgIDMappings.reg</span> in a text editor. Basically, we are telling the Registry that our software is called &quot;R3PenMonitor&quot; and it is located at <span class="Code">PaperToolkit\penSynch\bin\Pen Monitor.dll</span>. Additionally, <span class="Code">PenRequestsDir</span> is set to <span class="Code">PaperToolkit\penSynch\data\</span>. This registry file is generated when you run <span class="Code">Registration.exe</span>, so you will not find the file if you have not completed step 5. <br>
+    <br>
+  This means that the Anoto server will expect to find our pen monitor software in a subdirectory of wherever you installed the toolkit! If you ever move the location of the toolkit, remember to run <span class="Code">Registration.exe</span> again. </li>
+</ol>
+<p class="Heading2">Try it out </p>
+<ol>
+  <li>Take a look at  <span class="Code">PaperToolkit\penSynch\PADs</span>. These are the different Anoto notebooks that we currently support. If you would like us to support another notebook, let us know.... It's not difficult to update the Pen Monitor (we can even teach you). In this example, we will use the Mead 5x8 notebook. </li>
+  <li>If you have a Mead 5x8 notebook, pick your favorite page and scribble something on it. </li>
+  <li><span class="Warning">Make sure your Pen is NOT in streaming mode</span> when you drop it into the cradle! This usually crashes the Anoto server. </li>
+  <li>Drop your pen into the cradle. The Nokia (or Logitech) dialog will pop up, letting you know that pen data is being uploaded.</li>
+  <li>Then, the R3 Pen Monitor dialog will pop up.<br>
+    <br>
+    <img src="PenMonitor.png" alt="Pen Monitor" width="500" height="480"><br>
+    <br>
+  Once the dialog disappears (automatically), your pen data has been processed by R3's Pen Monitor. </li>
+  <li>Navigate to  <span class="Code">PaperToolkit\penSynch\data</span>. You will see <span class="Code">Requests.log</span>. If you inspect that file, you will see some information detailing the most recent pen synch, including the PenID and the time of synchronization.</li>
+  <li>Go to <span class="Code">PaperToolkit\penSynch\data\XML</span>.  You will find an XML file which completely describes the handwriting data that was uploaded to R3. <br>
+    <br>
+      <img src="XML.png" alt="XML" width="733" height="368"><br>
+    <br>
+  It contains timestamps and locations for every single stroke. You can view this file through Firefox or MSIE, and can parse this XML file with any standard Java XML parser. Every time you synchronize your pen, a new XML file will be created in this directory.</li>
+  <li>At this point, you are done...especially if you are happy parsing this XML data! In a later tutorial, we explain higher-level ways to access this data through the toolkit. </li>
+</ol>
+<p>&nbsp;</p>
+<hr noshade size=1/>
+<p class="Author">Ron B. Yeh<br>
+Stanford University </p>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-522093-7";
+urchinTracker();
+</script>
+</body>
+</html>

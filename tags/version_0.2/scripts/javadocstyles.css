@@ -1,0 +1,59 @@
+/* Javadoc style sheet */
+
+/* Define colors, fonts and other style attributes here to override the defaults */
+
+/* Page background color */
+body { 
+	background-color:#333333;
+	font-family: Trebuchet MS, Verdana, Helvetica, sans-serif;
+	font-size: medium;
+	font-weight: normal;
+	color:#DFDFDF;
+}
+
+
+a:link {
+	color: #7888FF;
+}
+
+
+a:visited {
+	color: #AA77DD;
+}
+
+
+/* Headings */
+h1 { font-size: 145% }
+
+
+table {
+	border-collapse:collapse;
+	border-style:solid;
+}
+
+.BSDLicense {
+	color:#777777;
+}
+
+
+/* Table colors */
+.TableHeadingColor     { background: #404040; color:#DFDFDF }
+.TableSubHeadingColor  { background: #404040; color:#DFDFDF }
+.TableRowColor         { background: #333333; color:#DFDFDF }
+
+
+/* Font used in left-hand frame lists */
+.FrameTitleFont   { font-size: 100%; font-family: Trebuchet MS, Verdana, Helvetica, Arial, sans-serif; color:#DFDFDF }
+.FrameHeadingFont { font-size:  90%; font-family: Trebuchet MS, Verdana, Helvetica, Arial, sans-serif; color:#DFDFDF }
+.FrameItemFont    { font-size:  90%; font-family: Trebuchet MS, Verdana, Helvetica, Arial, sans-serif; color:#DFDFDF }
+
+/* Navigation bar fonts and colors */
+.NavBarCell1    { background-color:#333333; color:#DFDFDF}
+
+.NavBarCell1Rev { background-color:#00338B; color:#FFFFFF}
+.NavBarFont1    { font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; color:#DFDFDF; }
+.NavBarFont1Rev { font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; color:#DFDFDF; }
+
+.NavBarCell2    { font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; background-color:#333333; color:#DFDFDF }
+.NavBarCell3    { font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; background-color:#333333; color:#DFDFDF }
+

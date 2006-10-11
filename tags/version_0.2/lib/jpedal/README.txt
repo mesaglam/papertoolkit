@@ -1,0 +1,3 @@
+Note that while the jpedal library is GPL, the Stanford University tools are BSD. If you would like to use our tools in your commercial (and closed-source) product, please respect JPedal's License and either (1) purchase their commercial license, or (2) substitute your favorite PDF library instead. 
+
+Additionally, pjes.jar is NOT a GPL file. According to the website, permission to distribute is freely given to open source (and non-commercial) projects. If you are using our tools for a commercial project, please contact JPedal for a commercial license. (http://www.jpedal.org/pjes.php)

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<overlay id="contentscraper" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+ <script type="application/x-javascript" src="chrome://contentscraper/content/code.js" />
+ <statusbar id="status-bar">
+  <statusbarpanel id="serverStatus" label="R3 Server Stopped"/>
+  <button id="startServerButton" label="Start Server" onclick="startInformationServer();"/>
+  <button id="stopServerButton" label="Stop Server" onclick="stopInformationServer();"/>
+ </statusbar>
+</overlay>
