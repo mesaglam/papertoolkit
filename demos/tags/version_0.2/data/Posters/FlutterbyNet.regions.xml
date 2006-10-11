@@ -1,0 +1,77 @@
+<RegionConfiguration>
+  <heightInPoints>
+    <unitName>Points</unitName>
+    <value>2008.800048828125</value>
+  </heightInPoints>
+  <regions>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>EmailArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2725.149902</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2725.149902</x>
+        <y>192.92004382812502</y>
+        <width>99.69018599999981</width>
+        <height>116.13000499999998</height>
+      </shape>
+      <strokeColor>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </strokeColor>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>WebsiteArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1900.069946</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1900.069946</x>
+        <y>1947.520843828125</y>
+        <width>139.160034</width>
+        <height>49.026900999999995</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>DownloadPDF</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2764.939941</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2764.939941</x>
+        <y>1871.715041828125</y>
+        <width>70.22998099999995</width>
+        <height>60.61709599999999</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+  </regions>
+  <widthInPoints>
+    <unitName>Points</unitName>
+    <value>2836.800048828125</value>
+  </widthInPoints>
+</RegionConfiguration>

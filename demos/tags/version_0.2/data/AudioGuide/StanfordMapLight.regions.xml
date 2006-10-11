@@ -1,0 +1,357 @@
+<RegionConfiguration>
+  <heightInPoints>
+    <unitName>Points</unitName>
+    <value>1728.0</value>
+  </heightInPoints>
+  <regions>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Gates</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>629.997009</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>629.997009</x>
+        <y>147.839966</y>
+        <width>208.1430059999999</width>
+        <height>195.65002400000003</height>
+      </shape>
+      <strokeColor>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </strokeColor>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Gilbert</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1285.219971</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1285.219971</x>
+        <y>124.5</y>
+        <width>197.43005300000004</width>
+        <height>192.06994600000007</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>PackardPhotos</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>717.443604</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>717.443604</x>
+        <y>592.359985</y>
+        <width>188.49890099999993</width>
+        <height>192.0710449999999</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>OvalPhotos</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1720.939941</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1720.939941</x>
+        <y>515.5699460000001</y>
+        <width>193.8500979999999</width>
+        <height>192.08007799999996</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>ChurchPhotos</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1479.859985</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1479.859985</x>
+        <y>1349.506012</y>
+        <width>190.29003899999998</width>
+        <height>190.285995</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>GenericPhotos</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>794.145996</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>794.145996</x>
+        <y>1008.4329829999999</y>
+        <width>192.07098400000007</width>
+        <height>192.0710449999999</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Tressider</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>176.285995</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>176.285995</x>
+        <y>967.361023</y>
+        <width>209.92900099999997</width>
+        <height>197.42895499999997</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>WhitePlaza</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>228.072006</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>228.072006</x>
+        <y>1435.2200010000001</y>
+        <width>195.64299</width>
+        <height>201.00059499999998</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Geology</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1128.115723</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1128.115723</x>
+        <y>1385.2200010000001</y>
+        <width>201.0</width>
+        <height>206.35800199999997</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Quad</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1824.51001</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1824.51001</x>
+        <y>1029.862</y>
+        <width>195.64001400000006</width>
+        <height>195.64300500000002</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Math</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1429.859985</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1429.859985</x>
+        <y>620.9300539999999</y>
+        <width>202.79003899999998</width>
+        <height>199.21594200000004</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Oval</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2153.080078</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2153.080078</x>
+        <y>340.5699460000001</y>
+        <width>188.5</width>
+        <height>197.43005399999993</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>GSB</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2769.149902</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2769.149902</x>
+        <y>445.9300539999999</y>
+        <width>206.36010799999985</width>
+        <height>193.85998500000005</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>History</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2562.01001</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2562.01001</x>
+        <y>785.218018</y>
+        <width>202.79003899999998</width>
+        <height>197.42797799999994</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Tourists</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1937.01001</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1937.01001</x>
+        <y>619.150024</y>
+        <width>199.20996100000002</width>
+        <height>192.066956</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>Language</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2378.125977</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2378.125977</x>
+        <y>1531.608231</y>
+        <width>206.3498529999997</width>
+        <height>195.64273</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>WhereAmI</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1942.573364</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1942.573364</x>
+        <y>210.55187999999998</y>
+        <width>1145.208374</width>
+        <height>87.62524400000007</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+  </regions>
+  <widthInPoints>
+    <unitName>Points</unitName>
+    <value>3096.0</value>
+  </widthInPoints>
+</RegionConfiguration>

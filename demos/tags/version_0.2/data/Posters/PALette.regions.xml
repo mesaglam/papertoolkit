@@ -1,0 +1,77 @@
+<RegionConfiguration>
+  <heightInPoints>
+    <unitName>Points</unitName>
+    <value>2016.0</value>
+  </heightInPoints>
+  <regions>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>EmailArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1071.089966</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1071.089966</x>
+        <y>211.15002400000003</y>
+        <width>150.440063</width>
+        <height>97.54992700000003</height>
+      </shape>
+      <strokeColor>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </strokeColor>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>WebsiteArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1775.150024</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1775.150024</x>
+        <y>1911.321991</y>
+        <width>123.07995600000004</width>
+        <height>47.187302</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>DownloadPDF</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2680.24707</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2680.24707</x>
+        <y>1820.638794</y>
+        <width>79.84838900000022</width>
+        <height>74.07821600000001</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+  </regions>
+  <widthInPoints>
+    <unitName>Points</unitName>
+    <value>2808.0</value>
+  </widthInPoints>
+</RegionConfiguration>
