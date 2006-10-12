@@ -13,7 +13,6 @@ namespace HandwritingRecognition {
         }
 
         private void HWRecForm_Load(object sender, EventArgs e) {
-            
 
         }
 
@@ -28,5 +27,23 @@ namespace HandwritingRecognition {
                 Hide();
             }   
         }
+
+        private void trayIcon_DoubleClick(object sender, EventArgs e) {
+            restoreWindow();
+        }
+
+        private void restoreWindow() {
+            Show();
+            WindowState = FormWindowState.Normal;
+        }
+
+        private void restoreToolStripMenuItem_Click(object sender, EventArgs e) {
+            restoreWindow();
+        }
+
+        private void closeApplicationToolStripMenuItem_Click(object sender, EventArgs e) {
+            Application.Exit();
+        }
+
     }
 }
