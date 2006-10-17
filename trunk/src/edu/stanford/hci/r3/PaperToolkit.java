@@ -699,9 +699,9 @@ public class PaperToolkit {
 			DebugUtils.println(paperApp.getName()
 					+ " does not have any pens! We will add a single streaming pen for you.");
 			final Pen aPen = new Pen();
-			aPen.startLiveMode();
 			paperApp.addPen(aPen);
 		}
+
 		final List<Pen> pens = paperApp.getPens();
 		// add all the live pens to the eventEngine
 		for (Pen pen : pens) {

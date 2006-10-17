@@ -142,6 +142,15 @@ public class BatchServer {
 	private Thread getDaemonThread() {
 		return new Thread() {
 
+			/**
+			 * To make the code in this class look a little cleaner.
+			 * 
+			 * @param msg
+			 */
+			private void log(String msg) {
+				DebugUtils.printlnWithStackOffset(msg, 1);
+			}
+
 			public void run() {
 				while (true) {
 					Socket client = null;
@@ -151,7 +160,7 @@ public class BatchServer {
 							break;
 						}
 
-						log("BatchServer :: Waiting for a connection on port [" + serverPort + "]");
+						log("Waiting for a connection on port [" + serverPort + "]");
 
 						client = serverSocket.accept();
 
@@ -160,27 +169,18 @@ public class BatchServer {
 						final String dnsName = inetAddress.getHostName();
 
 						// we got a connection with the client
-						log("BatchServer :: Got a connection on server port " + serverPort);
+						log("Got a connection on server port " + serverPort);
 						log("               from client: " + ipAddr + " :: " + dnsName);
 
 						// keep it around
 						clients.add(client);
 						getClientHandlerThread(client).start();
 					} catch (IOException ioe) {
-						log("BatchServer :: Error with server socket: " + ioe.getLocalizedMessage());
+						log("Error with server socket: " + ioe.getLocalizedMessage());
 					}
 				}
 			}
 		};
-	}
-
-	/**
-	 * To make the code in this class look a little cleaner.
-	 * 
-	 * @param msg
-	 */
-	private void log(String msg) {
-		System.out.println(msg);
 	}
 
 	/**

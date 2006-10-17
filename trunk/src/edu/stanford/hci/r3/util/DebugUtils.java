@@ -35,7 +35,9 @@ public class DebugUtils {
 	/**
 	 * used for indexing back into the call stack
 	 */
-	private static int stackTraceOffset = 2;
+	private static int stackTraceOffset = 3;
+
+	private static final String WHITESPACE = StringUtils.repeat(" ", 54);
 
 	/**
 	 * @return the debugPriorityMask
@@ -54,35 +56,40 @@ public class DebugUtils {
 	/**
 	 * @param string
 	 */
-	public static void print(Object object) {
+	public static synchronized void print(Object object) {
 		final String s = (object == null) ? "null" : object.toString();
-		final Thread currThread = Thread.currentThread();
-		final StackTraceElement[] ste = currThread.getStackTrace();
 		if (DebugUtils.debugTraceOn) {
-			final String className = ste[stackTraceOffset].getClassName();
-			System.out.print(className.substring(className.lastIndexOf(".") + 1) + "["
-					+ ste[stackTraceOffset].getLineNumber() + "]" + "::"
-					+ ste[stackTraceOffset].getMethodName() + ": ");
+			printDebugTrace(0);
 		}
 		System.out.print(s);
+	}
+
+	/**
+	 * @param additionalStackOffset
+	 */
+	private static void printDebugTrace(int additionalStackOffset) {
+		final Thread currThread = Thread.currentThread();
+		final int actualOffset = stackTraceOffset + additionalStackOffset;
+		final StackTraceElement[] ste = currThread.getStackTrace();
+		final String className = ste[actualOffset].getClassName();
+		final String trace = className.substring(className.lastIndexOf(".") + 1) + "."
+				+ ste[actualOffset].getMethodName() + "[" + ste[actualOffset].getLineNumber()
+				+ "]: ";
+		System.out.print(trace);
+		System.out.print("    ");
+		int padding = WHITESPACE.length() - trace.length();
+		if (padding < 0) {
+			padding = 0;
+		}
+		System.out.print(WHITESPACE.substring(0, padding));
 	}
 
 	/**
 	 * @param object
 	 *            the object to print out
 	 */
-	public static void println(Object object) {
-		final String s = (object == null) ? "null" : object.toString();
-		final Thread currThread = Thread.currentThread();
-		final StackTraceElement[] ste = currThread.getStackTrace();
-		if (DebugUtils.debugTraceOn) {
-			final String className = ste[stackTraceOffset].getClassName();
-			System.out.print(className.substring(className.lastIndexOf(".") + 1) + "["
-					+ ste[stackTraceOffset].getLineNumber() + "]" + "::"
-					+ ste[stackTraceOffset].getMethodName() + ": ");
-			System.out.print("\t");
-		}
-		System.out.println(s);
+	public synchronized static void println(Object object) {
+		printlnWithStackOffset(object, 1);
 	}
 
 	/**
@@ -92,7 +99,7 @@ public class DebugUtils {
 	 *            debugPriorityMask, then it will be printed out. If it is less than debugLevel,
 	 *            then it will be hidden.
 	 */
-	public static void println(Object object, int debugPriority) {
+	public synchronized static void println(Object object, int debugPriority) {
 		if (debugPriority <= debugPriorityMask) {
 			// priority is too low, so return
 			return;
@@ -102,16 +109,14 @@ public class DebugUtils {
 		stackTraceOffset--;
 	}
 
-	public static void printlnWithStackOffset(Object object, int additionalStackOffset) {
+	/**
+	 * @param object
+	 * @param additionalStackOffset
+	 */
+	public synchronized static void printlnWithStackOffset(Object object, int additionalStackOffset) {
 		final String s = (object == null) ? "null" : object.toString();
-		final Thread currThread = Thread.currentThread();
-		final StackTraceElement[] ste = currThread.getStackTrace();
-		final int actualOffset = stackTraceOffset + additionalStackOffset;
 		if (DebugUtils.debugTraceOn) {
-			final String className = ste[actualOffset].getClassName();
-			System.out.print(className.substring(className.lastIndexOf(".") + 1) + "["
-					+ ste[actualOffset].getLineNumber() + "]" + "::"
-					+ ste[actualOffset].getMethodName() + ": ");
+			printDebugTrace(additionalStackOffset);
 		}
 		System.out.println(s);
 	}
@@ -128,7 +133,7 @@ public class DebugUtils {
 	 * @param debugTrace
 	 *            the debugTrace to set
 	 */
-	public static void setDebugTraceOn(boolean debugTrace) {
+	public static void setDebugTraceVisible(boolean debugTrace) {
 		debugTraceOn = debugTrace;
 	}
 }
