@@ -105,13 +105,14 @@ public class Pen {
 	 */
 	public void addLivePenListener(PenListener penListener) {
 		if (livePenClient == null) {
-			DebugUtils.println("We cannot register this listener at the moment. "
-					+ "The Pen is not in Live Mode.");
+			DebugUtils.println("We cannot register this listener [" + penListener.toString()
+					+ "] at the moment. " + "The Pen is not in Live Mode.");
 			DebugUtils.println("We will keep this listener around until you startLiveMode().");
 			penListenersToAdd.add(penListener);
 			return;
+		} else {
+			livePenClient.addPenListener(penListener);
 		}
-		livePenClient.addPenListener(penListener);
 	}
 
 	/**
@@ -136,6 +137,7 @@ public class Pen {
 	public void removeLivePenListener(PenListener penListener) {
 		if (penListenersToAdd.contains(penListener)) {
 			penListenersToAdd.remove(penListener);
+			DebugUtils.println("Removed " + penListener);
 		}
 		if (livePenClient == null) {
 			DebugUtils.println("Cannot Remove the Listener. The Pen is not in Live Mode.");

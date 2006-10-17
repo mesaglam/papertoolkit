@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
@@ -44,7 +45,8 @@ public class PenClient {
 	/**
 	 * Multiple listeners can attach themselves to this Pen Client.
 	 */
-	private List<PenListener> listeners = new ArrayList<PenListener>();
+	private List<PenListener> listeners = Collections
+			.synchronizedList(new ArrayList<PenListener>());
 
 	/**
 	 * The name of the machine which is running the pen server. This may be "localhost."
@@ -70,7 +72,7 @@ public class PenClient {
 	 * @param penListener
 	 * @return
 	 */
-	public boolean addPenListener(PenListener penListener) {
+	public synchronized boolean addPenListener(PenListener penListener) {
 		return listeners.add(penListener);
 	}
 
@@ -120,14 +122,10 @@ public class PenClient {
 
 							if (!penIsDown && !penIsUp) {
 								penIsDown = true;
-								for (PenListener pl : listeners) {
-									pl.penDown(sample);
-								}
+								notifyListenersOfPenDown(sample);
 							} else if (penIsUp) {
 								penIsDown = false;
-								for (PenListener pl : listeners) {
-									pl.penUp(sample);
-								}
+								notifyListenersOfPenUp(sample);
 							}
 
 							// tell my listeners!
@@ -138,9 +136,7 @@ public class PenClient {
 							// samples are only generated while the pen is down (even if it just
 							// came down)
 							if (penIsDown) {
-								for (PenListener pl : listeners) {
-									pl.sample(sample);
-								}
+								notifyListenersOfPenSample(sample);
 							}
 
 							if (exitFlag) {
@@ -187,13 +183,31 @@ public class PenClient {
 		}
 	}
 
+	private synchronized void notifyListenersOfPenDown(final PenSample sample) {
+		for (PenListener pl : listeners) {
+			pl.penDown(sample);
+		}
+	}
+
+	private synchronized void notifyListenersOfPenSample(final PenSample sample) {
+		for (PenListener pl : listeners) {
+			pl.sample(sample);
+		}
+	}
+
+	private synchronized void notifyListenersOfPenUp(final PenSample sample) {
+		for (PenListener pl : listeners) {
+			pl.penUp(sample);
+		}
+	}
+
 	/**
 	 * If the pen listener is one of our listeners, detach it. That is, stop sending events to it.
 	 * 
 	 * @param penListener
 	 * @return
 	 */
-	public boolean removePenListener(PenListener penListener) {
+	public synchronized boolean removePenListener(PenListener penListener) {
 		return listeners.remove(penListener);
 	}
 
