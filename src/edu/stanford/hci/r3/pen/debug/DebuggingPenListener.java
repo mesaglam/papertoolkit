@@ -44,4 +44,8 @@ public class DebuggingPenListener implements PenListener {
 	public void sample(PenSample sample) {
 		System.out.println("[" + name + "]: " + sample);
 	}
+
+	public String toString() {
+		return name;
+	}
 }

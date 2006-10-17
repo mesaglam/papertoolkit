@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -12,6 +15,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.streaming.PenListener;
+import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
@@ -68,6 +75,12 @@ public class HandwritingCaptureFrame extends JFrame {
 		if (calibrateButton == null) {
 			calibrateButton = new JButton();
 			calibrateButton.setText("Calibrate");
+			calibrateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					DebugUtils.println("Calibrate: Choose Top Left and Bottom Right Corners...");
+					app.addCalibrationHandlers();
+				}
+			});
 		}
 		return calibrateButton;
 	}
