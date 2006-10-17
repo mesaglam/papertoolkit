@@ -18,8 +18,9 @@ namespace HandwritingRecognition {
             //Application.Run(new HWRecForm());
 
 
-            server = new HWServer();
-            server.getIPAddress();
+            //server = new HWServer();
+            //server.getIPAddress();
+
         }
 
 

@@ -14,6 +14,8 @@ import javax.comm.SerialPortEvent;
 import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
 
+import edu.stanford.hci.r3.util.DebugUtils;
+
 /**
  * <p>
  * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the
@@ -60,7 +62,6 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 	private static Enumeration portList;
 
-	
 	/**
 	 * @return use COM5
 	 */
@@ -84,7 +85,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 			port = DEFAULT_PORT;
 		}
 
-		System.out.print("PenStreamingConnection: Looking for " + port + ". Found {");
+		DebugUtils.print("PenStreamingConnection: Looking for " + port + ". Found {");
 
 		portList = CommPortIdentifier.getPortIdentifiers();
 		while (portList.hasMoreElements()) {

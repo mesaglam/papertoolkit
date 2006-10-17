@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.networking.ClientServerType;
-import edu.stanford.hci.r3.pen.streaming.data.PenServerSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerJavaObjectXMLSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerPlainTextSender;
+import edu.stanford.hci.r3.pen.streaming.data.PenServerSender;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> [ronyeh(AT)cs.stanford.edu]
@@ -25,7 +26,12 @@ public class PenServer implements PenListener {
 	/**
 	 * 
 	 */
-	private class ServerThread extends Thread {
+	private class ServerThread implements Runnable {
+
+		private void log(String msg) {
+			DebugUtils.printlnWithStackOffset(msg, 1);
+		}
+
 		public void run() {
 			while (true) {
 				Socket s = null;
@@ -46,8 +52,7 @@ public class PenServer implements PenListener {
 					s = serverSocket.accept();
 					log("PenServer: Got a connection on port " + serverSocket.getLocalPort()
 							+ "...");
-					System.out
-							.println("PenServer: Client IP Addr is " + s.getRemoteSocketAddress());
+					log("PenServer: Client IP Addr is " + s.getRemoteSocketAddress());
 				} catch (IOException ioe) {
 					log("PenServer: Error with server socket: " + ioe.getLocalizedMessage());
 				}
@@ -94,7 +99,7 @@ public class PenServer implements PenListener {
 	 * @param msg
 	 */
 	private static void log(String msg) {
-		System.out.println(msg);
+		DebugUtils.printlnWithStackOffset(msg, 1);
 	}
 
 	/**
@@ -233,8 +238,7 @@ public class PenServer implements PenListener {
 		outputs = new ArrayList<PenServerSender>();
 
 		// start thread to accept connections
-		new ServerThread().start();
-
+		new Thread(new ServerThread()).start();
 	}
 
 	/**

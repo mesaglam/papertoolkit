@@ -280,9 +280,13 @@ public class EventEngine {
 	 */
 	public void registerPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
+		DebugUtils.println("Registering Pattern Location to Sheet Location Maps");
+		int count = 0;
 		for (PatternLocationToSheetLocationMapping map : patternMaps) {
 			patternToSheetMaps.add(map);
+			count++;
 		}
+		DebugUtils.println("Registered " + count + " Maps");
 	}
 
 	/**

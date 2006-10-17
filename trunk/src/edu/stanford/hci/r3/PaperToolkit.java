@@ -87,6 +87,8 @@ public class PaperToolkit {
 	 */
 	private static final Font APP_MANAGER_FONT = new Font("Trebuchet MS", Font.PLAIN, 18);
 
+	private static PaperToolkit toolkitInstance;
+
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
 	 */
@@ -180,6 +182,18 @@ public class PaperToolkit {
 		System.out.println("Takes One Argument: ");
 		System.out.println("	-actions	// runs the action receiver");
 		System.out.println("	-pen		// runs the pen server");
+	}
+
+	/**
+	 * Convenience function that uses an internal PaperToolkit object.
+	 * 
+	 * @param paperApp
+	 */
+	public static synchronized void runApplication(Application paperApp) {
+		if (toolkitInstance == null) {
+			toolkitInstance = new PaperToolkit();
+		}
+		toolkitInstance.startApplication(paperApp);
 	}
 
 	/**
@@ -682,7 +696,7 @@ public class PaperToolkit {
 		// we assume we have decided where each pen server will run
 		// start live mode will connect to that pen server.
 		if (paperApp.getPens().size() == 0) {
-			System.err.println("Warning: " + paperApp.getName()
+			DebugUtils.println(paperApp.getName()
 					+ " does not have any pens! We will add a single streaming pen for you.");
 			final Pen aPen = new Pen();
 			aPen.startLiveMode();
