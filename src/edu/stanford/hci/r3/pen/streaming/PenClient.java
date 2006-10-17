@@ -205,7 +205,7 @@ public class PenClient {
 	 * @throws IOException
 	 */
 	private BufferedReader setupSocketAndReader() throws UnknownHostException, IOException {
-		System.out.println("PenClient: Trying to connect to " + machineName + ":" + portNumber);
+		DebugUtils.println("PenClient: Trying to connect to " + machineName + ":" + portNumber);
 		final InetAddress addr = InetAddress.getByName(machineName);
 		final String hostName = addr.getCanonicalHostName();
 		DebugUtils.println("The resolved host name of this pen is: " + hostName);

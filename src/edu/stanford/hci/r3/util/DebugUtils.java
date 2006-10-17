@@ -52,6 +52,22 @@ public class DebugUtils {
 	}
 
 	/**
+	 * @param string
+	 */
+	public static void print(Object object) {
+		final String s = (object == null) ? "null" : object.toString();
+		final Thread currThread = Thread.currentThread();
+		final StackTraceElement[] ste = currThread.getStackTrace();
+		if (DebugUtils.debugTraceOn) {
+			final String className = ste[stackTraceOffset].getClassName();
+			System.out.print(className.substring(className.lastIndexOf(".") + 1) + "["
+					+ ste[stackTraceOffset].getLineNumber() + "]" + "::"
+					+ ste[stackTraceOffset].getMethodName() + ": ");
+		}
+		System.out.print(s);
+	}
+
+	/**
 	 * @param object
 	 *            the object to print out
 	 */
@@ -64,6 +80,7 @@ public class DebugUtils {
 			System.out.print(className.substring(className.lastIndexOf(".") + 1) + "["
 					+ ste[stackTraceOffset].getLineNumber() + "]" + "::"
 					+ ste[stackTraceOffset].getMethodName() + ": ");
+			System.out.print("\t");
 		}
 		System.out.println(s);
 	}
@@ -83,6 +100,20 @@ public class DebugUtils {
 		stackTraceOffset++;
 		println(object);
 		stackTraceOffset--;
+	}
+
+	public static void printlnWithStackOffset(Object object, int additionalStackOffset) {
+		final String s = (object == null) ? "null" : object.toString();
+		final Thread currThread = Thread.currentThread();
+		final StackTraceElement[] ste = currThread.getStackTrace();
+		final int actualOffset = stackTraceOffset + additionalStackOffset;
+		if (DebugUtils.debugTraceOn) {
+			final String className = ste[actualOffset].getClassName();
+			System.out.print(className.substring(className.lastIndexOf(".") + 1) + "["
+					+ ste[actualOffset].getLineNumber() + "]" + "::"
+					+ ste[actualOffset].getMethodName() + ": ");
+		}
+		System.out.println(s);
 	}
 
 	/**
