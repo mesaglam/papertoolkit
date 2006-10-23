@@ -19,25 +19,24 @@ import edu.stanford.hci.r3.units.coordinates.Coordinates;
 
 /**
  * <p>
- * Represents one sheet of interactive/augmented paper. This sheet can be large (like a GIGAprint)
- * or it can be smaller, like an 8.5x11" print.
+ * Represents one sheet of interactive/augmented paper. This sheet can be large (like a GIGAprint) or it can
+ * be smaller, like an 8.5x11" print.
  * </p>
  * <p>
- * The Sheet can be rendered in many different contexts. It can be rendered to a PDF/PS file, or
- * printed to a Java2D printer. It can also be rendered to the screen for a quick preview. Each of
- * these options has different advantages/disadvantages. For example, when rendering to the screen
- * or Java2D, no dot pattern is drawn by default. This is because doing so would be inefficient.
+ * The Sheet can be rendered in many different contexts. It can be rendered to a PDF/PS file, or printed to a
+ * Java2D printer. It can also be rendered to the screen for a quick preview. Each of these options has
+ * different advantages/disadvantages. For example, when rendering to the screen or Java2D, no dot pattern is
+ * drawn by default. This is because doing so would be inefficient.
  * </p>
  * <p>
- * The dimensions of the sheet is kept in Units objects, and is only normalized (usually to Points)
- * when necessary (i.e., when rendering a PDF).
+ * The dimensions of the sheet is kept in Units objects, and is only normalized (usually to Points) when
+ * necessary (i.e., when rendering a PDF).
  * </p>
  * <p>
- * On Coordinate Systems: To maintain the analogue with GUI development, we will choose the origin
- * (0,0) to be the top-left corner of the document (I can hear the screams of PDF/Postscript
- * enthusiasts already--I'm sorry). We will make it easy to flip the coordinate systems to a more
- * Postscript-friendly way later. Possibly, we'll have a call like setCoordinateSystem(GUI |
- * POSTSCRIPT).
+ * On Coordinate Systems: To maintain the analogue with GUI development, we will choose the origin (0,0) to be
+ * the top-left corner of the document (I can hear the screams of PDF/Postscript enthusiasts already--I'm
+ * sorry). We will make it easy to flip the coordinate systems to a more Postscript-friendly way later.
+ * Possibly, we'll have a call like setCoordinateSystem(GUI | POSTSCRIPT).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -51,12 +50,22 @@ public class Sheet {
 	private static final String INDENT = "   ";
 
 	/**
-	 * Any time we load regions from a configuration file, we will keep track of that path. Later
-	 * on, we can use this information to find other files, such as the .patternInfo.xml files or
-	 * even the patterned pdf file.
+	 * Any time we load regions from a configuration file, we will keep track of that path. Later on, we can
+	 * use this information to find other files, such as the .patternInfo.xml files or even the patterned pdf
+	 * file.
 	 */
 	private Set<File> configurationPaths = new HashSet<File>();
 
+	/**
+	 * 
+	 */
+	private String name = "A Sheet";
+
+	/**
+	 * For each sheet, we need to keep the pattern to sheet location map. Each sheet has one mapping object.
+	 * This lets us know, given some physical coordinate, where we are on the sheet (i.e., which regions we
+	 * point to).
+	 */
 	private PatternLocationToSheetLocationMapping patternLocationToSheetLocationMapping;
 
 	/**
@@ -65,8 +74,8 @@ public class Sheet {
 	private Map<String, Region> regionNameToRegionObject = new HashMap<String, Region>();
 
 	/**
-	 * A list of all the regions contained on this sheet. This is the master list. We may keep other
-	 * lists for convenience or efficiency.
+	 * A list of all the regions contained on this sheet. This is the master list. We may keep other lists for
+	 * convenience or efficiency.
 	 */
 	private List<Region> regions = new ArrayList<Region>();
 
@@ -108,6 +117,17 @@ public class Sheet {
 	}
 
 	/**
+	 * @param configPath
+	 *            a directory that we should be aware of, for automatically loading things such as the
+	 *            patternInfo.xml file.
+	 */
+	public void addConfigurationPath(File configPath) {
+		// register the fact that we loaded a configuration file from this directory
+		configurationPaths.add(configPath);
+		// DebugUtils.println("Configuration Paths: " + configurationPaths);
+	}
+
+	/**
 	 * @param r
 	 *            a region to be added to this sheet.
 	 */
@@ -129,15 +149,14 @@ public class Sheet {
 	}
 
 	/**
-	 * This file must be an XStream-serialized RegionConfiguration object. This can be produced by
-	 * hand, programmatically, or by the R3 Acrobat plugin.
+	 * This file must be an XStream-serialized RegionConfiguration object. This can be produced by hand,
+	 * programmatically, or by the R3 Acrobat plugin.
 	 * 
 	 * @param regionConfigurationFile
 	 *            read in this file and add all the regions to this Sheet.
 	 */
 	public void addRegions(File regionConfigurationFile) {
-		final RegionConfiguration rc = (RegionConfiguration) PaperToolkit
-				.fromXML(regionConfigurationFile);
+		final RegionConfiguration rc = (RegionConfiguration) PaperToolkit.fromXML(regionConfigurationFile);
 
 		// make sure the size of the sheet matches this object...
 		// otherwise, raise a warning flag
@@ -154,7 +173,7 @@ public class Sheet {
 			addRegion(r);
 		}
 
-		registerConfigurationPath(regionConfigurationFile.getParentFile());
+		addConfigurationPath(regionConfigurationFile.getParentFile());
 	}
 
 	/**
@@ -166,8 +185,7 @@ public class Sheet {
 	}
 
 	/**
-	 * @return directories to look in for files like the patterned pdf, patternInfo.xml, or
-	 *         regions.xml files.
+	 * @return directories to look in for files like the patterned pdf, patternInfo.xml, or regions.xml files.
 	 */
 	public Set<File> getConfigurationPaths() {
 		return configurationPaths;
@@ -181,25 +199,33 @@ public class Sheet {
 	}
 
 	/**
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
 	 * @return only one of these per any sheet.
 	 */
 	public PatternLocationToSheetLocationMapping getPatternLocationToSheetLocationMapping() {
 		if (patternLocationToSheetLocationMapping == null) {
-			patternLocationToSheetLocationMapping = new PatternLocationToSheetLocationMapping(this);
+			// in case no one has set this object, we will ensure that it is not null...
+			setPatternLocationToSheetLocationMapping(new PatternLocationToSheetLocationMapping(this));
 		}
 		return patternLocationToSheetLocationMapping;
 	}
 
 	/**
+	 * A convenience function for applying a pattern information file (created when the PDF is rendered). Note
+	 * that if a pattern mapping object already exists for this sheet, it will be overwritten by this method!
+	 * 
 	 * @param patternInfoFile
 	 * @return
 	 */
-	public PatternLocationToSheetLocationMapping getPatternLocationToSheetLocationMapping(
-			File patternInfoFile) {
-		if (patternLocationToSheetLocationMapping == null) {
-			patternLocationToSheetLocationMapping = new PatternLocationToSheetLocationMapping(this,
-					patternInfoFile);
-		}
+	public PatternLocationToSheetLocationMapping getPatternLocationToSheetLocationMapping(File patternInfoFile) {
+		setPatternLocationToSheetLocationMapping(new PatternLocationToSheetLocationMapping(this,
+				patternInfoFile));
 		return patternLocationToSheetLocationMapping;
 	}
 
@@ -265,14 +291,21 @@ public class Sheet {
 	}
 
 	/**
-	 * @param configPath
-	 *            a directory that we should be aware of, for automatically loading things such as
-	 *            the patternInfo.xml file.
+	 * @param n
 	 */
-	public void registerConfigurationPath(File configPath) {
-		// register the fact that we loaded a configuration file from this directory
-		configurationPaths.add(configPath);
-		// DebugUtils.println("Configuration Paths: " + configurationPaths);
+	public void setName(String n) {
+		name = n;
+	}
+
+	/**
+	 * Pass in a mapping object, that can be created by passing in this Sheet object to a new
+	 * PatternLocationToSheetLocationMapping object, with an optional pattern info file.
+	 * 
+	 * You can even create such an object manually (experts only). See the
+	 * PatternLocationToSheetLocationMapping object.
+	 */
+	public void setPatternLocationToSheetLocationMapping(PatternLocationToSheetLocationMapping mapping) {
+		patternLocationToSheetLocationMapping = mapping;
 	}
 
 	/**
@@ -293,10 +326,10 @@ public class Sheet {
 	}
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @return
 	 */
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
+	public String toDetailedString() {
+		final StringBuilder sb = new StringBuilder();
 
 		// the indent
 		String i = INDENT;
@@ -318,6 +351,14 @@ public class Sheet {
 		sb.append(i + "}\n");
 		sb.append("}\n");
 		return sb.toString();
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "Sheet { name: [" + name + "] size: [" + getWidth() + " × " + getHeight() + "] numRegions: ["
+				+ regions.size() + "]}";
 	}
 
 	/**

@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,9 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.streaming.PenListener;
-import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 
@@ -33,9 +29,12 @@ import edu.stanford.hci.r3.util.WindowUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class HandwritingCaptureFrame extends JFrame {
+
 	public static void main(String[] args) {
 		new HandwritingCaptureFrame();
 	}
+
+	private HandwritingCaptureApp app;
 
 	private JPanel buttonPanel;
 
@@ -49,19 +48,15 @@ public class HandwritingCaptureFrame extends JFrame {
 
 	private JLabel statusMessageLabel;
 
-	private HandwritingCaptureApp app;
-
 	public HandwritingCaptureFrame() {
 		PaperToolkit.initializeLookAndFeel();
 		initGUI();
 		startApp();
 	}
 
-	private void startApp() {
-		app = new HandwritingCaptureApp();
-		PaperToolkit.runApplication(app);
-	}
-
+	/**
+	 * @return
+	 */
 	private JPanel getButtonPanel() {
 		if (buttonPanel == null) {
 			buttonPanel = new JPanel();
@@ -71,6 +66,9 @@ public class HandwritingCaptureFrame extends JFrame {
 		return buttonPanel;
 	}
 
+	/**
+	 * @return
+	 */
 	private JButton getCalibrateButton() {
 		if (calibrateButton == null) {
 			calibrateButton = new JButton();
@@ -78,13 +76,16 @@ public class HandwritingCaptureFrame extends JFrame {
 			calibrateButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					DebugUtils.println("Calibrate: Choose Top Left and Bottom Right Corners...");
-					app.addCalibrationHandlers();
+					app.addCalibrationHandler();
 				}
 			});
 		}
 		return calibrateButton;
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getMainPanel() {
 		if (mainPanel == null) {
 			mainPanel = new JPanel();
@@ -94,6 +95,9 @@ public class HandwritingCaptureFrame extends JFrame {
 		return mainPanel;
 	}
 
+	/**
+	 * @return
+	 */
 	private JButton getSaveButton() {
 		if (saveButton == null) {
 			saveButton = new JButton();
@@ -102,6 +106,9 @@ public class HandwritingCaptureFrame extends JFrame {
 		return saveButton;
 	}
 
+	/**
+	 * @return
+	 */
 	private JPanel getStatusBarPanel() {
 		if (statusBarPanel == null) {
 			statusBarPanel = new JPanel();
@@ -113,6 +120,9 @@ public class HandwritingCaptureFrame extends JFrame {
 		return statusBarPanel;
 	}
 
+	/**
+	 * @return
+	 */
 	private JLabel getStatusMessageLabel() {
 		if (statusMessageLabel == null) {
 			statusMessageLabel = new JLabel();
@@ -123,14 +133,27 @@ public class HandwritingCaptureFrame extends JFrame {
 		return statusMessageLabel;
 	}
 
+	/**
+	 * 
+	 */
 	private void initGUI() {
 		setTitle("Handwriting Recognition Debugger");
 		getContentPane().add(getStatusBarPanel(), BorderLayout.SOUTH);
 		getContentPane().add(getMainPanel(), BorderLayout.CENTER);
 		pack();
-		setLocation(WindowUtils.getWindowOrigin(this, WindowUtils.DESKTOP_CENTER));
+		setLocation(WindowUtils.getWindowOrigin(this, WindowUtils.DESKTOP_NORTH));
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	/**
+	 * 
+	 */
+	private void startApp() {
+		app = new HandwritingCaptureApp();
+		PaperToolkit p = new PaperToolkit();
+		app.setToolkitReference(p);
+		p.startApplication(app);
 	}
 
 }

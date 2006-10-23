@@ -32,7 +32,6 @@ import javax.swing.JTextArea;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -41,7 +40,9 @@ import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.ConditionalHighlighter;
 
+import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
+import com.jgoodies.looks.plastic.theme.DarkStar;
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
@@ -50,8 +51,8 @@ import edu.stanford.hci.r3.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pattern.coordinates.RegionID;
 import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
-import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping.RegionID;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchServer;
 import edu.stanford.hci.r3.pen.streaming.PenServerTrayApp;
@@ -68,10 +69,9 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
 
 /**
  * <p>
- * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the
- * system. A PaperToolkit can run one or more Applications at the same time. You can also deactivate
- * applications (to pause them). Or, you can remove them altogether. (These features are not yet
- * fully implemented.)
+ * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the system. A
+ * PaperToolkit can run one or more Applications at the same time. You can also deactivate applications (to
+ * pause them). Or, you can remove them altogether. (These features are not yet fully implemented.)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -87,12 +87,33 @@ public class PaperToolkit {
 	 */
 	private static final Font APP_MANAGER_FONT = new Font("Trebuchet MS", Font.PLAIN, 18);
 
+	/**
+	 * Whether we have called initializeLookAndFeel() yet...
+	 */
+	private static boolean lookAndFeelInitialized = false;
+
 	private static PaperToolkit toolkitInstance;
+
+	/**
+	 * The version of the PaperToolkit.
+	 * 
+	 * <p>
+	 * Version 0.2 should include:
+	 * <ol>
+	 * <li>Better Batched Event Support</li>
+	 * </ol>
+	 * </p>
+	 */
+	private static String versionString = "0.2";
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
 	 */
 	private static XStream xmlEngine;
+
+	static {
+		printInitializationMessages();
+	}
 
 	/**
 	 * @param xmlFile
@@ -138,8 +159,7 @@ public class PaperToolkit {
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
 			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
-			xmlEngine.alias("TiledPatternCoordinateConverter",
-					TiledPatternCoordinateConverter.class);
+			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 		}
 		return xmlEngine;
@@ -149,16 +169,14 @@ public class PaperToolkit {
 	 * Sets up parameters for any Java Swing UI we need.
 	 */
 	public static void initializeLookAndFeel() {
-		// WindowUtils.setNativeLookAndFeel();
-
-		// I can't visually tell the difference... Wonder why. Maybe Java 6 does it automatically?
-		System.setProperty("swing.aatext", "true");
-
-		// JGoodies Look and Feel
-		try {
-			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
+		if (!lookAndFeelInitialized) {
+			// JGoodies Look and Feel
+			try {
+				PlasticLookAndFeel.setPlasticTheme(new DarkStar());
+				UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+			} catch (Exception e) {
+			}
+			lookAndFeelInitialized = true;
 		}
 	}
 
@@ -178,6 +196,19 @@ public class PaperToolkit {
 		}
 	}
 
+	/**
+	 * A Welcome message.
+	 */
+	private static void printInitializationMessages() {
+		final String dashes = StringUtils.repeat("-", versionString.length());
+		System.out.println("-----------------------------------------------------------" + dashes);
+		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. " + versionString);
+		System.out.println("-----------------------------------------------------------" + dashes);
+	}
+
+	/**
+	 * 
+	 */
 	private static void printUsage() {
 		System.out.println("Takes One Argument: ");
 		System.out.println("	-actions	// runs the action receiver");
@@ -262,8 +293,8 @@ public class PaperToolkit {
 	private JButton designSheetsButton;
 
 	/**
-	 * The engine that processes all pen events, producing the correct outputs and calling the right
-	 * event handlers.
+	 * The engine that processes all pen events, producing the correct outputs and calling the right event
+	 * handlers.
 	 */
 	private EventEngine eventEngine;
 
@@ -313,31 +344,17 @@ public class PaperToolkit {
 	private JButton stopAppButton;
 
 	/**
-	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false.
-	 * True is useful for debugging and stopping apps that don't have a GUI.
+	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false. True is
+	 * useful for debugging and stopping apps that don't have a GUI.
 	 */
 	private boolean useAppManager = false;
 
 	/**
-	 * The version of the PaperToolkit.
-	 * 
-	 * <p>
-	 * Version 0.2 should include:
-	 * <ol>
-	 * <li>Better Batched Event Support</li>
-	 * </ol>
-	 * </p>
-	 */
-	private String versionString = "0.1";
-
-	/**
-	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
-	 * accordingly (and between applications, ideally). There will be one event engine in the paper
-	 * toolkit, and all events that applications generate will be fed through this single event
-	 * engine.
+	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
+	 * (and between applications, ideally). There will be one event engine in the paper toolkit, and all
+	 * events that applications generate will be fed through this single event engine.
 	 */
 	public PaperToolkit() {
-		printInitializationMessages();
 		initializeLookAndFeel();
 		eventEngine = new EventEngine();
 		batchServer = new BatchServer();
@@ -352,7 +369,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return
+	 * @return the scrollpane that shows the internals of the application.
 	 */
 	private Component getAppDetailsPane() {
 		if (appDetailsScrollPane == null) {
@@ -389,8 +406,7 @@ public class PaperToolkit {
 			appManager.add(getControls(), BorderLayout.EAST);
 
 			appManager.setSize(640, 480);
-			appManager.setLocation(WindowUtils.getWindowOrigin(appManager,
-					WindowUtils.DESKTOP_CENTER));
+			appManager.setLocation(WindowUtils.getWindowOrigin(appManager, WindowUtils.DESKTOP_CENTER));
 			appManager.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			appManager.setVisible(true);
 		}
@@ -442,6 +458,15 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * EXPERTS ONLY: Interact with the EventEngine at runtime!
+	 * 
+	 * @return
+	 */
+	public EventEngine getEventEngine() {
+		return eventEngine;
+	}
+
+	/**
 	 * @return
 	 */
 	private Component getExitAppManagerButton() {
@@ -471,8 +496,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return a GUI list of loaded applications (running or not). Grey out the ones that are not
-	 *         running.
+	 * @return a GUI list of loaded applications (running or not). Grey out the ones that are not running.
 	 */
 	private Component getListOfApps() {
 		if (listOfApps == null) {
@@ -491,13 +515,18 @@ public class PaperToolkit {
 					Application selectedApp = (Application) listOfApps.getSelectedValue();
 					if (selectedApp != null) {
 						// show a list of sheets
-						getAppDetailsTextArea().setText(selectedApp.getSheets().toString());
+						final List<Sheet> thisAppsSheets = selectedApp.getSheets();
+						StringBuilder sb = new StringBuilder();
+						for (Sheet s : thisAppsSheets) {
+							// use the longer, more descriptive string
+							sb.append(s.toDetailedString());
+						}
+						getAppDetailsTextArea().setText(sb.toString());
 					}
 				}
 			});
 
-			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0,
-					-1) {
+			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0, -1) {
 				@Override
 				protected boolean test(ComponentAdapter c) {
 					if (c.getValue() instanceof Application) {
@@ -521,8 +550,8 @@ public class PaperToolkit {
 							appDescription = appDescription + " [stopped]";
 						}
 					}
-					return super.getListCellRendererComponent(list, appDescription, index,
-							isSelected, cellHasFocus);
+					return super.getListCellRendererComponent(list, appDescription, index, isSelected,
+							cellHasFocus);
 				}
 			});
 			listOfApps.setBorder(BorderFactory.createEmptyBorder(20, 5, 20, 5));
@@ -621,32 +650,21 @@ public class PaperToolkit {
 		if (useAppManager) {
 			getApplicationManager();
 		} else {
-			DebugUtils.println("Not using the Application Manager. "
-					+ "If you would like to use the GUI launcher, "
-					+ "call PaperToolkit.useAppManager(true)");
+			DebugUtils
+					.println("Not using the Application Manager. "
+							+ "If you would like to use the GUI launcher, "
+							+ "call PaperToolkit.useAppManager(true)");
 		}
 	}
 
 	/**
-	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
-	 * printer.
+	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default printer.
 	 * 
 	 * @param sheet
 	 */
 	public void print(Sheet sheet) {
 		// Implement this...
 		DebugUtils.println("Unimplemented Method");
-	}
-
-	/**
-	 * A Welcome message.
-	 */
-	private void printInitializationMessages() {
-		final String dashes = StringUtils.repeat("-", versionString.length());
-		System.out.println("-----------------------------------------------------------" + dashes);
-		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. "
-				+ versionString);
-		System.out.println("-----------------------------------------------------------" + dashes);
 	}
 
 	/**
@@ -679,8 +697,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Start this application and register all live pens with the event engine. The event engine
-	 * will then start dispatching events for this application until the application is stopped.
+	 * Start this application and register all live pens with the event engine. The event engine will then
+	 * start dispatching events for this application until the application is stopped.
 	 * 
 	 * @param paperApp
 	 */

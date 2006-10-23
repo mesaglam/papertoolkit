@@ -1,11 +1,19 @@
 package edu.stanford.hci.r3.pen.handwriting;
 
 import edu.stanford.hci.r3.Application;
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.debug.DebuggingPenListener;
+import edu.stanford.hci.r3.pen.streaming.PenAdapter;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
@@ -19,61 +27,51 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class HandwritingCaptureApp extends Application {
 
+	private PenSample anchorPointBottomRight;
+
+	private PenSample anchorPointTopLeft;
+
+	private boolean calibrationHandlerExists = false;
+
+	/**
+	 * We will use one sheet at a time to test handwriting recognition.
+	 */
+	private Sheet mainSheet;
+
+	/**
+	 * We will only allow one pen in this testing environment.
+	 */
 	private Pen pen;
 
+	private PaperToolkit toolkit;
+
+	/**
+	 * Start the App with Zero Sheets. Add them interactively.
+	 */
 	public HandwritingCaptureApp() {
 		super("Handwriting Capture");
 		addPen(getPen());
-
 	}
 
 	/**
-	 * @return
+	 * 
 	 */
-	public Pen getPen() {
-		if (pen == null) {
-			pen = new Pen("Main Pen");
-			pen.addLivePenListener(new PenListener() {
-
-				public void penDown(PenSample sample) {
-
-				}
-
-				public void penUp(PenSample sample) {
-
-				}
-
-				public void sample(PenSample sample) {
-					if ((topLeft != null) && (bottomRight != null)) {
-						double x = sample.getX();
-						double y = sample.getY();
-						double tlX = topLeft.getX();
-						double tlY = topLeft.getY();
-						double brx = bottomRight.getX();
-						double brY = bottomRight.getY();
-
-						DebugUtils.println("X: " + x / (brx - tlX) + "  Y: " + (y / brY - tlY));
-					}
-				}
-			});
+	public void addCalibrationHandler() {
+		if (calibrationHandlerExists) {
+			System.err.println("HandwritingCaptureApp: Calibration Button Already Pressed");
+			return;
 		}
-		return pen;
-	}
 
-	private PenSample topLeft;
-
-	private PenSample bottomRight;
-
-	public void addCalibrationHandlers() {
 		final Pen pen = getPen();
-		pen.addLivePenListener(new PenListener() {
+		pen.addLivePenListener(new PenAdapter() {
 			public void penDown(PenSample sample) {
-				if (topLeft == null) {
-					topLeft = sample;
-					DebugUtils.println("Top Left Point is now set to " + topLeft);
-				} else if (bottomRight == null) {
-					bottomRight = sample;
-					DebugUtils.println("Bottom Right Point is now set to " + bottomRight);
+				if (anchorPointTopLeft == null) {
+					anchorPointTopLeft = sample;
+					DebugUtils.println("Top Left Point is now set to " + anchorPointTopLeft);
+				} else if (anchorPointBottomRight == null) {
+					anchorPointBottomRight = sample;
+					DebugUtils.println("Bottom Right Point is now set to " + anchorPointBottomRight);
+					addOneSheetAndOneRegionForHandwritingCapture();
 				} else {
 					final PenListener listener = this;
 					// We must modify the listeners from an external thread, as we are
@@ -82,18 +80,95 @@ public class HandwritingCaptureApp extends Application {
 					new Thread(new Runnable() {
 						public void run() {
 							pen.removeLivePenListener(listener);
+							calibrationHandlerExists = false;
 						}
 					}).start();
 				}
 			}
+		});
 
-			public void penUp(PenSample sample) {
+		calibrationHandlerExists = true;
+	}
+
+	/**
+	 * Add a sheet and a region at RUNTIME.
+	 */
+	private void addOneSheetAndOneRegionForHandwritingCapture() {
+		Sheet sheet = getMainSheet();
+		final Region region = new Region("Handwriting Capture", 0, 0, 1, 1);
+		region.addEventHandler(new ClickHandler() {
+
+			@Override
+			public void clicked(PenEvent e) {
+				DebugUtils.println("Clicked at " + e.getPercentageLocation());
+			}
+
+			@Override
+			public void pressed(PenEvent e) {
 
 			}
 
-			public void sample(PenSample sample) {
+			@Override
+			public void released(PenEvent e) {
 
 			}
 		});
+		sheet.addRegion(region);
+		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping();
+		mapping.setSheet(sheet);
+		mapping.initializeMap(sheet.getRegions());
+		final double tlX = anchorPointTopLeft.getX();
+		final double tlY = anchorPointTopLeft.getY();
+		mapping.setPatternInformationOfRegion(region, new TiledPatternCoordinateConverter(region.getName(),
+				tlX, tlY, // top left corner
+				MathUtils.rint(anchorPointBottomRight.getX() - tlX), // width
+				MathUtils.rint(anchorPointBottomRight.getY() - tlY))); // height
+		addSheet(sheet, mapping);
+		DebugUtils.println(mapping);
+
+		// now, we have to tell the already-running event engine to be aware of this new pattern mapping!
+		toolkit.getEventEngine().registerPatternMapForEventHandling(mapping);
+	}
+
+	/**
+	 * Create and return the main Sheet object.
+	 * 
+	 * @return
+	 */
+	private Sheet getMainSheet() {
+		if (mainSheet == null) {
+			mainSheet = new Sheet(8.5, 11);
+			addSheet(mainSheet);
+		}
+		return mainSheet;
+	}
+
+	/**
+	 * @return
+	 */
+	public Pen getPen() {
+		if (pen == null) {
+			pen = new Pen("Main Pen");
+			pen.addLivePenListener(new PenAdapter() {
+				public void sample(PenSample sample) {
+					if ((anchorPointTopLeft != null) && (anchorPointBottomRight != null)) {
+						final double x = sample.getX();
+						final double y = sample.getY();
+						final double tlX = anchorPointTopLeft.getX();
+						final double tlY = anchorPointTopLeft.getY();
+						final double brX = anchorPointBottomRight.getX();
+						final double brY = anchorPointBottomRight.getY();
+
+						DebugUtils.println("X: " + (x - tlX) / (brX - tlX) + //
+								"  Y: " + (y - tlY) / (brY - tlY));
+					}
+				}
+			});
+		}
+		return pen;
+	}
+
+	public void setToolkitReference(PaperToolkit p) {
+		toolkit = p;
 	}
 }
