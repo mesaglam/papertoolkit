@@ -161,6 +161,11 @@ public class PenServer implements PenListener {
 			// connection if necessary
 			final PenStreamingConnection penConnection = PenStreamingConnection
 					.getInstance(serialPortName);
+			if (penConnection == null) {
+				System.err.println("The PenServer could not connect to the local serial port. Is your Bluetooth Dongle unplugged?");
+				return;
+			}
+			
 			final ServerSocket javaServer = new ServerSocket(tcpipPort);
 			javaPenServer = new PenServer(javaServer, ClientServerType.JAVA);
 			penConnection.addPenListener(javaPenServer);
