@@ -149,7 +149,7 @@ public class SquaredCircle extends Application {
 	protected void initializePaperUI() {
 		System.out.println("Initializing Paper UI...");
 		final Sheet poster = new Sheet(WIDTH_IN_INCHES, HEIGHT_IN_INCHES);
-		poster.registerConfigurationPath(new File("data/Flickr/"));
+		poster.addConfigurationPath(new File("data/Flickr/"));
 
 		// read in the XML file
 		photosToView = (List<FlickrPhoto>) PaperToolkit.fromXML(XML_FILE);

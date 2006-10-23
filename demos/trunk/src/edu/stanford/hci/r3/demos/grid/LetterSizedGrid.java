@@ -101,7 +101,7 @@ public class LetterSizedGrid extends Application {
 				new Inches(7.5), new Inches(10), new Inches(0.5), new Inches(0.8));
 
 		// must go before the addSheet for now...
-		sheet.registerConfigurationPath(new File("data/Grid/"));
+		sheet.addConfigurationPath(new File("data/Grid/"));
 		addSheet(sheet);
 
 		// Add Two Pens

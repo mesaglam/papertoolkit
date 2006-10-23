@@ -42,7 +42,7 @@ public class BoingBoingPaperApp extends Application {
 		
 		sheet = new Sheet(51, 38);
 		
-		sheet.registerConfigurationPath(new File("./data/Blog/"));
+		sheet.addConfigurationPath(new File("./data/Blog/"));
 		
 		// Put the background on the sheet
 		File background = new File("data/Blog/bb_blank.jpg");

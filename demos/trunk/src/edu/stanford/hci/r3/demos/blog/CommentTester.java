@@ -14,7 +14,7 @@ public class CommentTester extends Application {
 				
 		Sheet s = new Sheet(8.5, 11);
 		
-		s.registerConfigurationPath(new File("."));
+		s.addConfigurationPath(new File("."));
 		
 		Region r = new Region("CommentTest", 0.5, 0.5, 7.5, 7.5);
 		CommentCollector cc = new CommentCollector(null,0);

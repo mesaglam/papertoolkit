@@ -2,6 +2,9 @@ package edu.stanford.hci.r3.examples.java;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -16,10 +19,15 @@ import java.text.DecimalFormat;
  */
 public class RandomTests {
 
-	public static void main(String[] args) {
+	/**
+	 * Test user.dir, which turns out to be a READ-ONLY property (even though you can change it).
+	 */
+	@SuppressWarnings("unused")
+	private static void changingTheWorkingDirectoryAtRuntimeDoesNotWork() {
 		String workingDir = System.getProperty("user.dir");
 		System.out.println(workingDir);
-		System.setProperty("user.dir", new File(workingDir, "data/Flickr/Twistr").getAbsolutePath());
+		System.setProperty("user.dir", //
+				new File(workingDir, "data/Flickr/Twistr").getAbsolutePath());
 		workingDir = System.getProperty("user.dir");
 		System.out.println(workingDir);
 		System.out.println(new File(".").getAbsolutePath());
@@ -28,6 +36,7 @@ public class RandomTests {
 	/**
 	 * Try out the DecimalFormat object.
 	 */
+	@SuppressWarnings("unused")
 	private static void formatNumbers() {
 		Double d = new Double(18008083247892.62344);
 
@@ -35,5 +44,19 @@ public class RandomTests {
 		String string = format.format(d);
 		System.out.println(string);
 		System.out.println(d);
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		ArrayList<String> testOfUniqueObjects = new ArrayList<String>();
+		final String s = "Hello";
+		testOfUniqueObjects.add(s);
+		testOfUniqueObjects.add(s);
+		DebugUtils.println(testOfUniqueObjects.size());
+		DebugUtils.println(testOfUniqueObjects.contains("Hello"));
+		testOfUniqueObjects.remove("Hello");
+		DebugUtils.println(testOfUniqueObjects.size());
 	}
 }
