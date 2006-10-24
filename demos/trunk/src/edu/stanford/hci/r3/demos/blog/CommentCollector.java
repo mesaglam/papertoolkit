@@ -24,21 +24,44 @@ import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.util.DebugUtils;
 
+/**
+ * <p>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
+ * </p>
+ * 
+ * @author Joel Brandt
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ */
 public class CommentCollector extends InkCollector {
 
-	private BoingBoingEntry bbentry;
-	private Thread updater;
-
-	private int index = 0;
-	private int count = 0;
-
-	private static final long ONE_MINUTE = 10L * 1000L;
 	private static final String COMMENT_DIR = "C:/www/bbcomments/";
+
 	private static final String COMMENT_URL_PREFIX = "http://171.67.77.236/bbcomments/";
 
+	/**
+	 * Customize this to simulate the passage of time.
+	 */
+	private static final long SOME_AMOUNT_OF_TIME = 10L * 1000L; // in milliseconds
+
+	private BoingBoingEntry bbentry;
+
+	private int count = 0;
+
 	private SyndFeed feed;
+
+	private int index = 0;
+
 	private List<SyndEntry> rss_entries = new ArrayList<SyndEntry>();
 
+	private Thread updater;
+
+	/**
+	 * @param bbentry
+	 * @param index
+	 */
 	public CommentCollector(BoingBoingEntry bbentry, int index) {
 		this.bbentry = bbentry;
 		this.index = index;
@@ -49,19 +72,21 @@ public class CommentCollector extends InkCollector {
 		feed.setTitle("BoingBoing GIGAprints Comments");
 		feed.setLink("http://hci.stanford.edu/gigaprints");
 		feed.setDescription("BoingBoing GIGAprints Comments");
-		
+
 		updater = new Thread() {
 
 			long lastRecorded = 0L;
 
+			@Override
 			public void run() {
 				while (true) {
 					try {
-						sleep(CommentCollector.ONE_MINUTE);
-					} catch (InterruptedException e) { }
-					long last = getLastTimestamp();
-					long now = System.currentTimeMillis();
-					if (last > 0 && now - last > CommentCollector.ONE_MINUTE && lastRecorded < last) {
+						sleep(SOME_AMOUNT_OF_TIME);
+					} catch (InterruptedException e) {
+					}
+					final long last = getTimestampOfMostRecentInkStroke();
+					final long now = System.currentTimeMillis();
+					if (last > 0 && (now - last > SOME_AMOUNT_OF_TIME) && lastRecorded < last) {
 						CommentCollector.this.storeComment();
 						lastRecorded = last;
 					}
@@ -71,47 +96,49 @@ public class CommentCollector extends InkCollector {
 		updater.start();
 	}
 
-	void storeComment() {
-		Ink comment_ink = getInk();
+	/**
+	 * Save the ink ot a local JPEG file. Write it out to an RSS feed (stored on the local machine).
+	 */
+	private void storeComment() {
+		final Ink commentInk = getInk();
 		// clear();
 
-		String comment_filename = "comment" + index + "_" + count + ".jpg";
-		File comment_image = new File(CommentCollector.COMMENT_DIR + comment_filename); 
+		final String commentFileName = "comment" + index + "_" + count + ".jpg";
+		final File commentImage = new File(CommentCollector.COMMENT_DIR + commentFileName);
 
-		InkRenderer r = new InkRenderer(comment_ink);
-		r.renderToJPEG(comment_image, new Pixels(1), new Inches(8.5), new Inches(8.5));
+		final InkRenderer r = new InkRenderer(commentInk);
+		r.renderToJPEG(commentImage, new Pixels(1), new Inches(8.5), new Inches(8.5));
 
 		SyndEntry entry;
 		SyndContent description;
 
-			try {
-				entry = new SyndEntryImpl();
-				entry.setTitle("Comment " + (count + 1) + " on story \"" + bbentry.title + "\"");
-				entry.setLink(CommentCollector.COMMENT_URL_PREFIX + comment_filename);
-				entry.setPublishedDate(new Date());
-				description = new SyndContentImpl();
-				description.setType("text/plain");
-				description.setValue("<p><img src=\"" + CommentCollector.COMMENT_URL_PREFIX + comment_filename + "\"></p>");
-				entry.setDescription(description);
-				rss_entries.add(entry);
+		try {
+			entry = new SyndEntryImpl();
+			entry.setTitle("Comment " + (count + 1) + " on story \"" + bbentry.title + "\"");
+			entry.setLink(CommentCollector.COMMENT_URL_PREFIX + commentFileName);
+			entry.setPublishedDate(new Date());
+			description = new SyndContentImpl();
+			description.setType("text/plain");
+			description.setValue("<p><img src=\"" + CommentCollector.COMMENT_URL_PREFIX + commentFileName
+					+ "\"></p>");
+			entry.setDescription(description);
+			rss_entries.add(entry);
 
-				feed.setEntries(rss_entries);
-				
-				Writer writer = new FileWriter(CommentCollector.COMMENT_DIR + "comments.rss");
-				SyndFeedOutput output = new SyndFeedOutput();
-				output.output(feed,writer);
-				writer.close();
-			} catch (IOException e) {
-				DebugUtils.println("IO exception encountered trying to write RSS file");
-				e.printStackTrace();
-			} catch (FeedException e) {
-				DebugUtils.println("FeedException encountered trying to write RSS file");
-				e.printStackTrace();
-			}
+			feed.setEntries(rss_entries);
+
+			final Writer writer = new FileWriter(CommentCollector.COMMENT_DIR + "comments.rss");
+			final SyndFeedOutput output = new SyndFeedOutput();
+			output.output(feed, writer);
+			writer.close();
+		} catch (IOException e) {
+			DebugUtils.println("IO exception encountered trying to write RSS file");
+			e.printStackTrace();
+		} catch (FeedException e) {
+			DebugUtils.println("FeedException encountered trying to write RSS file");
+			e.printStackTrace();
+		}
 
 		DebugUtils.println("Stored comment for story \"" + bbentry.title + "\"");
 		count++;
-
 	}
-
 }
