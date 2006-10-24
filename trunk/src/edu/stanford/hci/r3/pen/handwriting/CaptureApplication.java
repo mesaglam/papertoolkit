@@ -2,8 +2,7 @@ package edu.stanford.hci.r3.pen.handwriting;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -25,7 +24,7 @@ import edu.stanford.hci.r3.util.MathUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class HandwritingCaptureApp extends Application {
+public class CaptureApplication extends Application {
 
 	private PenSample anchorPointBottomRight;
 
@@ -45,12 +44,17 @@ public class HandwritingCaptureApp extends Application {
 
 	private PaperToolkit toolkit;
 
+	private HandwritingCaptureDebugger gui;
+
 	/**
 	 * Start the App with Zero Sheets. Add them interactively.
+	 * 
+	 * @param debugger
 	 */
-	public HandwritingCaptureApp() {
+	public CaptureApplication(HandwritingCaptureDebugger debugger) {
 		super("Handwriting Capture");
 		addPen(getPen());
+		gui = debugger;
 	}
 
 	/**
@@ -95,26 +99,9 @@ public class HandwritingCaptureApp extends Application {
 	 */
 	private void addOneSheetAndOneRegionForHandwritingCapture() {
 		Sheet sheet = getMainSheet();
-		final Region region = new Region("Handwriting Capture", 0, 0, 1, 1);
-		region.addEventHandler(new ClickHandler() {
-
-			@Override
-			public void clicked(PenEvent e) {
-				DebugUtils.println("Clicked at " + e.getPercentageLocation());
-			}
-
-			@Override
-			public void pressed(PenEvent e) {
-
-			}
-
-			@Override
-			public void released(PenEvent e) {
-
-			}
-		});
+		final Region region = setupCaptureRegion();
 		sheet.addRegion(region);
-		PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping();
+		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping();
 		mapping.setSheet(sheet);
 		mapping.initializeMap(sheet.getRegions());
 		final double tlX = anchorPointTopLeft.getX();
@@ -128,6 +115,21 @@ public class HandwritingCaptureApp extends Application {
 
 		// now, we have to tell the already-running event engine to be aware of this new pattern mapping!
 		toolkit.getEventEngine().registerPatternMapForEventHandling(mapping);
+	}
+
+	/**
+	 * @return
+	 */
+	private Region setupCaptureRegion() {
+		final Region region = new Region("Handwriting Capture", 0, 0, 1, 1);
+		region.addContentFilter(new InkCollector() {
+			@Override
+			public void contentArrived() {
+				// DebugUtils.println(getInk().getNumStrokes());
+				gui.getInkPanel().addInk(getNewInkOnly());
+			}
+		});
+		return region;
 	}
 
 	/**
@@ -149,21 +151,23 @@ public class HandwritingCaptureApp extends Application {
 	public Pen getPen() {
 		if (pen == null) {
 			pen = new Pen("Main Pen");
-			pen.addLivePenListener(new PenAdapter() {
-				public void sample(PenSample sample) {
-					if ((anchorPointTopLeft != null) && (anchorPointBottomRight != null)) {
-						final double x = sample.getX();
-						final double y = sample.getY();
-						final double tlX = anchorPointTopLeft.getX();
-						final double tlY = anchorPointTopLeft.getY();
-						final double brX = anchorPointBottomRight.getX();
-						final double brY = anchorPointBottomRight.getY();
 
-						DebugUtils.println("X: " + (x - tlX) / (brX - tlX) + //
-								"  Y: " + (y - tlY) / (brY - tlY));
-					}
-				}
-			});
+			// We do not need this listener anymore, as we now have an InkCollector
+			// pen.addLivePenListener(new PenAdapter() {
+			// public void sample(PenSample sample) {
+			// if ((anchorPointTopLeft != null) && (anchorPointBottomRight != null)) {
+			// final double x = sample.getX();
+			// final double y = sample.getY();
+			// final double tlX = anchorPointTopLeft.getX();
+			// final double tlY = anchorPointTopLeft.getY();
+			// final double brX = anchorPointBottomRight.getX();
+			// final double brY = anchorPointBottomRight.getY();
+			//
+			// DebugUtils.println("X: " + (x - tlX) / (brX - tlX) + //
+			// " Y: " + (y - tlY) / (brY - tlY));
+			// }
+			// }
+			// });
 		}
 		return pen;
 	}

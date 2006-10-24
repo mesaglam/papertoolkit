@@ -18,16 +18,15 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
- * A region is defined by a Shape that outlines the region. Internally, the region remembers the
- * Units that it is represented in. Thus, you may use whatever units pleases you.
+ * A region is defined by a Shape that outlines the region. Internally, the region remembers the Units that it
+ * is represented in. Thus, you may use whatever units pleases you.
  * </p>
  * <p>
- * Also, a region can be INPUT(REALTIME|BATCH), OUTPUT(REALTIME|INTERMITTENT), or STATIC. This is
- * entirely determined by the type(s) of attachments (input event handlers, input filters, realtime
- * outputs, print output) you add to a region. If you do not add anything, it is by default a STATIC
- * region. For example, if you add an input event handler for a streaming pen, it becomes an
- * INPUT(REALTIME) region. Regions that handle interactive input will automatically be overlaid with
- * pattern when rendered to PDF or to a printer.
+ * Also, a region can be INPUT(REALTIME|BATCH), OUTPUT(REALTIME|INTERMITTENT), or STATIC. This is entirely
+ * determined by the type(s) of attachments (input event handlers, input filters, realtime outputs, print
+ * output) you add to a region. If you do not add anything, it is by default a STATIC region. For example, if
+ * you add an input event handler for a streaming pen, it becomes an INPUT(REALTIME) region. Regions that
+ * handle interactive input will automatically be overlaid with pattern when rendered to PDF or to a printer.
  * </p>
  * <p>
  * Regardless of whether the Shape is closed or not, we assume that all regions are closed Shapes. A
@@ -60,65 +59,62 @@ public class Region {
 	private boolean active = false;
 
 	/**
-	 * Filters events and passes them to other event handlers (which are usually customized to the
-	 * event filter)...
+	 * Filters events and passes them to other event handlers (which are usually customized to the event
+	 * filter)...
 	 */
 	private List<ContentFilter> contentFilters = new ArrayList<ContentFilter>();
 
 	/**
-	 * All Regions can have event handlers that listen for pen events. If the event handler list is
-	 * non empty, the region should also be set to active. We can do this automatically. If the
-	 * region is not set to active, no pattern will be rendered when a renderer processes this
-	 * region.
+	 * All Regions can have event handlers that listen for pen events. If the event handler list is non empty,
+	 * the region should also be set to active. We can do this automatically. If the region is not set to
+	 * active, no pattern will be rendered when a renderer processes this region.
 	 */
 	private List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
 
 	/**
-	 * If we want to have a fully transparent background for this Rectangular Region, we will set
-	 * the opacity to 0.0 (default). Otherwise, we will fill it with this color, with the correct
-	 * alpha (set opacity to > 0.0).
+	 * If we want to have a fully transparent background for this Rectangular Region, we will set the opacity
+	 * to 0.0 (default). Otherwise, we will fill it with this color, with the correct alpha (set opacity to >
+	 * 0.0).
 	 */
 	private Color fillColor = LIGHT_LIGHT_GRAY;
 
 	/**
-	 * The name of the region (e.g., Public/Private Button). Useful for debugging. Initialized with
-	 * a simple default.
+	 * The name of the region (e.g., Public/Private Button). Useful for debugging. Initialized with a simple
+	 * default.
 	 */
 	private String name;
 
 	/**
-	 * Should range from 0.0 to 1.0. 1.0 means the fillColor will be fully opaque. Any smaller means
-	 * that it will be translucent. 0.0 means that you will not see the fillColor. By Default,
-	 * regions are totally transparent. A good practice would be to set the region to 66% opacity
-	 * with a fill. This means that you will usually lighten up the background image so that you can
-	 * layer pattern on top of it.
+	 * Should range from 0.0 to 1.0. 1.0 means the fillColor will be fully opaque. Any smaller means that it
+	 * will be translucent. 0.0 means that you will not see the fillColor. By Default, regions are totally
+	 * transparent. A good practice would be to set the region to 66% opacity with a fill. This means that you
+	 * will usually lighten up the background image so that you can layer pattern on top of it.
 	 */
 	private double opacity = 0;
 
 	/**
-	 * This is used only to interpret the shape's true physical size. The value of the units object
-	 * doesn't matter. Only the type of the unit matters.
+	 * This is used only to interpret the shape's true physical size. The value of the units object doesn't
+	 * matter. Only the type of the unit matters.
 	 */
 	protected Units referenceUnits;
 
 	/**
-	 * Internal horizontal scale of the region. When rendering, we will multiply the shape by this
-	 * scale. This is only a RECOMMENDATION and not a requirement of the renderer, however, as some
-	 * regions may not make sense if scaled after the fact. However, we will try to make sure most
-	 * of our calculations respect this scaling factor.
+	 * Internal horizontal scale of the region. When rendering, we will multiply the shape by this scale. This
+	 * is only a RECOMMENDATION and not a requirement of the renderer, however, as some regions may not make
+	 * sense if scaled after the fact. However, we will try to make sure most of our calculations respect this
+	 * scaling factor.
 	 */
 	protected double scaleX = 1.0;
 
 	/**
-	 * Internal vertical scale of the region. When rendering, we will multiply the shape by this
-	 * scale.
+	 * Internal vertical scale of the region. When rendering, we will multiply the shape by this scale.
 	 */
 	protected double scaleY = 1.0;
 
 	/**
-	 * This is the shape of the region. It is stored as unscaled coordinates, to be interpreted by
-	 * the referenceUnits object. Upon rendering, client code SHOULD but is not REQUIRED to respect
-	 * the scaleX and scaleY parameters to adjust the width and height.
+	 * This is the shape of the region. It is stored as unscaled coordinates, to be interpreted by the
+	 * referenceUnits object. Upon rendering, client code SHOULD but is not REQUIRED to respect the scaleX and
+	 * scaleY parameters to adjust the width and height.
 	 */
 	private Shape shape;
 
@@ -128,8 +124,8 @@ public class Region {
 	private Color strokeColor = Color.BLACK;
 
 	/**
-	 * By default, regions are visible (they tend to be images, pattern, etc). However, if you would
-	 * like to create an invisible region, go ahead. We're not gonna stop you.=)
+	 * By default, regions are visible (they tend to be images, pattern, etc). However, if you would like to
+	 * create an invisible region, go ahead. We're not gonna stop you.=)
 	 */
 	private boolean visible = true;
 
@@ -160,9 +156,9 @@ public class Region {
 	}
 
 	/**
-	 * A protected constructor so subclasses can assign the shape whichever way they please. A
-	 * Region doesn't really make sense without a shape, so use this constructor carefully (i.e.,
-	 * make sure to assign a sensible shape).
+	 * A protected constructor so subclasses can assign the shape whichever way they please. A Region doesn't
+	 * really make sense without a shape, so use this constructor carefully (i.e., make sure to assign a
+	 * sensible shape).
 	 * 
 	 * @param u
 	 */
@@ -172,9 +168,9 @@ public class Region {
 	}
 
 	/**
-	 * We will convert all the units to x's type. Thus, if you pass in an Inch, Centimeter, Foot,
-	 * Points, we will convert everything to Inches. It's OK to keep the x object around, because we
-	 * only use it to interpret the shape object.
+	 * We will convert all the units to x's type. Thus, if you pass in an Inch, Centimeter, Foot, Points, we
+	 * will convert everything to Inches. It's OK to keep the x object around, because we only use it to
+	 * interpret the shape object.
 	 * 
 	 * @param x
 	 * @param y
@@ -187,6 +183,9 @@ public class Region {
 	}
 
 	/**
+	 * A Content Filter will grab input and "change" the meaning of the input in some way. The canonical
+	 * example is the HandwritingRecognizer, as it will collect ink and then change it into ASCII text.
+	 * 
 	 * @param filter
 	 */
 	public void addContentFilter(ContentFilter filter) {
@@ -195,8 +194,8 @@ public class Region {
 	}
 
 	/**
-	 * Keeps track of this event handler. The PaperToolkit will dispatch events to these, whenever
-	 * the event deals with this region.
+	 * Keeps track of this event handler. The PaperToolkit will dispatch events to these, whenever the event
+	 * deals with this region.
 	 * 
 	 * @param handler
 	 */
@@ -230,8 +229,7 @@ public class Region {
 	 * @return
 	 */
 	public Units getHeight() {
-		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight()
-				* scaleY);
+		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getHeight() * scaleY);
 	}
 
 	/**
@@ -249,8 +247,8 @@ public class Region {
 	}
 
 	/**
-	 * @return how opaque this region's background will be. If it's 0, we will not render the
-	 *         background fillColor at all.
+	 * @return how opaque this region's background will be. If it's 0, we will not render the background
+	 *         fillColor at all.
 	 */
 	public double getOpacity() {
 		return opacity;
@@ -271,8 +269,8 @@ public class Region {
 	}
 
 	/**
-	 * Subclasses should override this, to customize rendering. Otherwise, you'll just get gray
-	 * boxes, which is what RegionRenderer does.
+	 * Subclasses should override this, to customize rendering. Otherwise, you'll just get gray boxes, which
+	 * is what RegionRenderer does.
 	 * 
 	 * @return the renderer for this region
 	 */
@@ -343,8 +341,8 @@ public class Region {
 	}
 
 	/**
-	 * @return a copy of the internal shape as a Java2D GeneralPath. You should use this with
-	 *         getScaleX/Y to determine the true shape. Alternatively, use getScaledShapeCopy()
+	 * @return a copy of the internal shape as a Java2D GeneralPath. You should use this with getScaleX/Y to
+	 *         determine the true shape. Alternatively, use getScaledShapeCopy()
 	 */
 	public Shape getUnscaledShapeCopy() {
 		return new GeneralPath(shape);
@@ -354,13 +352,12 @@ public class Region {
 	 * @return
 	 */
 	public Units getWidth() {
-		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getWidth()
-				* scaleX);
+		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getWidth() * scaleX);
 	}
 
 	/**
-	 * @return if this region is an active (NON-STATIC) region. This means that upon rendering to
-	 *         PDF/Printer, pattern will be displayed over this region.
+	 * @return if this region is an active (NON-STATIC) region. This means that upon rendering to PDF/Printer,
+	 *         pattern will be displayed over this region.
 	 */
 	public boolean isActive() {
 		return active;
@@ -374,9 +371,8 @@ public class Region {
 	}
 
 	/**
-	 * For De-Serialization through XStream (just like in Java deserialization), we need to fill in
-	 * some fields, especially if they are null due to old serialized versions, or because of
-	 * transient variables.
+	 * For De-Serialization through XStream (just like in Java deserialization), we need to fill in some
+	 * fields, especially if they are null due to old serialized versions, or because of transient variables.
 	 * 
 	 * For fields that are unexpectedly null, signal a warning.
 	 * 
@@ -386,15 +382,13 @@ public class Region {
 		if (eventHandlers == null) {
 			System.err.println("Region.java:: [" + getName()
 					+ "]'s eventHandlers list was unexpectedly null upon "
-					+ "deserialization with XStream. Perhaps you need to "
-					+ "reserialize your Regions?");
+					+ "deserialization with XStream. Perhaps you need to " + "reserialize your Regions?");
 			eventHandlers = new ArrayList<EventHandler>();
 		}
 		if (contentFilters == null) {
 			System.err.println("Region.java:: [" + getName()
 					+ "]'s eventFilters list was unexpectedly null upon "
-					+ "deserialization with XStream. Perhaps you need to "
-					+ "reserialize your Regions?");
+					+ "deserialization with XStream. Perhaps you need to " + "reserialize your Regions?");
 			contentFilters = new ArrayList<ContentFilter>();
 		}
 
@@ -420,9 +414,9 @@ public class Region {
 	}
 
 	/**
-	 * Resizes the region uniformly in x and y. We actually just store the number and scale it
-	 * whenever we need to render the final region. The Lazy Approach. =) This is nice because we
-	 * can scale the region multiple times without getting aliasing effects.
+	 * Resizes the region uniformly in x and y. We actually just store the number and scale it whenever we
+	 * need to render the final region. The Lazy Approach. =) This is nice because we can scale the region
+	 * multiple times without getting aliasing effects.
 	 * 
 	 * @param scale
 	 */
@@ -447,8 +441,7 @@ public class Region {
 
 	/**
 	 * @param theName
-	 *            the name of the region. Name it something useful, like "Blue Button for Changing
-	 *            Pen Colors"
+	 *            the name of the region. Name it something useful, like "Blue Button for Changing Pen Colors"
 	 */
 	public void setName(String theName) {
 		name = theName;
@@ -500,8 +493,8 @@ public class Region {
 	}
 
 	/**
-	 * Please override for more interesting output. This will print the name of the class along with
-	 * all the segments of the shape.
+	 * Please override for more interesting output. This will print the name of the class along with all the
+	 * segments of the shape.
 	 * 
 	 * @see java.lang.Object#toString()
 	 * @return the String representation of this Region
@@ -512,8 +505,8 @@ public class Region {
 		sb.append(getName() + " of type ");
 		sb.append(className.substring(className.lastIndexOf(".") + 1) + ": {");
 
-		final PathIterator pathIterator = shape.getPathIterator(AffineTransform.getScaleInstance(
-				scaleX, scaleY));
+		final PathIterator pathIterator = shape.getPathIterator(AffineTransform.getScaleInstance(scaleX,
+				scaleY));
 
 		sb.append(GraphicsUtils.getPathAsString(pathIterator));
 

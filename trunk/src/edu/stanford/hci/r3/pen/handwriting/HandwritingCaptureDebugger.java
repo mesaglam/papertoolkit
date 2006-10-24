@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,8 +13,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.pen.ink.InkPanel;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 
@@ -28,19 +31,22 @@ import edu.stanford.hci.r3.util.WindowUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class HandwritingCaptureFrame extends JFrame {
+public class HandwritingCaptureDebugger extends JFrame {
 
 	public static void main(String[] args) {
-		new HandwritingCaptureFrame();
+		new HandwritingCaptureDebugger();
 	}
 
-	private HandwritingCaptureApp app;
+	private CaptureApplication app;
 
 	private JPanel buttonPanel;
 
 	private JButton calibrateButton;
 
-	private JPanel mainPanel;
+	/**
+	 * JPanel that renders Ink.
+	 */
+	private InkPanel mainPanel;
 
 	private JButton saveButton;
 
@@ -48,7 +54,13 @@ public class HandwritingCaptureFrame extends JFrame {
 
 	private JLabel statusMessageLabel;
 
-	public HandwritingCaptureFrame() {
+	private JTextArea textOutput;
+
+	private JButton recognizeButton;
+
+	private JButton recognizeAndClearButton;
+
+	public HandwritingCaptureDebugger() {
 		PaperToolkit.initializeLookAndFeel();
 		initGUI();
 		startApp();
@@ -62,8 +74,34 @@ public class HandwritingCaptureFrame extends JFrame {
 			buttonPanel = new JPanel();
 			buttonPanel.add(getCalibrateButton());
 			buttonPanel.add(getSaveButton());
+			buttonPanel.add(getRecognizeButton());
+			buttonPanel.add(getRecognizeAndClearButton());
 		}
 		return buttonPanel;
+	}
+
+	private Component getRecognizeAndClearButton() {
+		if (recognizeAndClearButton == null) {
+			recognizeAndClearButton = new JButton("Recognize and Clear");
+			recognizeAndClearButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					DebugUtils.println("Recognize and Clear!");
+				}
+			});
+		}
+		return recognizeAndClearButton;
+	}
+
+	private Component getRecognizeButton() {
+		if (recognizeButton == null) {
+			recognizeButton = new JButton("Recognize Ink");
+			recognizeButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					DebugUtils.println("Recognize!");
+				}
+			});
+		}
+		return recognizeButton;
 	}
 
 	/**
@@ -86,9 +124,9 @@ public class HandwritingCaptureFrame extends JFrame {
 	/**
 	 * @return
 	 */
-	private Component getMainPanel() {
+	InkPanel getInkPanel() {
 		if (mainPanel == null) {
-			mainPanel = new JPanel();
+			mainPanel = new InkPanel();
 			mainPanel.setPreferredSize(new Dimension(800, 600));
 			mainPanel.setBackground(Color.WHITE);
 		}
@@ -100,8 +138,12 @@ public class HandwritingCaptureFrame extends JFrame {
 	 */
 	private JButton getSaveButton() {
 		if (saveButton == null) {
-			saveButton = new JButton();
-			saveButton.setText("Save");
+			saveButton = new JButton("Save");
+			saveButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					DebugUtils.println("Save");
+				}
+			});
 		}
 		return saveButton;
 	}
@@ -109,7 +151,7 @@ public class HandwritingCaptureFrame extends JFrame {
 	/**
 	 * @return
 	 */
-	private JPanel getStatusBarPanel() {
+	private JPanel getToolBarPanel() {
 		if (statusBarPanel == null) {
 			statusBarPanel = new JPanel();
 			BorderLayout statusBarPanelLayout = new BorderLayout();
@@ -138,19 +180,32 @@ public class HandwritingCaptureFrame extends JFrame {
 	 */
 	private void initGUI() {
 		setTitle("Handwriting Recognition Debugger");
-		getContentPane().add(getStatusBarPanel(), BorderLayout.SOUTH);
-		getContentPane().add(getMainPanel(), BorderLayout.CENTER);
+		getContentPane().add(getToolBarPanel(), BorderLayout.NORTH);
+		getContentPane().add(getInkPanel(), BorderLayout.CENTER);
+		getContentPane().add(getTextOutputPanel(), BorderLayout.SOUTH);
 		pack();
 		setLocation(WindowUtils.getWindowOrigin(this, WindowUtils.DESKTOP_NORTH));
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
+	private Component getTextOutputPanel() {
+		if (textOutput == null) {
+			textOutput = new JTextArea(1, 50);
+			textOutput.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+			textOutput.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+			textOutput.setText("No Text Yet");
+			textOutput.setForeground(Color.WHITE);
+			textOutput.setEditable(false);
+		}
+		return textOutput;
+	}
+
 	/**
-	 * 
+	 * Create the Paper App and ask the toolkit to start it up.
 	 */
 	private void startApp() {
-		app = new HandwritingCaptureApp();
+		app = new CaptureApplication(this);
 		PaperToolkit p = new PaperToolkit();
 		app.setToolkitReference(p);
 		p.startApplication(app);
