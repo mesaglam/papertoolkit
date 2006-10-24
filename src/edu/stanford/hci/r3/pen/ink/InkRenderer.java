@@ -9,11 +9,9 @@ import java.util.List;
 
 import javax.media.jai.TiledImage;
 
-import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
-import edu.stanford.hci.r3.units.coordinates.Coordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;

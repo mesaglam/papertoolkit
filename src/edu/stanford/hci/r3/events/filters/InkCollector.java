@@ -2,20 +2,24 @@ package edu.stanford.hci.r3.events.filters;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.pen.ink.*;
-import edu.stanford.hci.r3.units.*;
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkSample;
+import edu.stanford.hci.r3.pen.ink.InkStroke;
+import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Captures ink strokes, and allows access to them on demand. Notifies listeners every time a stroke
- * is written.
+ * Captures ink strokes, and allows access to them on demand. Notifies listeners every time a stroke is
+ * written.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -27,53 +31,13 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class InkCollector extends ContentFilter {
 
 	/**
-	 * 
+	 * <p>
+	 * Notifies listeners that new ink has arrived.
+	 * </p>
 	 */
-	private static final PatternDots DOTS = new PatternDots();
-
-	private static final Pixels PIXELS = new Pixels();
-
-	/**
-	 * 
-	 */
-	private List<InkSample> currentStrokeSamples = new ArrayList<InkSample>();
-
-	/**
-	 * For tracking ink that we have retrieved.
-	 */
-	private int newInkMarker = 0;
-
-	/**
-	 * 
-	 */
-	private List<InkStroke> strokes = new ArrayList<InkStroke>();
-
-	private long lastPenUpTime;
-
-	private long currPenDownTime;
-
-	private long diff;
-
-	private InkNotifier lastInkNotifier;
-
-	/**
-	 * Clear the buffers.
-	 */
-	public void clear() {
-		strokes.clear();
-		currentStrokeSamples.clear();
-		newInkMarker = 0;
-	}
-
-	private static final int MILLIS_TO_DELAY = 20;
-
 	private class InkNotifier implements Runnable {
 
 		private boolean doNotNotify;
-
-		public InkNotifier() {
-
-		}
 
 		/**
 		 * @see java.lang.Runnable#run()
@@ -102,6 +66,60 @@ public class InkCollector extends ContentFilter {
 	}
 
 	/**
+	 * 
+	 */
+	private static final PatternDots DOTS = new PatternDots();
+
+	/**
+	 * Number of milliseconds used to filter out bad pen events.
+	 */
+	private static final int MAX_MILLIS_FOR_PEN_ERROR = 20;
+
+	/**
+	 * The notifier will wait for this many milliseconds before it notifies all listeners of the new ink
+	 * content. Ideally, this number should be a little longer than MAX_MILLIS_FOR_PEN_ERROR.
+	 */
+	private static final int MILLIS_TO_DELAY = 21;
+
+	/**
+	 * 
+	 */
+	private static final Pixels PIXELS = new Pixels();
+
+	/**
+	 * 
+	 */
+	private List<InkSample> currentStrokeSamples = new ArrayList<InkSample>();
+
+	private long currPenDownTime;
+
+	private InkNotifier lastInkNotifier;
+
+	private long lastPenUpTime;
+
+	/**
+	 * For tracking ink that we have retrieved.
+	 */
+	private int newInkMarker = 0;
+
+	/**
+	 * This should be synchronized, as multiple threads are working on it.
+	 */
+	private List<InkStroke> strokes = Collections.synchronizedList(new ArrayList<InkStroke>());
+
+	private long timeDiffBetweenPenUpAndPenDown;
+
+	/**
+	 * Clear the buffers.
+	 */
+	public void clear() {
+		strokes.clear();
+		currentStrokeSamples.clear();
+		newInkMarker = 0;
+	}
+
+	/**
+	 * 
 	 * @see edu.stanford.hci.r3.events.ContentFilter#filterEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
 	@Override
@@ -114,32 +132,35 @@ public class InkCollector extends ContentFilter {
 		// collect the ink strokes
 		if (event.isPenDown()) {
 			currPenDownTime = System.currentTimeMillis();
-			diff = currPenDownTime - lastPenUpTime;
-			DebugUtils.println(diff + " in milliseconds");
+			timeDiffBetweenPenUpAndPenDown = currPenDownTime - lastPenUpTime;
+			// DebugUtils.println("The pen was up for " + timeDiffBetweenPenUpAndPenDown + " milliseconds");
 
-			// say 20 milliseconds (1/50 of a second) is probably faster than a human can go up and
-			// down =)
-			if (diff > 20 /* millis */) {
+			// say 20 milliseconds (1/50 of a second) is probably faster than a human can go up and down =)
+			if (timeDiffBetweenPenUpAndPenDown > MAX_MILLIS_FOR_PEN_ERROR /* millis */) {
+				// not a pen error!
 				currentStrokeSamples.clear();
 				currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128,
 						timestamp));
 				lastInkNotifier = null; // let it run
 			} else {
+				// "kill" the last notifier if possible
+				lastInkNotifier.setDoNotNotify(true);
+
+				// we'll assume this is a pen manufacturing error (jitter)!
 				currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128,
 						timestamp));
-				lastInkNotifier.setDoNotNotify(true); // let it run
 			}
 		} else if (event.isPenUp()) {
 			lastPenUpTime = System.currentTimeMillis();
-
 			lastInkNotifier = new InkNotifier();
-			// notify after a short delay, because we may actually update the content
+
+			// notify after a short delay, because we may actually update the content if there was a pen error
 			new Thread(lastInkNotifier).start();
 
 			// System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
-			currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128,
-					timestamp));
+			currentStrokeSamples
+					.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128, timestamp));
 		}
 	}
 
@@ -167,10 +188,9 @@ public class InkCollector extends ContentFilter {
 	}
 
 	/**
-	 * @return timestamp that last stroke was completed, in milliseconds, or -1 if there are no
-	 *         strokes.
+	 * @return timestamp that last stroke was completed, in milliseconds, or -1 if there are no strokes.
 	 */
-	public long getLastTimestamp() {
+	public long getTimestampOfMostRecentInkStroke() {
 		if (strokes != null && strokes.size() >= 1) {
 			return strokes.get(strokes.size() - 1).getLastTimestamp();
 		} else {
