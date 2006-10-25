@@ -67,6 +67,9 @@ namespace HandwritingRecognition {
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     class ClientWorkerThread {
         private Socket client;
         private int id;
