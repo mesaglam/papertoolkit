@@ -1,14 +1,15 @@
-package edu.stanford.hci.r3.pen.ink;
+package edu.stanford.hci.r3.render.ink;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
 import java.io.File;
 import java.util.List;
 
 import javax.media.jai.TiledImage;
 
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
@@ -33,15 +34,51 @@ public class InkRenderer {
 
 	private Ink ink;
 
+	private Color inkColor = Color.BLACK;
+
+	// private RenderingTechnique renderingTechnique = new RenderingTechniqueQuadratic();
+	// private RenderingTechnique renderingTechnique = new RenderingTechniqueDefault();
+	private RenderingTechnique renderingTechnique = new RenderingTechniqueCatmullRom();
+
+
+	public InkRenderer() {
+	}
+
+	/**
+	 * @param theInk
+	 */
 	public InkRenderer(Ink theInk) {
 		ink = theInk;
 	}
 
 	/**
+	 * @return
+	 */
+	public Color getColor() {
+		return inkColor;
+	}
+
+	/**
+	 * @param g2d
+	 */
+	public void renderToG2D(Graphics2D g2d) {
+		if (ink == null) {
+			DebugUtils.println("Ink Object is NULL");
+			return;
+		}
+
+		// anti-aliased, high quality rendering
+		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+		g2d.setColor(inkColor);
+
+		final List<InkStroke> strokes = ink.getStrokes();
+		renderingTechnique.render(g2d, strokes);
+	}
+
+	/**
 	 * Looks very similar to SheetRenderer's. TODO: Can we integrate this?
 	 */
-	public void renderToJPEG(File destJPEGFile, Pixels resolutionPixelsPerInch, Units width,
-			Units height) {
+	public void renderToJPEG(File destJPEGFile, Pixels resolutionPixelsPerInch, Units width, Units height) {
 		final double scale = Points.ONE.getConversionTo(resolutionPixelsPerInch);
 
 		final int w = MathUtils.rint(width.getValueIn(resolutionPixelsPerInch));
@@ -66,69 +103,16 @@ public class InkRenderer {
 	}
 
 	/**
-	 * @param g2d
+	 * @param c
 	 */
-	public void renderToG2D(Graphics2D g2d) {
-		// anti-aliased, high quality rendering
-		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+	public void setColor(Color c) {
+		inkColor = c;
+	}
 
-		final List<InkStroke> strokes = ink.getStrokes();
-
-		g2d.setColor(Color.BLACK);
-		
-		// Each Stroke will be One PPath (it's just more efficient this way)
-		for (final InkStroke s : strokes) {
-
-			final double[] xArr = s.getXSamples();
-			final double[] yArr = s.getYSamples();
-
-			final GeneralPath strokePath = new GeneralPath();
-
-			final int len = xArr.length;
-			if (len > 0) {
-				strokePath.moveTo(xArr[0], yArr[0]);
-			}
-
-			// keeps last known "good point"
-			double lastGoodX = xArr[0];
-			double lastGoodY = yArr[0];
-
-			// connect the samples w/ quadratic curve segments
-			// in the future, do catmull-rom, because that's ideal...
-			int numPointsCollected = 0;
-			for (int i = 0; i < len; i++) {
-				final double currX = xArr[i];
-				final double currY = yArr[i];
-
-				numPointsCollected++;
-
-				final double diffFromLastX = currX - lastGoodX;
-				final double diffFromLastY = currY - lastGoodY;
-
-				if (Math.abs(diffFromLastX) > 500 || Math.abs(diffFromLastY) > 500) {
-					// too much error; eliminate totally random data...
-					// this usually arises from writing outside the margin onto disjoint pattern
-					// (like the anoto pidget)
-					// try just discarding this point!
-					// strokePath.lineTo(lastGoodX, lastGoodY);
-				} else {
-					// OK, not that much error
-					if (numPointsCollected == 2) {
-						numPointsCollected = 0;
-						strokePath.quadTo(lastGoodX, lastGoodY, currX, currY);
-					}
-
-					// set the last known good point
-					lastGoodX = currX;
-					lastGoodY = currY;
-				}
-			}
-
-			// if there's any points left, just render them
-			if (numPointsCollected == 1) {
-				strokePath.lineTo(lastGoodX, lastGoodY);
-			}
-			g2d.draw(strokePath);
-		}
+	/**
+	 * @param theInk
+	 */
+	public void setInk(Ink theInk) {
+		ink = theInk;
 	}
 }

@@ -31,10 +31,10 @@ import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkPanel;
-import edu.stanford.hci.r3.pen.ink.InkRenderer;
 import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.pen.streaming.PenGestureListener;
+import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.WindowUtils;
