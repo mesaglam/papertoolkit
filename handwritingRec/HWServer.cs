@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace HandwritingRecognition {
 
@@ -39,7 +40,6 @@ namespace HandwritingRecognition {
             try {
                 TcpListener tcpListener = new TcpListener(IPAddress.Loopback, portNumber);
                 tcpListener.Start();
-
 
                 while (true) {
 
@@ -93,11 +93,35 @@ namespace HandwritingRecognition {
                 string line = streamReader.ReadLine();
                 Console.WriteLine("Read from Client " + id + ": " + line);
 
-                if (line.ToLower().Equals("exit")) {
-                    Console.WriteLine("Disconnecting from Client " + id + ".");
-                    client.Close();
-                    return;
+                // get the command from the client
+                Match match = Regex.Match(line, @"\[\[(.*?)\]\].*");
+                if (match.Success) {
+                    String command = match.Groups[1].ToString().ToLower();
+                    Console.WriteLine("Matched: " + command);
+                    switch (command) {
+                        case "exit":
+                            Console.WriteLine("Disconnecting from Client " + id + ".");
+                            client.Close();
+                            return;
+                        case "quitserver":
+                            Console.WriteLine("Disconnecting from Client " + id + ".");
+                            client.Close();
+                            Console.WriteLine("Exiting the Server.");
+                            System.Environment.Exit(0);
+                            return;
+                        default:
+                            break;
+                    }
                 }
+                else {
+                    // assume it's just some XML
+                    Console.WriteLine("Some XML....");
+
+
+                    // respond with some ASCII
+
+                }
+
 
                 int numChars = line.Length;
                 string response = "There were " + numChars + " characters in your message [" + line + "]";
