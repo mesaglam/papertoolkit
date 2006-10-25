@@ -19,7 +19,7 @@ import com.sun.syndication.io.SyndFeedOutput;
 
 import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkRenderer;
+import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.util.DebugUtils;

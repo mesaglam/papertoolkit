@@ -19,7 +19,7 @@ import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchEventHandler;
 import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkRenderer;
+import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Millimeters;
 import edu.stanford.hci.r3.units.Pixels;
