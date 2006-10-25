@@ -86,6 +86,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 			recognizeAndClearButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					DebugUtils.println("Recognize and Clear!");
+					getInkPanel().clear();
 				}
 			});
 		}

@@ -215,11 +215,12 @@ public abstract class Units implements Cloneable {
 	}
 
 	/**
-	 * CONVENIENCE method for converting to Pixels.
+	 * CONVENIENCE method for converting to Pixels. This uses the DEFAULT pixelsPerInch as specified
+	 * by the configuration xml file. Unfortunately, Java cannot detect this value yet.
 	 * 
 	 * @return the value after converting to pixels.
 	 */
-	private double getValueInPixels() {
+	public double getValueInPixels() {
 		return getValueIn(Pixels.ONE);
 	}
 

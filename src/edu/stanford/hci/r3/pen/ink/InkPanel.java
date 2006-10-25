@@ -3,6 +3,7 @@ package edu.stanford.hci.r3.pen.ink;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,8 +15,8 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
- * Renders Ink in a JPanel using a very simple lineTo(...) method. You can swap in better renderers depending
- * on how quickly or slowly you want the ink to be rendered.
+ * Renders Ink in a JPanel using a very simple lineTo(...) method. You can swap in better renderers
+ * depending on how quickly or slowly you want the ink to be rendered.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -34,6 +35,11 @@ public class InkPanel extends JPanel {
 	private InkRenderer renderer;
 
 	/**
+	 * Zoom in (> 1.0) or out (< 1.0) to the ink canvas.
+	 */
+	private double inkScale = 1.0;
+
+	/**
 	 * 
 	 */
 	public InkPanel() {
@@ -49,6 +55,10 @@ public class InkPanel extends JPanel {
 		repaint();
 	}
 
+	public void setScale(double theScale) {
+		inkScale = theScale;
+	}
+
 	/**
 	 * 
 	 */
@@ -58,7 +68,7 @@ public class InkPanel extends JPanel {
 	}
 
 	/**
-	 * Redraw the
+	 * Redraw the ink strokes.
 	 * 
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
@@ -66,18 +76,19 @@ public class InkPanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		final Graphics2D g2d = (Graphics2D) g;
+		final AffineTransform transform = g2d.getTransform();
+		g2d.scale(inkScale, inkScale);
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 
 		// the drawing of ink is "atomic" with respect to
 		// adding and removing from the inkWell
 		synchronized (inkWell) {
 			for (Ink ink : inkWell) {
-				Color color = ink.getColor();
 				renderer.setInk(ink);
-				renderer.setColor(color);
 				renderer.renderToG2D(g2d);
 			}
 		}
+		g2d.setTransform(transform);
 	}
 
 	/**

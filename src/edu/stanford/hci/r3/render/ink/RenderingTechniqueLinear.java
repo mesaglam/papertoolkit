@@ -17,7 +17,7 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-class RenderingTechniqueDefault implements RenderingTechnique {
+class RenderingTechniqueLinear implements RenderingTechnique {
 
 	public void render(Graphics2D g2d, List<InkStroke> strokes) {
 		for (InkStroke stroke : strokes) {
