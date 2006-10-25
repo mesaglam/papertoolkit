@@ -18,7 +18,10 @@ import java.util.List;
  */
 public class Ink {
 
-	private Color color = Color.BLACK;
+	/**
+	 * Black but with some transparency.
+	 */
+	private Color color = new Color(0, 0, 0, 220);
 
 	/**
 	 * The name of this Ink cluster.

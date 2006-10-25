@@ -34,14 +34,10 @@ public class InkRenderer {
 
 	private Ink ink;
 
-	private Color inkColor = Color.BLACK;
-
-	// private RenderingTechnique renderingTechnique = new RenderingTechniqueQuadratic();
-	// private RenderingTechnique renderingTechnique = new RenderingTechniqueDefault();
 	private RenderingTechnique renderingTechnique = new RenderingTechniqueCatmullRom();
 
-
 	public InkRenderer() {
+
 	}
 
 	/**
@@ -49,13 +45,6 @@ public class InkRenderer {
 	 */
 	public InkRenderer(Ink theInk) {
 		ink = theInk;
-	}
-
-	/**
-	 * @return
-	 */
-	public Color getColor() {
-		return inkColor;
 	}
 
 	/**
@@ -69,7 +58,7 @@ public class InkRenderer {
 
 		// anti-aliased, high quality rendering
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
-		g2d.setColor(inkColor);
+		g2d.setColor(ink.getColor());
 
 		final List<InkStroke> strokes = ink.getStrokes();
 		renderingTechnique.render(g2d, strokes);
@@ -78,7 +67,8 @@ public class InkRenderer {
 	/**
 	 * Looks very similar to SheetRenderer's. TODO: Can we integrate this?
 	 */
-	public void renderToJPEG(File destJPEGFile, Pixels resolutionPixelsPerInch, Units width, Units height) {
+	public void renderToJPEG(File destJPEGFile, Pixels resolutionPixelsPerInch, Units width,
+			Units height) {
 		final double scale = Points.ONE.getConversionTo(resolutionPixelsPerInch);
 
 		final int w = MathUtils.rint(width.getValueIn(resolutionPixelsPerInch));
@@ -103,16 +93,25 @@ public class InkRenderer {
 	}
 
 	/**
-	 * @param c
-	 */
-	public void setColor(Color c) {
-		inkColor = c;
-	}
-
-	/**
 	 * @param theInk
 	 */
 	public void setInk(Ink theInk) {
 		ink = theInk;
+	}
+
+	public void setRenderingTechnique(RenderingTechnique rt) {
+		renderingTechnique = rt;
+	}
+
+	public void useCatmullRomRendering() {
+		setRenderingTechnique(new RenderingTechniqueCatmullRom());
+	}
+
+	public void useLineRendering() {
+		setRenderingTechnique(new RenderingTechniqueLinear());
+	}
+
+	public void useQuadraticRendering() {
+		setRenderingTechnique(new RenderingTechniqueQuadratic());
 	}
 }

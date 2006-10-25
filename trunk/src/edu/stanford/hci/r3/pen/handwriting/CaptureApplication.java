@@ -11,6 +11,7 @@ import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.streaming.PenAdapter;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 
@@ -30,7 +31,7 @@ public class CaptureApplication extends Application {
 
 	private PenSample anchorPointTopLeft;
 
-	private boolean calibrationHandlerExists = false;
+	private HandwritingCaptureDebugger gui;
 
 	/**
 	 * We will use one sheet at a time to test handwriting recognition.
@@ -44,8 +45,6 @@ public class CaptureApplication extends Application {
 
 	private PaperToolkit toolkit;
 
-	private HandwritingCaptureDebugger gui;
-
 	/**
 	 * Start the App with Zero Sheets. Add them interactively.
 	 * 
@@ -58,13 +57,11 @@ public class CaptureApplication extends Application {
 	}
 
 	/**
-	 * 
+	 * Create a Region by tapping two points.
 	 */
 	public void addCalibrationHandler() {
-		if (calibrationHandlerExists) {
-			System.err.println("HandwritingCaptureApp: Calibration Button Already Pressed");
-			return;
-		}
+		anchorPointTopLeft = null;
+		anchorPointBottomRight = null;
 
 		final Pen pen = getPen();
 		pen.addLivePenListener(new PenAdapter() {
@@ -74,7 +71,9 @@ public class CaptureApplication extends Application {
 					DebugUtils.println("Top Left Point is now set to " + anchorPointTopLeft);
 				} else if (anchorPointBottomRight == null) {
 					anchorPointBottomRight = sample;
-					DebugUtils.println("Bottom Right Point is now set to " + anchorPointBottomRight);
+					DebugUtils
+							.println("Bottom Right Point is now set to " + anchorPointBottomRight);
+					scaleInkPanelToFit();
 					addOneSheetAndOneRegionForHandwritingCapture();
 				} else {
 					final PenListener listener = this;
@@ -84,21 +83,31 @@ public class CaptureApplication extends Application {
 					new Thread(new Runnable() {
 						public void run() {
 							pen.removeLivePenListener(listener);
-							calibrationHandlerExists = false;
 						}
 					}).start();
 				}
 			}
-		});
 
-		calibrationHandlerExists = true;
+		});
 	}
 
 	/**
 	 * Add a sheet and a region at RUNTIME.
 	 */
 	private void addOneSheetAndOneRegionForHandwritingCapture() {
-		Sheet sheet = getMainSheet();
+		// ask the event engine to remove our sheet and our mappings, if they exist
+		if (mainSheet != null) {
+			DebugUtils.println("Removing old region...");
+
+			// remove the sheet from this application
+			removeSheet(mainSheet);
+			toolkit.getEventEngine().unregisterPatternMapForEventHandling(
+					mainSheet.getPatternLocationToSheetLocationMapping());
+			mainSheet = null;
+		}
+
+		// add a new sheet
+		final Sheet sheet = getMainSheet();
 		final Region region = setupCaptureRegion();
 		sheet.addRegion(region);
 		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping();
@@ -106,15 +115,75 @@ public class CaptureApplication extends Application {
 		mapping.initializeMap(sheet.getRegions());
 		final double tlX = anchorPointTopLeft.getX();
 		final double tlY = anchorPointTopLeft.getY();
-		mapping.setPatternInformationOfRegion(region, new TiledPatternCoordinateConverter(region.getName(),
-				tlX, tlY, // top left corner
+		mapping.setPatternInformationOfRegion(region, new TiledPatternCoordinateConverter(region
+				.getName(), tlX, tlY, // top left corner
 				MathUtils.rint(anchorPointBottomRight.getX() - tlX), // width
 				MathUtils.rint(anchorPointBottomRight.getY() - tlY))); // height
 		addSheet(sheet, mapping);
 		DebugUtils.println(mapping);
 
-		// now, we have to tell the already-running event engine to be aware of this new pattern mapping!
+		// now, we have to tell the already-running event engine to be aware of this new pattern
+		// mapping!
 		toolkit.getEventEngine().registerPatternMapForEventHandling(mapping);
+	}
+
+	/**
+	 * Create and return the main Sheet object.
+	 * 
+	 * @return
+	 */
+	private Sheet getMainSheet() {
+		if (mainSheet == null) {
+			mainSheet = new Sheet(8.5, 11);
+		}
+		return mainSheet;
+	}
+
+	/**
+	 * @return
+	 */
+	public Pen getPen() {
+		if (pen == null) {
+			pen = new Pen("Main Pen");
+		}
+		return pen;
+	}
+
+	/**
+	 * Fit to WIDTH or HEIGHT, whichever is larger. The defined region should fit "perfectly" in our
+	 * panel.
+	 */
+	private void scaleInkPanelToFit() {
+		final double width = anchorPointBottomRight.x - anchorPointTopLeft.x;
+		final double height = anchorPointBottomRight.y - anchorPointTopLeft.y;
+		double newScale = 1.0;
+		if (width > height) {
+			// constrain to the width
+			final PatternDots numDots = new PatternDots(width);
+			final double definedWidth = numDots.getValueInPixels();
+			final double guiWidth = gui.getInkPanel().getSize().getWidth();
+			newScale = guiWidth / definedWidth;
+		} else {
+			// constrain to the height
+			final PatternDots numDots = new PatternDots(height);
+			final double definedHeight = numDots.getValueInPixels();
+			final double guiHeight = gui.getInkPanel().getSize().getHeight();
+			newScale = guiHeight / definedHeight;
+		}
+		// DebugUtils.println("New Scale: " + newScale);
+		gui.getInkPanel().setScale(newScale);
+	}
+
+	/**
+	 * So we can access the toolkit that started this application.
+	 * 
+	 * TODO: Should the toolkit always do this automatically? I figure it would be nice... Evaluate
+	 * if this should be moved into the main Application class.
+	 * 
+	 * @param p
+	 */
+	public void setToolkitReference(PaperToolkit p) {
+		toolkit = p;
 	}
 
 	/**
@@ -130,49 +199,5 @@ public class CaptureApplication extends Application {
 			}
 		});
 		return region;
-	}
-
-	/**
-	 * Create and return the main Sheet object.
-	 * 
-	 * @return
-	 */
-	private Sheet getMainSheet() {
-		if (mainSheet == null) {
-			mainSheet = new Sheet(8.5, 11);
-			addSheet(mainSheet);
-		}
-		return mainSheet;
-	}
-
-	/**
-	 * @return
-	 */
-	public Pen getPen() {
-		if (pen == null) {
-			pen = new Pen("Main Pen");
-
-			// We do not need this listener anymore, as we now have an InkCollector
-			// pen.addLivePenListener(new PenAdapter() {
-			// public void sample(PenSample sample) {
-			// if ((anchorPointTopLeft != null) && (anchorPointBottomRight != null)) {
-			// final double x = sample.getX();
-			// final double y = sample.getY();
-			// final double tlX = anchorPointTopLeft.getX();
-			// final double tlY = anchorPointTopLeft.getY();
-			// final double brX = anchorPointBottomRight.getX();
-			// final double brY = anchorPointBottomRight.getY();
-			//
-			// DebugUtils.println("X: " + (x - tlX) / (brX - tlX) + //
-			// " Y: " + (y - tlY) / (brY - tlY));
-			// }
-			// }
-			// });
-		}
-		return pen;
-	}
-
-	public void setToolkitReference(PaperToolkit p) {
-		toolkit = p;
 	}
 }
