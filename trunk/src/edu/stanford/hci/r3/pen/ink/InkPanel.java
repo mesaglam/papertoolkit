@@ -3,13 +3,13 @@ package edu.stanford.hci.r3.pen.ink;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Path2D;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JPanel;
 
+import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
@@ -31,11 +31,14 @@ public class InkPanel extends JPanel {
 	 */
 	private List<Ink> inkWell = Collections.synchronizedList(new LinkedList<Ink>());
 
+	private InkRenderer renderer;
+
 	/**
 	 * 
 	 */
 	public InkPanel() {
 		setBackground(Color.WHITE);
+		renderer = new InkRenderer();
 	}
 
 	/**
@@ -70,18 +73,9 @@ public class InkPanel extends JPanel {
 		synchronized (inkWell) {
 			for (Ink ink : inkWell) {
 				Color color = ink.getColor();
-				g2d.setColor(color);
-				List<InkStroke> strokes = ink.getStrokes();
-				for (InkStroke stroke : strokes) {
-					final Path2D.Double path = new Path2D.Double();
-					final double[] x = stroke.getXSamples();
-					final double[] y = stroke.getYSamples();
-					path.moveTo(x[0], y[0]);
-					for (int i = 1; i < stroke.getNumSamples(); i++) {
-						path.lineTo(x[i], y[i]);
-					}
-					g2d.draw(path);
-				}
+				renderer.setInk(ink);
+				renderer.setColor(color);
+				renderer.renderToG2D(g2d);
 			}
 		}
 	}
