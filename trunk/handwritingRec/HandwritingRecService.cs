@@ -13,16 +13,13 @@ namespace HandwritingRecognition {
         [STAThread]
         static void Main() {
 
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new HWRecForm());
+            // Fire up the HWRecognition Server
+            server = new HWServer();
 
-
-            //server = new HWServer();
-            //server.getIPAddress();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new HWRecForm());
 
         }
-
-
     }
 }
