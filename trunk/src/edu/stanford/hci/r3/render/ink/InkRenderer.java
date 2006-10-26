@@ -1,7 +1,9 @@
 package edu.stanford.hci.r3.render.ink;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.util.List;
@@ -32,6 +34,8 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
  */
 public class InkRenderer {
 
+	private static final Stroke INK_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+	
 	private Ink ink;
 
 	private RenderingTechnique renderingTechnique = new RenderingTechniqueCatmullRom();
@@ -59,7 +63,8 @@ public class InkRenderer {
 		// anti-aliased, high quality rendering
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 		g2d.setColor(ink.getColor());
-
+		g2d.setStroke(INK_STROKE);
+		
 		final List<InkStroke> strokes = ink.getStrokes();
 		renderingTechnique.render(g2d, strokes);
 	}

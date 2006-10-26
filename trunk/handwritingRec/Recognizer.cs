@@ -25,26 +25,32 @@ namespace HandwritingRecognition {
             InkCollector inkCollector = new InkCollector();
             Ink ink = new Ink();
 
-            // object to parse the xml data
-            StringReader stringReader = new StringReader(xmlString);
-            XmlReader reader = XmlReader.Create(stringReader);
+            try {
 
-            // skip the junk nodes at the top of xml files
-            reader.MoveToContent();
+                // object to parse the xml data
+                StringReader stringReader = new StringReader(xmlString);
+                XmlReader reader = XmlReader.Create(stringReader);
 
-            while (reader.Read()) { // read a tag
-                String nodeNameLowerCase = reader.Name.ToLower();
-                switch (nodeNameLowerCase) { // name of the node
-                    case "stroke":
-                        Console.WriteLine("<Stroke>");
-                        Stroke stroke = handleStroke(reader, ink);
-                        if (stroke != null) {
-                            Console.WriteLine(stroke.GetPoints().Length + " points in this stroke.");
-                        }
-                        break;
-                    default:
-                        break;
+                // skip the junk nodes at the top of xml files
+                reader.MoveToContent();
+
+                while (reader.Read()) { // read a tag
+                    String nodeNameLowerCase = reader.Name.ToLower();
+                    switch (nodeNameLowerCase) { // name of the node
+                        case "stroke":
+                            Console.WriteLine("<Stroke>");
+                            Stroke stroke = handleStroke(reader, ink);
+                            if (stroke != null) {
+                                Console.WriteLine(stroke.GetPoints().Length + " points in this stroke.");
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
+            }
+            catch (XmlException xe) {
+                Console.WriteLine("Exception in parsing XML. " + xe.Message);
             }
             Console.WriteLine(ink.Strokes.Count + " total strokes.");
             return ink.Strokes;

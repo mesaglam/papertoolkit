@@ -10,10 +10,7 @@ import java.util.regex.Pattern;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
-import edu.stanford.hci.r3.render.ink.InkRenderer;
-import edu.stanford.hci.r3.units.Millimeters;
 import edu.stanford.hci.r3.units.PatternDots;
-import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
