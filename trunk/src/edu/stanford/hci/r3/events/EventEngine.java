@@ -2,6 +2,7 @@ package edu.stanford.hci.r3.events;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,8 @@ public class EventEngine {
 	 * Lets us figure out which sheets and regions should handle which events. Interacting with this
 	 * list should be as efficient as possible, because many "events" may be thrown per second!
 	 */
-	private List<PatternLocationToSheetLocationMapping> patternToSheetMaps = new ArrayList<PatternLocationToSheetLocationMapping>();
+	private List<PatternLocationToSheetLocationMapping> patternToSheetMaps = Collections
+			.synchronizedList(new ArrayList<PatternLocationToSheetLocationMapping>());
 
 	/**
 	 * Keeps track of how many times a pen has been registered. If during an unregister, this count
@@ -170,11 +172,14 @@ public class EventEngine {
 	}
 
 	/**
-	 * All pen events go here. We dispatch it to the right handlers in this method. Will this have a
-	 * ConcurrentModification problem, because we are iterating through the actual
+	 * All pen events go through here. We dispatch it to the right handlers in this method. Will
+	 * this have a ConcurrentModification problem, because we are iterating through the actual
 	 * patternToSheetMaps list that can be updated at runtime?
 	 * 
-	 * Should this be multithreaded, for performance reasons?
+	 * <p>
+	 * TODO: Should this be multithreaded, for performance reasons?
+	 * <p>
+	 * TODO: Should this have synchronized access to patternToSheetMaps, for race conditions?
 	 * 
 	 * @param penEvent
 	 */
@@ -183,60 +188,63 @@ public class EventEngine {
 		mostRecentEventHandlers.clear();
 		mostRecentContentFilters.clear();
 
-		// for each sample, we first have to convert it to a location on the sheet.
-		// THEN, we will be able to make more interesting events...
-		for (final PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
-			final TiledPatternCoordinateConverter coordinateConverter = pmap
-					.getCoordinateConverterForSample(penEvent.getOriginalSample());
+		synchronized (patternToSheetMaps) {
+			// for each sample, we first have to convert it to a location on the sheet.
+			// THEN, we will be able to make more interesting events...
+			for (final PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
+				final TiledPatternCoordinateConverter coordinateConverter = pmap
+						.getCoordinateConverterForSample(penEvent.getOriginalSample());
 
-			// this map doesn't know about this sample; next!
-			if (coordinateConverter == null) {
-				continue;
-			}
-
-			// which sheet are we on?
-			final Sheet sheet = pmap.getSheet();
-
-			// which region are we on?
-			final String regionName = coordinateConverter.getRegionName();
-			final Region region = sheet.getRegion(regionName);
-
-			// where are we on this region?
-			final PercentageCoordinates relativeLocation = coordinateConverter
-					.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
-			penEvent.setPercentageLocation(relativeLocation);
-
-			lastKnownLocation = relativeLocation;
-
-			// does this region have any event handler?
-			// if not, just go onto the next region
-			final List<EventHandler> eventHandlers = region.getEventHandlers();
-			// send the event to every event handler!
-			// so long as the event is not consumed
-			for (EventHandler eh : eventHandlers) {
-				eh.handleEvent(penEvent);
-				mostRecentEventHandlers.add(eh);
-				if (penEvent.isConsumed()) {
-					// we are done handling this event
-					// look at no more event handlers
-					// look at no more pattern maps
-					// DebugUtils.println("Event Consumed");
-					return;
+				// this map doesn't know about this sample; next!
+				if (coordinateConverter == null) {
+					continue;
 				}
-			} // check the next event handler
 
-			// also, send this event to all the filters, if the event is not yet consumed by one of
-			// the above handlers
-			List<ContentFilter> eventFilters = region.getEventFilters();
-			for (ContentFilter ef : eventFilters) {
-				ef.filterEvent(penEvent);
-				mostRecentContentFilters.add(ef);
-				// filters do not consume events
-				// but they are lower priority than event handlers
-				// should they be HIGHER priority???
-			}
+				// which sheet are we on?
+				final Sheet sheet = pmap.getSheet();
 
-		} // check the next pattern map
+				// which region are we on?
+				final String regionName = coordinateConverter.getRegionName();
+				final Region region = sheet.getRegion(regionName);
+
+				// where are we on this region?
+				final PercentageCoordinates relativeLocation = coordinateConverter
+						.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
+				penEvent.setPercentageLocation(relativeLocation);
+
+				lastKnownLocation = relativeLocation;
+
+				// does this region have any event handler?
+				// if not, just go onto the next region
+				final List<EventHandler> eventHandlers = region.getEventHandlers();
+				// send the event to every event handler!
+				// so long as the event is not consumed
+				for (EventHandler eh : eventHandlers) {
+					eh.handleEvent(penEvent);
+					mostRecentEventHandlers.add(eh);
+					if (penEvent.isConsumed()) {
+						// we are done handling this event
+						// look at no more event handlers
+						// look at no more pattern maps
+						// DebugUtils.println("Event Consumed");
+						return;
+					}
+				} // check the next event handler
+
+				// also, send this event to all the filters, if the event is not yet consumed by one
+				// of
+				// the above handlers
+				final List<ContentFilter> eventFilters = region.getEventFilters();
+				for (ContentFilter ef : eventFilters) {
+					ef.filterEvent(penEvent);
+					mostRecentContentFilters.add(ef);
+					// filters do not consume events
+					// but they are lower priority than event handlers
+					// should they be HIGHER priority???
+				}
+
+			} // check the next pattern map
+		}
 	}
 
 	/**
@@ -276,6 +284,7 @@ public class EventEngine {
 	}
 
 	/**
+	 * 
 	 * @param mapping
 	 */
 	public void registerPatternMapForEventHandling(PatternLocationToSheetLocationMapping mapping) {
@@ -291,12 +300,8 @@ public class EventEngine {
 	public void registerPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
 		DebugUtils.println("Registering Pattern Location to Sheet Location Maps");
-		int count = 0;
-		for (PatternLocationToSheetLocationMapping map : patternMaps) {
-			patternToSheetMaps.add(map);
-			count++;
-		}
-		DebugUtils.println("Registered " + count + " New Maps");
+		patternToSheetMaps.addAll(patternMaps);
+		DebugUtils.println("Registered " + patternMaps.size() + " New Maps");
 	}
 
 	/**
@@ -326,13 +331,13 @@ public class EventEngine {
 	}
 
 	/**
+	 * Remove these maps from our runtime list.
+	 * 
 	 * @param patternMaps
 	 */
 	public void unregisterPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
-		for (PatternLocationToSheetLocationMapping map : patternMaps) {
-			patternToSheetMaps.remove(map);
-		}
+		patternToSheetMaps.removeAll(patternMaps);
 	}
 
 	/**

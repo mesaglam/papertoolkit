@@ -25,8 +25,7 @@ public class HandwritingRecognizer extends ContentFilter {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Handwriting Recognizer";
 	}
 
 }

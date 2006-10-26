@@ -12,24 +12,28 @@ import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * This class stores mappings from regions of pattern (and their coordinates in Anoto space) to Sheets and
- * locations on those sheets. This mapping works both ways. Given a location on the sheet, we should be able
- * to find the pattern coordinate. Given a coordinate, we should be able to find the location on the sheet.
+ * This class stores mappings from regions of pattern (and their coordinates in Anoto space) to
+ * Sheets and locations on those sheets. This mapping works both ways. Given a location on the
+ * sheet, we should be able to find the pattern coordinate. Given a coordinate, we should be able to
+ * find the location on the sheet.
  * </p>
  * <p>
- * An instance of this object should be built when a PDF is rendered with pattern. At that moment, regions on
- * a sheet are bound to specific physical coordinates. Each application should store this mapping per sheet.
+ * An instance of this object should be built when a PDF is rendered with pattern. At that moment,
+ * regions on a sheet are bound to specific physical coordinates. Each application should store this
+ * mapping per sheet.
  * </p>
  * <p>
- * The SheetRenderer class uses this class to save the mapping to disk, so that a future instance can load the
- * mapping and run the application.
+ * The SheetRenderer class uses this class to save the mapping to disk, so that a future instance
+ * can load the mapping and run the application.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -44,7 +48,8 @@ public class PatternLocationToSheetLocationMapping {
 	private static final String[] PATTERN_INFO_EXTENSION_FILTER = new String[] { "patternInfo.xml" };
 
 	/**
-	 * Binds regions to pattern bounds, specified in logical (batched) and physical (streamed) coordinates.
+	 * Binds regions to pattern bounds, specified in logical (batched) and physical (streamed)
+	 * coordinates.
 	 */
 	private Map<Region, TiledPatternCoordinateConverter> regionToPatternBounds = new HashMap<Region, TiledPatternCoordinateConverter>();
 
@@ -54,18 +59,13 @@ public class PatternLocationToSheetLocationMapping {
 	private Sheet sheet;
 
 	/**
-	 * EXPERTS ONLY: use this method for constructing the mapping manually.
-	 */
-	public PatternLocationToSheetLocationMapping() {
-		// You need to set the Sheet Object
-		// Call initializeMap with the Sheet's regions
-		// Finally, load the map with TiledPatternCoordinateConverters so that active regions can be accessed
-	}
-
-	/**
-	 * One mapping object per sheet. Create this object after you have added all the regions that you need to
-	 * the sheet. This class will maintain a mapping of Regions to physical (streaming) and logical (batched)
-	 * pen coordinates.
+	 * One mapping object per sheet. Create this object after you have added all the regions that
+	 * you need to the sheet. This class will maintain a mapping of Regions to physical (streaming)
+	 * and logical (batched) pen coordinates.
+	 * 
+	 * This constructor will try to load the pattern configuration automatically. If you want to set
+	 * the mapping manually, you will need to load the map with TiledPatternCoordinateConverters so
+	 * that active regions can be accessed.
 	 * 
 	 * @param s
 	 */
@@ -92,8 +92,8 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * Checks whether this mapping contains the pen sample (streamed coordinates). If it does, it returns the
-	 * TiledPatternCoordinateConverter object for that sample. If not, it returns null.
+	 * Checks whether this mapping contains the pen sample (streamed coordinates). If it does, it
+	 * returns the TiledPatternCoordinateConverter object for that sample. If not, it returns null.
 	 * 
 	 * @param sample
 	 * @return
@@ -129,7 +129,8 @@ public class PatternLocationToSheetLocationMapping {
 	 * @return the converter that enables you to figure out where on the region a sample falls.
 	 */
 	public TiledPatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
-		DebugUtils.println(regionToPatternBounds.size() + " " + r.getName() + " " + regionToPatternBounds);
+		DebugUtils.println(regionToPatternBounds.size() + " " + r.getName() + " "
+				+ regionToPatternBounds);
 
 		return regionToPatternBounds.get(r);
 	}
@@ -142,9 +143,9 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * For all ACTIVE regions, we need a coordinate converter that will enable us to find out where the pen is
-	 * on the region. We should be able to add new regions to a sheet after the fact, so we should have the
-	 * ability to reinitialize this map later on.
+	 * For all ACTIVE regions, we need a coordinate converter that will enable us to find out where
+	 * the pen is on the region. We should be able to add new regions to a sheet after the fact, so
+	 * we should have the ability to reinitialize this map later on.
 	 * 
 	 * @param regions
 	 */
@@ -178,7 +179,8 @@ public class PatternLocationToSheetLocationMapping {
 
 		for (File path : configurationPaths) {
 			// System.out.println(path);
-			List<File> patternInfoFiles = FileUtils.listVisibleFiles(path, PATTERN_INFO_EXTENSION_FILTER);
+			List<File> patternInfoFiles = FileUtils.listVisibleFiles(path,
+					PATTERN_INFO_EXTENSION_FILTER);
 			// System.out.println(patternInfoFiles.size());
 			for (File f : patternInfoFiles) {
 				DebugUtils.println("Trying to automatically load " + f.getName());
@@ -217,8 +219,8 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * Due to xstream's inability to serial/unserialize really complicated classes, we will save only a
-	 * regionName+origin --> pattern info mapping
+	 * Due to xstream's inability to serial/unserialize really complicated classes, we will save
+	 * only a regionName+origin --> pattern info mapping
 	 * 
 	 * @param xmlFile
 	 */
@@ -246,13 +248,31 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * For a region on our sheet, update the coordinate information so that it can be accessed in runtime by
-	 * our EventEngine.
+	 * A convenience function for mapping a contiguous (single-tile) patterned area to a region
+	 * object.
+	 * 
+	 * @param region
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
+	public void setPatternInformationOfRegion(Region region, //
+			PatternDots x, PatternDots y, PatternDots width, PatternDots height) {
+		setPatternInformationOfRegion(region, new TiledPatternCoordinateConverter(region.getName(),
+				x.getValue(), y.getValue(), //
+				MathUtils.rint(width.getValue()), MathUtils.rint(height.getValue())));
+	}
+
+	/**
+	 * For a region on our sheet, update the coordinate information so that it can be accessed in
+	 * runtime by our EventEngine.
 	 * 
 	 * @param r
 	 * @param coordinateInfo
 	 */
-	public void setPatternInformationOfRegion(Region r, TiledPatternCoordinateConverter coordinateInfo) {
+	public void setPatternInformationOfRegion(Region r,
+			TiledPatternCoordinateConverter coordinateInfo) {
 		if (regionToPatternBounds.containsKey(r) || sheet.containsRegion(r)) {
 			// updating an already-known region OR
 			// adding a new region (probably added to the sheet after this object was constructed)
