@@ -43,8 +43,6 @@ public class CaptureApplication extends Application {
 	 */
 	private Pen pen;
 
-	private PaperToolkit toolkit;
-
 	/**
 	 * Start the App with Zero Sheets. Add them interactively.
 	 * 
@@ -101,8 +99,6 @@ public class CaptureApplication extends Application {
 
 			// remove the sheet from this application
 			removeSheet(mainSheet);
-			toolkit.getEventEngine().unregisterPatternMapForEventHandling(
-					mainSheet.getPatternLocationToSheetLocationMapping());
 			mainSheet = null;
 		}
 
@@ -110,21 +106,27 @@ public class CaptureApplication extends Application {
 		final Sheet sheet = getMainSheet();
 		final Region region = setupCaptureRegion();
 		sheet.addRegion(region);
-		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping();
-		mapping.setSheet(sheet);
-		mapping.initializeMap(sheet.getRegions());
+
+		// determine the bounds of the region in pattern space
+		// this information was provided by the user
 		final double tlX = anchorPointTopLeft.getX();
 		final double tlY = anchorPointTopLeft.getY();
-		mapping.setPatternInformationOfRegion(region, new TiledPatternCoordinateConverter(region
-				.getName(), tlX, tlY, // top left corner
-				MathUtils.rint(anchorPointBottomRight.getX() - tlX), // width
-				MathUtils.rint(anchorPointBottomRight.getY() - tlY))); // height
-		addSheet(sheet, mapping);
-		DebugUtils.println(mapping);
+		final double brX = anchorPointBottomRight.getX();
+		final double brY = anchorPointBottomRight.getY();
+		final double width = brX - tlX;
+		final double height = brY - tlY;
 
-		// now, we have to tell the already-running event engine to be aware of this new pattern
-		// mapping!
-		toolkit.getEventEngine().registerPatternMapForEventHandling(mapping);
+		// create this custom mapping object
+		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
+				sheet);
+		
+		// tie the pattern bounds to this region object
+		mapping.setPatternInformationOfRegion(region, //
+				new PatternDots(tlX), new PatternDots(tlY), // 
+				new PatternDots(width), new PatternDots(height));
+
+		addSheet(sheet, mapping);
+		// DebugUtils.println(mapping);
 	}
 
 	/**
@@ -175,21 +177,10 @@ public class CaptureApplication extends Application {
 	}
 
 	/**
-	 * So we can access the toolkit that started this application.
-	 * 
-	 * TODO: Should the toolkit always do this automatically? I figure it would be nice... Evaluate
-	 * if this should be moved into the main Application class.
-	 * 
-	 * @param p
-	 */
-	public void setToolkitReference(PaperToolkit p) {
-		toolkit = p;
-	}
-
-	/**
 	 * @return
 	 */
 	private Region setupCaptureRegion() {
+		// the actual "physical" size of this region doesn't matter, as we never print it!
 		final Region region = new Region("Handwriting Capture", 0, 0, 1, 1);
 		region.addContentFilter(new InkCollector() {
 			@Override

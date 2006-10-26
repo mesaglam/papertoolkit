@@ -329,7 +329,7 @@ public class PaperToolkit {
 	private EndlessProgressDialog progress;
 
 	/**
-	 * The Run Queue.
+	 * The list of running applications.
 	 */
 	private List<Application> runningApplications = new ArrayList<Application>();
 
@@ -729,12 +729,14 @@ public class PaperToolkit {
 			}
 		}
 
-		DebugUtils.println("Starting Application: " + paperApp.getName());
 
 		// keep track of the pattern assigned to different sheets and regions
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 		runningApplications.add(paperApp);
+
+		DebugUtils.println("Starting Application: " + paperApp.getName());
+		paperApp.setHostToolkit(this);
 	}
 
 	/**
@@ -751,9 +753,13 @@ public class PaperToolkit {
 				pen.stopLiveMode();
 			}
 		}
+		
 		eventEngine.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.unregisterBatchEventHandlers(paperApp.getBatchEventHandlers());
 		runningApplications.remove(paperApp);
+
+		DebugUtils.println("Stopping Application: " + paperApp.getName());
+		paperApp.setHostToolkit(null);
 	}
 
 	/**

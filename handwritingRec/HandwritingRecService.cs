@@ -19,13 +19,14 @@ namespace HandwritingRecognition {
             if (true) {
                 server = new HWServer();
             }
-            if (false) {
+
+            if (true) {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new HWRecForm());
             }
 
-            if (false) {
+            if (true) {
                 String text = File.ReadAllText(@"C:\Documents and Settings\Ron Yeh\My Documents\Projects\PaperToolkit\penSynch\data\XML\2006_10_25__10_49_17.xml");
                 Recognizer rec = new Recognizer();
                 Strokes strokes = rec.getStrokesFromXML(text);

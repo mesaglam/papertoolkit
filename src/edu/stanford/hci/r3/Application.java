@@ -126,6 +126,16 @@ public class Application {
 	private List<Device> devices = new ArrayList<Device>();
 
 	/**
+	 * Which toolkit object is currently running/hosting this application?
+	 */
+	private PaperToolkit host = null;
+
+	/**
+	 * Are we currently at RUNTIME?
+	 */
+	private boolean isRunning = false;
+
+	/**
 	 * The name of the application. Useful for debugging (e.g., when trying to figure out which
 	 * application generated which event).
 	 */
@@ -194,8 +204,10 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet) {
 		// ensure that a mapping object is created
-		sheet.getPatternLocationToSheetLocationMapping();
+		PatternLocationToSheetLocationMapping mapping = sheet
+				.getPatternLocationToSheetLocationMapping();
 		addSheetObjectToInternalList(sheet);
+		registerMappingWithEventEngineDuringRuntime(mapping);
 	}
 
 	/**
@@ -207,8 +219,10 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet, File patternInfoFile) {
 		// ensure that a mapping object is created from this file
-		sheet.getPatternLocationToSheetLocationMapping(patternInfoFile);
+		PatternLocationToSheetLocationMapping mapping = sheet
+				.getPatternLocationToSheetLocationMapping(patternInfoFile);
 		addSheetObjectToInternalList(sheet);
+		registerMappingWithEventEngineDuringRuntime(mapping);
 	}
 
 	/**
@@ -222,6 +236,7 @@ public class Application {
 	public void addSheet(Sheet sheet, PatternLocationToSheetLocationMapping patternToSheetMapping) {
 		sheet.setPatternLocationToSheetLocationMapping(patternToSheetMapping);
 		addSheetObjectToInternalList(sheet);
+		registerMappingWithEventEngineDuringRuntime(patternToSheetMapping);
 	}
 
 	/**
@@ -244,6 +259,13 @@ public class Application {
 	 */
 	public List<BatchEventHandler> getBatchEventHandlers() {
 		return batchEventHandlers;
+	}
+
+	/**
+	 * @return the toolkit object that is running this application.
+	 */
+	public PaperToolkit getHostToolkit() {
+		return host;
 	}
 
 	/**
@@ -289,11 +311,35 @@ public class Application {
 		// do nothing, unless it is overridden.
 	}
 
+	public boolean isRunning() {
+		return isRunning;
+	}
+
 	/**
 	 * @return whether to let the user choose where to render the Sheets...
 	 */
 	public boolean isUserChoosingDestinationForPDF() {
 		return userChoosesPDFDestination;
+	}
+
+	/**
+	 * Only if this app is currently running, we will ask the
+	 * 
+	 * @param mapping
+	 */
+	private void registerMappingWithEventEngineDuringRuntime(
+			PatternLocationToSheetLocationMapping mapping) {
+		if (isRunning) {
+			// tell the already-running event engine to be aware of this new pattern mapping!
+			getHostToolkit().getEventEngine().registerPatternMapForEventHandling(mapping);
+		}
+	}
+
+	/**
+	 * Useful for manipulating the application at RUNTIME.
+	 */
+	public void removeAllSheets() {
+		sheets.clear();
 	}
 
 	/**
@@ -304,7 +350,8 @@ public class Application {
 	}
 
 	/**
-	 * Useful for manipulating the application at RUNTIME.
+	 * We can add and remove sheets before the application starts. However, this is also useful for
+	 * manipulating the application at RUNTIME.
 	 * 
 	 * @param sheet
 	 */
@@ -312,13 +359,13 @@ public class Application {
 		if (sheets.contains(sheet)) {
 			sheets.remove(sheet);
 		}
-	}
 
-	/**
-	 * Useful for manipulating the application at RUNTIME.
-	 */
-	public void removeAllSheets() {
-		sheets.clear();
+		// unregister this sheet's mapping information
+		// so that the EventEngine won't dispatch events to this sheet.
+		if (isRunning) {
+			getHostToolkit().getEventEngine().unregisterPatternMapForEventHandling(
+					sheet.getPatternLocationToSheetLocationMapping());
+		}
 	}
 
 	/**
@@ -376,6 +423,32 @@ public class Application {
 	 */
 	public void saveToDisk(File appFile) {
 		PaperToolkit.toXML(this, appFile);
+	}
+
+	/**
+	 * Set it to null when the application is not running. Set it to a valid toolkit object when the
+	 * application is running. This allows the application to access the toolkit object that is
+	 * hosting it, during RUNTIME.
+	 * 
+	 * @param toolkit
+	 */
+	public void setHostToolkit(PaperToolkit toolkit) {
+		host = toolkit;
+		if (host != null) {
+			setRunning(true);
+		} else {
+			setRunning(false);
+		}
+	}
+
+	/**
+	 * Used internally by setHostToolkit. When the toolkit is set, the application is running, by
+	 * implication. If the host toolkit is null, then the application has stop running.
+	 * 
+	 * @param flag
+	 */
+	private void setRunning(boolean flag) {
+		isRunning = flag;
 	}
 
 	/**
