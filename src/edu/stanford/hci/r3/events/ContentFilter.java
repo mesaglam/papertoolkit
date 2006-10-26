@@ -55,7 +55,7 @@ public abstract class ContentFilter implements ContentFilterListener {
 	private Region region;
 
 	/**
-	 * Upon construcRegister itself as a listener.
+	 * Upon construction, register itself as a listener.
 	 */
 	public ContentFilter() {
 		// it always listens for its own events! =)
@@ -107,7 +107,7 @@ public abstract class ContentFilter implements ContentFilterListener {
 	}
 
 	/**
-	 * 
+	 * Tell listeners that new content has arrived.
 	 */
 	protected void notifyAllListenersOfNewContent() {
 		for (ContentFilterListener listener : filterListeners) {

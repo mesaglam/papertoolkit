@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Text.RegularExpressions;
+using Microsoft.Ink;
+using System.Windows.Forms;
 
 namespace HandwritingRecognition {
 
@@ -22,10 +24,13 @@ namespace HandwritingRecognition {
         /// </summary>
         private int portNumber = 9898;
 
+        private HWRecForm gui;
+
         /// <summary>
         /// 
         /// </summary>
-        public HWServer() {
+        public HWServer(HWRecForm parentForm) {
+            gui = parentForm;
             ThreadStart threadDelegate = new ThreadStart(listenForConnections);
             Thread thread = new Thread(threadDelegate);
             thread.Start();
@@ -50,7 +55,7 @@ namespace HandwritingRecognition {
                     if (socketForClient.Connected) {
                         Console.WriteLine("Client Connected");
 
-                        ClientWorkerThread worker = new ClientWorkerThread(socketForClient, clientCount++);
+                        ClientWorkerThread worker = new ClientWorkerThread(socketForClient, clientCount++, gui);
                         ThreadStart clientDelegate = new ThreadStart(worker.talkToClient);
                         Thread workerThread = new Thread(clientDelegate);
                         workerThread.Start();
@@ -73,10 +78,18 @@ namespace HandwritingRecognition {
     class ClientWorkerThread {
         private Socket client;
         private int id;
+        private HWRecForm gui;
 
-        public ClientWorkerThread(Socket clientSocket, int clientID) {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clientSocket"></param>
+        /// <param name="clientID"></param>
+        /// <param name="theGui"></param>
+        public ClientWorkerThread(Socket clientSocket, int clientID, HWRecForm theGui) {
             client = clientSocket;
             id = clientID;
+            gui = theGui;
         }
 
         /// <summary>
@@ -98,6 +111,8 @@ namespace HandwritingRecognition {
                 if (match.Success) {
                     String command = match.Groups[1].ToString().ToLower();
                     Console.WriteLine("Matched: " + command);
+                    gui.setTextSafely("Command: " + command);
+
                     switch (command) {
                         case "exit":
                             Console.WriteLine("Disconnecting from Client " + id + ".");
@@ -116,10 +131,21 @@ namespace HandwritingRecognition {
                 else {
                     // assume it's just some XML
                     Console.WriteLine("Some XML....");
-
+                    Recognizer rec = new Recognizer();
+                    Strokes strokes = rec.getStrokesFromXML(line);
+                    RecognitionAlternates alternatives;
+                    String topResult = rec.recognize(strokes, out alternatives);
+                    Console.WriteLine("The Top Result is: " + topResult);
+                    //Console.WriteLine("Here is the complete list of alternates: ");
+                    //if (alternatives != null) {
+                    //    for (int i = 0; i < alternatives.Count; i++) {
+                    //        Console.WriteLine(alternatives[i].ToString() + "\t" + alternatives[i].Confidence);
+                    //    }
+                    //}
 
                     // respond with some ASCII
-
+                    streamWriter.WriteLine(topResult);
+                    streamWriter.Flush();
                 }
 
 

@@ -2,6 +2,7 @@ package edu.stanford.hci.r3.pen.handwriting;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.filters.HandwritingRecognizer;
 import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
@@ -187,6 +188,12 @@ public class CaptureApplication extends Application {
 			public void contentArrived() {
 				// DebugUtils.println(getInk().getNumStrokes());
 				gui.getInkPanel().addInk(getNewInkOnly());
+			}
+		});
+		region.addContentFilter(new HandwritingRecognizer() {
+			@Override
+			public void contentArrived() {
+				DebugUtils.println("Handwritten Content: " + recognizeHandwriting());
 			}
 		});
 		return region;

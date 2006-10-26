@@ -1,7 +1,16 @@
 package edu.stanford.hci.r3.events.filters;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.pen.ink.InkSample;
+import edu.stanford.hci.r3.pen.ink.InkStroke;
+import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 
 /**
  * <p>
@@ -17,10 +26,56 @@ import edu.stanford.hci.r3.events.PenEvent;
  */
 public class HandwritingRecognizer extends ContentFilter {
 
+	/**
+	 * For interpreting the samples.
+	 */
+	private static final PatternDots DOTS = new PatternDots();
+
+	/**
+	 * Samples that compose an ink stroke...
+	 */
+	private List<InkSample> currentStrokeSamples = new ArrayList<InkSample>();
+
+	/**
+	 * This should be synchronized, as multiple threads are working on it.
+	 */
+	private List<InkStroke> strokes = Collections.synchronizedList(new ArrayList<InkStroke>());
+
+	/**
+	 * @see edu.stanford.hci.r3.events.ContentFilter#filterEvent(edu.stanford.hci.r3.events.PenEvent)
+	 */
 	@Override
 	public void filterEvent(PenEvent event) {
-		// TODO Auto-generated method stub
+		final PercentageCoordinates percentageLocation = event.getPercentageLocation();
+		final Units x = percentageLocation.getX();
+		final Units y = percentageLocation.getY();
+		final long timestamp = event.getTimestamp();
 
+		// collect the ink strokes
+		if (event.isPenDown()) {
+			// not a pen error!
+			currentStrokeSamples.clear();
+			currentStrokeSamples.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128,
+					timestamp));
+		} else if (event.isPenUp()) {
+			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
+			notifyAllListenersOfNewContent();
+			System.out.println("Collected " + strokes.size() + " strokes so far.");
+		} else { // regular sample
+			currentStrokeSamples.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128,
+					timestamp));
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public String recognizeHandwriting() {
+		return "Hello World!";
+		
+		
+		
+		
 	}
 
 	@Override
