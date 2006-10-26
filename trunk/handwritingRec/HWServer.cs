@@ -40,11 +40,10 @@ namespace HandwritingRecognition {
         /// 
         /// </summary>
         private void listenForConnections() {
-            Console.WriteLine("Handwriting Recognition Server Started...");
-
             try {
                 TcpListener tcpListener = new TcpListener(IPAddress.Loopback, portNumber);
                 tcpListener.Start();
+                Console.WriteLine("Handwriting Recognition Server Started...");
 
                 while (true) {
 
@@ -111,7 +110,7 @@ namespace HandwritingRecognition {
                 if (match.Success) {
                     String command = match.Groups[1].ToString().ToLower();
                     Console.WriteLine("Matched: " + command);
-                    gui.setTextSafely("Command: " + command);
+                    gui.addTextSafely("Command: " + command);
 
                     switch (command) {
                         case "exit":

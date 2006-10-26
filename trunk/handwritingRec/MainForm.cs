@@ -11,14 +11,21 @@ namespace HandwritingRecognition {
 
         // This delegate enables asynchronous calls for setting
         // the text property on a TextBox control.
-        delegate void SetTextCallback(string text);
+        delegate void AddTextCallback(string text);
 
         public HWRecForm() {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// When it pops up, hide it!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HWRecForm_Load(object sender, EventArgs e) {
-
+            Console.WriteLine("Loading...");
+            WindowState = FormWindowState.Minimized;
+            Hide();
         }
 
         /// <summary>
@@ -28,20 +35,32 @@ namespace HandwritingRecognition {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void HWRecForm_Resize(object sender, EventArgs e) {
-            if (FormWindowState.Minimized == WindowState) {
+            if (WindowState == FormWindowState.Minimized) {
                 Hide();
-            }   
+            }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void trayIcon_DoubleClick(object sender, EventArgs e) {
             restoreWindow();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void restoreWindow() {
             Show();
             WindowState = FormWindowState.Normal;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void restoreToolStripMenuItem_Click(object sender, EventArgs e) {
             restoreWindow();
         }
@@ -88,14 +107,14 @@ namespace HandwritingRecognition {
         /// 
         /// </summary>
         /// <param name="text"></param>
-        internal void setTextSafely(string text) {
+        internal void addTextSafely(String text) {
             if (textBox.InvokeRequired) {
-                Console.WriteLine("Invoke Required");
-                SetTextCallback d = new SetTextCallback(setTextSafely);
+                //Console.WriteLine("Invoke Required");
+                AddTextCallback d = new AddTextCallback(addTextSafely);
                 Invoke(d, new object[] { text });
             }
             else {
-                Console.WriteLine("Invoke NOT Required");
+                //Console.WriteLine("Invoke NOT Required");
                 textBox.Text = text + "\r\n" + textBox.Text;
                 Refresh();
             }
