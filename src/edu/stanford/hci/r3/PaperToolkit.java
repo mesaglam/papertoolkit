@@ -56,7 +56,7 @@ import edu.stanford.hci.r3.pattern.coordinates.RegionID;
 import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchServer;
-import edu.stanford.hci.r3.pen.handwriting.RecognizerBridge;
+import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.streaming.PenServerTrayApp;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
@@ -762,9 +762,12 @@ public class PaperToolkit {
 		// keep track of the pattern assigned to different sheets and regions
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
-		runningApplications.add(paperApp);
 
+		// if the paperApp uses handwriting recognition filters... we should start up the server now!
+		
+		
 		DebugUtils.println("Starting Application: " + paperApp.getName());
+		runningApplications.add(paperApp);
 		paperApp.setHostToolkit(this);
 	}
 

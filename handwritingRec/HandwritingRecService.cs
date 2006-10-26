@@ -14,9 +14,11 @@ namespace HandwritingRecognition {
         /// </summary>
         [STAThread]
         public static void Main() {
-
+            // these calls have to happen before the form is constructed
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // create the little popup (automatically minimize it after 3 seconds?)
             HWRecForm form = new HWRecForm();
 
             // Fire up the HWRecognition Server

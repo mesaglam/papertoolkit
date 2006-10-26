@@ -6,11 +6,13 @@ import java.util.List;
 
 import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -31,15 +33,42 @@ public class HandwritingRecognizer extends ContentFilter {
 	 */
 	private static final PatternDots DOTS = new PatternDots();
 
+	private static int instanceCount;
+
+	/**
+	 * 
+	 */
+	public static int getInstanceCount() {
+		return instanceCount;
+	}
+
 	/**
 	 * Samples that compose an ink stroke...
 	 */
 	private List<InkSample> currentStrokeSamples = new ArrayList<InkSample>();
 
 	/**
+	 * This is the client that will connect to the handwriting recognition server...
+	 */
+	private HandwritingRecognitionService recognizerBridge;
+
+	/**
 	 * This should be synchronized, as multiple threads are working on it.
 	 */
 	private List<InkStroke> strokes = Collections.synchronizedList(new ArrayList<InkStroke>());
+
+	/**
+	 * 
+	 */
+	public HandwritingRecognizer() {
+		// register that at least one instance exists...
+		// we will check this at application start, and if true, we'll have to run the handwriting recognition
+		// server
+		instanceCount++;
+
+		// create a RecognizerBridge for this local content filter...
+		recognizerBridge = HandwritingRecognitionService.getInstance();
+	}
 
 	/**
 	 * @see edu.stanford.hci.r3.events.ContentFilter#filterEvent(edu.stanford.hci.r3.events.PenEvent)
@@ -55,15 +84,15 @@ public class HandwritingRecognizer extends ContentFilter {
 		if (event.isPenDown()) {
 			// not a pen error!
 			currentStrokeSamples.clear();
-			currentStrokeSamples.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128,
-					timestamp));
+			currentStrokeSamples
+					.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
 		} else if (event.isPenUp()) {
 			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
 			notifyAllListenersOfNewContent();
 			System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
-			currentStrokeSamples.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128,
-					timestamp));
+			currentStrokeSamples
+					.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
 		}
 	}
 
@@ -71,11 +100,9 @@ public class HandwritingRecognizer extends ContentFilter {
 	 * @return
 	 */
 	public String recognizeHandwriting() {
-		return "Hello World!";
-		
-		
-		
-		
+		String result = recognizerBridge.recognizeHandwriting("[[helllooo world]]");
+		DebugUtils.println(result);
+		return result;
 	}
 
 	@Override
