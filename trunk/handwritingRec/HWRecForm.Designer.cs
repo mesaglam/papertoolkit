@@ -1,5 +1,5 @@
 namespace HandwritingRecognition {
-    partial class HWRecForm {
+    partial class HWRecognitionForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -24,7 +24,7 @@ namespace HandwritingRecognition {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HWRecForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HWRecognitionForm));
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,7 +49,7 @@ namespace HandwritingRecognition {
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.restoreToolStripMenuItem,
             this.closeApplicationToolStripMenuItem});
-            this.contextMenu.Name = "contextMenuStrip1";
+            this.contextMenu.Name = "contextMenuStrip";
             this.contextMenu.Size = new System.Drawing.Size(247, 48);
             // 
             // restoreToolStripMenuItem
@@ -83,10 +83,12 @@ namespace HandwritingRecognition {
             this.textBox.Location = new System.Drawing.Point(0, 0);
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
+            this.textBox.ReadOnly = true;
+            this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox.Size = new System.Drawing.Size(379, 356);
             this.textBox.TabIndex = 2;
             // 
-            // HWRecForm
+            // HWRecognitionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -94,11 +96,11 @@ namespace HandwritingRecognition {
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.minimizeButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "HWRecForm";
+            this.Name = "HWRecognitionForm";
             this.Text = "R3 Handwriting Recognition";
-            this.Resize += new System.EventHandler(this.HWRecForm_Resize);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HWRecForm_FormClosing);
-            this.Load += new System.EventHandler(this.HWRecForm_Load);
+            this.Resize += new System.EventHandler(this.formResize);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formClosing);
+            this.Load += new System.EventHandler(this.formLoad);
             this.contextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

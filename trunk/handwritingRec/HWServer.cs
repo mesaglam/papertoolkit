@@ -14,6 +14,9 @@ using System.Windows.Forms;
 namespace HandwritingRecognition {
 
     class HWServer {
+
+        private static String SERVER_STARTED_MSG = "Handwriting Recognition Server Started...";
+
         /// <summary>
         /// How many clients have connected?
         /// </summary>
@@ -24,16 +27,25 @@ namespace HandwritingRecognition {
         /// </summary>
         private int portNumber = 9898;
 
-        private HWRecForm gui;
+        private HWRecognitionForm gui;
 
         /// <summary>
         /// 
         /// </summary>
-        public HWServer(HWRecForm parentForm) {
+        public HWServer(HWRecognitionForm parentForm) {
             gui = parentForm;
             ThreadStart threadDelegate = new ThreadStart(listenForConnections);
             Thread thread = new Thread(threadDelegate);
             thread.Start();
+        }
+
+        /// <summary>
+        /// Write both to the window and to the console...
+        /// </summary>
+        /// <param name="message"></param>
+        private void log(String message) {
+            //Console.WriteLine(message);
+            gui.addTextSafely(message);
         }
 
         /// <summary>
@@ -43,16 +55,16 @@ namespace HandwritingRecognition {
             try {
                 TcpListener tcpListener = new TcpListener(IPAddress.Loopback, portNumber);
                 tcpListener.Start();
-                Console.WriteLine("Handwriting Recognition Server Started...");
+                log(SERVER_STARTED_MSG);
 
                 while (true) {
 
                     // Accept a new connection
-                    Socket socketForClient = tcpListener.AcceptSocket();
-                    Console.WriteLine("Socket Accepted...");
+                    log("The Server is waiting for a client to connect.");
+                    Socket socketForClient = tcpListener.AcceptSocket(); // blocks here
 
                     if (socketForClient.Connected) {
-                        Console.WriteLine("Client Connected");
+                        log("A new client connected.");
 
                         ClientWorkerThread worker = new ClientWorkerThread(socketForClient, clientCount++, gui);
                         ThreadStart clientDelegate = new ThreadStart(worker.talkToClient);
@@ -61,12 +73,12 @@ namespace HandwritingRecognition {
                     }
                     else {
                         socketForClient.Close();
-                        Console.WriteLine("Disconnecting from Client.");
+                        log("Disconnecting from client.");
                     }
                 }
             }
             catch (SocketException se) {
-                Console.WriteLine(se.Message);
+                log(se.Message);
             }
         }
     }
@@ -77,7 +89,12 @@ namespace HandwritingRecognition {
     class ClientWorkerThread {
         private Socket client;
         private int id;
-        private HWRecForm gui;
+        private HWRecognitionForm gui;
+
+        /// <summary>
+        /// The top ten alternatives from the most recent recognition request.
+        /// </summary>
+        private RecognitionAlternates alternatives;
 
         /// <summary>
         /// 
@@ -85,10 +102,19 @@ namespace HandwritingRecognition {
         /// <param name="clientSocket"></param>
         /// <param name="clientID"></param>
         /// <param name="theGui"></param>
-        public ClientWorkerThread(Socket clientSocket, int clientID, HWRecForm theGui) {
+        public ClientWorkerThread(Socket clientSocket, int clientID, HWRecognitionForm theGui) {
             client = clientSocket;
             id = clientID;
             gui = theGui;
+        }
+
+        /// <summary>
+        /// Write both to the window and to the console...
+        /// </summary>
+        /// <param name="message"></param>
+        private void log(String message) {
+            // Console.WriteLine(message);
+            gui.addTextSafely(message);
         }
 
         /// <summary>
@@ -103,56 +129,68 @@ namespace HandwritingRecognition {
 
                 // blocking call to wait for input
                 string line = streamReader.ReadLine();
-                Console.WriteLine("Read from Client " + id + ": " + line);
+
+                String shortMessage;
+                if (line.Length > 20) {
+                    shortMessage = line.Substring(0, 20) + "...";
+                }
+                else {
+                    shortMessage = line;
+                }
+                log("Read from Client " + id + ": " + shortMessage);
 
                 // get the command from the client
                 Match match = Regex.Match(line, @"\[\[(.*?)\]\].*");
                 if (match.Success) {
                     String command = match.Groups[1].ToString().ToLower();
-                    Console.WriteLine("Matched: " + command);
-                    gui.addTextSafely("Command: " + command);
+                    log("Command: " + command);
 
                     switch (command) {
                         case "exit":
-                            Console.WriteLine("Disconnecting from Client " + id + ".");
+                            log("Disconnecting from Client " + id + ".");
                             client.Close();
                             return;
                         case "quitserver":
-                            Console.WriteLine("Disconnecting from Client " + id + ".");
+                            log("Disconnecting from Client " + id + ".");
                             client.Close();
-                            Console.WriteLine("Exiting the Server.");
-                            System.Environment.Exit(0);
+                            log("Exiting the Server.");
+                            gui.exit();
                             return;
+                        case "topten":
+                            // return nothing if there was no last call...
+                            if (alternatives == null) {
+                                // do nothing
+                            }
+                            else {
+                                // return the top ten list of the last call...
+                                log("Here is the complete list of alternates: ");
+                                if (alternatives != null) {
+                                    for (int i = 0; i < alternatives.Count; i++) {
+                                        log(alternatives[i].ToString() + "  [" + alternatives[i].Confidence + "]");
+                                        streamWriter.WriteLine(alternatives[i].ToString());
+                                    }
+                                    streamWriter.WriteLine("[[endofalternatives]]");
+                                    streamWriter.Flush();
+                                }
+                            }
+                            break;
                         default:
                             break;
                     }
                 }
                 else {
                     // assume it's just some XML
-                    Console.WriteLine("Some XML....");
+                    log("XML data received...");
                     Recognizer rec = new Recognizer();
                     Strokes strokes = rec.getStrokesFromXML(line);
-                    RecognitionAlternates alternatives;
+                    alternatives = null;
                     String topResult = rec.recognize(strokes, out alternatives);
-                    Console.WriteLine("The Top Result is: " + topResult);
-                    //Console.WriteLine("Here is the complete list of alternates: ");
-                    //if (alternatives != null) {
-                    //    for (int i = 0; i < alternatives.Count; i++) {
-                    //        Console.WriteLine(alternatives[i].ToString() + "\t" + alternatives[i].Confidence);
-                    //    }
-                    //}
+                    log("The top result is: " + topResult);
 
                     // respond with some ASCII
                     streamWriter.WriteLine(topResult);
                     streamWriter.Flush();
                 }
-
-
-                int numChars = line.Length;
-                string response = "There were " + numChars + " characters in your message [" + line + "]";
-                streamWriter.WriteLine(response);
-                streamWriter.Flush();
-                Console.WriteLine("Wrote: " + response);
             }
         }
 

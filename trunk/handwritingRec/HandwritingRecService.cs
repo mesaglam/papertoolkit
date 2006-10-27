@@ -19,7 +19,7 @@ namespace HandwritingRecognition {
             Application.SetCompatibleTextRenderingDefault(false);
 
             // create the little popup (automatically minimize it after 3 seconds?)
-            HWRecForm form = new HWRecForm();
+            HWRecognitionForm form = new HWRecognitionForm();
 
             // Fire up the HWRecognition Server
             server = new HWServer(form);

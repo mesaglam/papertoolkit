@@ -1,20 +1,17 @@
 package edu.stanford.hci.r3.pen.handwriting;
 
 import edu.stanford.hci.r3.Application;
-import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.filters.HandwritingRecognizer;
 import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
-import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.streaming.PenAdapter;
 import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>

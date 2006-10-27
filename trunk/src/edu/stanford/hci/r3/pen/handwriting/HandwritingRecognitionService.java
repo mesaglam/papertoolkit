@@ -10,14 +10,17 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * Allows us to use the HWRecognition server (written in C#/.NET) from Java. This acts as a client that relays
- * messagse to our Handwriting Recognition Server.
+ * Allows us to use the HWRecognition server (written in C#/.NET) from Java. This acts as a client
+ * that relays messagse to our Handwriting Recognition Server.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -45,6 +48,8 @@ public class HandwritingRecognitionService {
 
 	private PrintWriter clientWriter;
 
+	private int numConnectAttempts = 0;
+
 	/**
 	 * Has the server been started?
 	 */
@@ -58,24 +63,66 @@ public class HandwritingRecognitionService {
 	}
 
 	/**
-	 * Connect to the HWRecognition Server... 
+	 * Connect to the HWRecognition Server...
 	 */
 	public void connect() {
 		if (clientInitialized) {
 			return;
 		}
+		if (numConnectAttempts > 2) {
+			// if it doesn't work after 3 attempts, give up
+			DebugUtils
+					.println("We tried to connect to the Handwriting Server three times... and failed.");
+			return;
+		}
+
 		clientInitialized = true;
 		try {
+			numConnectAttempts++;
 			clientSocket = new Socket("localhost", 9898);
 			clientWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(clientSocket
 					.getOutputStream())));
 			clientReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			DebugUtils.println("Unknown Host: " + e.getLocalizedMessage());
+			clientInitialized = false;
+		} catch (IOException e) {
+			DebugUtils.println("IOException: " + e.getLocalizedMessage());
+			clientInitialized = false;
+		}
+
+		if (!clientInitialized) {
+			// sleep for a bit... then try again!
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			connect();
+		} else {
+			// done!
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public List<String> getAlternatives() {
+		clientWriter.println("[[topten]]");
+		clientWriter.flush();
+		String line = null;
+		List<String> alternatives = new ArrayList<String>();
+		try {
+			while ((line = clientReader.readLine()) != null) {
+				if (line.equals("[[endofalternatives]]")) {
+					break;
+				}
+				alternatives.add(line);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		return alternatives;
 	}
 
 	/**
@@ -94,16 +141,13 @@ public class HandwritingRecognitionService {
 				// off of the PaperToolkit directory...
 				// handwritingRec\bin\HandwritingRecognition.exe
 				File hwrec = new File(PaperToolkit.getToolkitRootPath(),
-						"handwritingRec/bin/HandwritingRecognition.exe");
+						"handwritingRec/bin/Release/HandwritingRecognition.exe");
 				ProcessBuilder builder = new ProcessBuilder(hwrec.getPath());
 				try {
 					Process process = builder.start();
 					InputStream inputStream = process.getInputStream();
 					BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 					String line;
-					line = br.readLine();
-					DebugUtils.println(line); // Server Started Message...
-					notifyService();
 					while ((line = br.readLine()) != null) {
 						DebugUtils.println(line);
 					}
@@ -113,25 +157,15 @@ public class HandwritingRecognitionService {
 			}
 
 		}).start();
-
-		// but block until the server says it is started
-		synchronized (this) {
-			try {
-				DebugUtils.println("Waiting until the Handwriting Recognition server starts.");
-				wait();
-				DebugUtils.println("The server has started, so we proceed....");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
-	private synchronized void notifyService() {
-		notifyAll();
+	public String recognizeHandwriting(File xmlFile) {
+		return recognizeHandwriting(FileUtils.readFileIntoStringBuffer(xmlFile, false).toString());
 	}
 
 	/**
-	 * This recognize call should return as fast as possible... as an end user will experience this...
+	 * This recognize call should return as fast as possible... as an end user will experience
+	 * this...
 	 * 
 	 * @param text
 	 * @return
@@ -146,5 +180,10 @@ public class HandwritingRecognitionService {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	public void exitServer() {
+		clientWriter.println("[[quitserver]]");
+		clientWriter.flush();
 	}
 }

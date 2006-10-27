@@ -143,7 +143,7 @@ public class FileUtils {
 	}
 	
 	/**
-	 * Includes the workaround for bug:
+	 * Includes the workaround for bug in setting the user.dir:
 	 * http://bugs.sun.com/bugdatabase/view_bug.do;:YfiG?bug_id=4117557
 	 * 
 	 * @param f
