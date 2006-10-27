@@ -7,12 +7,12 @@ import java.util.List;
 import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
+import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -55,6 +55,10 @@ public class HandwritingRecognizer extends ContentFilter {
 		recognizerService = HandwritingRecognitionService.getInstance();
 	}
 
+	public void clear() {
+		strokes.clear();
+	}
+
 	/**
 	 * @see edu.stanford.hci.r3.events.ContentFilter#filterEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
@@ -69,15 +73,15 @@ public class HandwritingRecognizer extends ContentFilter {
 		if (event.isPenDown()) {
 			// not a pen error!
 			currentStrokeSamples.clear();
-			currentStrokeSamples
-					.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
+			currentStrokeSamples.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128,
+					timestamp));
 		} else if (event.isPenUp()) {
 			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
 			notifyAllListenersOfNewContent();
-			System.out.println("Collected " + strokes.size() + " strokes so far.");
+			// System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
-			currentStrokeSamples
-					.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
+			currentStrokeSamples.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128,
+					timestamp));
 		}
 	}
 
@@ -85,9 +89,18 @@ public class HandwritingRecognizer extends ContentFilter {
 	 * @return
 	 */
 	public String recognizeHandwriting() {
-		String result = recognizerService.recognizeHandwriting("[[helllooo world]]");
-		DebugUtils.println(result);
+		Ink ink = new Ink(strokes);
+		String xml = ink.getAsXML(false /* no separator lines */);
+		String result = recognizerService.recognizeHandwriting(xml);
 		return result;
+	}
+
+	/**
+	 * @return a list of the top ten recognized results (including the top one, at position 0)
+	 */
+	public List<String> recognizeHandwritingWithAlternatives() {
+		recognizeHandwriting();
+		return recognizerService.getAlternatives();
 	}
 
 	@Override

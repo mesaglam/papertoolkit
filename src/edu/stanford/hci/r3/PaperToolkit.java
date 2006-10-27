@@ -384,6 +384,12 @@ public class PaperToolkit {
 
 		// Start the local server up whenever the paper toolkit is initialized.
 		HandwritingRecognitionService.getInstance();
+		//
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			public void run() {
+				HandwritingRecognitionService.getInstance().exitServer();				
+			}
+		}));
 	}
 
 	/**

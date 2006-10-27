@@ -11,6 +11,7 @@ import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -63,7 +64,7 @@ public abstract class BatchEventHandler {
 	}
 
 	public abstract void inkArrived(Ink inkOnThisPage);
-	
+
 	/**
 	 * @param xmlDataFile
 	 */
@@ -91,14 +92,14 @@ public abstract class BatchEventHandler {
 			final int endTagStartIndex = matcherPageEnd.start();
 			final int endTagEndIndex = matcherPageEnd.end();
 
-			System.out.println(BEGIN_PAGE_TAG + " found at " + beginTagStartIndex + " to "
+			DebugUtils.println(BEGIN_PAGE_TAG + " found at " + beginTagStartIndex + " to "
 					+ beginTagEndIndex);
-			System.out.println(END_PAGE_TAG + " found at " + endTagStartIndex + " to "
+			DebugUtils.println(END_PAGE_TAG + " found at " + endTagStartIndex + " to "
 					+ endTagEndIndex);
 
 			// extract page address
 			final String pageAddress = matcherPageBegin.group(1);
-			System.out.println("Page Address: " + pageAddress);
+			DebugUtils.println("Page Address: " + pageAddress);
 
 			// extract front and end matter
 			// final String beginText = requestBuffer.substring(beginTagStartIndex,
@@ -130,16 +131,16 @@ public abstract class BatchEventHandler {
 
 				final Matcher matcherSample = PATTERN_SAMPLE.matcher(strokeSampleText);
 				while (matcherSample.find()) {
-					String x = matcherSample.group(1);
-					String y = matcherSample.group(2);
-					String f = matcherSample.group(3);
-					String t = matcherSample.group(4);
+					final String x = matcherSample.group(1);
+					final String y = matcherSample.group(2);
+					final String f = matcherSample.group(3);
+					final String t = matcherSample.group(4);
 
 					// make samples and stuff.... add it to the ink
-					System.out.println(x + " " + y + "  f=" + f + "  ts=" + t);
+					DebugUtils.println(x + " " + y + "  f=" + f + "  ts=" + t);
 
-					InkSample sample = new InkSample(Double.parseDouble(x), Double.parseDouble(y),
-							Integer.parseInt(f), Long.parseLong(t));
+					final InkSample sample = new InkSample(Double.parseDouble(x), Double
+							.parseDouble(y), Integer.parseInt(f), Long.parseLong(t));
 					samples.add(sample);
 				}
 

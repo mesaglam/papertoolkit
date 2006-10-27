@@ -33,6 +33,8 @@ import edu.stanford.hci.r3.util.WindowUtils;
  */
 public class HandwritingCaptureDebugger extends JFrame {
 
+	private static final String NO_TEXT = "No Text Yet";
+
 	public static void main(String[] args) {
 		new HandwritingCaptureDebugger();
 	}
@@ -42,6 +44,8 @@ public class HandwritingCaptureDebugger extends JFrame {
 	private JPanel buttonPanel;
 
 	private JButton calibrateButton;
+
+	private JButton clearButton;
 
 	/**
 	 * JPanel that renders Ink.
@@ -55,10 +59,6 @@ public class HandwritingCaptureDebugger extends JFrame {
 	private JLabel statusMessageLabel;
 
 	private JTextArea textOutput;
-
-	private JButton recognizeButton;
-
-	private JButton recognizeAndClearButton;
 
 	public HandwritingCaptureDebugger() {
 		PaperToolkit.initializeLookAndFeel();
@@ -74,35 +74,9 @@ public class HandwritingCaptureDebugger extends JFrame {
 			buttonPanel = new JPanel();
 			buttonPanel.add(getCalibrateButton());
 			buttonPanel.add(getSaveButton());
-			buttonPanel.add(getRecognizeButton());
-			buttonPanel.add(getRecognizeAndClearButton());
+			buttonPanel.add(getClearButton());
 		}
 		return buttonPanel;
-	}
-
-	private Component getRecognizeAndClearButton() {
-		if (recognizeAndClearButton == null) {
-			recognizeAndClearButton = new JButton("Recognize and Clear");
-			recognizeAndClearButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					DebugUtils.println("Recognize and Clear!");
-					getInkPanel().clear();
-				}
-			});
-		}
-		return recognizeAndClearButton;
-	}
-
-	private Component getRecognizeButton() {
-		if (recognizeButton == null) {
-			recognizeButton = new JButton("Recognize Ink");
-			recognizeButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					DebugUtils.println("Recognize!");
-				}
-			});
-		}
-		return recognizeButton;
 	}
 
 	/**
@@ -111,15 +85,41 @@ public class HandwritingCaptureDebugger extends JFrame {
 	private JButton getCalibrateButton() {
 		if (calibrateButton == null) {
 			calibrateButton = new JButton();
-			calibrateButton.setText("Calibrate");
+			calibrateButton.setText("        Calibrate        ");
 			calibrateButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
+				public void actionPerformed(ActionEvent ae) {
+					doClear();
 					DebugUtils.println("Calibrate: Choose Top Left and Bottom Right Corners...");
 					app.addCalibrationHandler();
 				}
 			});
 		}
 		return calibrateButton;
+	}
+
+	/**
+	 * Clears the ink in the GUI, and also from the model.
+	 * 
+	 * @return
+	 */
+	private Component getClearButton() {
+		if (clearButton == null) {
+			clearButton = new JButton("Clear");
+			clearButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					DebugUtils.println("Clear!");
+					doClear();
+				}
+
+			});
+		}
+		return clearButton;
+	}
+
+	private void doClear() {
+		getInkPanel().clear();
+		app.clearInk();
+		getTextOutputArea().setText(NO_TEXT);
 	}
 
 	/**
@@ -135,38 +135,11 @@ public class HandwritingCaptureDebugger extends JFrame {
 	}
 
 	/**
+	 * The introductory message at the top.
+	 * 
 	 * @return
 	 */
-	private JButton getSaveButton() {
-		if (saveButton == null) {
-			saveButton = new JButton("Save");
-			saveButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					DebugUtils.println("Save");
-				}
-			});
-		}
-		return saveButton;
-	}
-
-	/**
-	 * @return
-	 */
-	private JPanel getToolBarPanel() {
-		if (statusBarPanel == null) {
-			statusBarPanel = new JPanel();
-			BorderLayout statusBarPanelLayout = new BorderLayout();
-			statusBarPanel.setLayout(statusBarPanelLayout);
-			statusBarPanel.add(getStatusMessageLabel(), BorderLayout.CENTER);
-			statusBarPanel.add(getButtonPanel(), BorderLayout.EAST);
-		}
-		return statusBarPanel;
-	}
-
-	/**
-	 * @return
-	 */
-	private JLabel getStatusMessageLabel() {
+	private JLabel getMessageLabel() {
 		if (statusMessageLabel == null) {
 			statusMessageLabel = new JLabel();
 			statusMessageLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -177,29 +150,86 @@ public class HandwritingCaptureDebugger extends JFrame {
 	}
 
 	/**
+	 * @return
+	 */
+	private JButton getSaveButton() {
+		if (saveButton == null) {
+			saveButton = new JButton("Save");
+			saveButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					DebugUtils.println("Save");
+					app.saveInkToDisk();
+				}
+			});
+		}
+		return saveButton;
+	}
+
+	/**
+	 * The info bar at the bottom...
+	 * 
+	 * @return
+	 */
+	private JTextArea getTextOutputArea() {
+		if (textOutput == null) {
+			textOutput = new JTextArea(1, 50);
+			textOutput.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+			textOutput.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+			textOutput.setText(NO_TEXT);
+			textOutput.setForeground(Color.WHITE);
+			textOutput.setEditable(false);
+		}
+		return textOutput;
+	}
+
+	/**
+	 * @return
+	 */
+	private JPanel getToolBarPanel() {
+		if (statusBarPanel == null) {
+			statusBarPanel = new JPanel();
+			BorderLayout statusBarPanelLayout = new BorderLayout();
+			statusBarPanel.setLayout(statusBarPanelLayout);
+			statusBarPanel.add(getMessageLabel(), BorderLayout.CENTER);
+			statusBarPanel.add(getButtonPanel(), BorderLayout.EAST);
+		}
+		return statusBarPanel;
+	}
+
+	/**
 	 * 
 	 */
 	private void initGUI() {
 		setTitle("Handwriting Recognition Debugger");
 		getContentPane().add(getToolBarPanel(), BorderLayout.NORTH);
 		getContentPane().add(getInkPanel(), BorderLayout.CENTER);
-		getContentPane().add(getTextOutputPanel(), BorderLayout.SOUTH);
+		getContentPane().add(getTextOutputArea(), BorderLayout.SOUTH);
 		pack();
-		setLocation(WindowUtils.getWindowOrigin(this, WindowUtils.DESKTOP_NORTH));
+		setLocation(WindowUtils.getWindowOrigin(this, WindowUtils.DESKTOP_CENTER));
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	private Component getTextOutputPanel() {
-		if (textOutput == null) {
-			textOutput = new JTextArea(1, 50);
-			textOutput.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
-			textOutput.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-			textOutput.setText("No Text Yet");
-			textOutput.setForeground(Color.WHITE);
-			textOutput.setEditable(false);
-		}
-		return textOutput;
+	/**
+	 * @param text
+	 */
+	public void setInfoText(String text) {
+		getTextOutputArea().setText(text);
+	}
+
+	/**
+	 * 
+	 */
+	public void showBottomRightPointConfirmation() {
+		getTextOutputArea().setText("Bottom-Right Point has been set.");
+	}
+
+	/**
+	 * 
+	 */
+	public void showTopLeftPointConfirmation() {
+		getTextOutputArea().setText("Top-Left Point has been set.");
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.pen.handwriting;
 
+import java.io.File;
+
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.events.filters.HandwritingRecognizer;
 import edu.stanford.hci.r3.events.filters.InkCollector;
@@ -15,6 +17,11 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
+ * This paper application demonstrates:
+ * <ul>
+ * <li>Handwriting Recognition as a Content Filter
+ * <li>Creating Regions and Sheets at RUNTIME, from arbitrary patterned paper
+ * </ul>
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -25,11 +32,30 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class CaptureApplication extends Application {
 
+	/**
+	 * The bottom right calibration point.
+	 */
 	private PenSample anchorPointBottomRight;
 
+	/**
+	 * The top left calibration point.
+	 */
 	private PenSample anchorPointTopLeft;
 
+	/**
+	 * Allows us to update the GUI.
+	 */
 	private HandwritingCaptureDebugger gui;
+
+	/**
+	 * The Content Filter attached to the inkable region.
+	 */
+	private HandwritingRecognizer handwritingRecognizer;
+
+	/**
+	 * An Ink Collector attached to the SAME inkable region.
+	 */
+	private InkCollector inkCollector;
 
 	/**
 	 * We will use one sheet at a time to test handwriting recognition.
@@ -61,17 +87,20 @@ public class CaptureApplication extends Application {
 
 		final Pen pen = getPen();
 		pen.addLivePenListener(new PenAdapter() {
-			public void penDown(PenSample sample) {
+			public void penUp(PenSample sample) {
 				if (anchorPointTopLeft == null) {
 					anchorPointTopLeft = sample;
 					DebugUtils.println("Top Left Point is now set to " + anchorPointTopLeft);
+					gui.showTopLeftPointConfirmation();
 				} else if (anchorPointBottomRight == null) {
 					anchorPointBottomRight = sample;
 					DebugUtils
 							.println("Bottom Right Point is now set to " + anchorPointBottomRight);
+					gui.showBottomRightPointConfirmation();
 					scaleInkPanelToFit();
 					addOneSheetAndOneRegionForHandwritingCapture();
-				} else {
+
+					// after setting the bottom right point, we should remove this pen listener...
 					final PenListener listener = this;
 					// We must modify the listeners from an external thread, as we are
 					// currently iterating through it
@@ -117,7 +146,7 @@ public class CaptureApplication extends Application {
 		// create this custom mapping object
 		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
 				sheet);
-		
+
 		// tie the pattern bounds to this region object
 		mapping.setPatternInformationOfRegion(region, //
 				new PatternDots(tlX), new PatternDots(tlY), // 
@@ -125,6 +154,15 @@ public class CaptureApplication extends Application {
 
 		addSheet(sheet, mapping);
 		// DebugUtils.println(mapping);
+	}
+
+	public void clearInk() {
+		if (inkCollector != null) {
+			inkCollector.clear();
+		}
+		if (handwritingRecognizer != null) {
+			handwritingRecognizer.clear();
+		}
 	}
 
 	/**
@@ -147,6 +185,15 @@ public class CaptureApplication extends Application {
 			pen = new Pen("Main Pen");
 		}
 		return pen;
+	}
+
+	/**
+	 * 
+	 */
+	public void saveInkToDisk() {
+		File file = new File(System.currentTimeMillis() + "_ink.xml");
+		DebugUtils.println("Saving as: " + file.getAbsolutePath());
+		inkCollector.saveInkToXMLFile(file);
 	}
 
 	/**
@@ -180,19 +227,28 @@ public class CaptureApplication extends Application {
 	private Region setupCaptureRegion() {
 		// the actual "physical" size of this region doesn't matter, as we never print it!
 		final Region region = new Region("Handwriting Capture", 0, 0, 1, 1);
-		region.addContentFilter(new InkCollector() {
+
+		// for displaying ink
+		inkCollector = new InkCollector() {
 			@Override
 			public void contentArrived() {
 				// DebugUtils.println(getInk().getNumStrokes());
 				gui.getInkPanel().addInk(getNewInkOnly());
 			}
-		});
-		region.addContentFilter(new HandwritingRecognizer() {
+		};
+
+		// for recognizing the strokes
+		handwritingRecognizer = new HandwritingRecognizer() {
 			@Override
 			public void contentArrived() {
-				DebugUtils.println("Handwritten Content: " + recognizeHandwriting());
+				String text = recognizeHandwriting();
+				DebugUtils.println("Handwritten Content: " + text);
+				gui.setInfoText(text);
 			}
-		});
+		};
+
+		region.addContentFilter(inkCollector);
+		region.addContentFilter(handwritingRecognizer);
 		return region;
 	}
 }

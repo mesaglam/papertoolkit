@@ -134,6 +134,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 	private int yFraction = 0;
 
+	private PenSample lastSample;
+
 	/**
 	 * @see
 	 */
@@ -206,7 +208,10 @@ public class PenStreamingConnection implements SerialPortEventListener {
 				// System.out.println("PEN UP");
 				penIsUp = true;
 				for (PenListener pl : listeners) {
-					final PenSample penSample = new PenSample(timestamp, 0, 0, 0, true);
+					
+					// on October 27, 2006, I changed behavior so that the pen up samplenow passes X & Y info
+					// before, it passed x=0, y=0
+					final PenSample penSample = new PenSample(timestamp, lastSample.x, lastSample.y, 0, true);
 					// on June 12, 2006, I changed the behavior so that a .sample event is NOT
 					// generated on pen up. It simply passes the pen up event with the timestamp
 					// along...
@@ -287,6 +292,9 @@ public class PenStreamingConnection implements SerialPortEventListener {
 				pl.sample(penSample);
 			}
 
+			// keep it around so that we can pass this information to the pen up event!
+			lastSample = penSample;
+			
 			x = 0;
 			y = 0;
 			xFraction = 0;

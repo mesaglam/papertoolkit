@@ -50,9 +50,9 @@ namespace HandwritingRecognition {
                 }
             }
             catch (XmlException xe) {
-                Console.WriteLine("Exception in parsing XML. " + xe.Message);
+                Console.WriteLine("Recognizer encountered an exception in parsing the XML data. " + xe.Message);
             }
-            Console.WriteLine(ink.Strokes.Count + " total strokes.");
+            // Console.WriteLine(ink.Strokes.Count + " total strokes.");
             return ink.Strokes;
         }
 

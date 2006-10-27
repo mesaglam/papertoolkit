@@ -417,11 +417,11 @@ public class Application {
 
 	/**
 	 * Serializes an application to disk. For now, uses the XML serialization. It might not be the
-	 * best...
+	 * best... Do we have a good use for this? If not, remove this method...
 	 * 
 	 * @param appDirectory
 	 */
-	public void saveToDisk(File appFile) {
+	private void saveToDisk(File appFile) {
 		PaperToolkit.toXML(this, appFile);
 	}
 

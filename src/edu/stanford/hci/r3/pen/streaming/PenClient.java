@@ -195,6 +195,9 @@ public class PenClient {
 		}
 	}
 
+	/**
+	 * @param sample
+	 */
 	private synchronized void notifyListenersOfPenUp(final PenSample sample) {
 		for (PenListener pl : listeners) {
 			pl.penUp(sample);
