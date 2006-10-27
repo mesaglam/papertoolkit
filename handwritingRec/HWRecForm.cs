@@ -24,7 +24,7 @@ namespace HandwritingRecognition {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void formLoad(object sender, EventArgs e) {
-            Console.WriteLine("Loading...");
+            //Console.WriteLine("Loading...");
             WindowState = FormWindowState.Minimized;
             ShowInTaskbar = false;
         }
