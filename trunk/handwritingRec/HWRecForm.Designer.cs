@@ -36,12 +36,14 @@ namespace HandwritingRecognition {
             // 
             // trayIcon
             // 
+            this.trayIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.trayIcon.BalloonTipText = "The handwriting recognition server is currently running.";
             this.trayIcon.BalloonTipTitle = "HWRec Server Started";
             this.trayIcon.ContextMenuStrip = this.contextMenu;
             this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
             this.trayIcon.Text = "R3 Handwriting Recognition";
             this.trayIcon.Visible = true;
+            this.trayIcon.MouseMove += new System.Windows.Forms.MouseEventHandler(this.trayIcon_MouseMove);
             this.trayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.trayIcon_MouseDoubleClick);
             // 
             // contextMenu

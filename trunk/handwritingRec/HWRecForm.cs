@@ -27,7 +27,6 @@ namespace HandwritingRecognition {
             Console.WriteLine("Loading...");
             WindowState = FormWindowState.Minimized;
             ShowInTaskbar = false;
-            trayIcon.ShowBalloonTip(0);
         }
 
         /// <summary>
@@ -128,6 +127,23 @@ namespace HandwritingRecognition {
             }
             else {
                 restoreWindow();
+            }
+        }
+
+        /// <summary>
+        /// so that we will show the info balloon at most once.
+        /// </summary>
+        private bool balloonHasBeenShown = false;
+
+        /// <summary>
+        /// On Mouse Hover, show the balloon if it has never been shown before.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void trayIcon_MouseMove(object sender, MouseEventArgs e) {
+            if (!balloonHasBeenShown) {
+                balloonHasBeenShown = true;
+                trayIcon.ShowBalloonTip(0);
             }
         }
     }

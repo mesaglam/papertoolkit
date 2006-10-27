@@ -211,8 +211,8 @@ public class InkCollector extends ContentFilter {
 	/**
 	 * @param xmlFile
 	 */
-	public void saveToXMLFile(File xmlFile) {
-		PaperToolkit.toXML(this, xmlFile);
+	public void saveInkToXMLFile(File xmlFile) {
+		new Ink(strokes).saveAsXMLFile(xmlFile);
 	}
 
 	/**

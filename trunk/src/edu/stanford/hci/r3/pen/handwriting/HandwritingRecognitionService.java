@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -104,6 +105,20 @@ public class HandwritingRecognitionService {
 		}
 	}
 
+	private void disconnectClient() {
+		try {
+			clientSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void exitServer() {
+		clientWriter.println("[[quitserver]]");
+		clientWriter.flush();
+		disconnectClient();
+	}
+
 	/**
 	 * @return
 	 */
@@ -180,10 +195,5 @@ public class HandwritingRecognitionService {
 			e.printStackTrace();
 		}
 		return "";
-	}
-
-	public void exitServer() {
-		clientWriter.println("[[quitserver]]");
-		clientWriter.flush();
 	}
 }
