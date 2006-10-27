@@ -187,9 +187,14 @@ namespace HandwritingRecognition {
                     String topResult = rec.recognize(strokes, out alternatives);
                     log("The top result is: " + topResult);
 
-                    // respond with some ASCII
-                    streamWriter.WriteLine(topResult);
-                    streamWriter.Flush();
+                    if (topResult != null) {
+                        // respond with some ASCII
+                        streamWriter.WriteLine(topResult);
+                        streamWriter.Flush();
+                    }
+                    else {
+                        log("Invalid Input Data");
+                    }
                 }
             }
         }
