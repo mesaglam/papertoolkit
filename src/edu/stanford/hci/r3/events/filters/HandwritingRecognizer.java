@@ -33,15 +33,6 @@ public class HandwritingRecognizer extends ContentFilter {
 	 */
 	private static final PatternDots DOTS = new PatternDots();
 
-	private static int instanceCount;
-
-	/**
-	 * 
-	 */
-	public static int getInstanceCount() {
-		return instanceCount;
-	}
-
 	/**
 	 * Samples that compose an ink stroke...
 	 */
@@ -50,7 +41,7 @@ public class HandwritingRecognizer extends ContentFilter {
 	/**
 	 * This is the client that will connect to the handwriting recognition server...
 	 */
-	private HandwritingRecognitionService recognizerBridge;
+	private HandwritingRecognitionService recognizerService;
 
 	/**
 	 * This should be synchronized, as multiple threads are working on it.
@@ -61,13 +52,7 @@ public class HandwritingRecognizer extends ContentFilter {
 	 * 
 	 */
 	public HandwritingRecognizer() {
-		// register that at least one instance exists...
-		// we will check this at application start, and if true, we'll have to run the handwriting recognition
-		// server
-		instanceCount++;
-
-		// create a RecognizerBridge for this local content filter...
-		recognizerBridge = HandwritingRecognitionService.getInstance();
+		recognizerService = HandwritingRecognitionService.getInstance();
 	}
 
 	/**
@@ -100,7 +85,7 @@ public class HandwritingRecognizer extends ContentFilter {
 	 * @return
 	 */
 	public String recognizeHandwriting() {
-		String result = recognizerBridge.recognizeHandwriting("[[helllooo world]]");
+		String result = recognizerService.recognizeHandwriting("[[helllooo world]]");
 		DebugUtils.println(result);
 		return result;
 	}

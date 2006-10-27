@@ -36,11 +36,13 @@ namespace HandwritingRecognition {
             // 
             // trayIcon
             // 
+            this.trayIcon.BalloonTipText = "The handwriting recognition server is currently running.";
+            this.trayIcon.BalloonTipTitle = "HWRec Server Started";
             this.trayIcon.ContextMenuStrip = this.contextMenu;
             this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
             this.trayIcon.Text = "R3 Handwriting Recognition";
             this.trayIcon.Visible = true;
-            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
+            this.trayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.trayIcon_MouseDoubleClick);
             // 
             // contextMenu
             // 
@@ -48,20 +50,20 @@ namespace HandwritingRecognition {
             this.restoreToolStripMenuItem,
             this.closeApplicationToolStripMenuItem});
             this.contextMenu.Name = "contextMenuStrip1";
-            this.contextMenu.Size = new System.Drawing.Size(156, 48);
+            this.contextMenu.Size = new System.Drawing.Size(247, 48);
             // 
             // restoreToolStripMenuItem
             // 
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
             this.restoreToolStripMenuItem.Text = "Restore";
             this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // closeApplicationToolStripMenuItem
             // 
             this.closeApplicationToolStripMenuItem.Name = "closeApplicationToolStripMenuItem";
-            this.closeApplicationToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.closeApplicationToolStripMenuItem.Text = "Close Application";
+            this.closeApplicationToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+            this.closeApplicationToolStripMenuItem.Text = "Exit Handwriting Recognition Server";
             this.closeApplicationToolStripMenuItem.Click += new System.EventHandler(this.closeApplicationToolStripMenuItem_Click);
             // 
             // minimizeButton

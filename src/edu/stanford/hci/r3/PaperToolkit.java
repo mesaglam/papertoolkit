@@ -71,10 +71,9 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
 
 /**
  * <p>
- * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the
- * system. A PaperToolkit can run one or more Applications at the same time. You can also deactivate
- * applications (to pause them). Or, you can remove them altogether. (These features are not yet
- * fully implemented.)
+ * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the system. A
+ * PaperToolkit can run one or more Applications at the same time. You can also deactivate applications (to
+ * pause them). Or, you can remove them altogether. (These features are not yet fully implemented.)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -147,8 +146,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently,
-	 * this does NOT work as a packaged jar.
+	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently, this does
+	 * NOT work as a packaged jar.
 	 * 
 	 * @return
 	 */
@@ -183,8 +182,7 @@ public class PaperToolkit {
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
 			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
-			xmlEngine.alias("TiledPatternCoordinateConverter",
-					TiledPatternCoordinateConverter.class);
+			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 		}
 		return xmlEngine;
@@ -227,8 +225,7 @@ public class PaperToolkit {
 	private static void printInitializationMessages() {
 		final String dashes = StringUtils.repeat("-", versionString.length());
 		System.out.println("-----------------------------------------------------------" + dashes);
-		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. "
-				+ versionString);
+		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. " + versionString);
 		System.out.println("-----------------------------------------------------------" + dashes);
 	}
 
@@ -319,8 +316,8 @@ public class PaperToolkit {
 	private JButton designSheetsButton;
 
 	/**
-	 * The engine that processes all pen events, producing the correct outputs and calling the right
-	 * event handlers.
+	 * The engine that processes all pen events, producing the correct outputs and calling the right event
+	 * handlers.
 	 */
 	private EventEngine eventEngine;
 
@@ -370,21 +367,23 @@ public class PaperToolkit {
 	private JButton stopAppButton;
 
 	/**
-	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false.
-	 * True is useful for debugging and stopping apps that don't have a GUI.
+	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false. True is
+	 * useful for debugging and stopping apps that don't have a GUI.
 	 */
 	private boolean useAppManager = false;
 
 	/**
-	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
-	 * accordingly (and between applications, ideally). There will be one event engine in the paper
-	 * toolkit, and all events that applications generate will be fed through this single event
-	 * engine.
+	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
+	 * (and between applications, ideally). There will be one event engine in the paper toolkit, and all
+	 * events that applications generate will be fed through this single event engine.
 	 */
 	public PaperToolkit() {
 		initializeLookAndFeel();
 		eventEngine = new EventEngine();
 		batchServer = new BatchServer();
+
+		// Start the local server up whenever the paper toolkit is initialized.
+		HandwritingRecognitionService.getInstance();
 	}
 
 	/**
@@ -433,8 +432,7 @@ public class PaperToolkit {
 			appManager.add(getControls(), BorderLayout.EAST);
 
 			appManager.setSize(640, 480);
-			appManager.setLocation(WindowUtils.getWindowOrigin(appManager,
-					WindowUtils.DESKTOP_CENTER));
+			appManager.setLocation(WindowUtils.getWindowOrigin(appManager, WindowUtils.DESKTOP_CENTER));
 			appManager.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			appManager.setVisible(true);
 		}
@@ -524,8 +522,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return a GUI list of loaded applications (running or not). Grey out the ones that are not
-	 *         running.
+	 * @return a GUI list of loaded applications (running or not). Grey out the ones that are not running.
 	 */
 	private Component getListOfApps() {
 		if (listOfApps == null) {
@@ -555,8 +552,7 @@ public class PaperToolkit {
 				}
 			});
 
-			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0,
-					-1) {
+			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0, -1) {
 				@Override
 				protected boolean test(ComponentAdapter c) {
 					if (c.getValue() instanceof Application) {
@@ -580,8 +576,8 @@ public class PaperToolkit {
 							appDescription = appDescription + " [stopped]";
 						}
 					}
-					return super.getListCellRendererComponent(list, appDescription, index,
-							isSelected, cellHasFocus);
+					return super.getListCellRendererComponent(list, appDescription, index, isSelected,
+							cellHasFocus);
 				}
 			});
 			listOfApps.setBorder(BorderFactory.createEmptyBorder(20, 5, 20, 5));
@@ -680,15 +676,15 @@ public class PaperToolkit {
 		if (useAppManager) {
 			getApplicationManager();
 		} else {
-			DebugUtils.println("Not using the Application Manager. "
-					+ "If you would like to use the GUI launcher, "
-					+ "call PaperToolkit.useAppManager(true)");
+			DebugUtils
+					.println("Not using the Application Manager. "
+							+ "If you would like to use the GUI launcher, "
+							+ "call PaperToolkit.useAppManager(true)");
 		}
 	}
 
 	/**
-	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
-	 * printer.
+	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default printer.
 	 * 
 	 * @param sheet
 	 */
@@ -727,8 +723,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Start this application and register all live pens with the event engine. The event engine
-	 * will then start dispatching events for this application until the application is stopped.
+	 * Start this application and register all live pens with the event engine. The event engine will then
+	 * start dispatching events for this application until the application is stopped.
 	 * 
 	 * @param paperApp
 	 */
@@ -763,9 +759,9 @@ public class PaperToolkit {
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 
-		// if the paperApp uses handwriting recognition filters... we should start up the server now!
-		
-		
+		// Connect to the HWRecognition service...
+		HandwritingRecognitionService.getInstance().connect();
+
 		DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);
 		paperApp.setHostToolkit(this);

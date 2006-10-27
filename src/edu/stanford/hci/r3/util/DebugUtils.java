@@ -67,7 +67,7 @@ public class DebugUtils {
 	/**
 	 * @param additionalStackOffset
 	 */
-	private static void printDebugTrace(int additionalStackOffset) {
+	private static synchronized void printDebugTrace(int additionalStackOffset) {
 		final Thread currThread = Thread.currentThread();
 		final int actualOffset = stackTraceOffset + additionalStackOffset;
 		final StackTraceElement[] ste = currThread.getStackTrace();

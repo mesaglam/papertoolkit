@@ -37,12 +37,6 @@ public class HandwritingRecognitionService {
 		return instance;
 	}
 
-	public static void main(String[] args) {
-		HandwritingRecognitionService service = getInstance();
-		String string = service.recognizeHandwriting("[[helloo]]");
-		DebugUtils.println(string);
-	}
-
 	private boolean clientInitialized;
 
 	private BufferedReader clientReader;
@@ -61,13 +55,12 @@ public class HandwritingRecognitionService {
 	 */
 	private HandwritingRecognitionService() {
 		initializeServer();
-		initializeClient();
 	}
 
 	/**
-	 * 
+	 * Connect to the HWRecognition Server... 
 	 */
-	private void initializeClient() {
+	public void connect() {
 		if (clientInitialized) {
 			return;
 		}
@@ -83,28 +76,6 @@ public class HandwritingRecognitionService {
 			e.printStackTrace();
 		}
 
-	}
-
-	/**
-	 * This recognize call should return as fast as possible... as an end user will experience this...
-	 * 
-	 * @param text
-	 * @return
-	 */
-	public String recognizeHandwriting(String text) {
-		clientWriter.println(text);
-		clientWriter.flush();
-		try {
-			String returnVal = clientReader.readLine();
-			return returnVal;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
-
-	private synchronized void notifyService() {
-		notifyAll();
 	}
 
 	/**
@@ -143,9 +114,8 @@ public class HandwritingRecognitionService {
 
 		}).start();
 
-		
 		// but block until the server says it is started
-		synchronized(this) {
+		synchronized (this) {
 			try {
 				DebugUtils.println("Waiting until the Handwriting Recognition server starts.");
 				wait();
@@ -154,5 +124,27 @@ public class HandwritingRecognitionService {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private synchronized void notifyService() {
+		notifyAll();
+	}
+
+	/**
+	 * This recognize call should return as fast as possible... as an end user will experience this...
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public String recognizeHandwriting(String text) {
+		clientWriter.println(text);
+		clientWriter.flush();
+		try {
+			String returnVal = clientReader.readLine();
+			return returnVal;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 }
