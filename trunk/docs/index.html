@@ -14,10 +14,16 @@
 <script language="javascript" type="text/javascript" 
   src="resources/header.js"></script>
 <p class="Heading">Documentation</p>
+<form action="http://www.google.com/codesearch" method=GET
+onsubmit="document.getElementById('codesearchq').value = document.getElementById('origq').value + ' package:papertoolkit.googlecode.com'">
+<input type="hidden" name="q" id=codesearchq value=""/>
+<input maxlength=2048 size=45 id=origq name=origq value="" title="Google Code Search"
+>&nbsp;<input type=submit value="Search R3 Source Code" name=btnG>
+</form>
 <p><a href="overview/"><span class="LargerLink">Toolkit Overview</span></a><br>
   Describes the Architecture and main APIs.</p>
-<p><a href="tutorials" class="LargerLink">Tutorials</a><br>
-  Custom step-by-step tutorials on everything from setting up a pen to building your own custom applications using Java and the R3 toolkit. </p>
+<p><a href="tutorials/" class="LargerLink">Tutorials</a><br>
+Custom step-by-step tutorials on everything from setting up a pen to building your own custom applications using Java and the R3 toolkit. </p>
 <p><a href="demos/" class="LargerLink">Demonstration Applications</a><br>
 Simple applications built using the toolkit.</p>
 <p><a href="javadocs.html" class="LargerLink">JavaDocs</a><br>
