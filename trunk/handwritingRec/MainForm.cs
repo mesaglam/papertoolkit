@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace HandwritingRecognition {
     public partial class HWRecForm : Form {
@@ -25,7 +26,8 @@ namespace HandwritingRecognition {
         private void HWRecForm_Load(object sender, EventArgs e) {
             Console.WriteLine("Loading...");
             WindowState = FormWindowState.Minimized;
-            Hide();
+            ShowInTaskbar = false;
+            trayIcon.ShowBalloonTip(0);
         }
 
         /// <summary>
@@ -39,14 +41,7 @@ namespace HandwritingRecognition {
                 Hide();
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void trayIcon_DoubleClick(object sender, EventArgs e) {
-            restoreWindow();
-        }
+
 
         /// <summary>
         /// 
@@ -55,6 +50,8 @@ namespace HandwritingRecognition {
             Show();
             WindowState = FormWindowState.Normal;
         }
+
+
 
         /// <summary>
         /// 
@@ -98,6 +95,7 @@ namespace HandwritingRecognition {
         /// 
         /// </summary>
         private void exit() {
+            trayIcon.Visible = false;
             Console.WriteLine("Exiting...");
             Application.Exit();
             System.Environment.Exit(0);
@@ -117,6 +115,21 @@ namespace HandwritingRecognition {
                 //Console.WriteLine("Invoke NOT Required");
                 textBox.Text = text + "\r\n" + textBox.Text;
                 Refresh();
+            }
+        }
+
+        /// <summary>
+        /// Toggles Window State.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void trayIcon_MouseDoubleClick(object sender, MouseEventArgs e) {
+            if (Visible) {
+                WindowState = FormWindowState.Minimized;
+                Hide();
+            }
+            else {
+                restoreWindow();
             }
         }
     }

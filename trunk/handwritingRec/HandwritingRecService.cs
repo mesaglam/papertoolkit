@@ -24,7 +24,10 @@ namespace HandwritingRecognition {
             // Fire up the HWRecognition Server
             server = new HWServer(form);
 
-            Application.Run(form);
+            ApplicationContext context = new ApplicationContext();
+            context.MainForm = form;
+
+            Application.Run(context);
         }
     }
 }
