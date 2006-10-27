@@ -15,7 +15,7 @@ namespace HandwritingRecognition {
 
     class HWServer {
 
-        private static String SERVER_STARTED_MSG = "Handwriting Recognition Server Started...";
+        private static String SERVER_STARTING_MSG = "Handwriting Recognition Server Starting...";
 
         /// <summary>
         /// How many clients have connected?
@@ -44,7 +44,6 @@ namespace HandwritingRecognition {
         /// </summary>
         /// <param name="message"></param>
         private void log(String message) {
-            //Console.WriteLine(message);
             gui.addTextSafely(message);
         }
 
@@ -54,13 +53,14 @@ namespace HandwritingRecognition {
         private void listenForConnections() {
             try {
                 TcpListener tcpListener = new TcpListener(IPAddress.Loopback, portNumber);
+                log(SERVER_STARTING_MSG);
                 tcpListener.Start();
-                log(SERVER_STARTED_MSG);
+                Console.WriteLine("[[serverstarted]] on port " + portNumber);
 
                 while (true) {
 
                     // Accept a new connection
-                    log("The Server is waiting for a client to connect.");
+                    log("The server is waiting for a client to connect.");
                     Socket socketForClient = tcpListener.AcceptSocket(); // blocks here
 
                     if (socketForClient.Connected) {
