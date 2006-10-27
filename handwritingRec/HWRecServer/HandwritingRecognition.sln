@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritingRecognition", "HandwritingRecognition.csproj", "{2EED0C0A-584E-4DB4-918C-22A04D060A98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForTabletPCLibraries", "CheckForTabletPCLibraries\CheckForTabletPCLibraries.csproj", "{0DD744B9-7CB1-4E98-8331-A9A7588E0E21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{2EED0C0A-584E-4DB4-918C-22A04D060A98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EED0C0A-584E-4DB4-918C-22A04D060A98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EED0C0A-584E-4DB4-918C-22A04D060A98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DD744B9-7CB1-4E98-8331-A9A7588E0E21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DD744B9-7CB1-4E98-8331-A9A7588E0E21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DD744B9-7CB1-4E98-8331-A9A7588E0E21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DD744B9-7CB1-4E98-8331-A9A7588E0E21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
