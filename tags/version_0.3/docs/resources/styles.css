@@ -1,0 +1,75 @@
+.Heading {
+	font-family: "Trebuchet MS", Verdana, Helvetica, sans-serif;
+	font-size: x-large;
+	font-weight: bolder;
+}
+
+.Heading1 {
+	font-family: "Trebuchet MS", Verdana, Helvetica, sans-serif;
+	font-size: x-large;
+	font-weight: bolder;
+	margin-bottom: -10px;
+}
+
+.Heading2 {
+	font-family: "Trebuchet MS", Verdana, Helvetica, sans-serif;
+	font-size: large;
+	font-weight: normal;
+	line-height: normal;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	border-bottom-width: thin;
+	border-top-width: thin;
+	border-right-width: thin;
+	border-left-width: thin;
+	margin-top: 35px;
+	margin-bottom: -10px;
+}
+
+body,td,th {
+	background-color:#333333;
+	font-family: Trebuchet MS, Verdana, Helvetica, sans-serif;
+	font-size: medium;
+	font-weight: normal;
+	color:#DFDFDF;
+}
+
+a:link {
+	color: #7888FF;
+}
+
+
+a:visited {
+	color: #AA77DD;
+}
+
+.Underlined {
+	color: #7888FF;
+	text-decoration:underline;
+	cursor:pointer;
+}
+
+.Code {font-family: "Courier New", Courier, monospace}
+
+.PageHeader {
+	display:block;
+	color:#CCCCCC;
+	margin: 0px 0px 10px 0px
+	border-style: solid;
+}
+
+li {
+	margin-bottom: 20px;
+}
+.LargerLink {
+	font-size: large;
+}
+.Warning {
+	color: #FF0000;
+}
+.Author {
+	font-size: small;
+	color: #999999;
+}

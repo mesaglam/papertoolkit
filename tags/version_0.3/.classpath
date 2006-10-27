@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/" path="src" kind="src"/>
+	<classpathentry excluding="**/.svn/|testFiles/private/" path="data" kind="src"/>
+	<classpathentry excluding="**/.svn/" path="tests" kind="src"/>
+	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
+	<classpathentry path="lib/epsgraphics.jar" kind="lib">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/PaperToolkit/lib/epsgraphics.jar!/javadocs"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry path="lib/jpedal/bcprov-jdk15-133.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/jai_codec.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/jai_core.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/jdom.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/pjes.jar" kind="lib"/>
+	<classpathentry path="lib/xstream/xpp3-1.1.3.4.O.jar" kind="lib"/>
+	<classpathentry path="lib/xstream/xstream-1.1.3.jar" kind="lib"/>
+	<classpathentry path="lib/comm/comm.jar" kind="lib"/>
+	<classpathentry path="lib/junit-4.1.jar" kind="lib"/>
+	<classpathentry path="lib/metadata-extractor-2.3.1.jar" kind="lib"/>
+	<classpathentry path="lib/itext-1.4.3.jar" kind="lib"/>
+	<classpathentry path="lib/looks-2.0.4.jar" kind="lib"/>
+	<classpathentry path="lib/jpedal/jpedalSTD.jar" kind="lib"/>
+	<classpathentry path="lib/jfreechart/jcommon-1.0.5.jar" kind="lib"/>
+	<classpathentry path="lib/jfreechart/jfreechart-1.0.2.jar" kind="lib"/>
+	<classpathentry path="lib/jfreechart/jfreechart-1.0.2-experimental.jar" kind="lib"/>
+	<classpathentry path="lib/BrowserLauncher2-10rc4.jar" kind="lib"/>
+	<classpathentry path="lib/jmf/jmf.jar" kind="lib"/>
+	<classpathentry path="lib/jmf/mp3plugin.jar" kind="lib"/>
+	<classpathentry path="lib/swingx.jar" kind="lib"/>
+	<classpathentry path="lib/freetts/freetts.jar" kind="lib"/>
+	<classpathentry path="lib/freetts/jsapi.jar" kind="lib"/>
+	<classpathentry path="lib/colt/colt.jar" kind="lib"/>
+	<classpathentry path="lib/colt/concurrent.jar" kind="lib"/>
+	<classpathentry path="lib/piccolo/piccolo.jar" kind="lib"/>
+	<classpathentry path="lib/piccolo/piccolox.jar" kind="lib"/>
+	<classpathentry path="bin" kind="output"/>
+</classpath>
