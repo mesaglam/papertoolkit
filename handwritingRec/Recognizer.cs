@@ -38,11 +38,11 @@ namespace HandwritingRecognition {
                     String nodeNameLowerCase = reader.Name.ToLower();
                     switch (nodeNameLowerCase) { // name of the node
                         case "stroke":
-                            Console.WriteLine("<Stroke>");
+                            // Console.WriteLine("<Stroke>");
                             Stroke stroke = handleStroke(reader, ink);
-                            if (stroke != null) {
-                                Console.WriteLine(stroke.GetPoints().Length + " points in this stroke.");
-                            }
+                            //if (stroke != null) {
+                            //    Console.WriteLine(stroke.GetPoints().Length + " points in this stroke.");
+                            //}
                             break;
                         default:
                             break;
@@ -69,14 +69,14 @@ namespace HandwritingRecognition {
                 String nodeNameLowerCase = reader.Name.ToLower();
                 switch (nodeNameLowerCase) {
                     case "p":
-                        // C# Seems to have a weird definition for rounding
+                        // C# Seems to use Bankers' Rounding
                         int x = (int)Math.Round(Double.Parse(reader.GetAttribute("x")));
                         int y = (int)Math.Round(Double.Parse(reader.GetAttribute("y")));
-                        Console.WriteLine("Sample: {0} {1} {2} {3}", x, y, reader.GetAttribute("f"), reader.GetAttribute("t"));
+                        //Console.WriteLine("Sample: {0} {1} {2} {3}", x, y, reader.GetAttribute("f"), reader.GetAttribute("t"));
                         stroke.Add(new Point(x, y));
                         break;
                     case "stroke":
-                        Console.WriteLine("</Stroke>");
+                        //Console.WriteLine("</Stroke>");
                         Point[] strokesArray = stroke.ToArray();
                         Stroke inkStroke = ink.CreateStroke(strokesArray);
                         return inkStroke;
