@@ -18,7 +18,6 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class Test_HandwritingRecognitionService {
 	public static void main(String[] args) {
 		HandwritingRecognitionService hwrec = HandwritingRecognitionService.getInstance();
-		hwrec.connect();
 		String result = hwrec
 				.recognizeHandwriting(new File("C:\\Documents and Settings\\Ron Yeh\\My Documents"
 						+ "\\Projects\\PaperToolkit\\penSynch\\data\\XML\\2006_10_25__10_49_17.xml"));

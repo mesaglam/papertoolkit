@@ -384,12 +384,6 @@ public class PaperToolkit {
 
 		// Start the local server up whenever the paper toolkit is initialized.
 		HandwritingRecognitionService.getInstance();
-		//
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			public void run() {
-				HandwritingRecognitionService.getInstance().exitServer();				
-			}
-		}));
 	}
 
 	/**
@@ -764,9 +758,6 @@ public class PaperToolkit {
 		// keep track of the pattern assigned to different sheets and regions
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
-
-		// Connect to the HWRecognition service...
-		HandwritingRecognitionService.getInstance().connect();
 
 		DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);

@@ -15,8 +15,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Wait at a socket (say: 9999) and receive xml files (or locations of them) over the wire. Then,
- * process them and call any event handlers you have registered at runtime.
+ * Wait at a socket (say: 9999) and receive xml files (or locations of them) over the wire. Then, process them
+ * and call any event handlers you have registered at runtime.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -142,21 +142,12 @@ public class BatchServer {
 	private Thread getDaemonThread() {
 		return new Thread() {
 
-			/**
-			 * To make the code in this class look a little cleaner.
-			 * 
-			 * @param msg
-			 */
-			private void log(String msg) {
-				DebugUtils.printlnWithStackOffset(msg, 1);
-			}
-
 			public void run() {
 				while (true) {
 					Socket client = null;
 					try {
 						if (exitFlag) {
-							System.out.println("Closing BatchServer.");
+							log("Closing BatchServer.");
 							break;
 						}
 
@@ -184,6 +175,15 @@ public class BatchServer {
 	}
 
 	/**
+	 * To make the code in this class look a little cleaner.
+	 * 
+	 * @param msg
+	 */
+	private void log(String msg) {
+		System.out.println("Batch Server: " + msg);
+	}
+
+	/**
 	 * @param batchEventHandlers
 	 */
 	public void registerBatchEventHandlers(List<BatchEventHandler> batchEventHandlers) {
@@ -201,8 +201,7 @@ public class BatchServer {
 			for (Socket client : clients) {
 				client.close();
 			}
-			System.out.println("BatchServer on port " + serverSocket.getLocalPort()
-					+ " is stopping...");
+			System.out.println("BatchServer on port " + serverSocket.getLocalPort() + " is stopping...");
 			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
