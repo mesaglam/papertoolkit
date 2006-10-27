@@ -1,0 +1,1 @@
+Note that you should either copy win32com.dll into your JRE/bin directory, or put it in the main rundir of your project. Otherwise, an UnsatisfiedLinkError will be thrown when the PenStreamingConnection tries to load the native COM port code!
