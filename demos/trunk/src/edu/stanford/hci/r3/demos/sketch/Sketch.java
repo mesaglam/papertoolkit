@@ -189,7 +189,7 @@ public class Sketch {
 				switch (dir) {
 				case E: // save to file...
 					System.out.println("Saving....");
-					inkWell.saveToXMLFile(new File("data/Sketch/InkOutput.xml"));
+					inkWell.saveInkToXMLFile(new File("data/Sketch/InkOutput.xml"));
 					break;
 				case N: // send to screen...
 				case NW: // whenever you stroke up
