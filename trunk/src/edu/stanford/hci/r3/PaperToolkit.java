@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -47,6 +48,7 @@ import com.jgoodies.looks.plastic.theme.DarkStar;
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
+import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.design.acrobat.AcrobatDesignerLauncher;
 import edu.stanford.hci.r3.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.events.EventEngine;
@@ -88,6 +90,10 @@ public class PaperToolkit {
 	 * Font for the App Manager GUI.
 	 */
 	private static final Font APP_MANAGER_FONT = new Font("Trebuchet MS", Font.PLAIN, 18);
+
+	public static final String CONFIG_FILE_KEY = "papertoolkit.startupinformation";
+
+	public static final String CONFIG_FILE_VALUE = "/config/PaperToolkit.xml";
 
 	/**
 	 * Whether we have called initializeLookAndFeel() yet...
@@ -372,6 +378,8 @@ public class PaperToolkit {
 	 */
 	private boolean useAppManager = false;
 
+	private boolean useHandwriting;
+
 	/**
 	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
 	 * (and between applications, ideally). There will be one event engine in the paper toolkit, and all
@@ -379,11 +387,24 @@ public class PaperToolkit {
 	 */
 	public PaperToolkit() {
 		initializeLookAndFeel();
+
+		readConfiguration();
+
 		eventEngine = new EventEngine();
 		batchServer = new BatchServer();
 
 		// Start the local server up whenever the paper toolkit is initialized.
-		HandwritingRecognitionService.getInstance();
+		if (useHandwriting) {
+			HandwritingRecognitionService.getInstance();
+		}
+	}
+
+	/**
+	 * Load the configuration information on startup...
+	 */
+	private void readConfiguration() {
+		final Properties props = Configuration.getPropertiesFromConfigFile(CONFIG_FILE_KEY);
+		useHandwriting = Boolean.parseBoolean(props.getProperty("handwritingRecognition"));
 	}
 
 	/**

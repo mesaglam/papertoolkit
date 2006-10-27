@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.remote.ActionReceiver;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.render.RegionRenderer;
@@ -17,9 +18,9 @@ import edu.stanford.hci.r3.units.Pixels;
 
 /**
  * <p>
- * The design of this configuration scheme was informed by Jeff Heer's prefuse code. It is
- * incomplete, but when properly implemented, it will allow a user of this toolkit to retrieve
- * resources from the JAR, and customize the operation of the toolkit with one or more config files.
+ * The design of this configuration scheme was informed by Jeff Heer's prefuse code. It is incomplete, but
+ * when properly implemented, it will allow a user of this toolkit to retrieve resources from the JAR, and
+ * customize the operation of the toolkit with one or more config files.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -33,14 +34,14 @@ public class Configuration extends Properties {
 	private static final Configuration config = new Configuration();
 
 	/**
-	 * Resolves the configuration name to a String value. The value can correspond to a file name,
-	 * path, numeric value, etc.
+	 * Resolves the configuration name to a String value. The value can correspond to a file name, path,
+	 * numeric value, etc.
 	 * 
 	 * @param propertyName
 	 *            a key to index the toolkit's configuration
 	 * @return the value corresponding to the configName key
 	 */
-	public static String get(String propertyName) {
+	private static String get(String propertyName) {
 		final String property = config.getProperty(propertyName);
 		// System.out.println("Configuration.java: Retrieved Property " + propertyName + " --> "
 		// + property);
@@ -79,12 +80,7 @@ public class Configuration extends Properties {
 		return resource.openStream();
 	}
 
-	/**
-	 * @param propertyName
-	 * @param configFileKey
-	 * @return
-	 */
-	public static String getPropertyFromConfigFile(String propertyName, String configFileKey) {
+	public static Properties getPropertiesFromConfigFile(String configFileKey) {
 		final Properties props = new Properties();
 		try {
 			// System.out.println("Configuration.java: Config File Key is " + propertyName + " --> "
@@ -106,7 +102,16 @@ public class Configuration extends Properties {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return props.getProperty(propertyName);
+		return props;
+	}
+
+	/**
+	 * @param propertyName
+	 * @param configFileKey
+	 * @return
+	 */
+	public static String getPropertyFromConfigFile(String propertyName, String configFileKey) {
+		return getPropertiesFromConfigFile(configFileKey).getProperty(propertyName);
 	}
 
 	/**
@@ -125,6 +130,7 @@ public class Configuration extends Properties {
 		setProperty(RegionRenderer.CONFIG_FILE_KEY, RegionRenderer.CONFIG_FILE_VALUE);
 		setProperty(TiledPatternGenerator.CONFIG_PATH_KEY, TiledPatternGenerator.CONFIG_PATH_VALUE);
 		setProperty(ActionReceiver.CONFIG_FILE_KEY, ActionReceiver.CONFIG_FILE_VALUE);
+		setProperty(PaperToolkit.CONFIG_FILE_KEY, PaperToolkit.CONFIG_FILE_VALUE);
 	}
 
 }
