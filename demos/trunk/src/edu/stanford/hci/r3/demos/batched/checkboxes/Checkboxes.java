@@ -24,7 +24,16 @@ package edu.stanford.hci.r3.demos.batched.checkboxes;
  */
 public class Checkboxes {
 
-	public static void main(String[] args) {
-		
+	/**
+	 * This represents the Model of this demonstration app. It will maintain the number and location
+	 * of check boxes...
+	 */
+	public Checkboxes() {
+
 	}
+
+	public static void main(String[] args) {
+		new CheckboxGUI(new Checkboxes());
+	}
+
 }
