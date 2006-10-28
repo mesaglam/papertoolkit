@@ -112,7 +112,7 @@ public class PaperToolkit {
 	 * </ol>
 	 * </p>
 	 */
-	private static String versionString = "0.2";
+	private static String versionString = "0.3";
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.

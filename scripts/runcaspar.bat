@@ -1,0 +1,1 @@
+"C:\Program Files\Common Files\Anoto\2.0\caspar.exe"
