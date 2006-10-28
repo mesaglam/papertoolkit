@@ -3,6 +3,7 @@ package edu.stanford.hci.r3.events.filters;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
@@ -100,6 +101,9 @@ public class InkCollector extends ContentFilter {
 
 	private InkNotifier lastInkNotifier;
 
+	/**
+	 * The System time of the most recent pen up event.
+	 */
 	private long lastPenUpTime;
 
 	/**
@@ -206,6 +210,13 @@ public class InkCollector extends ContentFilter {
 		} else {
 			return -1;
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	public Date getTimestampOfMostRecentPenUp() {
+		return new Date(lastPenUpTime);
 	}
 
 	/**
