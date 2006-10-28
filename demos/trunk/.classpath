@@ -41,5 +41,6 @@
 	<classpathentry kind="lib" path="lib/swt/equinoxcommon.jar"/>
 	<classpathentry kind="lib" path="lib/swt/jface.jar"/>
 	<classpathentry kind="lib" path="lib/swt/swt.jar" sourcepath="lib/swt/swtsrc.zip"/>
+	<classpathentry kind="lib" path="/PaperToolkit/lib/forms-1.0.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
