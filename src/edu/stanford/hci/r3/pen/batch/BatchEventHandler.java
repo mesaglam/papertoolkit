@@ -63,6 +63,10 @@ public abstract class BatchEventHandler {
 		name = theName;
 	}
 
+	/**
+	 * 
+	 * @param inkOnThisPage
+	 */
 	public abstract void inkArrived(Ink inkOnThisPage);
 
 	/**
