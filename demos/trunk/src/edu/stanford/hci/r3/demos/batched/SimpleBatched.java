@@ -153,38 +153,39 @@ public class SimpleBatched {
 		final double wInchesD = wInches.getValue();
 		final double hInchesD = hInches.getValue();
 
-		DebugUtils.println(wInches + " " + hInches);
+		DebugUtils.println("Dimensions of the Paper Region: " + wInches + " " + hInches);
 
 		// create a sheet object
-		final Sheet s = new Sheet(wInchesD, hInchesD);
-		final Region r = new Region("Main Inking Area", 0, 0, wInchesD, hInchesD);
+		final Sheet sheet = new Sheet(wInchesD, hInchesD);
+		final Region region = new Region("Main Inking Area", 0, 0, wInchesD, hInchesD);
 		final InkCollector inkCollector = new InkCollector() {
 			public void contentArrived() {
 				// System.out.println("Last Stroke at: " + getTimestampOfMostRecentPenUp());
 				// System.out.println("Num Strokes: " + getNumStrokesCollected());
+				// display the ink in our Piccolo InkCanvas
 				inkCanvas.setInk(getInk());
 			}
 		};
+		region.addContentFilter(inkCollector);
+		sheet.addRegion(region);
 
-		r.addContentFilter(inkCollector);
-		s.addRegion(r);
-
-		// create a custom mapping object
+		// this is how you can dynamically register regions for event handling
+		// first, create a custom mapping object
 		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
-				s);
-
+				sheet);
 		// tie the pattern bounds to this region object
-		mapping.setPatternInformationOfRegion(r, //
+		mapping.setPatternInformationOfRegion(region, //
 				new PatternDots(minX), new PatternDots(minY), // 
 				new PatternDots(width), new PatternDots(height));
-		app.addSheet(s, mapping);
+		app.addSheet(sheet, mapping); // this addSheet is called at paper-application RUNTIME
 
+		// update the GUI
 		defineLabel.setForeground(DEFAULT_STEP_COLOR);
 		streamingLabel.setForeground(CURRENT_STEP_COLOR);
 	}
 
 	/**
-	 * 
+	 * Add a single listener that allows us to define an interactive region on the fly.
 	 */
 	private void askForNewRectangularRegion() {
 		getPen().addLivePenListener(new PenAdapter() {
@@ -198,6 +199,7 @@ public class SimpleBatched {
 
 		});
 
+		// set the space bar to 1) disable the space bar, and then 2) add the region at runtime.
 		setCurrentAdvanceAction(new Runnable() {
 			public void run() {
 				// run only once!
