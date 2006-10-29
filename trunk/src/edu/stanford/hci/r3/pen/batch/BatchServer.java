@@ -15,8 +15,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Wait at a socket (say: 9999) and receive xml files (or locations of them) over the wire. Then, process them
- * and call any event handlers you have registered at runtime.
+ * Wait at a socket (say: 9999) and receive xml files (or locations of them) over the wire. Then,
+ * process them and call any event handlers you have registered at runtime.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -98,8 +98,7 @@ public class BatchServer {
 					br = new BufferedReader(new InputStreamReader(inputStream));
 					String line = null;
 					while ((line = br.readLine()) != null) {
-						System.out.println(line);
-
+						// DebugUtils.println(line);
 						if (line.toLowerCase().equals(EXIT_COMMAND)) {
 							break;
 						}
@@ -113,20 +112,20 @@ public class BatchServer {
 						// the file name is everything after...
 						if (line.toLowerCase().startsWith("xml: ")) {
 							final String fileName = line.substring(5).trim();
-							DebugUtils.println(fileName); // everything afterward
+							// DebugUtils.println(fileName); // everything afterward
 							final File xmlFile = new File(fileName);
-							System.out.println(xmlFile.getAbsolutePath());
+							DebugUtils.println("Retrieving: " + xmlFile.getAbsolutePath());
 							if (xmlFile.exists()) {
-								System.out.println("The file exists!");
+								// System.out.println("The file exists!");
 								for (BatchEventHandler beh : eventHandlers) {
 									beh.batchedDataArrived(xmlFile);
 								}
 							} else {
-								System.out.println("The file does not exist. =(");
+								DebugUtils.println("The file does not exist. =(");
 							}
 						}
 					}
-					DebugUtils.println("Client Handler Thread Finished...");
+					DebugUtils.println("Import Thread Finished...");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -201,7 +200,8 @@ public class BatchServer {
 			for (Socket client : clients) {
 				client.close();
 			}
-			System.out.println("BatchServer on port " + serverSocket.getLocalPort() + " is stopping...");
+			System.out.println("BatchServer on port " + serverSocket.getLocalPort()
+					+ " is stopping...");
 			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();

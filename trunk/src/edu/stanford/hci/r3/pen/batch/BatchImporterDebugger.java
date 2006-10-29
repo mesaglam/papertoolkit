@@ -1,7 +1,15 @@
 package edu.stanford.hci.r3.pen.batch;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
+
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.util.files.FileUtils;
+
 /**
  * <p>
+ * Point it to a file to "reimport" the data, as if you just plugged in the pen.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -13,11 +21,21 @@ package edu.stanford.hci.r3.pen.batch;
 public class BatchImporterDebugger {
 
 	public static void main(String[] args) {
+		PaperToolkit.initializeLookAndFeel();
 		// calls the BatchImporter with a path to a file, to simulate a pen synch...
-		// String filePath = "C:\\Documents and Settings\\Ron Yeh\\My
-		// Documents\\Projects\\PaperToolkit\\penSynch\\data\\XML\\2006_09_17__03_38_17.xml";
-		String filePath = "C:\\Documents and Settings\\Ron Yeh\\My Documents\\Projects\\PaperToolkit"
-				+ "\\penSynch\\data\\XML\\2006_09_17__04_39_54.xml";
-		BatchImporter.main(new String[] { filePath });
+		JFileChooser chooser = FileUtils.createNewFileChooser(new String[] { "xml" });
+		final File r3Root = PaperToolkit.getToolkitRootPath();
+		chooser.setCurrentDirectory(new File(r3Root, "penSynch/data/XML"));
+		chooser.setDialogTitle("Import an XML File");
+		chooser.setMultiSelectionEnabled(true);
+
+		final int showDialogResult = chooser.showDialog(null, "Import");
+		if (showDialogResult == JFileChooser.APPROVE_OPTION) {
+			for (File f : chooser.getSelectedFiles()) {
+				// DebugUtils.println(f.getAbsoluteFile());
+				BatchImporter.main(new String[] { f.getAbsolutePath() });
+			}
+		}
+
 	}
 }

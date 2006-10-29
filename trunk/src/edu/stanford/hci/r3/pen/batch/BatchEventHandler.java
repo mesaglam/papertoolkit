@@ -54,7 +54,7 @@ public abstract class BatchEventHandler {
 
 	private String name;
 
-	PatternDots referenceUnit = new PatternDots();
+	private PatternDots referenceUnit = new PatternDots();
 
 	/**
 	 * 
@@ -73,10 +73,8 @@ public abstract class BatchEventHandler {
 	 * @param xmlDataFile
 	 */
 	public void batchedDataArrived(File xmlDataFile) {
-		// parse it and do lots of good stuff
-		System.out.println("BatchEventHandler got the file...");
-
 		// parse it like we used to do... in BNet
+		DebugUtils.println("BatchEventHandler got the file: " + xmlDataFile);
 
 		// read in the whole request file into a String
 		// is this an issue if the xml file is large, say 20MB?
@@ -96,10 +94,10 @@ public abstract class BatchEventHandler {
 			final int endTagStartIndex = matcherPageEnd.start();
 			final int endTagEndIndex = matcherPageEnd.end();
 
-			DebugUtils.println(BEGIN_PAGE_TAG + " found at " + beginTagStartIndex + " to "
-					+ beginTagEndIndex);
-			DebugUtils.println(END_PAGE_TAG + " found at " + endTagStartIndex + " to "
-					+ endTagEndIndex);
+			// DebugUtils.println(BEGIN_PAGE_TAG + " found at " + beginTagStartIndex + " to "
+			// + beginTagEndIndex);
+			// DebugUtils.println(END_PAGE_TAG + " found at " + endTagStartIndex + " to "
+			// + endTagEndIndex);
 
 			// extract page address
 			final String pageAddress = matcherPageBegin.group(1);
@@ -125,7 +123,8 @@ public abstract class BatchEventHandler {
 			while (matcherStrokeBegin.find() && matcherStrokeEnd.find()) {
 				String strokeTimeStamp = matcherStrokeBegin.group(1);
 				long ts = Long.parseLong(strokeTimeStamp);
-				System.out.println(new Date(ts)); // date/time of the beginning of the stroke!
+				// date/time of the beginning of the stroke!
+				DebugUtils.println("Stroke Time: " + new Date(ts));
 
 				// samples between the <stroke...></stroke>
 				final String strokeSampleText = insideText.substring(matcherStrokeBegin.end(),
@@ -141,7 +140,7 @@ public abstract class BatchEventHandler {
 					final String t = matcherSample.group(4);
 
 					// make samples and stuff.... add it to the ink
-					DebugUtils.println(x + " " + y + "  f=" + f + "  ts=" + t);
+					// DebugUtils.println(x + " " + y + " f=" + f + " ts=" + t);
 
 					final InkSample sample = new InkSample(Double.parseDouble(x), Double
 							.parseDouble(y), Integer.parseInt(f), Long.parseLong(t));

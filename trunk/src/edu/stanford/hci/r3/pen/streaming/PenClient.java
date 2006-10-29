@@ -90,7 +90,9 @@ public class PenClient {
 	public synchronized void disconnect() {
 		exitFlag = true;
 		try {
-			clientSocket.close();
+			if (clientSocket != null) {
+				clientSocket.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

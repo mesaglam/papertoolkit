@@ -255,6 +255,11 @@ public class Application {
 	}
 
 	/**
+	 * A Paper Application needs BatchEventHandlers to detect when a person synchronizes a pen with
+	 * the computer. In the future, this may be integrated with standard event handling on a region.
+	 * Right now, this is not possible, as we need the ability to calibrate the batched coordinates
+	 * (which are processed by the PAD files) with the streaming coordinates.
+	 * 
 	 * @return
 	 */
 	public List<BatchEventHandler> getBatchEventHandlers() {

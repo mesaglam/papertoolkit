@@ -37,14 +37,11 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.FontUIResource;
 
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.ConditionalHighlighter;
 
-import com.jgoodies.looks.FontPolicy;
-import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.jgoodies.looks.plastic.theme.DarkStar;
@@ -110,7 +107,7 @@ public class PaperToolkit {
 	 * The version of the PaperToolkit.
 	 * 
 	 * <p>
-	 * Version 0.2 should include:
+	 * Version 0.3 should include:
 	 * <ol>
 	 * <li>Better Batched Event Support</li>
 	 * </ol>
@@ -551,8 +548,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return a GUI list of loaded applications (running or not). Grey out the ones that are not
-	 *         running.
+	 * @return a GUI list of loaded applications (running or not).
 	 */
 	private Component getListOfApps() {
 		if (listOfApps == null) {
@@ -792,6 +788,8 @@ public class PaperToolkit {
 
 		DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);
+		getListOfApps().repaint();
+
 		paperApp.setHostToolkit(this);
 	}
 
@@ -812,9 +810,11 @@ public class PaperToolkit {
 
 		eventEngine.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.unregisterBatchEventHandlers(paperApp.getBatchEventHandlers());
-		runningApplications.remove(paperApp);
 
 		DebugUtils.println("Stopping Application: " + paperApp.getName());
+		runningApplications.remove(paperApp);
+		getListOfApps().repaint();
+		
 		paperApp.setHostToolkit(null);
 	}
 
