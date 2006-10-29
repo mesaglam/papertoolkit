@@ -61,6 +61,7 @@ public class Bundle {
 	 * 
 	 * @param r
 	 *            the global region to add
+	 * @deprecated because it is incomplete! It doesn't work yet...
 	 */
 	public void addGlobalRegion(Region gr) {
 		globalRegions.add(gr);
@@ -95,6 +96,13 @@ public class Bundle {
 			sheet.setName(sheetNameRoot + "_" + i);
 			addSheet(sheet);
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Region> getGlobalRegions() {
+		return globalRegions;
 	}
 
 	/**
