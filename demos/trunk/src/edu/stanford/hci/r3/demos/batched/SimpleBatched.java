@@ -32,9 +32,7 @@ import edu.stanford.hci.r3.pen.ink.InkPCanvas;
 import edu.stanford.hci.r3.pen.streaming.PenAdapter;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.Millimeters;
 import edu.stanford.hci.r3.units.PatternDots;
-import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.layout.RiverLayout;
 
@@ -169,7 +167,6 @@ public class SimpleBatched {
 		};
 
 		r.addContentFilter(inkCollector);
-
 		s.addRegion(r);
 
 		// create a custom mapping object
