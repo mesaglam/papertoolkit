@@ -38,6 +38,14 @@ public class Pixels extends Units {
 	private static final String PROPERTY_NAME = "pixelsPerInch";
 
 	/**
+	 * @param ppi
+	 * @return
+	 */
+	public static Pixels getPixelsPerInchObject(int ppi) {
+		return new Pixels(1, ppi);
+	}
+
+	/**
 	 * The interpretation of distance varies depending on the specifications of your monitor. We
 	 * store the value in an XML file that you can customize.
 	 * 

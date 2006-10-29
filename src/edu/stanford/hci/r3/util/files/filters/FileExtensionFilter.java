@@ -9,13 +9,14 @@ import edu.stanford.hci.r3.util.files.Visibility;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * A Java FileFilter that accepts file extensions as Strings
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * A Java FileFilter that accepts file extensions as Strings
  */
 public class FileExtensionFilter extends javax.swing.filechooser.FileFilter implements FileFilter,
 		FilenameFilter {
@@ -26,6 +27,11 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 	private boolean acceptDirectories = true;
 
 	/**
+	 * file extensions that are accepted. Defaults to all ("" --> ACCEPT ALL)
+	 */
+	private String[] extensions = { "" };
+
+	/**
 	 * if BOTH, files like .bashrc and .bash_profile will be returned
 	 * 
 	 * if VISIBLE, these files are effectively hidden.
@@ -33,11 +39,6 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 	 * if INVISIBLE, only the hidden/.name files wil be returned
 	 */
 	private Visibility visibility = Visibility.BOTH;
-
-	/**
-	 * file extensions that are accepted. Defaults to all ("" --> ACCEPT ALL)
-	 */
-	private String[] extensions = { "" };
 
 	/**
 	 * @param exts
@@ -127,8 +128,9 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 
 		// for all files, check whether they match the extension
 		for (String extension : extensions) {
-			// ends with the correct .extension?
-			if (name.toLowerCase().endsWith("." + extension)) {
+			// ends with the correct .extension?, or is it the .* wildcard?
+			if (extension.equals("") || extension.equals("*")
+					|| name.toLowerCase().endsWith("." + extension)) {
 				return true;
 			}
 		}

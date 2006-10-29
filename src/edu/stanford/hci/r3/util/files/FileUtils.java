@@ -53,7 +53,7 @@ public class FileUtils {
 	private static JFileChooser fileChooser;
 
 	/**
-	 * @param extensions
+	 * @param extensions should NOT have a . in front of them... i.e., xml, and NOT .xml
 	 * @return
 	 */
 	public static JFileChooser createNewFileChooser(String[] extensions) {
