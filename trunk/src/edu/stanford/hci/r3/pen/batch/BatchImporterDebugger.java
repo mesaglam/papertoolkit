@@ -33,6 +33,8 @@ public class BatchImporterDebugger {
 		if (showDialogResult == JFileChooser.APPROVE_OPTION) {
 			for (File f : chooser.getSelectedFiles()) {
 				// DebugUtils.println(f.getAbsoluteFile());
+				
+				// Import the chosen file
 				BatchImporter.main(new String[] { f.getAbsolutePath() });
 			}
 		}
