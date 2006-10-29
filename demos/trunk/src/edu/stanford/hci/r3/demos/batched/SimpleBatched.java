@@ -5,15 +5,18 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -25,10 +28,13 @@ import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.ink.InkPCanvas;
 import edu.stanford.hci.r3.pen.streaming.PenAdapter;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
 import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.Millimeters;
 import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.layout.RiverLayout;
 
@@ -48,7 +54,15 @@ import edu.stanford.hci.r3.util.layout.RiverLayout;
  */
 public class SimpleBatched {
 
+	private static final String DRAW_RECT_DIRECTIONS = "Draw one Rectangle on your Patterned Sheet. Press the Space Bar when you are done.";
+
+	private static final Font HEADING_FONT = new Font("Trebuchet MS", Font.BOLD, 20);
+
 	private static final String SPACE_BAR_ACTION_NAME = "spacebarAction";
+
+	private static final Color DEFAULT_STEP_COLOR = Color.WHITE;
+
+	private static final Color CURRENT_STEP_COLOR = new Color(220, 110, 180);
 
 	public static void main(String[] args) {
 		SimpleBatched batched = new SimpleBatched();
@@ -57,11 +71,23 @@ public class SimpleBatched {
 
 	private Application app;
 
+	private JLabel batchedLabel;
+
+	private JLabel batchedLabel2;
+
 	private Runnable currentAdvanceAction;
+
+	private JLabel defineLabel;
+
+	private JLabel defineLabel2;
 
 	private JFrame frame;
 
 	private JTextField heightField;
+
+	private JLabel heightLabel;
+
+	private InkPCanvas inkCanvas;
 
 	private JPanel mainPanel;
 
@@ -69,23 +95,39 @@ public class SimpleBatched {
 
 	private JTextField maxXField;
 
+	private JLabel maxXLabel;
+
 	private double maxY = Double.MIN_VALUE;
 
 	private JTextField maxYField;
+
+	private JLabel maxYLabel;
 
 	private double minX = Double.MAX_VALUE;
 
 	private JTextField minXField;
 
+	private JLabel minXLabel;
+
 	private double minY = Double.MAX_VALUE;
 
 	private JTextField minYField;
 
+	private JLabel minYLabel;
+
 	private Pen pen;
+
+	private JScrollPane scrollableView;
+
+	private JLabel streamingLabel;
 
 	private PaperToolkit toolkit;
 
 	private JTextField widthField;
+
+	private JLabel widthLabel;
+
+	private JButton resetViewButton;
 
 	/**
 	 * 
@@ -102,14 +144,14 @@ public class SimpleBatched {
 	 * Create a Sheet and Region on the fly. Add it to this app, with an ink collector.
 	 */
 	private void addSheetAndRegionToApp() {
-		double width = maxX - minX;
-		double height = maxY - minY;
+		final double width = maxX - minX;
+		final double height = maxY - minY;
 
-		PatternDots wDots = new PatternDots(width);
-		PatternDots hDots = new PatternDots(height);
+		final PatternDots wDots = new PatternDots(width);
+		final PatternDots hDots = new PatternDots(height);
 
-		Inches wInches = wDots.toInches();
-		Inches hInches = hDots.toInches();
+		final Inches wInches = wDots.toInches();
+		final Inches hInches = hDots.toInches();
 		final double wInchesD = wInches.getValue();
 		final double hInchesD = hInches.getValue();
 
@@ -118,12 +160,15 @@ public class SimpleBatched {
 		// create a sheet object
 		final Sheet s = new Sheet(wInchesD, hInchesD);
 		final Region r = new Region("Main Inking Area", 0, 0, wInchesD, hInchesD);
-		r.addContentFilter(new InkCollector() {
+		final InkCollector inkCollector = new InkCollector() {
 			public void contentArrived() {
-				System.out.println("Last Stroke at: " + getTimestampOfMostRecentPenUp());
-				System.out.println("Num Strokes: " + getNumStrokesCollected());
+				// System.out.println("Last Stroke at: " + getTimestampOfMostRecentPenUp());
+				// System.out.println("Num Strokes: " + getNumStrokesCollected());
+				inkCanvas.setInk(getInk());
 			}
-		});
+		};
+
+		r.addContentFilter(inkCollector);
 
 		s.addRegion(r);
 
@@ -136,18 +181,15 @@ public class SimpleBatched {
 				new PatternDots(minX), new PatternDots(minY), // 
 				new PatternDots(width), new PatternDots(height));
 		app.addSheet(s, mapping);
+
+		defineLabel.setForeground(DEFAULT_STEP_COLOR);
+		streamingLabel.setForeground(CURRENT_STEP_COLOR);
 	}
 
 	/**
 	 * 
 	 */
 	private void askForNewRectangularRegion() {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
 		getPen().addLivePenListener(new PenAdapter() {
 			public void sample(PenSample sample) {
 				minX = Math.min(minX, sample.x);
@@ -161,18 +203,17 @@ public class SimpleBatched {
 
 		setCurrentAdvanceAction(new Runnable() {
 			public void run() {
+				// run only once!
 				setCurrentAdvanceAction(null);
 				addSheetAndRegionToApp();
 			}
 
 		});
-
-		System.out.println();
-		System.out.println("-------------- Simple Batched Processing Test --------------");
-		System.out
-				.println("Draw one Rectangle on your Patterned Sheet. Press the Space Bar when you are done.");
 	}
 
+	/**
+	 * @return
+	 */
 	private Pen getPen() {
 		if (pen == null) {
 			pen = new Pen();
@@ -181,30 +222,77 @@ public class SimpleBatched {
 		return pen;
 	}
 
+	private Component getScrollableMainPanel() {
+		if (scrollableView == null) {
+			scrollableView = new JScrollPane(mainPanel);
+		}
+		return scrollableView;
+	}
+
+	private void populateMainPanel() {
+		mainPanel = new JPanel(new RiverLayout());
+
+		mainPanel.add("left", defineLabel);
+		mainPanel.add("br left", defineLabel2);
+
+		mainPanel.add("br center", minXLabel);
+		mainPanel.add(minXField);
+		mainPanel.add(maxXLabel);
+		mainPanel.add(maxXField);
+
+		mainPanel.add("br center", minYLabel);
+		mainPanel.add(minYField);
+		mainPanel.add(maxYLabel);
+		mainPanel.add(maxYField);
+
+		mainPanel.add("br center", widthLabel);
+		mainPanel.add(widthField);
+		mainPanel.add(heightLabel);
+		mainPanel.add(heightField);
+
+		mainPanel.add("br", Box.createVerticalStrut(10));
+		mainPanel.add("br left", streamingLabel);
+		mainPanel.add("br right", resetViewButton);
+		mainPanel.add("br center vfill hfill", inkCanvas);
+
+		mainPanel.add("br", Box.createVerticalStrut(10));
+		mainPanel.add("br left", batchedLabel);
+		mainPanel.add("br left", batchedLabel2);
+	}
+
+	/**
+	 * 
+	 */
 	private void runCurrentAdvanceAction() {
 		if (currentAdvanceAction != null) {
 			new Thread(currentAdvanceAction).start();
 		}
 	}
 
+	/**
+	 * @param r
+	 */
 	private void setCurrentAdvanceAction(Runnable r) {
 		currentAdvanceAction = r;
 	}
 
-	private static final Font HEADING_FONT = new Font("Trebuchet MS", Font.BOLD, 20);
-
+	/**
+	 * Create and assemble all the Swing GUI components here...
+	 */
 	private void setupGUI() {
 
 		// The Components for the top third of the GUI
-		JLabel defineLabel = new JLabel("Define the Region");
+		defineLabel = new JLabel("Define the Region");
 		defineLabel.setFont(HEADING_FONT);
+		defineLabel.setForeground(CURRENT_STEP_COLOR);
+		defineLabel2 = new JLabel("<html>" + DRAW_RECT_DIRECTIONS + "</html>");
 
-		Component minXLabel = new JLabel("Min X:");
-		Component minYLabel = new JLabel("Min Y:");
-		Component maxXLabel = new JLabel("Max X:");
-		Component maxYLabel = new JLabel("Max Y:");
-		Component widthLabel = new JLabel("Width:");
-		Component heightLabel = new JLabel("Height:");
+		minXLabel = new JLabel("Min X:");
+		minYLabel = new JLabel("Min Y:");
+		maxXLabel = new JLabel("Max X:");
+		maxYLabel = new JLabel("Max Y:");
+		widthLabel = new JLabel("Width:");
+		heightLabel = new JLabel("Height:");
 
 		minXField = new JTextField(20);
 		minYField = new JTextField(20);
@@ -228,36 +316,33 @@ public class SimpleBatched {
 		heightField.setEditable(false);
 
 		// The Components for the middle third of the GUI
-		JLabel streamingLabel = new JLabel("Try Drawing in Streaming Mode");
+		streamingLabel = new JLabel("Try Drawing in Streaming Mode");
 		streamingLabel.setFont(HEADING_FONT);
 
+		resetViewButton = new JButton("Reset View");
+		resetViewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				inkCanvas.resetViewOffsetAndScale();
+			}
+		});
+
+		inkCanvas = new InkPCanvas();
+		// inkCanvas.setPreferredSize(new Dimension(800, 480));
+
+		batchedLabel = new JLabel("Try Drawing in BatchedMode");
+		batchedLabel.setFont(HEADING_FONT);
+		batchedLabel2 = new JLabel("<html>Turn off Streaming Mode. Continue to draw in the "
+				+ "region you defined. Finally, synchronize your pen.</html>");
+
+		// /////////////////////////////////////////////
 		// populate the main panel with our components
-		mainPanel = new JPanel(new RiverLayout());
+		populateMainPanel();
 
-		mainPanel.add("left", defineLabel);
-
-		mainPanel.add("br center", minXLabel);
-		mainPanel.add(minXField);
-		mainPanel.add(maxXLabel);
-		mainPanel.add(maxXField);
-
-		mainPanel.add("br center", minYLabel);
-		mainPanel.add(minYField);
-		mainPanel.add(maxYLabel);
-		mainPanel.add(maxYField);
-
-		mainPanel.add("br center", widthLabel);
-		mainPanel.add(widthField);
-		mainPanel.add(heightLabel);
-		mainPanel.add(heightField);
-
-		mainPanel.add("br", Box.createVerticalStrut(10));
-		mainPanel.add("br left", streamingLabel);
-
+		// //////////////////
 		// create the frame
 		frame = new JFrame("Simple Batched Test");
 		frame.getContentPane().setLayout(new BorderLayout());
-		frame.add(mainPanel, BorderLayout.CENTER);
+		frame.add(getScrollableMainPanel(), BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(800, 600);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -270,7 +355,7 @@ public class SimpleBatched {
 		inputMap.put(KeyStroke.getKeyStroke("SPACE"), SPACE_BAR_ACTION_NAME);
 		mainPanel.getActionMap().put(SPACE_BAR_ACTION_NAME,
 				new AbstractAction(SPACE_BAR_ACTION_NAME) {
-					public void actionPerformed(ActionEvent arg0) {
+					public void actionPerformed(ActionEvent ae) {
 						DebugUtils.println("Space Bar Pressed");
 						runCurrentAdvanceAction();
 					}

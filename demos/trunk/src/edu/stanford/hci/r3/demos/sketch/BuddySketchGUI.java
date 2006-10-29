@@ -142,6 +142,9 @@ public class BuddySketchGUI extends JFrame {
 		placeMyPhoto(p, imgFile);
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getInfoLabel() {
 		if (infoLabel == null) {
 			infoLabel = new JLabel("BuddySketch");
@@ -151,6 +154,9 @@ public class BuddySketchGUI extends JFrame {
 		return infoLabel;
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getInfoPanel() {
 		if (infoPanel == null) {
 			infoPanel = new JPanel();
@@ -167,7 +173,8 @@ public class BuddySketchGUI extends JFrame {
 	private PCanvas getMainCanvas() {
 		if (mainCanvas == null) {
 			mainCanvas = new InkPCanvas();
-			mainCanvas.setBackground(new Color(40, 40, 40));
+			mainCanvas.useDarkTheme();
+			mainCanvas.setStrokesScale(0.273);
 			mainCanvasContentLayer = mainCanvas.getLayer();
 		}
 		return mainCanvas;
