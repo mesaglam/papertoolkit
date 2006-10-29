@@ -170,6 +170,8 @@ public class SheetRenderer {
 			final TiledPatternCoordinateConverter tiledPatternInRegion = patternInformation
 					.getPatternBoundsOfRegion(r);
 			tiledPatternInRegion.setPatternInformationByReadingItFrom(pattern);
+			// the name should already be correct, barring the UnitializedMapping business...
+			// tiledPatternInRegion.setRegionName(r.getName());
 			// now, this object is modified
 			// since it is already mapped to the correct region r, we do not need
 			// to do anything else!
