@@ -33,7 +33,7 @@ public class HelloBatched extends Application {
 	private BatchEventHandler inkHandler;
 
 	/**
-	 * 
+	 * Run this application first, then write on your notepad and plug it in...
 	 */
 	public HelloBatched() {
 		super("Hello World for Batch Processing of Ink");
@@ -51,8 +51,9 @@ public class HelloBatched extends Application {
 				@Override
 				public void inkArrived(Ink inkOnThisPage) {
 					DebugUtils.println("Ink Arrived" + inkOnThisPage.getName());
-					new InkRenderer(inkOnThisPage).renderToJPEG(new File("Ink.jpeg"), //
-							Pixels.getPixelsPerInchObject(100), new Inches(5), new Inches(8));
+					new InkRenderer(inkOnThisPage).renderToJPEG(new File("data/Batched/"
+							+ inkOnThisPage.getName() + ".jpeg"), //
+							Pixels.getPixelsPerInchObject(80), new Inches(5.375), new Inches(8));
 				}
 			};
 		}
