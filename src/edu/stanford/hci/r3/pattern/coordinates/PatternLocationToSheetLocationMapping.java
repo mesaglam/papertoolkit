@@ -155,6 +155,9 @@ public class PatternLocationToSheetLocationMapping {
 			if (r.isActive()) {
 				// put in an empty one for now. It should be updated later... otherwise,
 				// this active region will not be accessible by the end user
+				// note: I introduced a bug here a while back, by changing the name I gave to the
+				// TiledPatternCoordinateConverter (_UninitializedMapping). Watch out if you want to
+				// customize this name!
 				regionToPatternBounds.put(r, new TiledPatternCoordinateConverter(r.getName()));
 			}
 		}
