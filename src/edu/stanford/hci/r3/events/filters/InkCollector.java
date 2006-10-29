@@ -6,21 +6,21 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
-import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
+import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
  * Captures ink strokes, and allows access to them on demand. Notifies listeners every time a stroke
- * is written.
+ * is written. We can set a flag that tells it to notify the listeners every time the pen moves a
+ * sufficient distance...
  * </p>
  * <p>
  * TODO: This class contains some filtering code to eliminate false Pen Ups, due to the fault of the
@@ -45,6 +45,15 @@ public class InkCollector extends ContentFilter {
 
 		private boolean doNotNotify;
 
+		private InkStroke lastTempStroke;
+
+		private List<InkSample> strokeSamples;
+
+		public InkNotifier(List<InkSample> currentStrokeSamples, InkStroke tempStroke) {
+			strokeSamples = currentStrokeSamples;
+			lastTempStroke = tempStroke;
+		}
+
 		/**
 		 * @see java.lang.Runnable#run()
 		 */
@@ -58,9 +67,13 @@ public class InkCollector extends ContentFilter {
 				// someone told us to cancel
 				return;
 			}
+
+			if (lastTempStroke != null) {
+				strokes.remove(lastTempStroke);
+			}
+
 			// System.out.println(currentStrokeSamples.size() + " samples in this stroke.");
-			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
-			notifyAllListenersOfNewContent();
+			addStrokeAndNotifyListeners(strokeSamples);
 		}
 
 		/**
@@ -88,16 +101,18 @@ public class InkCollector extends ContentFilter {
 	private static final int MILLIS_TO_DELAY = 21;
 
 	/**
-	 * For unit conversions...
-	 */
-	private static final Pixels PIXELS = new Pixels();
-
-	/**
 	 * Samples that compose an ink stroke...
 	 */
 	private List<InkSample> currentStrokeSamples = new ArrayList<InkSample>();
 
 	private long currPenDownTime;
+
+	private double distanceThreshold = 0;
+
+	/**
+	 * How far has the pen moved since the pen down?
+	 */
+	private double distanceTraveled = 0;
 
 	private InkNotifier lastInkNotifier;
 
@@ -106,10 +121,24 @@ public class InkCollector extends ContentFilter {
 	 */
 	private long lastPenUpTime;
 
+	private double lastXForDistanceMeasurements;
+
+	private double lastYForDistanceMeasurements;
+
+	private InkStroke mostRecentlyAddedStroke;
+
+	private InkStroke mostRecentlyAddedTemporaryStroke;
+
 	/**
 	 * For tracking ink that we have retrieved.
 	 */
 	private int newInkMarker = 0;
+
+	/**
+	 * If true, we will notify our listeners on EVERY SINGLE SAMPLE. An alternate approach would be
+	 * to notify after the pen has moved sufficiently far...
+	 */
+	private boolean notifyAfterEnoughDistance = false;
 
 	/**
 	 * This should be synchronized, as multiple threads are working on it.
@@ -117,6 +146,31 @@ public class InkCollector extends ContentFilter {
 	private List<InkStroke> strokes = Collections.synchronizedList(new ArrayList<InkStroke>());
 
 	private long timeDiffBetweenPenUpAndPenDown;
+
+	public InkCollector() {
+
+	};
+
+	/**
+	 * @param strokeSamples
+	 */
+	private synchronized void addStrokeAndNotifyListeners(List<InkSample> strokeSamples) {
+		mostRecentlyAddedStroke = new InkStroke(strokeSamples, DOTS);
+		strokes.add(mostRecentlyAddedStroke);
+		notifyAllListenersOfNewContent();
+	}
+
+	/**
+	 * @param strokeSamples
+	 */
+	private synchronized void addStrokeTemporarilyAndNotifyListeners(List<InkSample> strokeSamples) {
+		if (mostRecentlyAddedTemporaryStroke != null) {
+			strokes.remove(mostRecentlyAddedTemporaryStroke);
+		}
+		mostRecentlyAddedTemporaryStroke = new InkStroke(strokeSamples, DOTS);
+		strokes.add(mostRecentlyAddedTemporaryStroke);
+		notifyAllListenersOfNewContent();
+	}
 
 	/**
 	 * Clear the buffers.
@@ -134,45 +188,75 @@ public class InkCollector extends ContentFilter {
 	@Override
 	public void filterEvent(PenEvent event) {
 		final PercentageCoordinates percentageLocation = event.getPercentageLocation();
-		final Units x = percentageLocation.getX();
-		final Units y = percentageLocation.getY();
+		final Units xPct = percentageLocation.getX();
+		final Units yPct = percentageLocation.getY();
 		final long timestamp = event.getTimestamp();
 
-		// collect the ink strokes
+		// collect the ink strokes in default units? (i.e., PatternDots?)
+		// the thing that renders the ink should decide how to scale it
+		final double xDots = xPct.getValueInPatternDots();
+		final double yDots = yPct.getValueInPatternDots();
+
 		if (event.isPenDown()) {
 			currPenDownTime = System.currentTimeMillis();
 			timeDiffBetweenPenUpAndPenDown = currPenDownTime - lastPenUpTime;
 			// DebugUtils.println("The pen was up for " + timeDiffBetweenPenUpAndPenDown + "
 			// milliseconds");
 
-			// say 20 milliseconds (1/50 of a second) is probably faster than a human can go up and
-			// down =)
+			// 20 milliseconds (1/50 of a second) is probably faster than a human can go up and down
 			if (timeDiffBetweenPenUpAndPenDown > MAX_MILLIS_FOR_PEN_ERROR /* millis */) {
 				// not a pen error!
-				currentStrokeSamples.clear();
-				currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS),
-						128, timestamp));
-				lastInkNotifier = null; // let it run
-			} else {
-				// "kill" the last notifier if possible
-				lastInkNotifier.setDoNotNotify(true);
 
+				// let the last ink notifier run
+				lastInkNotifier = null;
+
+				// reset the distance traveled
+				distanceTraveled = 0;
+				lastXForDistanceMeasurements = xDots;
+				lastYForDistanceMeasurements = yDots;
+
+				// We should start a new stroke!
+				currentStrokeSamples = new ArrayList<InkSample>();
+				currentStrokeSamples.add(new InkSample(xDots, yDots, 128, timestamp));
+			} else {
 				// we'll assume this is a pen manufacturing error (jitter)!
-				currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS),
-						128, timestamp));
+
+				// "kill" the last notifier if possible (best effort)
+				lastInkNotifier.setDoNotNotify(true);
+				lastInkNotifier = null;
+
+				// add this sample back to the current stroke
+				currentStrokeSamples.add(new InkSample(xDots, yDots, 128, timestamp));
 			}
 		} else if (event.isPenUp()) {
-			lastPenUpTime = System.currentTimeMillis();
-			lastInkNotifier = new InkNotifier();
+			// the pen is lifted from the page
 
-			// notify after a short delay, because we may actually update the content if there was a
-			// pen error
+			// record the time of the pen up
+			lastPenUpTime = System.currentTimeMillis();
+
+			// we need to notify our listeners
+			// notify after a short delay, because we may actually update the current stroke
+			// if there is a pen error
+			lastInkNotifier = new InkNotifier(currentStrokeSamples,
+					mostRecentlyAddedTemporaryStroke);
 			new Thread(lastInkNotifier).start();
 
 			// System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
-			currentStrokeSamples.add(new InkSample(x.getValueIn(PIXELS), y.getValueIn(PIXELS), 128,
-					timestamp));
+			currentStrokeSamples.add(new InkSample(xDots, yDots, 128, timestamp));
+
+			// are we supposed to notify after enough distance?
+			if (notifyAfterEnoughDistance) {
+				// assume zero distance for now...
+				distanceTraveled += MathUtils.distance(xDots, yDots, //
+						lastXForDistanceMeasurements, lastYForDistanceMeasurements);
+				lastXForDistanceMeasurements = xDots;
+				lastYForDistanceMeasurements = yDots;
+				
+				if (distanceTraveled > distanceThreshold) {
+					addStrokeTemporarilyAndNotifyListeners(currentStrokeSamples);
+				}
+			}
 		}
 	}
 
@@ -224,6 +308,20 @@ public class InkCollector extends ContentFilter {
 	 */
 	public void saveInkToXMLFile(File xmlFile) {
 		new Ink(strokes).saveAsXMLFile(xmlFile);
+	}
+
+	/**
+	 * @param notifyAfterThisMuchPenMovement
+	 * @deprecated do not use this yet... it's a bit slow
+	 */
+	public void setNotifyDistance(Units notifyAfterThisMuchPenMovement) {
+		if (notifyAfterThisMuchPenMovement == null) {
+			distanceThreshold = 0;
+			notifyAfterEnoughDistance = false;
+		} else {
+			distanceThreshold = notifyAfterThisMuchPenMovement.getValueInPatternDots();
+			notifyAfterEnoughDistance = true;
+		}
 	}
 
 	/**

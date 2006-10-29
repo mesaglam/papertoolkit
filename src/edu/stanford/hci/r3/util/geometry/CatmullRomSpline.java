@@ -7,8 +7,8 @@ import java.util.List;
 
 /**
  * <p>
- * A Catmull-Rom Spline. Great for Handwriting. It's a basic implementation, so it might not be optimized for
- * performance yet.
+ * A Catmull-Rom Spline. Great for Handwriting. It's a basic implementation, so it might not be
+ * optimized for performance yet.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -174,9 +174,10 @@ public class CatmullRomSpline {
 			p2 = points.get(i + 1);
 
 			// === Backwards ===
-			// add a backward tangent for each point, equal to the point before minus the point after
-			final Vector2D bkwd = Vector2D.getScaled(tension * Vector2D.subtract(p0, p1).magnitude(),
-					Vector2D.subtract(p0, p2));
+			// add a backward tangent for each point, equal to the point before minus the point
+			// after
+			final Vector2D bkwd = Vector2D.getScaled(tension
+					* Vector2D.subtract(p0, p1).magnitude(), Vector2D.subtract(p0, p2));
 			backwardTangents.add(bkwd);
 
 			// make a backward control point by adding it to the current point
@@ -185,8 +186,8 @@ public class CatmullRomSpline {
 			// === Forwards ===
 			// add a tangent for each point, that is equal to the point after minus the point before
 			// length is equal to half the distance to the next point
-			final Vector2D fwd = Vector2D.getScaled(tension * Vector2D.subtract(p2, p1).magnitude(), Vector2D
-					.subtract(p2, p0));
+			final Vector2D fwd = Vector2D.getScaled(
+					tension * Vector2D.subtract(p2, p1).magnitude(), Vector2D.subtract(p2, p0));
 			forwardTangents.add(fwd);
 
 			// make a forward control point by adding it to the current point
