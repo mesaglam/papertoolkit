@@ -166,10 +166,9 @@ public class SheetRenderer {
 
 			// also, at this point, we know what pattern we have assigned to each region
 			// we should be able to assign a tile configuration to each region
+			// We retrieve it from the HashMap so we can SET the values in the line below
 			final TiledPatternCoordinateConverter tiledPatternInRegion = patternInformation
 					.getPatternBoundsOfRegion(r);
-
-			// set all the information here
 			tiledPatternInRegion.setPatternInformationByReadingItFrom(pattern);
 			// now, this object is modified
 			// since it is already mapped to the correct region r, we do not need
