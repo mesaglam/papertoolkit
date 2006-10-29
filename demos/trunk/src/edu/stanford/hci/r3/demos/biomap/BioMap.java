@@ -41,9 +41,19 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class BioMap extends Application {
 
-	private PDFSheet sheet;
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// Ask the toolkit to load the application
+		// The user can then choose whether to print the GIGAprint, or run the app
+		PaperToolkit r3 = new PaperToolkit();
+		r3.useApplicationManager(true);
+		// r3.loadApplication(new BioMap());
+		r3.startApplication(new BioMap());
+	}
 
-	private Bundle notebook;
+	private AudioFeedback audioFeedback;
 
 	private InkCollector inkWellLowerLeft;
 
@@ -51,7 +61,11 @@ public class BioMap extends Application {
 
 	private InkCollector inkWellUpperRight;
 
-	private AudioFeedback audioFeedback;
+	private int lastSite = 0;
+
+	private Bundle notebook;
+
+	private PDFSheet sheet;
 
 	/**
 	 * 
@@ -60,29 +74,6 @@ public class BioMap extends Application {
 		super("Field Biology Map");
 		audioFeedback = new AudioFeedback();
 	}
-
-	/**
-	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
-	 */
-	protected void initializeEventHandlers() {
-		addBatchEventHandler(new BatchEventHandler("Note Pages Renderer") {
-
-			@Override
-			public void inkArrived(Ink inkOnThisPage) {
-				// call the ink filter....
-				InkRenderer renderer = new InkRenderer(inkOnThisPage);
-				// argh... we need to specify that we are rendering in dots somehow!
-				// right now, we can only customize the pixels per inch....
-				// TODO: FIX THIS
-				renderer.renderToJPEG(new File("data/BioMap/Output/Ink_" + inkOnThisPage.getName()
-						+ ".jpg"), new Pixels(), new Millimeters(148 + 20), new Millimeters(
-						210 + 20));
-			}
-			// nothing for now...
-		});
-	}
-
-	private int lastSite = 0;
 
 	/**
 	 * Called by the super(...) constructor
@@ -180,7 +171,6 @@ public class BioMap extends Application {
 						yOfThisSite), new Inches(.85), new Inches(.85));
 				rSite.addEventHandler(new ClickHandler() {
 
-
 					@Override
 					public void clicked(PenEvent e) {
 						DebugUtils.println("Site " + siteNum + " at " + utmX + ", " + utmY);
@@ -247,14 +237,23 @@ public class BioMap extends Application {
 	}
 
 	/**
-	 * @param args
+	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
 	 */
-	public static void main(String[] args) {
-		// Ask the toolkit to load the application
-		// The user can then choose whether to print the GIGAprint, or run the app
-		PaperToolkit r3 = new PaperToolkit();
-		r3.useApplicationManager(true);
-		// r3.loadApplication(new BioMap());
-		r3.startApplication(new BioMap());
+	protected void initializeEventHandlers() {
+		addBatchEventHandler(new BatchEventHandler("Note Pages Renderer") {
+
+			@Override
+			public void inkArrived(Ink inkOnThisPage) {
+				// call the ink filter....
+				InkRenderer renderer = new InkRenderer(inkOnThisPage);
+				// argh... we need to specify that we are rendering in dots somehow!
+				// right now, we can only customize the pixels per inch....
+				// TODO: FIX THIS
+				renderer.renderToJPEG(new File("data/BioMap/Output/Ink_" + inkOnThisPage.getName()
+						+ ".jpg"), new Pixels(), new Millimeters(148 + 20), new Millimeters(
+						210 + 20));
+			}
+			// nothing for now...
+		});
 	}
 }
