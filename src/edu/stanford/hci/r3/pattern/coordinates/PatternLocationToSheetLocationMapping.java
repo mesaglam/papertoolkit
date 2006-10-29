@@ -155,8 +155,7 @@ public class PatternLocationToSheetLocationMapping {
 			if (r.isActive()) {
 				// put in an empty one for now. It should be updated later... otherwise,
 				// this active region will not be accessible by the end user
-				regionToPatternBounds.put(r, new TiledPatternCoordinateConverter(r.getName()
-						+ "_UnitializedMapping"));
+				regionToPatternBounds.put(r, new TiledPatternCoordinateConverter(r.getName()));
 			}
 		}
 	}
