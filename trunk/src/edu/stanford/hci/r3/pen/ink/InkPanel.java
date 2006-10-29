@@ -15,8 +15,8 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
- * Renders Ink in a JPanel using a very simple lineTo(...) method. You can swap in better renderers
- * depending on how quickly or slowly you want the ink to be rendered.
+ * Renders Ink in a JPanel using catmull-rom splines. You may swap in simpler renderers if this
+ * becomes slow.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -32,6 +32,9 @@ public class InkPanel extends JPanel {
 	 */
 	private List<Ink> inkWell = Collections.synchronizedList(new LinkedList<Ink>());
 
+	/**
+	 * 
+	 */
 	private InkRenderer renderer;
 
 	/**
@@ -40,11 +43,21 @@ public class InkPanel extends JPanel {
 	private double inkScale = 1.0;
 
 	/**
-	 * 
+	 * Default Catmull-Rom method.
 	 */
 	public InkPanel() {
-		setBackground(Color.WHITE);
-		renderer = new InkRenderer();
+		this(new InkRenderer(), Color.WHITE);
+	}
+
+	/**
+	 * Choose your own renderer.
+	 * 
+	 * @param inkRenderer
+	 * @param bgColor
+	 */
+	public InkPanel(InkRenderer inkRenderer, Color bgColor) {
+		setBackground(bgColor);
+		renderer = inkRenderer;
 	}
 
 	/**

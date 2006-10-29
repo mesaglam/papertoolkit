@@ -2,16 +2,19 @@ package edu.stanford.hci.r3.pen.ink;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.stanford.hci.r3.util.geometry.CatmullRomSpline;
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.PNode;
 import edu.umd.cs.piccolo.nodes.PPath;
 
 /**
  * <p>
- * A Piccolo Canvas.
+ * A Piccolo Canvas. Uses simple quadTo rendering for now, but allows some interactivity.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -22,16 +25,17 @@ import edu.umd.cs.piccolo.nodes.PPath;
  */
 public class InkPCanvas extends PCanvas {
 
-	/**
-	 * Probably shouldn't be off white!
-	 */
-	public static final Color DEFAULT_INK_COLOR = new Color(0.85f, 0.85f, .95f, 0.8f);
+	public static final Color DARK_THEMED_INK_COLOR = new Color(0.85f, 0.85f, .95f, 0.8f);
+
+	public static final Color DEFAULT_INK_COLOR = new Color(0.1f, 0.1f, .1f, 0.9f);
 
 	/**
 	 * 
 	 */
 	private static final BasicStroke DEFAULT_STROKE = new BasicStroke(2.0f, BasicStroke.CAP_ROUND,
 			BasicStroke.JOIN_ROUND);
+
+	private Color defaultInkColor;
 
 	/**
 	 * 
@@ -48,26 +52,32 @@ public class InkPCanvas extends PCanvas {
 	 * 
 	 */
 	public InkPCanvas() {
+		setPreferredSize(new Dimension(320, 240));
+		setMinimumSize(new Dimension(320, 240));
 		strokesContainer = new PNode();
 		getLayer().addChild(strokesContainer);
-		strokesContainer.scale(0.273);
+		useDefaultTheme();
 	}
 
 	/**
+	 * Use the Ink object's color...
+	 * 
 	 * @param ink
 	 */
 	public void addInk(Ink ink) {
 		inkWell.add(ink);
-
 		addInkPaths(ink.getStrokes(), ink.getColor());
-
 		getLayer().repaint();
 	}
 
 	/**
 	 * @param strokes
+	 * @param inkColor
+	 * @deprecated
 	 */
-	private void addInkPaths(List<InkStroke> strokes, Color inkColor) {
+	@SuppressWarnings("unused")
+	private void addInkBezierPaths(List<InkStroke> strokes, Color inkColor) {
+
 		// Each Stroke will be One PPath (it's just more efficient this way)
 		for (final InkStroke s : strokes) {
 
@@ -125,11 +135,87 @@ public class InkPCanvas extends PCanvas {
 
 			// if there's any points left, just render them
 			if (numPointsCollected == 1) {
-				strokePath.lineTo((float) (lastGoodX + pageOffsetX), (float) (lastGoodY + pageOffsetY));
+				strokePath.lineTo((float) (lastGoodX + pageOffsetX),
+						(float) (lastGoodY + pageOffsetY));
 			}
 
 		}
 
 		strokesContainer.repaint();
+	}
+
+	/**
+	 * Internal method for adding ink paths to the strokes layer.
+	 * 
+	 * @param strokes
+	 */
+	private void addInkPaths(List<InkStroke> strokes, Color inkColor) {
+		// Each Stroke will be One PPath (it's just more efficient this way)
+		for (final InkStroke s : strokes) {
+			final CatmullRomSpline crspline = new CatmullRomSpline();
+			final double[] x = s.getXSamples();
+			final double[] y = s.getYSamples();
+			crspline.setPoints(x, y);
+
+			final PPath strokePath = new PPath(crspline.getShape());
+			
+			// ink stroke style
+			strokePath.setStroke(DEFAULT_STROKE);
+
+			// the ink color
+			strokePath.setStrokePaint(inkColor);
+			strokePath.addAttribute("timestamp", new Long(s.getFirstTimestamp()));
+			strokesContainer.addChild(strokePath);
+		}
+		strokesContainer.repaint();
+	}
+
+	/**
+	 * Use the default color to override the ink object's color.
+	 * 
+	 * @param strokes
+	 */
+	public void addInkWithDefaultColor(Ink ink) {
+		inkWell.add(ink);
+		addInkPaths(ink.getStrokes(), defaultInkColor);
+		getLayer().repaint();
+	}
+
+	/**
+	 * Resets the Camera View.
+	 */
+	public void resetViewOffsetAndScale() {
+		getCamera().setViewTransform(new AffineTransform());
+	}
+
+	/**
+	 * @param ink
+	 */
+	public void setInk(Ink ink) {
+		inkWell.clear();
+		inkWell.add(ink);
+		strokesContainer.removeAllChildren();
+		addInkPaths(ink.getStrokes(), ink.getColor());
+		getLayer().repaint();
+	}
+
+	/**
+	 * @param scaleFactor
+	 */
+	public void setStrokesScale(double scaleFactor) {
+		strokesContainer.setScale(scaleFactor);
+	}
+
+	/**
+	 * 
+	 */
+	public void useDarkTheme() {
+		setBackground(new Color(40, 40, 40));
+		defaultInkColor = DARK_THEMED_INK_COLOR;
+	}
+
+	public void useDefaultTheme() {
+		setBackground(new Color(240, 240, 240));
+		defaultInkColor = DEFAULT_INK_COLOR;
 	}
 }
