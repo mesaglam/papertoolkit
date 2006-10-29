@@ -49,6 +49,9 @@ public class FourPages {
 		renderer.renderToIndividualPDFs(new File("data/Bundles"), "FourPages");
 	}
 
+	/**
+	 * Does not work yet.
+	 */
 	private static void renderWithGlobalRegion() {
 		Bundle bundle = new Bundle("Four Pages");
 		bundle.createAndAddSheets(4, "Lined Notes", new Inches(8.5), new Inches(11));
