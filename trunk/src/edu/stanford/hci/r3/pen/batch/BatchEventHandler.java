@@ -84,7 +84,7 @@ public abstract class BatchEventHandler {
 		final Matcher matcherPageEnd = PATTERN_END_PAGE.matcher(requestBuffer);
 
 		while (matcherPageBegin.find() && matcherPageEnd.find()) {
-			System.out.println();
+			// DebugUtils.println("Processing Page: ");
 
 			// location of the opening tag <page ...>
 			final int beginTagEndIndex = matcherPageBegin.end();
