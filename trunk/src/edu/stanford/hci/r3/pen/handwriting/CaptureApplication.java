@@ -222,6 +222,8 @@ public class CaptureApplication extends Application {
 	}
 
 	/**
+	 * Add an inkcollector to display ink, and a handwriting recognizer to do the recognition.
+	 * 
 	 * @return
 	 */
 	private Region setupCaptureRegion() {
