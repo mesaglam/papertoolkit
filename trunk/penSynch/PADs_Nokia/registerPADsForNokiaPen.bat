@@ -1,0 +1,1 @@
+copy *.pad "C:\Documents and Settings\All Users\Application Data\Anoto\PADs\"
