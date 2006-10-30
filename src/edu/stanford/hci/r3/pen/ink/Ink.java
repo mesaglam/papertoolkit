@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -57,7 +58,9 @@ public class Ink {
 		strokes.add(s);
 	}
 
+	
 	/**
+	 * Represents this Ink object as an XML string.
 	 * @param useSeparatorLines
 	 * @return
 	 */
@@ -102,6 +105,13 @@ public class Ink {
 	 */
 	public int getNumStrokes() {
 		return strokes.size();
+	}
+
+	/**
+	 * @return a new Renderer for this Ink object.
+	 */
+	public InkRenderer getRenderer() {
+		return new InkRenderer(this);
 	}
 
 	/**
