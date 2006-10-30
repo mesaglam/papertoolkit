@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.filechooser.FileSystemView;
+
 import edu.stanford.hci.r3.actions.types.OpenFileAction;
 import edu.stanford.hci.r3.actions.types.OpenURLAction;
 import edu.stanford.hci.r3.actions.types.PlaySoundAction;
@@ -378,7 +380,7 @@ public class Application {
 	 * false, and the user presses the Render PDF Button in the App Manager.
 	 */
 	public void renderToPDF() {
-		renderToPDF(new File("."), getName());
+		renderToPDF(FileSystemView.getFileSystemView().getHomeDirectory(), getName());
 	}
 
 	/**
@@ -418,16 +420,6 @@ public class Application {
 			}
 		}
 
-	}
-
-	/**
-	 * Serializes an application to disk. For now, uses the XML serialization. It might not be the
-	 * best... Do we have a good use for this? If not, remove this method...
-	 * 
-	 * @param appDirectory
-	 */
-	private void saveToDisk(File appFile) {
-		PaperToolkit.toXML(this, appFile);
 	}
 
 	/**
