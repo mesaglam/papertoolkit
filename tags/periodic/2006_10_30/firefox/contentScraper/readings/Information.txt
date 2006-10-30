@@ -1,0 +1,38 @@
+about:config	shows the properties...
+Dom Inspector	shows the DOM of the current web page (and browser components)
+
+Looks like the name of the package in the chrome.manifest file cannot contain caps.
+chrome://contentscraper/content/sample.xul instead of chrome://contentScraper/content/sample.xul
+
+
+Components:
+<button label="Create Schedule" id="createSchedule" oncommand="newSched();"/>
+
+<label value="Location"/>
+
+<groupbox id="schedulesListGroupBox">
+</groupbox>
+
+<hbox>
+.... stuff in the same row
+</hbox>
+
+<vbox>
+... same column
+</vbox>
+
+http://xulplanet.com/references/elemref/ 
+
+chrome://browser/content/browser.xul
+
+//
+// Remove Something that already exists in the Browser XUL file
+//
+<menupopup id="menu_ToolsPopup" removeelement="true">
+
+JavaScript is the engine...
+alert("I am here!"); // is the standard way to debug, apparently
+
+// Useful Page with Every Element
+http://www.xulplanet.com/
+

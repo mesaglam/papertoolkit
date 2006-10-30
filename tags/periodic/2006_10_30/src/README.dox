@@ -1,0 +1,11 @@
+/*!
+\mainpage R3 Documentation
+  
+\section intro Introduction
+  
+Welcome to the doxygen documentation of the R3 Toolkit. If you prefer JavaDocs, you can <a href="../../">return to the main documentation page</a>.
+
+\section important Important Classes
+Check out the <a href="namespaces.html">packages</a>.
+
+*/

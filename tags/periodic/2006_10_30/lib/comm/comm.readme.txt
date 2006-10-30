@@ -1,0 +1,4 @@
+Java Comm has to be installed in a super secret directory
+
+Depending on where JDK/JRE you use resides, you must put the javax.comm.properties file and the comm.jar 
+file into the lib directory of the JDK/JRE. It is NOT sufficient to put it in your Java application's lib directory. :(
