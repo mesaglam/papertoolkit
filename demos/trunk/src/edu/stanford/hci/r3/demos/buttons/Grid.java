@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.grid;
+package edu.stanford.hci.r3.demos.buttons;
 
 import java.io.File;
 import java.util.ArrayList;
