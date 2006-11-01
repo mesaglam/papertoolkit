@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.pen.handwriting;
 
 import java.io.File;
+import java.util.List;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.events.filters.HandwritingRecognizer;
@@ -243,9 +244,11 @@ public class CaptureApplication extends Application {
 		handwritingRecognizer = new HandwritingRecognizer() {
 			@Override
 			public void contentArrived() {
-				String text = recognizeHandwriting();
+				final List<String> topTen = recognizeHandwritingWithAlternatives();
+				String text = topTen.get(0);
 				DebugUtils.println("Handwritten Content: " + text);
 				gui.setInfoText(text);
+				gui.setAlternatives(topTen);
 			}
 		};
 
