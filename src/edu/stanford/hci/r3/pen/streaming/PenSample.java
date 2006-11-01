@@ -21,7 +21,8 @@ import edu.stanford.hci.r3.units.PatternDots;
 public class PenSample implements Serializable {
 
 	/**
-	 * at the start of each stroke, there is a time that represents the stroke's beginning
+	 * at the start of each stroke, there is a time that represents the stroke's beginning. This field should
+	 * instead be moved into the stroke, instead of being stored in the sample.
 	 */
 	private static long anchorTime = 0L;
 

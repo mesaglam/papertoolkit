@@ -15,6 +15,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.networking.ClientServerType;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**

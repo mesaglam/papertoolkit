@@ -5,8 +5,8 @@ import java.util.List;
 
 import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.pen.streaming.PenClient;
-import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenServer;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.communications.COMPort;
 

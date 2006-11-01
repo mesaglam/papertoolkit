@@ -12,8 +12,8 @@ import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -134,7 +134,7 @@ public class EventEngine {
 			}
 
 			/**
-			 * @see edu.stanford.hci.r3.pen.streaming.PenListener#penDown(edu.stanford.hci.r3.pen.streaming.PenSample)
+			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penDown(edu.stanford.hci.r3.pen.streaming.PenSample)
 			 */
 			public void penDown(PenSample sample) {
 				PenEvent event = createPenEvent(sample);
@@ -146,7 +146,7 @@ public class EventEngine {
 			 * A penup sample has 0,0 coordinates, so we need to tell the LAST region handlers to
 			 * handle the penUp.
 			 * 
-			 * @see edu.stanford.hci.r3.pen.streaming.PenListener#penUp(edu.stanford.hci.r3.pen.streaming.PenSample)
+			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penUp(edu.stanford.hci.r3.pen.streaming.PenSample)
 			 */
 			public void penUp(PenSample sample) {
 				final PenEvent event = createPenEvent(sample);
@@ -162,7 +162,7 @@ public class EventEngine {
 			}
 
 			/**
-			 * @see edu.stanford.hci.r3.pen.streaming.PenListener#sample(edu.stanford.hci.r3.pen.streaming.PenSample)
+			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#sample(edu.stanford.hci.r3.pen.streaming.PenSample)
 			 */
 			public void sample(PenSample sample) {
 				PenEvent event = createPenEvent(sample);
