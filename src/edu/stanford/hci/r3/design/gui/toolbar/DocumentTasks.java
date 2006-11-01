@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.design.toolbar;
+package edu.stanford.hci.r3.design.gui.toolbar;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -6,9 +6,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
+import com.sun.org.apache.xml.internal.resolver.helpers.FileURL;
 
 import edu.stanford.hci.r3.util.components.ribbons.RibbonPanel;
+import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -30,15 +35,37 @@ public class DocumentTasks {
 
 	private JButton measuringTapeButton;
 
+	private JButton newDocumentButton;
+
 	private JButton openDocumentButton;
 
+	private JButton importFileButton;
+
+	/**
+	 * 
+	 * @return
+	 */
 	private RibbonPanel getFilePanel() {
 		if (filePanel == null) {
 			filePanel = new RibbonPanel("File");
+			filePanel.add(getNewDocument());
 			filePanel.add(getOpenDocument());
-			filePanel.layoutComponents(1, 1);
+			filePanel.add(getImportFile());
+			filePanel.layoutComponents();
 		}
 		return filePanel;
+	}
+
+	private Component getImportFile() {
+		importFileButton = new JButton("Import File");
+		importFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				System.out.println("Import File");
+				JFileChooser chooser = FileUtils.createNewFileChooser(new String[] {"jpg", "pdf"});
+				chooser.showOpenDialog(null);
+			}
+		});
+		return importFileButton;
 	}
 
 	/**
@@ -82,6 +109,22 @@ public class DocumentTasks {
 	}
 
 	/**
+	 * @return
+	 */
+	private Component getNewDocument() {
+		if (newDocumentButton == null) {
+			newDocumentButton = new JButton("New", makeIcon("New"));
+			newDocumentButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					System.out.println("New Document");
+				}
+			});
+
+		}
+		return newDocumentButton;
+	}
+
+	/**
 	 * This should open a File Chooser, allowing a user to open a PDF file. This designer will allow us to
 	 * place regions onto this PDF file.
 	 * 
@@ -89,10 +132,11 @@ public class DocumentTasks {
 	 */
 	private Component getOpenDocument() {
 		if (openDocumentButton == null) {
-			openDocumentButton = new JButton("Open");
+			openDocumentButton = new JButton("Open", makeIcon("Open"));
 			openDocumentButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					System.out.println("Open Document");
+					FileUtils.createNewFileChooser(new String[] {"jpg", "pdf"});
 				}
 			});
 
@@ -108,5 +152,9 @@ public class DocumentTasks {
 		panels.add(getFilePanel());
 		panels.add(getMeasurementPanel());
 		return panels;
+	}
+
+	private ImageIcon makeIcon(String iconName) {
+		return new ImageIcon(DocumentTasks.class.getResource("/icons/" + iconName + ".png"));
 	}
 }

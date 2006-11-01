@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,9 +19,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.design.toolbar.DebuggingTasks;
-import edu.stanford.hci.r3.design.toolbar.DocumentTasks;
-import edu.stanford.hci.r3.design.toolbar.UserTestTasks;
+import edu.stanford.hci.r3.design.gui.DocumentPanel;
+import edu.stanford.hci.r3.design.gui.toolbar.DebuggingTasks;
+import edu.stanford.hci.r3.design.gui.toolbar.DocumentTasks;
+import edu.stanford.hci.r3.design.gui.toolbar.UserTestTasks;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.components.ribbons.RibbonPanel;
@@ -68,6 +70,8 @@ public class Designer {
 	private RibbonToolbar toolbar;
 
 	private UserTestTasks userTestTasks;
+
+	private JPanel informationPanel;
 
 	/**
 	 * 
@@ -197,9 +201,21 @@ public class Designer {
 			mainPanel = new JPanel();
 			mainPanel.setLayout(new BorderLayout());
 			mainPanel.add(getRibbonToolbar(), BorderLayout.NORTH);
+			mainPanel.add(getInformationPanel(), BorderLayout.EAST);
 			mainPanel.add(getScrollableDocumentPanel(), BorderLayout.CENTER);
 		}
 		return mainPanel;
+	}
+
+	/**
+	 * @return
+	 */
+	private Component getInformationPanel() {
+		if (informationPanel == null) {
+			informationPanel = new JPanel();
+			informationPanel.add(Box.createHorizontalStrut(100));
+		}
+		return informationPanel;
 	}
 
 	/**
