@@ -20,11 +20,11 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the
- * Nokia SU-1B pen and converts it according to the Nokia Document.
+ * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the Nokia
+ * SU-1B pen and converts it according to the Nokia Document.
  * 
- * The idea for this class is that it reports low-level pen events. It does not do any bit of
- * gesture recognition.
+ * The idea for this class is that it reports low-level pen events. It does not do any bit of gesture
+ * recognition.
  * </p>
  * <p>
  * Example code is taken from: http://java.sun.com/products/javacomm/javadocs/API_users_guide.html
@@ -115,6 +115,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 	private InputStream inputStream;
 
+	private PenSample lastSample;
+
 	// list of listeners; add a PenListener to this list to listen to pen events
 	private List<PenListener> listeners = new ArrayList<PenListener>();
 
@@ -135,8 +137,6 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	private int y = 0;
 
 	private int yFraction = 0;
-
-	private PenSample lastSample;
 
 	/**
 	 * @see
@@ -172,8 +172,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	}
 
 	/**
-	 * Add a Pen Listener to the internal list. Pen Listeners' callbacks will be called when pen
-	 * events are detected.
+	 * Add a Pen Listener to the internal list. Pen Listeners' callbacks will be called when pen events are
+	 * detected.
 	 * 
 	 * @param pl
 	 */
@@ -221,7 +221,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 					// on October 27, 2006, I changed behavior so that the pen up samplenow passes X
 					// & Y info
 					// before, it passed x=0, y=0
-					final PenSample penSample = new PenSample(timestamp, lastX, lastY, 0, true);
+					final PenSample penSample = new PenSample(lastX, lastY, 0, timestamp, true);
 					// on June 12, 2006, I changed the behavior so that a .sample event is NOT
 					// generated on pen up. It simply passes the pen up event with the timestamp
 					// along...
@@ -276,13 +276,13 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 			// done with the whole streaming sample, so output it!
 			if (DEBUG) {
-				System.out.println("(" + (x + xFraction * 0.125) + ", " + (y + yFraction * 0.125)
-						+ ")" + " f: " + force + " t: " + timestamp);
+				System.out.println("(" + (x + xFraction * 0.125) + ", " + (y + yFraction * 0.125) + ")"
+						+ " f: " + force + " t: " + timestamp);
 				System.out.flush();
 			}
 
-			final PenSample penSample = new PenSample(timestamp, x + (xFraction * 0.125), y
-					+ (yFraction * 0.125), force, false);
+			final PenSample penSample = new PenSample(x + (xFraction * 0.125), y + (yFraction * 0.125),
+					force, timestamp, false);
 
 			if (penIsUp) {
 				penIsUp = false;
