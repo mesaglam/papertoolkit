@@ -21,14 +21,7 @@ import edu.stanford.hci.r3.units.PatternDots;
 public class PenSample implements Serializable {
 
 	/**
-	 * at the start of each stroke, there is a time that represents the stroke's beginning. This field should
-	 * instead be moved into the stroke, instead of being stored in the sample.
-	 */
-	private static long anchorTime = 0L;
-
-	/**
-	 * 
-	 * 
+	 * To prettify the output string.
 	 */
 	private static final DecimalFormat FORMATTER = PatternDots.FORMATTER;
 
@@ -64,46 +57,23 @@ public class PenSample implements Serializable {
 	 * @param ts
 	 */
 	public PenSample(double xVal, double yVal, int f, long ts) {
-		x = xVal;
-		y = yVal;
-		force = f;
-		timestamp = ts;
+		this(xVal, yVal, f, ts, false /* pen is down */);
 	}
 
 	/**
-	 * @param timestamp
-	 * @param x
-	 * @param y
-	 * @param force
-	 */
-	public PenSample(long timestamp, double x, double y, int force) {
-		this(timestamp, x, y, force, false /* pen is down */);
-	}
-
-	/**
-	 * @param theTimestamp
 	 * @param theX
 	 * @param theY
 	 * @param theForce
 	 *            hehehe.
+	 * @param theTimestamp
 	 * @param isPenUp
 	 */
-	public PenSample(long theTimestamp, double theX, double theY, int theForce, boolean isPenUp) {
+	public PenSample(double theX, double theY, int theForce, long theTimestamp, boolean isPenUp) {
 		timestamp = theTimestamp;
 		x = theX;
 		y = theY;
 		force = theForce;
 		penUp = isPenUp;
-	}
-
-	/**
-	 * @param sample
-	 */
-	public PenSample(PenSample sample) {
-		this.x = sample.x;
-		this.y = sample.y;
-		this.force = sample.force;
-		this.timestamp = sample.timestamp;
 	}
 
 	/**
@@ -146,27 +116,6 @@ public class PenSample implements Serializable {
 	 */
 	public boolean isPenUp() {
 		return penUp;
-	}
-
-	/**
-	 * @param ts
-	 * 
-	 * Convert from a string in the Anoto XML format to the correct time stamp
-	 * @deprecated because this was used for parsing the Nokia pen request files. Also, the "anchor time"
-	 *             should probably be stored in the stroke, and not in the sample.
-	 */
-	public void setAnotoAnchorTime(String ts) {
-		if (ts.startsWith("+")) {
-			anchorTime += Long.parseLong(ts.substring(1, ts.length()));
-		} else if (ts.contains(" ")) {
-			// of the format: 1118214908803 (20050608 071508)
-			String time = ts.substring(0, ts.indexOf(" "));
-			anchorTime = Long.parseLong(time);
-		} else {
-			// of the format: 1118214908803
-			anchorTime = Long.parseLong(ts);
-		}
-		timestamp = anchorTime;
 	}
 
 	/**
