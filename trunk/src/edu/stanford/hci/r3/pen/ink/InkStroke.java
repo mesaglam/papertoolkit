@@ -2,6 +2,7 @@ package edu.stanford.hci.r3.pen.ink;
 
 import java.util.Collection;
 
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.MathUtils;
 
@@ -75,7 +76,7 @@ public class InkStroke {
 	 * @param currentStrokeSamples
 	 * @param reference
 	 */
-	public InkStroke(Collection<InkSample> currentStrokeSamples, Units reference) {
+	public InkStroke(Collection<PenSample> currentStrokeSamples, Units reference) {
 		referenceUnit = reference;
 		numSamples = currentStrokeSamples.size();
 		x = new double[numSamples];
@@ -84,7 +85,7 @@ public class InkStroke {
 		timestamp = new long[numSamples];
 
 		int i = 0;
-		for (InkSample s : currentStrokeSamples) {
+		for (PenSample s : currentStrokeSamples) {
 			x[i] = s.x;
 			y[i] = s.y;
 			force[i] = s.force;

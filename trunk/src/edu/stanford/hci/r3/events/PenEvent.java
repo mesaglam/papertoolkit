@@ -1,6 +1,6 @@
 package edu.stanford.hci.r3.events;
 
-import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 

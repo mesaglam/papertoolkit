@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
@@ -59,7 +59,7 @@ public class PenServerJavaObjectXMLSender implements PenServerSender {
 	 * @created Mar 31, 2006
 	 * @author Ron Yeh
 	 * 
-	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerSender#sendSample(edu.stanford.hci.r3.pen.streaming.PenSample)
+	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerSender#sendSample(edu.stanford.hci.r3.pen.PenSample)
 	 */
 	public void sendSample(PenSample as) throws IOException {
 		String xmlString = PaperToolkit.toXML(as);

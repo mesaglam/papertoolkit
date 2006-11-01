@@ -4,7 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.util.SystemUtils;
 
 /**
@@ -34,7 +34,7 @@ public class PenServerPlainTextSender implements PenServerSender {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerSender#sendSample(edu.stanford.hci.r3.pen.streaming.PenSample)
+	 * @see edu.stanford.hci.r3.pen.streaming.data.PenServerSender#sendSample(edu.stanford.hci.r3.pen.PenSample)
 	 */
 	public void sendSample(PenSample as) throws IOException {
 		bos.write((as.toCommaSeparatedString() + SystemUtils.LINE_SEPARATOR).getBytes());

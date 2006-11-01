@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pen.streaming;
+package edu.stanford.hci.r3.pen;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -8,7 +8,7 @@ import edu.stanford.hci.r3.units.PatternDots;
 
 /**
  * <p>
- * Stores a pen sample. Soon, this class will be folded into InkSample.
+ * Stores a pen sample or ink samples.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -58,6 +58,19 @@ public class PenSample implements Serializable {
 	public double y;
 
 	/**
+	 * @param xVal
+	 * @param yVal
+	 * @param f
+	 * @param ts
+	 */
+	public PenSample(double xVal, double yVal, int f, long ts) {
+		x = xVal;
+		y = yVal;
+		force = f;
+		timestamp = ts;
+	}
+
+	/**
 	 * @param timestamp
 	 * @param x
 	 * @param y
@@ -81,6 +94,16 @@ public class PenSample implements Serializable {
 		y = theY;
 		force = theForce;
 		penUp = isPenUp;
+	}
+
+	/**
+	 * @param sample
+	 */
+	public PenSample(PenSample sample) {
+		this.x = sample.x;
+		this.y = sample.y;
+		this.force = sample.force;
+		this.timestamp = sample.timestamp;
 	}
 
 	/**

@@ -2,7 +2,7 @@ package edu.stanford.hci.r3.pen.streaming.data;
 
 import java.io.IOException;
 
-import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.PenSample;
 
 /**
  * <p></p>
