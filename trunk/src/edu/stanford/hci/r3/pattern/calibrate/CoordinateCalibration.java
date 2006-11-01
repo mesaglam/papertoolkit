@@ -1,9 +1,13 @@
 package edu.stanford.hci.r3.pattern.calibrate;
 
 import edu.stanford.hci.r3.Application;
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.PenSample;
+import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenStrokeListener;
+import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
@@ -20,9 +24,14 @@ import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
  */
 public class CoordinateCalibration {
 
-	private Application app;
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		new CoordinateCalibration();
+	}
 
-	private Pen pen;
+	private Application app;
 
 	private PenListener listener;
 
@@ -34,12 +43,16 @@ public class CoordinateCalibration {
 
 	// figure out the same thing with the batched ink...
 
+	private Pen pen;
+
 	/**
 	 * 
 	 */
 	public CoordinateCalibration() {
 		app = new Application("Calibration");
 		app.addPen(getPen());
+		PaperToolkit.setUseHandwritingRecognitionServer(false);
+		PaperToolkit.runApplication(app);
 	}
 
 	/**
@@ -58,26 +71,17 @@ public class CoordinateCalibration {
 	 */
 	private PenListener getPenListener() {
 		if (listener == null) {
-			listener = new PenListener() {
-				public void penDown(PenSample sample) {
-					
-				}
-
-				public void penUp(PenSample sample) {
-					
-				}
-
-				public void sample(PenSample sample) {
-					
+			listener = new PenStrokeListener() {
+				@Override
+				public void penStroke(InkStroke stroke) {
+					DebugUtils.println("New " + stroke);
+					double[] samplesX = stroke.getXSamples();
+					double[] samplesY = stroke.getYSamples();
+					DebugUtils.println("STDEV X: " + MathUtils.standardDeviation(samplesX));
+					DebugUtils.println("STDEV Y: " + MathUtils.standardDeviation(samplesY));
 				}
 			};
-		} return listener;
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new CoordinateCalibration();
+		}
+		return listener;
 	}
 }
