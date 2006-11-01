@@ -6,9 +6,9 @@ import java.util.List;
 
 import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
@@ -36,7 +36,7 @@ public class HandwritingRecognizer extends ContentFilter {
 	/**
 	 * Samples that compose an ink stroke...
 	 */
-	private List<InkSample> currentStrokeSamples = new ArrayList<InkSample>();
+	private List<PenSample> currentStrokeSamples = new ArrayList<PenSample>();
 
 	/**
 	 * This is the client that will connect to the handwriting recognition server...
@@ -55,6 +55,9 @@ public class HandwritingRecognizer extends ContentFilter {
 		recognizerService = HandwritingRecognitionService.getInstance();
 	}
 
+	/**
+	 * 
+	 */
 	public void clear() {
 		strokes.clear();
 	}
@@ -73,15 +76,15 @@ public class HandwritingRecognizer extends ContentFilter {
 		if (event.isPenDown()) {
 			// not a pen error!
 			currentStrokeSamples.clear();
-			currentStrokeSamples.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128,
-					timestamp));
+			currentStrokeSamples
+					.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
 		} else if (event.isPenUp()) {
 			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
 			notifyAllListenersOfNewContent();
 			// System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
-			currentStrokeSamples.add(new InkSample(x.getValueInPixels(), y.getValueInPixels(), 128,
-					timestamp));
+			currentStrokeSamples
+					.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
 		}
 	}
 

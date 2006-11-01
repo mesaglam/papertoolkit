@@ -1,6 +1,6 @@
 package edu.stanford.hci.r3.pen.streaming.listeners;
 
-import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.PenSample;
 
 /**
  * <p>

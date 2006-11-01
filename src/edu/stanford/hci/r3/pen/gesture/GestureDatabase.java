@@ -29,11 +29,10 @@ import javax.swing.WindowConstants;
 
 import com.thoughtworks.xstream.XStream;
 
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkPanel;
-import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
-import edu.stanford.hci.r3.pen.streaming.PenGestureListener;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
@@ -54,12 +53,10 @@ public class GestureDatabase implements ActionListener, FocusListener {
 
 	private transient static JPanel statusPanel;
 
-	private transient static BufferedReader stdin = new BufferedReader(new InputStreamReader(
-			System.in));
+	private transient static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
 	/* Used by makeCompactGrid. */
-	private static SpringLayout.Constraints getConstraintsForCell(int row, int col,
-			Container parent, int cols) {
+	private static SpringLayout.Constraints getConstraintsForCell(int row, int col, Container parent, int cols) {
 		SpringLayout layout = (SpringLayout) parent.getLayout();
 		Component c = parent.getComponent(row * cols + col);
 		return layout.getConstraints(c);
@@ -71,8 +68,7 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			inkDisplay = new JFrame("Sketch! Display");
 			inkDisplay.setContentPane(getMainPanel());
 			inkDisplay.setSize(690, 740);
-			inkDisplay.setLocation(WindowUtils.getWindowOrigin(inkDisplay,
-					WindowUtils.DESKTOP_CENTER));
+			inkDisplay.setLocation(WindowUtils.getWindowOrigin(inkDisplay, WindowUtils.DESKTOP_CENTER));
 			inkDisplay.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			// inkDisplay.pack();
 			inkDisplay.setVisible(true);
@@ -109,10 +105,9 @@ public class GestureDatabase implements ActionListener, FocusListener {
 	private static Component getStatusPanel() {
 		if (statusPanel == null) {
 			statusPanel = new JPanel(new SpringLayout());
-			String[] labelStrings = { "0: Add a gesture", "1: Add more of an existing gesture",
-					"2: Save", "3: List", "4: Test (interactive)",
-					"5: Add a test gesture (for existing)", "6: Run autotest",
-					"7: Determine class parameters",
+			String[] labelStrings = { "0: Add a gesture", "1: Add more of an existing gesture", "2: Save",
+					"3: List", "4: Test (interactive)", "5: Add a test gesture (for existing)",
+					"6: Run autotest", "7: Determine class parameters",
 					"8: Assign class labels to unlabeled gestures", "9: Add unlabeled gestures",
 					"10: Add unlabeled test gestures", "11: Optimize cost weighting",
 					"12: Run leave-10%-out test", "13: Move gestures out of test",
@@ -147,8 +142,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 		return statusPanel;
 	}
 
-	public static void makeCompactGrid(Container parent, int rows, int cols, int initialX,
-			int initialY, int xPad, int yPad) {
+	public static void makeCompactGrid(Container parent, int rows, int cols, int initialX, int initialY,
+			int xPad, int yPad) {
 		SpringLayout layout;
 		try {
 			layout = (SpringLayout) parent.getLayout();
@@ -343,11 +338,10 @@ public class GestureDatabase implements ActionListener, FocusListener {
 		// int option;
 		// do{
 		/*
-		 * System.out.println("Options:\n" + "0: Add a gesture\n" + "1: Add more of an existing
-		 * gesture\n" + "2: Save\n" + "3: List\n" + "4: Test (interactive)\n" + "5: Add a test
-		 * gesture (for existing)\n" + "6: Run autotest\n" + "7: Determine class parameters\n" + "8:
-		 * Assign class labels to unlabeled gestures\n" + "9: Add unlabeled gestures\n" + "-1:
-		 * Exit");
+		 * System.out.println("Options:\n" + "0: Add a gesture\n" + "1: Add more of an existing gesture\n" +
+		 * "2: Save\n" + "3: List\n" + "4: Test (interactive)\n" + "5: Add a test gesture (for existing)\n" +
+		 * "6: Run autotest\n" + "7: Determine class parameters\n" + "8: Assign class labels to unlabeled
+		 * gestures\n" + "9: Add unlabeled gestures\n" + "-1: Exit");
 		 */
 		// option = Integer.parseInt(stdin.readLine());
 		int count, index;
@@ -376,12 +370,10 @@ public class GestureDatabase implements ActionListener, FocusListener {
 		case 3:
 			System.out.println("Gestures:");
 			for (int i = 0; i < gestures.size(); i++)
-				System.out.println("Gesture " + gestures.get(i).name + ": "
-						+ gestures.get(i).size());
+				System.out.println("Gesture " + gestures.get(i).name + ": " + gestures.get(i).size());
 			System.out.println("Tests:");
 			for (int i = 0; i < testGestures.size(); i++)
-				System.out.println("Gesture " + testGestures.get(i).name + ": "
-						+ testGestures.get(i).size());
+				System.out.println("Gesture " + testGestures.get(i).name + ": " + testGestures.get(i).size());
 			System.out.println("Queued gestures: " + unlabeledContexts.size());
 			System.out.println("Queued test gestures: " + unlabeledTestContexts.size());
 			break;
@@ -464,8 +456,7 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			System.out.println("Exiting.");
 			System.exit(0); // no automatic save on exit
 		case 2:
-			Writer writer = new FileWriter(
-					new File("C:\\dev\\quill\\data\\" + databaseName + ".gp"));
+			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\" + databaseName + ".gp"));
 			quillWrite(writer);
 			Save(new FileWriter(new File(databaseName + ".xml")));
 			break;
@@ -489,7 +480,7 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			double min_y = Double.MAX_VALUE;
 			double max_x = Double.MIN_VALUE;
 			double max_y = Double.MIN_VALUE;
-			for (InkSample sample : bestExamples.get(i).controlPoints) {
+			for (PenSample sample : bestExamples.get(i).controlPoints) {
 				min_x = Math.min(sample.x, min_x);
 				min_y = Math.min(sample.y, min_y);
 				max_x = Math.max(sample.x, max_x);
@@ -505,8 +496,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			ink.addStroke(new InkStroke(context.controlPoints, new Points()));
 		}
 		InkRenderer renderer = new InkRenderer(ink);
-		renderer.renderToJPEG(new File("best.jpg"), new Pixels(300), new Points(max_range_x * 7),
-				new Points(max_range_y * 7));
+		renderer.renderToJPEG(new File("best.jpg"), new Pixels(300), new Points(max_range_x * 7), new Points(
+				max_range_y * 7));
 	}
 
 	public void determineClassParameters() {
@@ -517,11 +508,11 @@ public class GestureDatabase implements ActionListener, FocusListener {
 	public void display(ShapeContext context, double w, double h) {
 		double min_x = Double.MAX_VALUE;
 		double min_y = Double.MAX_VALUE;
-		for (InkSample sample : context.controlPoints) {
+		for (PenSample sample : context.controlPoints) {
 			min_x = Math.min(sample.x, min_x);
 			min_y = Math.min(sample.y, min_y);
 		}
-		for (InkSample sample : context.controlPoints) {
+		for (PenSample sample : context.controlPoints) {
 			sample.x += w - min_x;
 			sample.y += h - min_y;
 		}
@@ -551,16 +542,15 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			max_points = Math.max(max_points, context.controlPoints.size());
 		}
 		Random random = new Random();
-		ArrayList<InkSample> newSamples = new ArrayList<InkSample>();
+		ArrayList<PenSample> newSamples = new ArrayList<PenSample>();
 		for (int i = 0; i < max_points; i++) {
-			newSamples.add(new InkSample(random.nextDouble(), random.nextDouble(), 0, i));
+			newSamples.add(new PenSample(random.nextDouble(), random.nextDouble(), 0, i));
 		}
 		ShapeContext noiseExample = new ShapeContext(newSamples, "noise");
 		max_points = 10;
-		ArrayList<InkSample> testSamples = new ArrayList<InkSample>();
+		ArrayList<PenSample> testSamples = new ArrayList<PenSample>();
 		for (int i = 0; i < max_points; i++) {
-			testSamples.add(new InkSample(random.nextDouble() * max_points * max_points, random
-					.nextDouble()
+			testSamples.add(new PenSample(random.nextDouble() * max_points * max_points, random.nextDouble()
 					* max_points * max_points, 0, i));
 		}
 		ShapeContext testExample = new ShapeContext(testSamples, "test");
@@ -571,7 +561,7 @@ public class GestureDatabase implements ActionListener, FocusListener {
 		for (int i = 0; i < maxIteration; i++) {
 			// pick a random point in testExample
 			int point = random.nextInt(max_points);
-			InkSample sample = testExample.controlPoints.get(point);
+			PenSample sample = testExample.controlPoints.get(point);
 			// scale is max_points
 			int dim = random.nextInt(2);
 			int mod = random.nextInt(scale) - (scale / 2);
@@ -588,8 +578,7 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			double average = 0;
 			for (int c = 0; c < bestExamples.size(); c++) {
 				ShapeContext context = bestExamples.get(c);
-				distances[c] = ShapeHistogram.shapeContextMetric(context, testExample, false,
-						false, false);
+				distances[c] = ShapeHistogram.shapeContextMetric(context, testExample, false, false, false);
 				average += distances[c];
 			}
 			average /= bestExamples.size();
@@ -602,9 +591,9 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			double angleCost = 0;
 			for (int c = 1; c < max_points - 1; c++) {
 				// compute angles
-				InkSample first = testExample.controlPoints.get(c - 1);
-				InkSample second = testExample.controlPoints.get(c);
-				InkSample third = testExample.controlPoints.get(c + 1);
+				PenSample first = testExample.controlPoints.get(c - 1);
+				PenSample second = testExample.controlPoints.get(c);
+				PenSample third = testExample.controlPoints.get(c + 1);
 				double x1 = second.x - first.x;
 				double y1 = second.y - first.y;
 				double x2 = third.x - second.x;
@@ -619,10 +608,9 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			double averageLength = 0;
 			double[] length = new double[max_points - 1];
 			for (int c = 1; c < max_points; c++) {
-				InkSample first = testExample.controlPoints.get(c - 1);
-				InkSample second = testExample.controlPoints.get(c);
-				length[c - 1] = Math.sqrt(Math.pow(first.x - second.x, 2)
-						+ Math.pow(first.y - second.y, 2));
+				PenSample first = testExample.controlPoints.get(c - 1);
+				PenSample second = testExample.controlPoints.get(c);
+				length[c - 1] = Math.sqrt(Math.pow(first.x - second.x, 2) + Math.pow(first.y - second.y, 2));
 				averageLength += length[c - 1];
 			}
 			averageLength /= max_points - 1;
@@ -631,13 +619,13 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			}
 			springCost /= max_points - 2;
 			springCost = Math.sqrt(springCost);
-			double noiseDistance = ShapeHistogram.shapeContextMetric(noiseExample, testExample,
-					false, false, false);
-			double metric = -10 * stddev + noiseDistance + average / 3 + angleCost * 10000
-					- springCost * 5000 + averageLength * 5000;
-			System.out.println("iteration " + i + " distance " + metric + " stddev " + stddev
-					+ " noise " + noiseDistance + " average " + average + " angle " + angleCost
-					+ " sc " + springCost + " al " + averageLength);
+			double noiseDistance = ShapeHistogram.shapeContextMetric(noiseExample, testExample, false, false,
+					false);
+			double metric = -10 * stddev + noiseDistance + average / 3 + angleCost * 10000 - springCost
+					* 5000 + averageLength * 5000;
+			System.out.println("iteration " + i + " distance " + metric + " stddev " + stddev + " noise "
+					+ noiseDistance + " average " + average + " angle " + angleCost + " sc " + springCost
+					+ " al " + averageLength);
 			if (!Double.isNaN(metric) && (metric > distanceMetric || random.nextDouble() < /*
 																							 * Math.exp((-Math.abs(mod) -
 																							 * scale)*(2*i/(double)maxIteration)/5.)))
@@ -658,8 +646,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 				ink.addStroke(new InkStroke(testExample.controlPoints, new Points()));
 				InkRenderer renderer = new InkRenderer(ink);
 				renderer.renderToJPEG(new File(databaseName + "_generated_" + (i / 100) + ".jpg"),
-						new Pixels(300), new Points(max_points * max_points * 3), new Points(
-								max_points * max_points * 3));
+						new Pixels(300), new Points(max_points * max_points * 3), new Points(max_points
+								* max_points * 3));
 			}
 		}
 	}
@@ -680,7 +668,7 @@ public class GestureDatabase implements ActionListener, FocusListener {
 		while (unlabeledContexts.size() > 0) {
 			ShapeContext context = unlabeledContexts.get(unlabeledContexts.size() - 1);
 			if (context.authorName.contains("jerry"))
-				for (InkSample sample : context.controlPoints) { // that clown
+				for (PenSample sample : context.controlPoints) { // that clown
 					sample.x *= -1;
 					sample.y *= -1;
 				}
@@ -726,8 +714,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 	private void leaveChunkOut(int trials) throws IOException {
 		for (int trial = 0; trial < trials; trial++) {
 			chunk(.1);
-			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\" + databaseName + "_"
-					+ trial + ".gp"));
+			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\" + databaseName + "_" + trial
+					+ ".gp"));
 			quillWrite(writer);
 			Save(new FileWriter(new File(databaseName + "_" + trial + ".xml")));
 			Date before = new Date();
@@ -767,8 +755,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 					gesture.addGesture(context);
 				}
 			}
-			System.out.println("Error with cost weighting " + ShapeHistogram.costWeighting + ": "
-					+ errors[i]);
+			System.out
+					.println("Error with cost weighting " + ShapeHistogram.costWeighting + ": " + errors[i]);
 		}
 		ShapeHistogram.costWeighting = .3;
 	}
@@ -793,8 +781,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 					}
 				}
 			}
-			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\" + databaseName + "_"
-					+ name + ".gp"));
+			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\" + databaseName + "_" + name
+					+ ".gp"));
 			quillWrite(writer);
 			Save(new FileWriter(new File(databaseName + "_" + name + ".xml")));
 			Date before = new Date();
@@ -889,8 +877,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 		if (verbose) {
 			System.out.println("Best matches are:");
 			for (int i = 0; i < k; i++)
-				System.out.println(i + ": category " + clazz[i] + " with distance " + distance[i]
-						+ " using " + context.size() + " points.");
+				System.out.println(i + ": category " + clazz[i] + " with distance " + distance[i] + " using "
+						+ context.size() + " points.");
 		}
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 		HashMap<String, Double> costs = new HashMap<String, Double>();
@@ -938,8 +926,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 		for (int trial = 0; trial < trials; trial++) {
 			chunk(.1);
 			bestExamples();
-			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\" + databaseName
-					+ "_best_" + trial + ".gp"));
+			Writer writer = new FileWriter(new File("C:\\dev\\quill\\data\\" + databaseName + "_best_"
+					+ trial + ".gp"));
 			quillWrite(writer);
 			Save(new FileWriter(new File(databaseName + "_best_" + trial + ".xml")));
 			Date before = new Date();

@@ -2,7 +2,7 @@ package edu.stanford.hci.r3.pattern.calibrate;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 
 /**

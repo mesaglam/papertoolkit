@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.util.DebugUtils;
@@ -132,7 +132,7 @@ public abstract class BatchEventHandler {
 				final String strokeSampleText = insideText.substring(matcherStrokeBegin.end(),
 						matcherStrokeEnd.start());
 
-				final List<InkSample> samples = new ArrayList<InkSample>();
+				final List<PenSample> samples = new ArrayList<PenSample>();
 
 				final Matcher matcherSample = PATTERN_SAMPLE.matcher(strokeSampleText);
 				while (matcherSample.find()) {
@@ -144,7 +144,7 @@ public abstract class BatchEventHandler {
 					// make samples and stuff.... add it to the ink
 					// DebugUtils.println(x + " " + y + " f=" + f + " ts=" + t);
 
-					final InkSample sample = new InkSample(Double.parseDouble(x), Double.parseDouble(y),
+					final PenSample sample = new PenSample(Double.parseDouble(x), Double.parseDouble(y),
 							Integer.parseInt(f), Long.parseLong(t));
 					samples.add(sample);
 				}

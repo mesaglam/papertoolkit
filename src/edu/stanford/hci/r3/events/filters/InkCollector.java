@@ -8,8 +8,8 @@ import java.util.List;
 
 import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkSample;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
@@ -47,9 +47,9 @@ public class InkCollector extends ContentFilter {
 
 		private InkStroke lastTempStroke;
 
-		private List<InkSample> strokeSamples;
+		private List<PenSample> strokeSamples;
 
-		public InkNotifier(List<InkSample> currentStrokeSamples, InkStroke tempStroke) {
+		public InkNotifier(List<PenSample> currentStrokeSamples, InkStroke tempStroke) {
 			strokeSamples = currentStrokeSamples;
 			lastTempStroke = tempStroke;
 		}
@@ -103,7 +103,7 @@ public class InkCollector extends ContentFilter {
 	/**
 	 * Samples that compose an ink stroke...
 	 */
-	private List<InkSample> currentStrokeSamples = new ArrayList<InkSample>();
+	private List<PenSample> currentStrokeSamples = new ArrayList<PenSample>();
 
 	private long currPenDownTime;
 
@@ -154,7 +154,7 @@ public class InkCollector extends ContentFilter {
 	/**
 	 * @param strokeSamples
 	 */
-	private synchronized void addStrokeAndNotifyListeners(List<InkSample> strokeSamples) {
+	private synchronized void addStrokeAndNotifyListeners(List<PenSample> strokeSamples) {
 		mostRecentlyAddedStroke = new InkStroke(strokeSamples, DOTS);
 		strokes.add(mostRecentlyAddedStroke);
 		notifyAllListenersOfNewContent();
@@ -163,7 +163,7 @@ public class InkCollector extends ContentFilter {
 	/**
 	 * @param strokeSamples
 	 */
-	private synchronized void addStrokeTemporarilyAndNotifyListeners(List<InkSample> strokeSamples) {
+	private synchronized void addStrokeTemporarilyAndNotifyListeners(List<PenSample> strokeSamples) {
 		if (mostRecentlyAddedTemporaryStroke != null) {
 			strokes.remove(mostRecentlyAddedTemporaryStroke);
 		}
@@ -216,8 +216,8 @@ public class InkCollector extends ContentFilter {
 				lastYForDistanceMeasurements = yDots;
 
 				// We should start a new stroke!
-				currentStrokeSamples = new ArrayList<InkSample>();
-				currentStrokeSamples.add(new InkSample(xDots, yDots, 128, timestamp));
+				currentStrokeSamples = new ArrayList<PenSample>();
+				currentStrokeSamples.add(new PenSample(xDots, yDots, 128, timestamp));
 			} else {
 				// we'll assume this is a pen manufacturing error (jitter)!
 
@@ -226,7 +226,7 @@ public class InkCollector extends ContentFilter {
 				lastInkNotifier = null;
 
 				// add this sample back to the current stroke
-				currentStrokeSamples.add(new InkSample(xDots, yDots, 128, timestamp));
+				currentStrokeSamples.add(new PenSample(xDots, yDots, 128, timestamp));
 			}
 		} else if (event.isPenUp()) {
 			// the pen is lifted from the page
@@ -243,7 +243,7 @@ public class InkCollector extends ContentFilter {
 
 			// System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
-			currentStrokeSamples.add(new InkSample(xDots, yDots, 128, timestamp));
+			currentStrokeSamples.add(new PenSample(xDots, yDots, 128, timestamp));
 
 			// are we supposed to notify after enough distance?
 			if (notifyAfterEnoughDistance) {

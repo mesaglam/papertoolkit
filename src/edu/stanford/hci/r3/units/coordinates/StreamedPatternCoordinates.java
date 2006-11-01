@@ -1,13 +1,13 @@
 package edu.stanford.hci.r3.units.coordinates;
 
-import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.units.PatternDots;
 
 /**
  * <p>
- * Represents a location in the anoto physical coordinate space. We can only get these coordinates
- * through streaming. Batched coordinates will have to operate differently, as they will be bound to
- * a PAD file which has translated the physical coordinates into page addresses.
+ * Represents a location in the anoto physical coordinate space. We can only get these coordinates through
+ * streaming. Batched coordinates will have to operate differently, as they will be bound to a PAD file which
+ * has translated the physical coordinates into page addresses.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -18,8 +18,14 @@ import edu.stanford.hci.r3.units.PatternDots;
  */
 public class StreamedPatternCoordinates {
 
+	/**
+	 * 
+	 */
 	private PatternDots x;
 
+	/**
+	 * 
+	 */
 	private PatternDots y;
 
 	/**
@@ -69,14 +75,23 @@ public class StreamedPatternCoordinates {
 		return y.getValue();
 	}
 
+	/**
+	 * @param xCoord
+	 */
 	public void setX(PatternDots xCoord) {
 		x = xCoord;
 	}
 
+	/**
+	 * @param yCoord
+	 */
 	public void setY(PatternDots yCoord) {
 		y = yCoord;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return "[" + x + ", " + y + "]";
 	}
