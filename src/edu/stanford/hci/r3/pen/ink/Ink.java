@@ -10,8 +10,8 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * On its surface, this is just a <code>List&lt;InkStroke&gt;</code>... However, this class will
- * provide nice functions for clustering strokes, selecting strokes, etc.
+ * On its surface, this is just a <code>List&lt;InkStroke&gt;</code>... However, this class will provide
+ * nice functions for clustering strokes, selecting strokes, etc.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -23,9 +23,14 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 public class Ink {
 
 	/**
-	 * Black but with some transparency.
+	 * Mostly Black, but with some transparency.
 	 */
-	private Color color = new Color(0, 0, 0, 220);
+	private static final Color DEFAULT_DARK_INK_COLOR = new Color(0, 0, 0, 230);
+
+	/**
+	 * Default to the dark ink.
+	 */
+	private Color color = DEFAULT_DARK_INK_COLOR;
 
 	/**
 	 * The name of this Ink cluster.
@@ -58,9 +63,9 @@ public class Ink {
 		strokes.add(s);
 	}
 
-	
 	/**
 	 * Represents this Ink object as an XML string.
+	 * 
 	 * @param useSeparatorLines
 	 * @return
 	 */
@@ -70,15 +75,16 @@ public class Ink {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<ink>" + separator);
 		for (InkStroke s : strokes) {
-			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\""
-					+ s.getLastTimestamp() + "\">" + separator);
+			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\"" + s.getLastTimestamp() + "\">"
+					+ separator);
 			double[] x = s.getXSamples();
 			double[] y = s.getYSamples();
 			int[] f = s.getForceSamples();
 			long[] ts = s.getTimeSamples();
 			for (int i = 0; i < x.length; i++) {
-				sb.append("<p x=\"" + x[i] + "\" y=\"" + y[i] + "\" f=\"" + f[i] + "\" t=\""
-						+ ts[i] + "\"/>");
+				sb
+						.append("<p x=\"" + x[i] + "\" y=\"" + y[i] + "\" f=\"" + f[i] + "\" t=\"" + ts[i]
+								+ "\"/>");
 			}
 			sb.append("</stroke>" + separator);
 		}
@@ -129,11 +135,20 @@ public class Ink {
 	}
 
 	/**
+	 * Start over...
+	 */
+	public void resetColor() {
+		setColor(DEFAULT_DARK_INK_COLOR);
+	}
+
+	/**
 	 * @param xmlFile
 	 */
 	public void saveAsXMLFile(File xmlFile) {
 		FileUtils.writeStringToFile(getAsXML(true), xmlFile);
 	}
+	
+	
 
 	/**
 	 * @param c
@@ -143,8 +158,7 @@ public class Ink {
 	}
 
 	/**
-	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink
-	 * clusters.
+	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink clusters.
 	 * 
 	 * @param theName
 	 */

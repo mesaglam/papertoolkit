@@ -16,6 +16,7 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
+ * Reads in XML request files as Ink objects.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -64,6 +65,7 @@ public abstract class BatchEventHandler {
 	}
 
 	/**
+	 * Handlers will get this notification for every <page>...</page> that is read in from disk.
 	 * 
 	 * @param inkOnThisPage
 	 */
@@ -121,8 +123,8 @@ public abstract class BatchEventHandler {
 			final Matcher matcherStrokeEnd = PATTERN_END_STROKE.matcher(insideText);
 			// look through the strokes for this page
 			while (matcherStrokeBegin.find() && matcherStrokeEnd.find()) {
-				String strokeTimeStamp = matcherStrokeBegin.group(1);
-				long ts = Long.parseLong(strokeTimeStamp);
+				final String strokeTimeStamp = matcherStrokeBegin.group(1);
+				final long ts = Long.parseLong(strokeTimeStamp);
 				// date/time of the beginning of the stroke!
 				DebugUtils.println("Stroke Time: " + new Date(ts));
 
@@ -142,8 +144,8 @@ public abstract class BatchEventHandler {
 					// make samples and stuff.... add it to the ink
 					// DebugUtils.println(x + " " + y + " f=" + f + " ts=" + t);
 
-					final InkSample sample = new InkSample(Double.parseDouble(x), Double
-							.parseDouble(y), Integer.parseInt(f), Long.parseLong(t));
+					final InkSample sample = new InkSample(Double.parseDouble(x), Double.parseDouble(y),
+							Integer.parseInt(f), Long.parseLong(t));
 					samples.add(sample);
 				}
 
@@ -155,7 +157,7 @@ public abstract class BatchEventHandler {
 
 			inkArrived(inkOnThisPage);
 		}
-		System.out.println();
+		// System.out.println();
 	}
 
 	/**

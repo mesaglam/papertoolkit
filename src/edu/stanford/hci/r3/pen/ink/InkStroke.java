@@ -19,18 +19,33 @@ import edu.stanford.hci.r3.util.MathUtils;
 public class InkStroke {
 
 	/**
-	 * 
+	 * We can use this to augment rendering by manipulating the transparency & thickness.
 	 */
 	private int[] force = null;
 
+	/**
+	 * The bounds of this ink stroke. This is the rightmost x coordinate of any sample in this stroke.
+	 */
 	private double maxX = Double.MIN_VALUE;
 
+	/**
+	 * 
+	 */
 	private double maxY = Double.MIN_VALUE;
 
+	/**
+	 * 
+	 */
 	private double minX = Double.MAX_VALUE;
 
+	/**
+	 * 
+	 */
 	private double minY = Double.MAX_VALUE;
 
+	/**
+	 * 
+	 */
 	private int numSamples;
 
 	/**
@@ -99,6 +114,9 @@ public class InkStroke {
 		return force;
 	}
 
+	/**
+	 * @return
+	 */
 	public long getLastTimestamp() {
 		return timestamp[numSamples - 1];
 	}
@@ -131,6 +149,9 @@ public class InkStroke {
 		return minY;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getNumSamples() {
 		return numSamples;
 	}
@@ -156,6 +177,9 @@ public class InkStroke {
 		return x;
 	}
 
+	/**
+	 * @return
+	 */
 	public int[] getXSamplesAsInts() {
 		int[] xInts = new int[numSamples];
 		for (int i = 0; i < numSamples; i++) {
@@ -197,7 +221,7 @@ public class InkStroke {
 
 	/**
 	 * @param mxX
-	 *           the maxX to set
+	 *            the maxX to set
 	 */
 	public void setMaxX(float mxX) {
 		maxX = mxX;
@@ -205,7 +229,7 @@ public class InkStroke {
 
 	/**
 	 * @param mxY
-	 *           the maxY to set
+	 *            the maxY to set
 	 */
 	public void setMaxY(float mxY) {
 		maxY = mxY;
@@ -213,7 +237,7 @@ public class InkStroke {
 
 	/**
 	 * @param mnX
-	 *           the minX to set
+	 *            the minX to set
 	 */
 	public void setMinX(float mnX) {
 		minX = mnX;
@@ -221,7 +245,7 @@ public class InkStroke {
 
 	/**
 	 * @param mnY
-	 *           the minY to set
+	 *            the minY to set
 	 */
 	public void setMinY(float mnY) {
 		minY = mnY;

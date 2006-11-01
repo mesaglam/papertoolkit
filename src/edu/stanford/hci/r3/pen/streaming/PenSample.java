@@ -8,7 +8,7 @@ import edu.stanford.hci.r3.units.PatternDots;
 
 /**
  * <p>
- * Stores a pen sample.
+ * Stores a pen sample. Soon, this class will be folded into InkSample.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -21,15 +21,15 @@ import edu.stanford.hci.r3.units.PatternDots;
 public class PenSample implements Serializable {
 
 	/**
+	 * at the start of each stroke, there is a time that represents the stroke's beginning
+	 */
+	private static long anchorTime = 0L;
+
+	/**
 	 * 
 	 * 
 	 */
 	private static final DecimalFormat FORMATTER = PatternDots.FORMATTER;
-
-	/**
-	 * at the start of each stroke, there is a time that represents the stroke's beginning
-	 */
-	private static long anchorTime = 0L;
 
 	/**
 	 * measure of force from pen tip
@@ -128,6 +128,8 @@ public class PenSample implements Serializable {
 	 * @param ts
 	 * 
 	 * Convert from a string in the Anoto XML format to the correct time stamp
+	 * @deprecated because this was used for parsing the Nokia pen request files. Also, the "anchor time"
+	 *             should probably be stored in the stroke, and not in the sample.
 	 */
 	public void setAnotoAnchorTime(String ts) {
 		if (ts.startsWith("+")) {
@@ -151,6 +153,9 @@ public class PenSample implements Serializable {
 	}
 
 	/**
+	 * Does this sample represent a Pen Up? Perhaps we should subclass PenSample, instead of storing another
+	 * field in here? It seems a little wasteful if most samples are not pen up samples. =\
+	 * 
 	 * @param b
 	 */
 	public void setPenUp(boolean b) {
@@ -193,7 +198,7 @@ public class PenSample implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Sample: [" + FORMATTER.format(x) + ", " + FORMATTER.format(y) + "] F=" + force
-				+ " T=" + timestamp + " P=" + (isPenUp() ? "UP" : "DOWN");
+		return "Sample: [" + FORMATTER.format(x) + ", " + FORMATTER.format(y) + "] F=" + force + " T="
+				+ timestamp + " P=" + (isPenUp() ? "UP" : "DOWN");
 	}
 }
