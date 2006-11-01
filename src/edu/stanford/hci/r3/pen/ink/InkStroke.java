@@ -1,14 +1,23 @@
 package edu.stanford.hci.r3.pen.ink;
 
 import java.util.Collection;
+import java.util.List;
 
 import edu.stanford.hci.r3.pen.PenSample;
+import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
  * Store ink strokes (multiple samples) in here.
+ * </p>
+ * <p>
+ * We assume that the units in this stroke are consistent (one reference unit), and make sense to the client
+ * class that ends up using this stroke object. For example, if the units is in PatternDots, and the values
+ * are derived directly from the streaming PenListeners, we need to make sure that the stroke samples do not
+ * jump from one page tile to another. In that case, we would assume that the streamed samples come from one
+ * Anoto pattern tile, unless otherwise specified.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -18,6 +27,11 @@ import edu.stanford.hci.r3.util.MathUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class InkStroke {
+
+	/**
+	 * Assume data represents pattern dots by default.
+	 */
+	private static final PatternDots DEFAULT_REFERENCE_UNIT = new PatternDots();
 
 	/**
 	 * We can use this to augment rendering by manipulating the transparency & thickness.
@@ -45,7 +59,7 @@ public class InkStroke {
 	private double minY = Double.MAX_VALUE;
 
 	/**
-	 * 
+	 * How many samples are stored in this stroke? This should be the same as x.length;
 	 */
 	private int numSamples;
 
@@ -99,6 +113,10 @@ public class InkStroke {
 
 			i++;
 		}
+	}
+
+	public InkStroke(List<PenSample> currentStroke) {
+		this(currentStroke, DEFAULT_REFERENCE_UNIT);
 	}
 
 	/**
@@ -256,7 +274,8 @@ public class InkStroke {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "InkStroke: Bounds [" + minX + ", " + minY + "  -->  " + maxX + ", " + maxY + "]";
+		return "InkStroke: Bounds [" + minX + ", " + minY + "  -->  " + maxX + ", " + maxY + "] NumSamples: "
+				+ numSamples;
 	}
 
 }
