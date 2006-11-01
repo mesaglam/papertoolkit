@@ -97,8 +97,8 @@ public class RibbonPanel extends JPanel implements RibbonConstants {
 	public JPanel getToolPanel() {
 		if (toolPanel == null) {
 			toolPanel = new JPanel() {
-				private final GradientPaint gradient = new GradientPaint(0, 0, PANEL_BEGIN_COLOR,
-						0, getHeight(), PANEL_END_COLOR, false);
+				private final GradientPaint gradient = new GradientPaint(0, 0, PANEL_BEGIN_COLOR, 0,
+						getHeight(), PANEL_END_COLOR, false);
 
 				@Override
 				protected void paintComponent(Graphics g) {
@@ -116,10 +116,19 @@ public class RibbonPanel extends JPanel implements RibbonConstants {
 	}
 
 	/**
+	 * Lays out a panel using SpringLayout.
+	 * 
 	 * @param rows
 	 * @param cols
 	 */
 	public void layoutComponents(int rows, int cols) {
 		SpringLayoutUtils.makeCompactGrid(getToolPanel(), rows, cols, 5, 5, 5, 5);
+	}
+
+	/**
+	 * Default Layout. One Row.
+	 */
+	public void layoutComponents() {
+		SpringLayoutUtils.makeCompactGrid(getToolPanel(), 1, toolPanel.getComponentCount(), 5, 5, 5, 5);
 	}
 }
