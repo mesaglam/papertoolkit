@@ -16,6 +16,9 @@ import edu.stanford.hci.r3.util.MathUtils;
  * handling.
  * </p>
  * <p>
+ * Calibrate the Clock First, then Calibrate the X & Y... 
+ * </p>
+ * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>

@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -66,6 +67,12 @@ public class HandwritingCaptureDebugger extends JFrame {
 		startApp();
 	}
 
+	private void doClear() {
+		getInkPanel().clear();
+		app.clearInk();
+		getTextOutputArea().setText(NO_TEXT);
+	}
+
 	/**
 	 * @return
 	 */
@@ -114,12 +121,6 @@ public class HandwritingCaptureDebugger extends JFrame {
 			});
 		}
 		return clearButton;
-	}
-
-	private void doClear() {
-		getInkPanel().clear();
-		app.clearInk();
-		getTextOutputArea().setText(NO_TEXT);
 	}
 
 	/**
@@ -209,6 +210,15 @@ public class HandwritingCaptureDebugger extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	/**
+	 * TODO: Allow GUI Access to this...
+	 * 
+	 * @param topTen
+	 */
+	public void setAlternatives(List<String> topTen) {
+		DebugUtils.println(topTen);
 	}
 
 	/**
