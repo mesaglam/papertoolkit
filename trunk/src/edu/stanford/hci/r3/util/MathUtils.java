@@ -13,6 +13,37 @@ package edu.stanford.hci.r3.util;
  */
 public class MathUtils {
 
+	
+	/**
+	 * @param vals
+	 * @return
+	 */
+	public static double standardDeviation(double... vals) {
+		if (vals == null || vals.length == 0) {
+			return 0;
+		}
+
+		final double mean = average(vals);
+		double variance = 0;
+		for (double val : vals) {
+			variance += Math.pow((val - mean), 2);
+		}
+		return Math.sqrt(variance / vals.length);
+	}
+	
+	/**
+	 * If you think your values will overflow this operation, then roll your own
+	 * 
+	 * @param vals
+	 * @return
+	 */
+	public static double average(double... vals) {
+		if (vals == null || vals.length == 0) {
+			return 0;
+		}
+		return sum(vals) / vals.length;
+	}
+
 	/**
 	 * @param x1
 	 * @param y1
@@ -30,5 +61,17 @@ public class MathUtils {
 	 */
 	public static int rint(double val) {
 		return (int) Math.round(val);
+	}
+
+	/**
+	 * @param vals
+	 * @return
+	 */
+	private static double sum(double... vals) {
+		double sum = 0;
+		for (double val : vals) {
+			sum += val;
+		}
+		return sum;
 	}
 }

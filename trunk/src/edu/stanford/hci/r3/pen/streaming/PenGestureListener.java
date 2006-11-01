@@ -10,6 +10,7 @@ import edu.stanford.hci.r3.pen.gesture.Gesture;
 import edu.stanford.hci.r3.pen.gesture.GestureDatabase;
 import edu.stanford.hci.r3.pen.gesture.ShapeContext;
 import edu.stanford.hci.r3.pen.ink.InkSample;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 
 public class PenGestureListener implements PenListener {
 	ArrayList<Gesture> gestures = new ArrayList<Gesture>();

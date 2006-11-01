@@ -10,6 +10,7 @@ import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerJavaObjectXMLSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerPlainTextSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerSender;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -273,7 +274,7 @@ public class PenServer implements PenListener {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.pen.streaming.PenListener#sample(edu.stanford.hci.r3.pen.streaming.PenSample)
+	 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#sample(edu.stanford.hci.r3.pen.streaming.PenSample)
 	 */
 	public void sample(PenSample sample) {
 		final List<PenServerSender> toRemove = new ArrayList<PenServerSender>();

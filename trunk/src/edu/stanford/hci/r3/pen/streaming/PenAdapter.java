@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.pen.streaming;
 
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
+
 /**
  * <p>
  * Convenience Class

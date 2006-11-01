@@ -2,8 +2,8 @@ package edu.stanford.hci.r3.pattern.coordinates;
 
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.streaming.PenListener;
 import edu.stanford.hci.r3.pen.streaming.PenSample;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 
