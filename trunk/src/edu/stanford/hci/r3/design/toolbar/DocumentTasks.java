@@ -81,9 +81,21 @@ public class DocumentTasks {
 		return measurementPanel;
 	}
 
+	/**
+	 * This should open a File Chooser, allowing a user to open a PDF file. This designer will allow us to
+	 * place regions onto this PDF file.
+	 * 
+	 * @return
+	 */
 	private Component getOpenDocument() {
 		if (openDocumentButton == null) {
 			openDocumentButton = new JButton("Open");
+			openDocumentButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					System.out.println("Open Document");
+				}
+			});
+
 		}
 		return openDocumentButton;
 	}

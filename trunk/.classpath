@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="lib/jpedal/jai_codec.jar"/>
 	<classpathentry kind="lib" path="lib/jpedal/jai_core.jar"/>
 	<classpathentry kind="lib" path="lib/jpedal/jdom.jar"/>
-	<classpathentry kind="lib" path="lib/jpedal/pjes.jar"/>
 	<classpathentry kind="lib" path="lib/xstream/xpp3-1.1.3.4.O.jar"/>
 	<classpathentry kind="lib" path="lib/xstream/xstream-1.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/comm/comm.jar"/>
