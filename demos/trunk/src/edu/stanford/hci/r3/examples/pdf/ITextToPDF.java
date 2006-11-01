@@ -23,8 +23,11 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Some tests of the iText package.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -40,14 +43,12 @@ public class ITextToPDF {
 		Rectangle customPageSize8x8 = new Rectangle(0, 0, 576, 576);
 		Document doc = new Document(customPageSize8x8, 50, 50, 50, 50);
 		try {
-			PdfWriter writer = PdfWriter
-					.getInstance(doc, new FileOutputStream("testData/dots.pdf"));
+			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("testData/dots.pdf"));
 			doc.open();
 			String dot = "•";
 			// top layer for pattern
 			PdfContentByte cb = writer.getDirectContent();
-			Graphics2D g2d = cb.createGraphicsShapes(customPageSize8x8.width(), customPageSize8x8
-					.height());
+			Graphics2D g2d = cb.createGraphicsShapes(customPageSize8x8.width(), customPageSize8x8.height());
 
 			AffineTransform transform = g2d.getTransform();
 			transform.scale(600 / 2540.0 / 72, 600 / 2540.0 / 72);
@@ -75,12 +76,10 @@ public class ITextToPDF {
 		try {
 			// reader = new PdfReader(new FileInputStream(new
 			// File("testData/ButterflyNetCHI2006.pdf")));
-			PdfReader reader = new PdfReader(new FileInputStream(new File(
-					"testData/BobHorn-AvianFlu.pdf")));
+			PdfReader reader = new PdfReader(new FileInputStream(new File("testData/BobHorn-AvianFlu.pdf")));
 			System.out.println("NumPages: " + reader.getNumberOfPages());
 
-			PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(new File(
-					"testData/Test.pdf")));
+			PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(new File("testData/Test.pdf")));
 
 			// change the content beneath page 1
 			// PdfContentByte under = stamp.getUnderContent(1);
@@ -128,8 +127,7 @@ public class ITextToPDF {
 	public static void main(String[] args) {
 
 		try {
-			PdfReader reader = new PdfReader(new FileInputStream(new File(
-					"testData/BobHorn-AvianFlu.pdf")));
+			PdfReader reader = new PdfReader(new FileInputStream(new File("testData/BobHorn-AvianFlu.pdf")));
 			int numPages = reader.getNumberOfPages();
 			System.out.println("NumPages: " + numPages);
 
@@ -153,8 +151,7 @@ public class ITextToPDF {
 		Document doc = new Document(PageSize.LETTER, 50, 50, 50, 50);
 		System.out.println("Png to Pdf");
 		try {
-			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(
-					"testData/dragonSmall.pdf"));
+			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("testData/dragonSmall.pdf"));
 			doc.open();
 			Image img = Image.getInstance("testData/dragonSmall.png");
 			img.setAbsolutePosition(0, 0);

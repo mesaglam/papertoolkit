@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/PaperToolkit"/>
-	<classpathentry kind="lib" path="/PaperToolkit/lib/itext-1.4.3.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/jfreechart/jcommon-1.0.5.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/comm/comm.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/jfreechart/jfreechart-1.0.2.jar"/>
@@ -23,8 +22,6 @@
 	<classpathentry kind="lib" path="/PaperToolkit/lib/jpedal/jai_codec.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/jpedal/jai_core.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/jpedal/jdom.jar"/>
-	<classpathentry kind="lib" path="/PaperToolkit/lib/jpedal/jpedalSTD.jar"/>
-	<classpathentry kind="lib" path="/PaperToolkit/lib/jpedal/pjes.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/jmf/jmf.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/BrowserLauncher2-10rc4.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/jmf/mp3plugin.jar"/>
@@ -42,5 +39,7 @@
 	<classpathentry kind="lib" path="lib/swt/jface.jar"/>
 	<classpathentry kind="lib" path="lib/swt/swt.jar" sourcepath="lib/swt/swtsrc.zip"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/forms-1.0.7.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/itext"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jpedal"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

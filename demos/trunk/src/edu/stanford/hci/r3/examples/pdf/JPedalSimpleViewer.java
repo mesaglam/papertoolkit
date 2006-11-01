@@ -6,20 +6,23 @@ import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Demonstrates using the JPedal SimpleViewer. By default, the images will look blurry. Upgrading JAI with the
+ * higher performance native libraries will probably help.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * Demonstrates using the JPedal SimpleViewer. By default, the images will look blurry. Upgrading
- * JAI with the higher performance native libraries will probably help.
  */
 public class JPedalSimpleViewer {
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		WindowUtils.setNativeLookAndFeel();
 		SimpleViewer viewer = new SimpleViewer();
-		viewer.setupViewer("data/testFiles/ButterflyNetCHI2006.pdf");
-		// viewer.setupViewer("data/Grid/GridSheet.pdf");
+		viewer.setupViewer("data/TestFiles/ButterflyNetCHI2006.pdf");
 	}
 }
