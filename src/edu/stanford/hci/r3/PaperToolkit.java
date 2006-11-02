@@ -102,8 +102,6 @@ public class PaperToolkit {
 
 	private static PaperToolkit toolkitInstance;
 
-	private static boolean useHandwritingRecognitionServerOverride = true;
-
 	/**
 	 * The version of the PaperToolkit.
 	 * 
@@ -123,7 +121,6 @@ public class PaperToolkit {
 
 	static {
 		printInitializationMessages();
-		initializeLookAndFeel();
 	}
 
 	/**
@@ -198,7 +195,9 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Sets up parameters for any Java Swing UI we need.
+	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external class. If you
+	 * use the default PaperToolkit() constructor, it will also use the custom look and feel. All PaperToolkit
+	 * utility classes will also use this look and feel.
 	 */
 	public static void initializeLookAndFeel() {
 		if (!lookAndFeelInitialized) {
@@ -258,10 +257,6 @@ public class PaperToolkit {
 			toolkitInstance = new PaperToolkit();
 		}
 		toolkitInstance.startApplication(paperApp);
-	}
-
-	public static void setUseHandwritingRecognitionServer(boolean flag) {
-		useHandwritingRecognitionServerOverride = flag;
 	}
 
 	/**
@@ -397,22 +392,37 @@ public class PaperToolkit {
 	 * events that applications generate will be fed through this single event engine.
 	 */
 	public PaperToolkit() {
-		readConfiguration();
-
-		eventEngine = new EventEngine();
-		batchServer = new BatchServer();
-
-		// Start the local server up whenever the paper toolkit is initialized.
-		if (useHandwriting && useHandwritingRecognitionServerOverride) {
-			HandwritingRecognitionService.getInstance();
-		}
+		this(false);
 	}
 
 	/**
 	 * @param useAppManager
 	 */
 	public PaperToolkit(boolean useAppManager) {
-		this();
+		this(true, useAppManager, true);
+	}
+
+	/**
+	 * @param useAppManager
+	 */
+	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager, boolean useHandwritingRecognitionServer) {
+		loadStartupConfiguration();
+
+		if (useLookAndFeel) {
+			initializeLookAndFeel();
+		}
+
+		eventEngine = new EventEngine();
+		batchServer = new BatchServer();
+
+		// Start the local server up whenever the paper toolkit is initialized.
+		// the either flag can override the other. They will both need to be TRUE to actually load it.
+		if (useHandwriting && useHandwritingRecognitionServer) {
+			HandwritingRecognitionService.getInstance();
+		}
+
+		// whether or not to show the app manager GUI when an application is loaded
+		// the idea is that one can load multiple applications (TODO)!
 		useApplicationManager(useAppManager);
 	}
 
@@ -718,7 +728,7 @@ public class PaperToolkit {
 	/**
 	 * Load the configuration information on startup...
 	 */
-	private void readConfiguration() {
+	private void loadStartupConfiguration() {
 		final Properties props = Configuration.getPropertiesFromConfigFile(CONFIG_FILE_KEY);
 		useHandwriting = Boolean.parseBoolean(props.getProperty("handwritingRecognition"));
 	}

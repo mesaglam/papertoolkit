@@ -1,14 +1,17 @@
 package edu.stanford.hci.r3.units.coordinates;
 
-import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 
 /**
  * <p>
- * Represents a location in the Anoto PHYSICAL coordinate space. We can only get these coordinates through
- * streaming. Batched coordinates will have to operate differently, as they will be bound to a PAD file which
- * has translated the physical coordinates into page addresses.
+ * Represents a location in the Anoto LOGICAL coordinate space. We can only get these coordinates through
+ * docking the pen into the cradle. Each coordinate is actually bound to a PAD file which has translated the
+ * physical coordinates into page addresses. Thus, we need to store physical addresses along with the Batched
+ * Coordinate.
+ * </p>
+ * <p>
+ * Batched coordinates look like 21.3.23.24 [306.625, 240.000]
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -17,23 +20,47 @@ import edu.stanford.hci.r3.units.Units;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class StreamedPatternCoordinates extends Coordinates {
+public class BatchedPatternCoordinates extends Coordinates {
+
+	private int book;
+
+	private int page;
+
+	private int segment;
+
+	private int shelf;
 
 	/**
 	 * @param xCoord
 	 * @param yCoord
 	 */
-	public StreamedPatternCoordinates(PatternDots xCoord, PatternDots yCoord) {
+	public BatchedPatternCoordinates(int theSegment, int theShelf, int theBook, int thePage,
+			PatternDots xCoord, PatternDots yCoord) {
 		super(xCoord, yCoord);
+		segment = theSegment;
+		shelf = theShelf;
+		book = theBook;
+		page = thePage;
 	}
 
-	/**
-	 * Constructs one of these from the streaming pen sample.
-	 * 
-	 * @param sample
-	 */
-	public StreamedPatternCoordinates(PenSample sample) {
-		this(new PatternDots(sample.getX()), new PatternDots(sample.getY()));
+	public String getAddress() {
+		return segment + "." + shelf + "." + book + "." + page;
+	}
+
+	public int getBook() {
+		return book;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public int getSegment() {
+		return segment;
+	}
+
+	public int getShelf() {
+		return shelf;
 	}
 
 	/**
@@ -78,7 +105,7 @@ public class StreamedPatternCoordinates extends Coordinates {
 		if (xCoord instanceof PatternDots) {
 			x = xCoord;
 		} else {
-			System.err.println("StreamedPatternCoordinates: Incorrect type passed to setX(). ["
+			System.err.println("BatchedPatternCoordinates: Incorrect type passed to setX(). ["
 					+ xCoord.getClass() + "]");
 		}
 	}
@@ -97,7 +124,7 @@ public class StreamedPatternCoordinates extends Coordinates {
 		if (yCoord instanceof PatternDots) {
 			y = yCoord;
 		} else {
-			System.err.println("StreamedPatternCoordinates: Incorrect type passed to setY(). ["
+			System.err.println("BatchedPatternCoordinates: Incorrect type passed to setY(). ["
 					+ yCoord.getClass() + "]");
 		}
 	}
@@ -106,6 +133,6 @@ public class StreamedPatternCoordinates extends Coordinates {
 	 * @see edu.stanford.hci.r3.units.coordinates.Coordinates#toString()
 	 */
 	public String toString() {
-		return "[" + x + ", " + y + "]";
+		return getAddress() + " [" + x + ", " + y + "]";
 	}
 }
