@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
@@ -18,13 +19,16 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * <p>
  * Reads in XML request files as Ink objects.
  * 
- * TODO: We need to change this to allow for real event handling, after the fact. Basically, we
- * could allow a user to "play back" the batched events, if necessary. They could accomplish this
- * through a slider or something (as a debugging environment). Would this be useful for the end user
- * too? Imagine if the end user saw the stream of events, and could see which event handlers were
- * actuated when. Maybe we can cancel some strokes (after the fact)?
+ * TODO: We need to change this to allow for real event handling, after the fact. Basically, we could allow a
+ * user to "play back" the batched events, if necessary. They could accomplish this through a slider or
+ * something (as a debugging environment). Would this be useful for the end user too? Imagine if the end user
+ * saw the stream of events, and could see which event handlers were actuated when. Maybe we can cancel some
+ * strokes (after the fact)?
  * 
  * For example, if the system recognizes a TODO somewhere, we might want to cancel that event.
+ * 
+ * TODO: We should also change this to parse XML "for real", so we can get at attributes such as the segment,
+ * shelf, book, page, etc...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -110,19 +114,22 @@ public abstract class BatchedEventHandler {
 			final String pageAddress = matcherPageBegin.group(1);
 			DebugUtils.println("Page Address: " + pageAddress);
 
+			// for every page, we create ONE ink object
+			final Ink inkOnThisPage = new Ink();
+			inkOnThisPage.setName("Ink for " + pageAddress);
+
+			// save where we got this ink, so we will know later on...
+			final PageAddress address = new PageAddress(pageAddress);
+			inkOnThisPage.setSourcePageAddress(address);
+
 			// extract front and end matter
-			// final String beginText = requestBuffer.substring(beginTagStartIndex,
-			// beginTagEndIndex);
+			// final String beginText = requestBuffer.substring(beginTagStartIndex, beginTagEndIndex);
 			// final String endText = requestBuffer.substring(endTagStartIndex, endTagEndIndex);
 
 			// extract text in between the begin and end tags
 			final String insideText = requestBuffer.substring(beginTagEndIndex, endTagStartIndex);
 			// System.out.println("Internal Text Length: " + insideText.length());
 			// System.out.println(insideText);
-
-			// for every page, we create ONE ink object
-			final Ink inkOnThisPage = new Ink();
-			inkOnThisPage.setName("Ink for " + pageAddress);
 
 			final Matcher matcherStrokeBegin = PATTERN_BEGIN_STROKE.matcher(insideText);
 			final Matcher matcherStrokeEnd = PATTERN_END_STROKE.matcher(insideText);
@@ -149,8 +156,8 @@ public abstract class BatchedEventHandler {
 					// make samples and stuff.... add it to the ink
 					// DebugUtils.println(x + " " + y + " f=" + f + " ts=" + t);
 
-					final PenSample sample = new PenSample(Double.parseDouble(x), Double
-							.parseDouble(y), Integer.parseInt(f), Long.parseLong(t));
+					final PenSample sample = new PenSample(Double.parseDouble(x), Double.parseDouble(y),
+							Integer.parseInt(f), Long.parseLong(t));
 					samples.add(sample);
 				}
 

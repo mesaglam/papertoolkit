@@ -5,45 +5,51 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
-import edu.stanford.hci.r3.pen.streaming.PenStreamingConnection;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenStrokeListener;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
+import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * This class helps us create a mapping between the streamed (physical) coordinates and the batched
- * (logical) coordinates for Anoto digital pens. This is important to allow us to mix streaming with
- * batched event handling.
+ * This class helps us create a mapping between the streamed (physical) coordinates and the batched (logical)
+ * coordinates for Anoto digital pens. This is important to allow us to mix streaming with batched event
+ * handling.
  * </p>
  * <p>
  * Calibrate the Clock First, then Calibrate the X & Y...
  * 
- * This is an an app that takes two strokes and records them. Then, it finds the orientation of the
- * two strokes and calculates the crossing point of the two strokes, recording this as a set of
- * streamed coordinate. It then does the same thing with the batched ink... And calibrates the
- * coordinates.
+ * This is an an app that takes two strokes and records them. Then, it finds the orientation of the two
+ * strokes and calculates the crossing point of the two strokes, recording this as a set of streamed
+ * coordinate. It then does the same thing with the batched ink... And calibrates the coordinates.
  * </p>
  * <p>
- * Usage: Make sure the pen is either empty, or you have download all the data off of your pen. You
- * want to make sure that when you synchronize your pen, it will give the same number of strokes
- * that were detected during streaming.
+ * For time-sensitive applications, this also allows us to calibrate the clock of the pen to the system's
+ * clock.
+ * </p>
+ * <p>
+ * Usage: Make sure the pen is either empty, or you have download all the data off of your pen. You want to
+ * make sure that when you synchronize your pen, it will give the same number of strokes that were detected
+ * during streaming.
  * 
- * Draw a few strokes on your page. Then turn off streaming. Upload your pen data. The two ink
- * objects are synchronized automatically.
+ * Draw a few strokes on your page. Then turn off streaming. Upload your pen data. The two ink objects are
+ * synchronized automatically.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -52,18 +58,24 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class CoordinateCalibration {
+public class CalibrationCaptureApp {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new CoordinateCalibration();
+		new CalibrationCaptureApp();
 	}
 
 	private Application app;
 
 	private BatchedEventHandler beh;
+
+	private CalibrationEngine calibrate = new CalibrationEngine();
+
+	private JButton calibrateButton;
+
+	private Ink currStreamedInk;
 
 	private JFrame frame;
 
@@ -73,18 +85,22 @@ public class CoordinateCalibration {
 
 	private Pen pen;
 
+	private Ink savedBatchedInk;
+
+	private Ink savedStreamedInk;
+
 	private JButton saveStrokesButton;
 
-	private Ink streamedInk = new Ink();
-
 	private long streamedStrokesFileName;
+
+	private JLabel streamedStrokesInfoLabel;
 
 	private PaperToolkit toolkit;
 
 	/**
 	 * 
 	 */
-	public CoordinateCalibration() {
+	public CalibrationCaptureApp() {
 		PaperToolkit.initializeLookAndFeel();
 		setupGUI();
 
@@ -93,6 +109,13 @@ public class CoordinateCalibration {
 		app.addBatchEventHandler(getBatchedEventHandler());
 		toolkit = new PaperToolkit(true, false, false);
 		toolkit.startApplication(app);
+	}
+
+	/**
+	 * 
+	 */
+	private void alignStreamedAndBatchedStrokes() {
+		calibrate.alignInkStrokes(savedStreamedInk, savedBatchedInk);
 	}
 
 	private BatchedEventHandler getBatchedEventHandler() {
@@ -108,10 +131,29 @@ public class CoordinateCalibration {
 		return beh;
 	}
 
+	private Component getCalibrateButton() {
+		if (calibrateButton == null) {
+			calibrateButton = new JButton("Calibrate (Align Streamed & Batched Strokes)");
+			calibrateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+			calibrateButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					alignStreamedAndBatchedStrokes();
+				}
+			});
+		}
+		return calibrateButton;
+	}
+
 	private Component getPanel() {
 		if (mainPanel == null) {
 			mainPanel = new JPanel();
+			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+			mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 			mainPanel.add(getSaveStreamedStrokesButton());
+			mainPanel.add(Box.createVerticalStrut(10));
+			mainPanel.add(getStreamedStrokesInfoLabel());
+			mainPanel.add(Box.createVerticalStrut(10));
+			mainPanel.add(getCalibrateButton());
 		}
 		return mainPanel;
 	}
@@ -135,8 +177,12 @@ public class CoordinateCalibration {
 			listener = new PenStrokeListener() {
 				@Override
 				public void penStroke(InkStroke stroke) {
-					streamedInk.addStroke(stroke);
-					DebugUtils.println(streamedInk.getNumStrokes() + " strokes collected.");
+					if (currStreamedInk == null) {
+						currStreamedInk = new Ink();
+					}
+
+					currStreamedInk.addStroke(stroke);
+					DebugUtils.println(currStreamedInk.getNumStrokes() + " strokes collected.");
 
 					final double[] samplesX = stroke.getXSamples();
 					final double[] samplesY = stroke.getYSamples();
@@ -151,6 +197,7 @@ public class CoordinateCalibration {
 	private Component getSaveStreamedStrokesButton() {
 		if (saveStrokesButton == null) {
 			saveStrokesButton = new JButton("Save Streamed Strokes");
+			saveStrokesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 			saveStrokesButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					saveStreamedStrokes();
@@ -161,7 +208,16 @@ public class CoordinateCalibration {
 		return saveStrokesButton;
 	}
 
+	private Component getStreamedStrokesInfoLabel() {
+		if (streamedStrokesInfoLabel == null) {
+			streamedStrokesInfoLabel = new JLabel("No Saved Strokes");
+			streamedStrokesInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		}
+		return streamedStrokesInfoLabel;
+	}
+
 	private void saveBatchedStrokes(Ink inkOnThisPage) {
+		savedBatchedInk = inkOnThisPage;
 		FileUtils.writeStringToFile(inkOnThisPage.getAsXML(), new File("data/calibration/"
 				+ streamedStrokesFileName + ".batched.xml"));
 	}
@@ -170,9 +226,12 @@ public class CoordinateCalibration {
 	 * 
 	 */
 	private void saveStreamedStrokes() {
+		savedStreamedInk = currStreamedInk;
+		currStreamedInk = null;
 		streamedStrokesFileName = System.currentTimeMillis();
-		FileUtils.writeStringToFile(streamedInk.getAsXML(), new File("data/calibration/"
+		FileUtils.writeStringToFile(savedStreamedInk.getAsXML(), new File("data/calibration/"
 				+ streamedStrokesFileName + ".streamed.xml"));
+		streamedStrokesInfoLabel.setText(savedStreamedInk.getNumStrokes() + " strokes saved.");
 	}
 
 	/**
@@ -181,7 +240,8 @@ public class CoordinateCalibration {
 	private void setupGUI() {
 		frame = new JFrame("Pen Calibration");
 		frame.add(getPanel());
-		frame.setSize(320, 240);
+		frame.pack();
+		frame.setLocation(WindowUtils.getWindowOrigin(frame, WindowUtils.DESKTOP_CENTER));
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
