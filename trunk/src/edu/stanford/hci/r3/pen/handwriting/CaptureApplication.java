@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.pen.handwriting;
 
 import java.io.File;
+import java.util.List;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.events.filters.HandwritingRecognizer;
@@ -240,10 +241,6 @@ public class CaptureApplication extends Application {
 		handwritingRecognizer = new HandwritingRecognizer() {
 			@Override
 			public void contentArrived() {
-				// top ten list
-				// final List<String> topTen = recognizeHandwritingWithAlternatives();
-				// String text = topTen.get(0);
-
 				String text = recognizeHandwriting();
 				DebugUtils.println("Handwritten Content: " + text);
 				gui.setInfoText(text);
@@ -254,5 +251,11 @@ public class CaptureApplication extends Application {
 		region.addContentFilter(inkCollector);
 		region.addContentFilter(handwritingRecognizer);
 		return region;
+	}
+	
+	public void retrieveAlternatives() {
+		// top ten list
+		 final List<String> topTen = handwritingRecognizer.recognizeHandwritingWithAlternatives();
+		 gui.setAlternatives(topTen);
 	}
 }

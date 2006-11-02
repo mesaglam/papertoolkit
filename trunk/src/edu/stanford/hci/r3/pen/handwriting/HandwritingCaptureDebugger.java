@@ -16,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
+
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pen.ink.InkPanel;
 import edu.stanford.hci.r3.util.DebugUtils;
@@ -40,6 +42,8 @@ public class HandwritingCaptureDebugger extends JFrame {
 		new HandwritingCaptureDebugger();
 	}
 
+	private JButton alternativesButton;
+
 	private CaptureApplication app;
 
 	private JPanel buttonPanel;
@@ -52,6 +56,8 @@ public class HandwritingCaptureDebugger extends JFrame {
 	 * JPanel that renders Ink.
 	 */
 	private InkPanel mainPanel;
+
+	private JPanel outputPanel;
 
 	private JButton saveButton;
 
@@ -67,10 +73,14 @@ public class HandwritingCaptureDebugger extends JFrame {
 		startApp();
 	}
 
+	private void displayAlternatives() {
+		app.retrieveAlternatives();
+	}
+
 	private void doClear() {
 		getInkPanel().clear();
 		app.clearInk();
-		getTextOutputArea().setText(NO_TEXT);
+		getOutputTextArea().setText(NO_TEXT);
 	}
 
 	/**
@@ -150,6 +160,45 @@ public class HandwritingCaptureDebugger extends JFrame {
 		return statusMessageLabel;
 	}
 
+	private JPanel getOutputPanel() {
+		if (outputPanel == null) {
+			outputPanel = new JPanel();
+			outputPanel.add(getOutputTextArea(), BorderLayout.CENTER);
+			outputPanel.add(getRetrieveAlternativesButton(), BorderLayout.EAST);
+		}
+		return outputPanel;
+	}
+
+	/**
+	 * The info bar at the bottom...
+	 * 
+	 * @return
+	 */
+	private JTextArea getOutputTextArea() {
+		if (textOutput == null) {
+			textOutput = new JTextArea(1, 50);
+			textOutput.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+			textOutput.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+			textOutput.setText(NO_TEXT);
+			textOutput.setForeground(Color.WHITE);
+			textOutput.setEditable(false);
+		}
+		return textOutput;
+	}
+
+	private Component getRetrieveAlternativesButton() {
+		if (alternativesButton == null) {
+			alternativesButton = new JButton("Get Alternatives");
+			alternativesButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					displayAlternatives();
+				}
+
+			});
+		}
+		return alternativesButton;
+	}
+
 	/**
 	 * @return
 	 */
@@ -164,23 +213,6 @@ public class HandwritingCaptureDebugger extends JFrame {
 			});
 		}
 		return saveButton;
-	}
-
-	/**
-	 * The info bar at the bottom...
-	 * 
-	 * @return
-	 */
-	private JTextArea getTextOutputArea() {
-		if (textOutput == null) {
-			textOutput = new JTextArea(1, 50);
-			textOutput.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
-			textOutput.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-			textOutput.setText(NO_TEXT);
-			textOutput.setForeground(Color.WHITE);
-			textOutput.setEditable(false);
-		}
-		return textOutput;
 	}
 
 	/**
@@ -204,7 +236,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 		setTitle("Handwriting Recognition Debugger");
 		getContentPane().add(getToolBarPanel(), BorderLayout.NORTH);
 		getContentPane().add(getInkPanel(), BorderLayout.CENTER);
-		getContentPane().add(getTextOutputArea(), BorderLayout.SOUTH);
+		getContentPane().add(getOutputPanel(), BorderLayout.SOUTH);
 		pack();
 		setLocation(WindowUtils.getWindowOrigin(this, WindowUtils.DESKTOP_CENTER));
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -225,21 +257,21 @@ public class HandwritingCaptureDebugger extends JFrame {
 	 * @param text
 	 */
 	public void setInfoText(String text) {
-		getTextOutputArea().setText(text);
+		getOutputTextArea().setText(text);
 	}
 
 	/**
 	 * 
 	 */
 	public void showBottomRightPointConfirmation() {
-		getTextOutputArea().setText("Bottom-Right Point has been set.");
+		getOutputTextArea().setText("Bottom-Right Point has been set.");
 	}
 
 	/**
 	 * 
 	 */
 	public void showTopLeftPointConfirmation() {
-		getTextOutputArea().setText("Top-Left Point has been set.");
+		getOutputTextArea().setText("Top-Left Point has been set.");
 	}
 
 	/**
