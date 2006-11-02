@@ -39,7 +39,7 @@
 	<classpathentry kind="lib" path="lib/swt/jface.jar"/>
 	<classpathentry kind="lib" path="lib/swt/swt.jar" sourcepath="lib/swt/swtsrc.zip"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/forms-1.0.7.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/itext"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jpedal"/>
+	<classpathentry kind="lib" path="/PaperToolkit/lib/jpedal/jpedalSTD.jar"/>
+	<classpathentry kind="lib" path="/PaperToolkit/lib/itext-1.4.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

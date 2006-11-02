@@ -4,7 +4,7 @@ import java.io.File;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.pen.batch.BatchEventHandler;
+import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
@@ -30,7 +30,7 @@ public class HelloBatched extends Application {
 		paperToolkit.startApplication(batched);
 	}
 
-	private BatchEventHandler inkHandler;
+	private BatchedEventHandler inkHandler;
 
 	/**
 	 * Run this application first, then write on your notepad and plug it in...
@@ -45,9 +45,9 @@ public class HelloBatched extends Application {
 	 * 
 	 * @return
 	 */
-	private BatchEventHandler getInkHandler() {
+	private BatchedEventHandler getInkHandler() {
 		if (inkHandler == null) {
-			inkHandler = new BatchEventHandler("Ink Handler") {
+			inkHandler = new BatchedEventHandler("Ink Handler") {
 				@Override
 				public void inkArrived(Ink inkOnThisPage) {
 					DebugUtils.println("Ink Arrived" + inkOnThisPage.getName());

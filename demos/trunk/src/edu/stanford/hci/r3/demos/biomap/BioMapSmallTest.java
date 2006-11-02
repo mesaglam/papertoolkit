@@ -7,7 +7,7 @@ import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Bundle;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
-import edu.stanford.hci.r3.pen.batch.BatchEventHandler;
+import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.units.Millimeters;
 
@@ -40,7 +40,7 @@ public class BioMapSmallTest extends Application {
 	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
 	 */
 	protected void initializeEventHandlers() {
-		addBatchEventHandler(new BatchEventHandler("Note Pages Renderer") {
+		addBatchEventHandler(new BatchedEventHandler("Note Pages Renderer") {
 
 			@Override
 			public void inkArrived(Ink inkOnThisPage) {
