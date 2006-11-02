@@ -17,6 +17,14 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 /**
  * <p>
  * Reads in XML request files as Ink objects.
+ * 
+ * TODO: We need to change this to allow for real event handling, after the fact. Basically, we
+ * could allow a user to "play back" the batched events, if necessary. They could accomplish this
+ * through a slider or something (as a debugging environment). Would this be useful for the end user
+ * too? Imagine if the end user saw the stream of events, and could see which event handlers were
+ * actuated when. Maybe we can cancel some strokes (after the fact)?
+ * 
+ * For example, if the system recognizes a TODO somewhere, we might want to cancel that event.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -25,7 +33,7 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class BatchEventHandler {
+public abstract class BatchedEventHandler {
 
 	/**
 	 * .*? is a reluctant matcher (i.e., not greedy)
@@ -57,19 +65,16 @@ public abstract class BatchEventHandler {
 
 	private PatternDots referenceUnit = new PatternDots();
 
-	/**
-	 * 
-	 */
-	public BatchEventHandler(String theName) {
-		name = theName;
+	public BatchedEventHandler() {
+		this("Batched Event Handler");
 	}
 
 	/**
-	 * Handlers will get this notification for every <page>...</page> that is read in from disk.
 	 * 
-	 * @param inkOnThisPage
 	 */
-	public abstract void inkArrived(Ink inkOnThisPage);
+	public BatchedEventHandler(String theName) {
+		name = theName;
+	}
 
 	/**
 	 * @param xmlDataFile
@@ -144,8 +149,8 @@ public abstract class BatchEventHandler {
 					// make samples and stuff.... add it to the ink
 					// DebugUtils.println(x + " " + y + " f=" + f + " ts=" + t);
 
-					final PenSample sample = new PenSample(Double.parseDouble(x), Double.parseDouble(y),
-							Integer.parseInt(f), Long.parseLong(t));
+					final PenSample sample = new PenSample(Double.parseDouble(x), Double
+							.parseDouble(y), Integer.parseInt(f), Long.parseLong(t));
 					samples.add(sample);
 				}
 
@@ -159,6 +164,13 @@ public abstract class BatchEventHandler {
 		}
 		// System.out.println();
 	}
+
+	/**
+	 * Handlers will get this notification for every <page>...</page> that is read in from disk.
+	 * 
+	 * @param inkOnThisPage
+	 */
+	public abstract void inkArrived(Ink inkOnThisPage);
 
 	/**
 	 * @see java.lang.Object#toString()

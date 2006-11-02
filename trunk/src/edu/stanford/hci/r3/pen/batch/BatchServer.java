@@ -45,7 +45,7 @@ public class BatchServer {
 	/**
 	 * 
 	 */
-	private List<BatchEventHandler> eventHandlers = new ArrayList<BatchEventHandler>();
+	private List<BatchedEventHandler> eventHandlers = new ArrayList<BatchedEventHandler>();
 
 	/**
 	 * Close the batch server if this is ever set to true.
@@ -117,7 +117,7 @@ public class BatchServer {
 							DebugUtils.println("Retrieving: " + xmlFile.getAbsolutePath());
 							if (xmlFile.exists()) {
 								// System.out.println("The file exists!");
-								for (BatchEventHandler beh : eventHandlers) {
+								for (BatchedEventHandler beh : eventHandlers) {
 									beh.batchedDataArrived(xmlFile);
 								}
 							} else {
@@ -185,8 +185,8 @@ public class BatchServer {
 	/**
 	 * @param batchEventHandlers
 	 */
-	public void registerBatchEventHandlers(List<BatchEventHandler> batchEventHandlers) {
-		for (BatchEventHandler beh : batchEventHandlers) {
+	public void registerBatchEventHandlers(List<BatchedEventHandler> batchEventHandlers) {
+		for (BatchedEventHandler beh : batchEventHandlers) {
 			eventHandlers.add(beh);
 		}
 	}
@@ -211,8 +211,8 @@ public class BatchServer {
 	/**
 	 * @param batchEventHandlers
 	 */
-	public void unregisterBatchEventHandlers(List<BatchEventHandler> batchEventHandlers) {
-		for (BatchEventHandler beh : batchEventHandlers) {
+	public void unregisterBatchEventHandlers(List<BatchedEventHandler> batchEventHandlers) {
+		for (BatchedEventHandler beh : batchEventHandlers) {
 			eventHandlers.remove(beh);
 			DebugUtils.println("Unregistering BatchEventHandler [" + beh + "]");
 		}

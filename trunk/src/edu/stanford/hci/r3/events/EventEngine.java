@@ -127,7 +127,7 @@ public class EventEngine {
 			 */
 			private PenEvent createPenEvent(PenSample sample) {
 				// make an event object and send it to the event handler
-				PenEvent event = new PenEvent(penID, System.currentTimeMillis());
+				final PenEvent event = new PenEvent(penID, System.currentTimeMillis());
 				event.setOriginalSample(sample);
 				event.setPenName(pen.getName());
 				return event;
@@ -137,7 +137,7 @@ public class EventEngine {
 			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penDown(edu.stanford.hci.r3.pen.PenSample)
 			 */
 			public void penDown(PenSample sample) {
-				PenEvent event = createPenEvent(sample);
+				final PenEvent event = createPenEvent(sample);
 				event.setModifier(PenEvent.PEN_DOWN_MODIFIER);
 				handlePenSample(event);
 			}

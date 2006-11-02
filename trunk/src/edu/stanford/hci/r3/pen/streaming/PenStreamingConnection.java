@@ -20,11 +20,11 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the Nokia
- * SU-1B pen and converts it according to the Nokia Document.
+ * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the
+ * Nokia SU-1B pen and converts it according to the Nokia Document.
  * 
- * The idea for this class is that it reports low-level pen events. It does not do any bit of gesture
- * recognition.
+ * The idea for this class is that it reports low-level pen events. It does not do any bit of
+ * gesture recognition.
  * </p>
  * <p>
  * Example code is taken from: http://java.sun.com/products/javacomm/javadocs/API_users_guide.html
@@ -172,8 +172,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	}
 
 	/**
-	 * Add a Pen Listener to the internal list. Pen Listeners' callbacks will be called when pen events are
-	 * detected.
+	 * Add a Pen Listener to the internal list. Pen Listeners' callbacks will be called when pen
+	 * events are detected.
 	 * 
 	 * @param pl
 	 */
@@ -218,8 +218,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 				penIsUp = true;
 				for (PenListener pl : listeners) {
-					// on October 27, 2006, I changed behavior so that the pen up samplenow passes X
-					// & Y info
+					// on October 27, 2006, I changed behavior so that the pen up sample
+					// now passes X & Y info
 					// before, it passed x=0, y=0
 					final PenSample penSample = new PenSample(lastX, lastY, 0, timestamp, true);
 					// on June 12, 2006, I changed the behavior so that a .sample event is NOT
@@ -276,40 +276,50 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 			// done with the whole streaming sample, so output it!
 			if (DEBUG) {
-				System.out.println("(" + (x + xFraction * 0.125) + ", " + (y + yFraction * 0.125) + ")"
-						+ " f: " + force + " t: " + timestamp);
+				System.out.println("(" + (x + xFraction * 0.125) + ", " + (y + yFraction * 0.125)
+						+ ")" + " f: " + force + " t: " + timestamp);
 				System.out.flush();
 			}
 
-			final PenSample penSample = new PenSample(x + (xFraction * 0.125), y + (yFraction * 0.125),
-					force, timestamp, false);
+			final PenSample penSample = new PenSample(x + (xFraction * 0.125), y
+					+ (yFraction * 0.125), force, timestamp, false);
 
 			if (penIsUp) {
 				penIsUp = false;
 				for (PenListener pl : listeners) {
-					// pen down also sends a sample later on
-					// however, pen up doesn't send an official sample anymore
+					// Nov 12, 2006, I changed the behavior of .penDown to NOT send a .sample
+					// event... because It seems rather redundant.
+					// so now, neither penUp nor penDown sends an extra sample event
+					// penDown contains a true sample
+					// penUp just contains the values of the most recent sample
+					// It is designed this way to facilitate calibration.
 					pl.penDown(penSample);
 				}
-			}
+			} else {
+				// pen is already down, so we just generate .sample events...
 
-			for (PenListener pl : listeners) {
-				// June 12, 2006
-				// (ronyeh) I changed the behavior of pen listeners a bit here...
-				// now, we only pass ONE pen sample to all listeners
-				// if tehre are multiple listeners, then they must make their own copies if they're
-				// gonna keep them around (OR beware that others may have your samples too)
-				pl.sample(penSample);
+				for (PenListener pl : listeners) {
+					// June 12, 2006
+					// (ronyeh) I changed the behavior of pen listeners a bit here...
+					// now, we only pass ONE pen sample to all listeners
+					// if there are multiple listeners, then they must make their own copies if
+					// they're gonna keep them around
+					// (OR beware that others may have your samples too)
+					pl.sample(penSample);
+				}
 			}
 
 			// keep it around so that we can pass this information to the pen up event!
 			lastSample = penSample;
 
+			// reset our values
 			x = 0;
 			y = 0;
 			xFraction = 0;
 			yFraction = 0;
 			force = 0;
+
+			// look for the header of the next sample
 			nextUp = StreamingField.HEADER;
 		}
 	}

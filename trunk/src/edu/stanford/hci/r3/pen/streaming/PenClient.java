@@ -124,23 +124,24 @@ public class PenClient {
 							final PenSample sample = (PenSample) xml.fromXML(line);
 							final boolean penIsUp = sample.isPenUp();
 
+							// basically implements a state machine... =)
 							if (!penIsDown && !penIsUp) {
 								penIsDown = true;
 								notifyListenersOfPenDown(sample);
 							} else if (penIsUp) {
 								penIsDown = false;
 								notifyListenersOfPenUp(sample);
-							}
-
-							// tell my listeners!
-							// System.out.println(sample.toString());
-							// modification as of June 12, 2006
-							// the behavior here is the same as in pen connection
-							// where a .sample event is NOT generated when penUp happens
-							// samples are only generated while the pen is down (even if it just
-							// came down)
-							if (penIsDown) {
-								notifyListenersOfPenSample(sample);
+							} else {
+								// tell my listeners!
+								// June 12, 2006 & Nov 2, 2006
+								// the behavior here is the same as in pen connection
+								// where a .sample event is NOT generated when penUp or penDown
+								// happen
+								// samples are only generated while the pen is down
+								// (but not if it just came down)
+								if (penIsDown) {
+									notifyListenersOfPenSample(sample);
+								}
 							}
 
 							if (exitFlag) {
@@ -187,12 +188,18 @@ public class PenClient {
 		}
 	}
 
+	/**
+	 * @param sample
+	 */
 	private synchronized void notifyListenersOfPenDown(final PenSample sample) {
 		for (PenListener pl : listeners) {
 			pl.penDown(sample);
 		}
 	}
 
+	/**
+	 * @param sample
+	 */
 	private synchronized void notifyListenersOfPenSample(final PenSample sample) {
 		for (PenListener pl : listeners) {
 			pl.sample(sample);
