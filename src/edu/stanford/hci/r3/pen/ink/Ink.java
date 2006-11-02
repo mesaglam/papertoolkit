@@ -10,8 +10,8 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * On its surface, this is just a <code>List&lt;InkStroke&gt;</code>... However, this class will provide
- * nice functions for clustering strokes, selecting strokes, etc.
+ * On its surface, this is just a <code>List&lt;InkStroke&gt;</code>... However, this class will
+ * provide nice functions for clustering strokes, selecting strokes, etc.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -64,6 +64,13 @@ public class Ink {
 	}
 
 	/**
+	 * @return
+	 */
+	public String getAsXML() {
+		return getAsXML(true);
+	}
+
+	/**
 	 * Represents this Ink object as an XML string.
 	 * 
 	 * @param useSeparatorLines
@@ -75,16 +82,15 @@ public class Ink {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<ink>" + separator);
 		for (InkStroke s : strokes) {
-			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\"" + s.getLastTimestamp() + "\">"
-					+ separator);
+			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\""
+					+ s.getLastTimestamp() + "\">" + separator);
 			double[] x = s.getXSamples();
 			double[] y = s.getYSamples();
 			int[] f = s.getForceSamples();
 			long[] ts = s.getTimeSamples();
 			for (int i = 0; i < x.length; i++) {
-				sb
-						.append("<p x=\"" + x[i] + "\" y=\"" + y[i] + "\" f=\"" + f[i] + "\" t=\"" + ts[i]
-								+ "\"/>");
+				sb.append("<p x=\"" + x[i] + "\" y=\"" + y[i] + "\" f=\"" + f[i] + "\" t=\""
+						+ ts[i] + "\"/>");
 			}
 			sb.append("</stroke>" + separator);
 		}
@@ -147,8 +153,6 @@ public class Ink {
 	public void saveAsXMLFile(File xmlFile) {
 		FileUtils.writeStringToFile(getAsXML(true), xmlFile);
 	}
-	
-	
 
 	/**
 	 * @param c
@@ -158,7 +162,8 @@ public class Ink {
 	}
 
 	/**
-	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink clusters.
+	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink
+	 * clusters.
 	 * 
 	 * @param theName
 	 */

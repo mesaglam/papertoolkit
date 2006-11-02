@@ -17,7 +17,7 @@ import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.batch.BatchEventHandler;
+import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -119,7 +119,7 @@ public class Application {
 	// ////////////////////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////////////////////////////////////////////////////////////////
 
-	private List<BatchEventHandler> batchEventHandlers = new ArrayList<BatchEventHandler>();
+	private List<BatchedEventHandler> batchEventHandlers = new ArrayList<BatchedEventHandler>();
 
 	/**
 	 * An application can also coordinate multiple devices. A remote collaboration application might
@@ -172,7 +172,7 @@ public class Application {
 	/**
 	 * @param beh
 	 */
-	public void addBatchEventHandler(BatchEventHandler beh) {
+	public void addBatchEventHandler(BatchedEventHandler beh) {
 		batchEventHandlers.add(beh);
 	}
 
@@ -264,7 +264,7 @@ public class Application {
 	 * 
 	 * @return
 	 */
-	public List<BatchEventHandler> getBatchEventHandlers() {
+	public List<BatchedEventHandler> getBatchEventHandlers() {
 		return batchEventHandlers;
 	}
 
@@ -352,7 +352,7 @@ public class Application {
 	/**
 	 * @param beh
 	 */
-	public void removeBatchEventHandler(BatchEventHandler beh) {
+	public void removeBatchEventHandler(BatchedEventHandler beh) {
 		batchEventHandlers.remove(beh);
 	}
 

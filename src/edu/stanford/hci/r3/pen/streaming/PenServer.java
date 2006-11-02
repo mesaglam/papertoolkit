@@ -164,10 +164,11 @@ public class PenServer implements PenListener {
 			final PenStreamingConnection penConnection = PenStreamingConnection
 					.getInstance(serialPortName);
 			if (penConnection == null) {
-				System.err.println("The PenServer could not connect to the local serial port. Is your Bluetooth Dongle unplugged?");
+				System.err
+						.println("The PenServer could not connect to the local serial port. Is your Bluetooth Dongle unplugged?");
 				return;
 			}
-			
+
 			final ServerSocket javaServer = new ServerSocket(tcpipPort);
 			javaPenServer = new PenServer(javaServer, ClientServerType.JAVA);
 			penConnection.addPenListener(javaPenServer);
@@ -254,19 +255,20 @@ public class PenServer implements PenListener {
 	}
 
 	/**
+	 * Since with a PenListener... a penDown event NEVER overlaps with a penSample event, we now
+	 * must send a sample over the wire for penDown events too!
+	 * 
 	 * @created Jun 12, 2006
 	 * @author Ron Yeh
 	 */
 	public void penDown(PenSample s) {
 		penUp = false;
+		sample(s);
 	}
 
 	/**
 	 * @created Jun 12, 2006
 	 * @author Ron Yeh
-	 * 
-	 * PenServer/Clients DO send samples on penUp. This is in keeping with PenEventGenerator. We
-	 * might fix this later on.
 	 */
 	public void penUp(PenSample s) {
 		penUp = true;
@@ -293,7 +295,6 @@ public class PenServer implements PenListener {
 			penServerOutput.destroy();
 			outputs.remove(penServerOutput);
 		}
-
 	}
 
 	/**
