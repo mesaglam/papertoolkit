@@ -15,9 +15,15 @@ import edu.stanford.hci.r3.units.Units;
  */
 public class Coordinates {
 
-	private Units x;
+	/**
+	 * X Value of this coordinate.
+	 */
+	protected Units x;
 
-	private Units y;
+	/**
+	 * Y Value of this coordinate.
+	 */
+	protected Units y;
 
 	/**
 	 * @param x
@@ -40,6 +46,24 @@ public class Coordinates {
 	 */
 	public Units getY() {
 		return y;
+	}
+
+	/**
+	 * Subclasses of Coordinates should verify that the passed-in unit is in fact of the right type!
+	 * 
+	 * @param xCoord
+	 */
+	public void setX(Units xCoord) {
+		x = xCoord;
+	}
+
+	/**
+	 * Subclasses of Coordinates should verify that the passed-in unit is in fact of the right type!
+	 * 
+	 * @param yCoord
+	 */
+	public void setY(Units yCoord) {
+		y = yCoord;
 	}
 
 	/**

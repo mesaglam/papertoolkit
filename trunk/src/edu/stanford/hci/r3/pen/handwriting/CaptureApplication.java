@@ -1,7 +1,6 @@
 package edu.stanford.hci.r3.pen.handwriting;
 
 import java.io.File;
-import java.util.List;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.events.filters.HandwritingRecognizer;
@@ -95,8 +94,7 @@ public class CaptureApplication extends Application {
 					gui.showTopLeftPointConfirmation();
 				} else if (anchorPointBottomRight == null) {
 					anchorPointBottomRight = sample;
-					DebugUtils
-							.println("Bottom Right Point is now set to " + anchorPointBottomRight);
+					DebugUtils.println("Bottom Right Point is now set to " + anchorPointBottomRight);
 					gui.showBottomRightPointConfirmation();
 					scaleInkPanelToFit();
 					addOneSheetAndOneRegionForHandwritingCapture();
@@ -145,8 +143,7 @@ public class CaptureApplication extends Application {
 		final double height = brY - tlY;
 
 		// create this custom mapping object
-		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
-				sheet);
+		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(sheet);
 
 		// tie the pattern bounds to this region object
 		mapping.setPatternInformationOfRegion(region, //
@@ -198,8 +195,7 @@ public class CaptureApplication extends Application {
 	}
 
 	/**
-	 * Fit to WIDTH or HEIGHT, whichever is larger. The defined region should fit "perfectly" in our
-	 * panel.
+	 * Fit to WIDTH or HEIGHT, whichever is larger. The defined region should fit "perfectly" in our panel.
 	 */
 	private void scaleInkPanelToFit() {
 		final double width = anchorPointBottomRight.x - anchorPointTopLeft.x;
@@ -244,11 +240,14 @@ public class CaptureApplication extends Application {
 		handwritingRecognizer = new HandwritingRecognizer() {
 			@Override
 			public void contentArrived() {
-				final List<String> topTen = recognizeHandwritingWithAlternatives();
-				String text = topTen.get(0);
+				// top ten list
+				// final List<String> topTen = recognizeHandwritingWithAlternatives();
+				// String text = topTen.get(0);
+
+				String text = recognizeHandwriting();
 				DebugUtils.println("Handwritten Content: " + text);
 				gui.setInfoText(text);
-				gui.setAlternatives(topTen);
+				// gui.setAlternatives(topTen);
 			}
 		};
 

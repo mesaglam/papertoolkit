@@ -16,7 +16,7 @@ import edu.stanford.hci.r3.util.MathUtils;
  * handling.
  * </p>
  * <p>
- * Calibrate the Clock First, then Calibrate the X & Y... 
+ * Calibrate the Clock First, then Calibrate the X & Y...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -48,14 +48,16 @@ public class CoordinateCalibration {
 
 	private Pen pen;
 
+	private PaperToolkit toolkit;
+
 	/**
 	 * 
 	 */
 	public CoordinateCalibration() {
 		app = new Application("Calibration");
 		app.addPen(getPen());
-		PaperToolkit.setUseHandwritingRecognitionServer(false);
-		PaperToolkit.runApplication(app);
+		toolkit = new PaperToolkit(true, false, false);
+		toolkit.startApplication(app);
 	}
 
 	/**
