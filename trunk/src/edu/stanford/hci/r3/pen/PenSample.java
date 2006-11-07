@@ -42,6 +42,7 @@ public class PenSample implements Serializable {
 
 	/**
 	 * x location of the point, in physical Anoto coordinates
+	 * TODO: Make these private later...
 	 */
 	public double x;
 
