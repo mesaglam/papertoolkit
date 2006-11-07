@@ -24,6 +24,9 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * also handle streaming data. We will tackle streaming first.
  * </p>
  * <p>
+ * 
+ * </p>
+ * <p>
  * This class is responsible for creating clicks, drags, etc.
  * </p>
  * <p>
