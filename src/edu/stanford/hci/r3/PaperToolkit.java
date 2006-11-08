@@ -213,6 +213,16 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * 
+	 */
+	public static void initializeNativeLookAndFeel() {
+		if (!lookAndFeelInitialized) {
+			WindowUtils.setNativeLookAndFeel();
+		}
+		lookAndFeelInitialized = true;
+	}
+
+	/**
 	 * Alternatively, try using the batch files instead.
 	 * 
 	 * @param args
@@ -716,6 +726,14 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Load the configuration information on startup...
+	 */
+	private void loadStartupConfiguration() {
+		final Properties props = Configuration.getPropertiesFromConfigFile(CONFIG_FILE_KEY);
+		useHandwriting = Boolean.parseBoolean(props.getProperty("handwritingRecognition"));
+	}
+
+	/**
 	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default printer.
 	 * 
 	 * @param sheet
@@ -723,14 +741,6 @@ public class PaperToolkit {
 	public void print(Sheet sheet) {
 		// Implement this...
 		DebugUtils.println("Unimplemented Method");
-	}
-
-	/**
-	 * Load the configuration information on startup...
-	 */
-	private void loadStartupConfiguration() {
-		final Properties props = Configuration.getPropertiesFromConfigFile(CONFIG_FILE_KEY);
-		useHandwriting = Boolean.parseBoolean(props.getProperty("handwritingRecognition"));
 	}
 
 	/**
