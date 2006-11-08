@@ -44,6 +44,9 @@ public class HandwritingRecognitionService {
 
 	private static final String REL_PATH_TO_HWREC_SERVER = "handwritingRec/HWRecServer/bin/Release/";
 
+	/**
+	 * @return access to the HWRec Server.
+	 */
 	public synchronized static HandwritingRecognitionService getInstance() {
 		if (instance == null) {
 			instance = new HandwritingRecognitionService();
@@ -217,11 +220,11 @@ public class HandwritingRecognitionService {
 	 * This recognize call should return as fast as possible... as an end user
 	 * will experience this...
 	 * 
-	 * @param text
+	 * @param xml
 	 * @return
 	 */
-	public String recognizeHandwriting(String text) {
-		clientWriter.println(text);
+	public String recognizeHandwriting(String xml) {
+		clientWriter.println(xml);
 		clientWriter.flush();
 		try {
 			final String returnVal = clientReader.readLine();
