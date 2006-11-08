@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.stanford.hci.r3.events.replay.EventReplayManager;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -78,10 +79,17 @@ public class EventEngine {
 	private Map<Pen, PenListener> penToListener = new HashMap<Pen, PenListener>();
 
 	/**
-	 * 
+	 * For saving and replaying sets of PenEvents.
+	 */
+	private EventReplayManager replayManager;
+
+	/**
+	 * This object handles event dispatch by hooking up pen listeners to local and remote pen
+	 * servers. It will figure out where to dispatch incoming pen samples... and will activate the
+	 * correct event handlers.
 	 */
 	public EventEngine() {
-
+		replayManager = new EventReplayManager(this);
 	}
 
 	/**
@@ -91,6 +99,20 @@ public class EventEngine {
 	private void addPenToInternalLists(Pen pen, PenListener listener) {
 		penToListener.put(pen, listener);
 		pen.addLivePenListener(listener);
+	}
+
+	/**
+	 * Creates a new PenEvent from the Pen Name and Identifier.
+	 * 
+	 * @param sample
+	 * @return
+	 */
+	private PenEvent createPenEvent(String penName, int penID, PenSample sample) {
+		// make an event object so that someone can send it to the right event handler
+		final PenEvent event = new PenEvent(penID, System.currentTimeMillis());
+		event.setOriginalSample(sample);
+		event.setPenName(penName);
+		return event;
 	}
 
 	/**
@@ -121,28 +143,24 @@ public class EventEngine {
 	 */
 	private PenListener getNewPenListener(final Pen pen) {
 		pensCurrentlyMonitoring.add(pen);
+
+		// properties of the pen
 		final int penID = pensCurrentlyMonitoring.indexOf(pen);
+		final String penName = pen.getName();
 
 		return new PenListener() {
-			/**
-			 * @param sample
-			 * @return
-			 */
-			private PenEvent createPenEvent(PenSample sample) {
-				// make an event object and send it to the event handler
-				final PenEvent event = new PenEvent(penID, System.currentTimeMillis());
-				event.setOriginalSample(sample);
-				event.setPenName(pen.getName());
-				return event;
-			}
 
 			/**
 			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penDown(edu.stanford.hci.r3.pen.PenSample)
 			 */
 			public void penDown(PenSample sample) {
-				final PenEvent event = createPenEvent(sample);
+				final PenEvent event = createPenEvent(penName, penID, sample);
 				event.setModifier(PenEvent.PEN_DOWN_MODIFIER);
-				handlePenSample(event);
+
+				// a pendown generated through a real pen listener should be saved
+				// so that future sessions can replay the stream of events
+				replayManager.saveEvent(event);
+				handlePenEvent(event);
 			}
 
 			/**
@@ -152,9 +170,12 @@ public class EventEngine {
 			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penUp(edu.stanford.hci.r3.pen.PenSample)
 			 */
 			public void penUp(PenSample sample) {
-				final PenEvent event = createPenEvent(sample);
+				final PenEvent event = createPenEvent(penName, penID, sample);
 				event.setModifier(PenEvent.PEN_UP_MODIFIER);
 				event.setPercentageLocation(lastKnownLocation);
+
+				// save the pen up also!
+				replayManager.saveEvent(event);
 
 				for (EventHandler h : mostRecentEventHandlers) {
 					h.handleEvent(event);
@@ -168,8 +189,9 @@ public class EventEngine {
 			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#sample(edu.stanford.hci.r3.pen.PenSample)
 			 */
 			public void sample(PenSample sample) {
-				PenEvent event = createPenEvent(sample);
-				handlePenSample(event);
+				final PenEvent event = createPenEvent(penName, penID, sample);
+				replayManager.saveEvent(event);
+				handlePenEvent(event);
 			}
 		};
 	}
@@ -186,7 +208,7 @@ public class EventEngine {
 	 * 
 	 * @param penEvent
 	 */
-	private void handlePenSample(PenEvent penEvent) {
+	public void handlePenEvent(PenEvent penEvent) {
 		// System.out.println("Dispatching Event for pen #" + penID + " " + sample);
 		mostRecentEventHandlers.clear();
 		mostRecentContentFilters.clear();
@@ -195,6 +217,11 @@ public class EventEngine {
 			// for each sample, we first have to convert it to a location on the sheet.
 			// THEN, we will be able to make more interesting events...
 			for (final PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
+
+				// this is a key step!
+				// the event engine figues out which pattern region contains
+				// this sample. This determines the set of event handlers the event
+				// should be sent to
 				final TiledPatternCoordinateConverter coordinateConverter = pmap
 						.getCoordinateConverterForSample(penEvent.getOriginalSample());
 

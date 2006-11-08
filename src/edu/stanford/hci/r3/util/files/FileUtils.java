@@ -15,12 +15,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
 import edu.stanford.hci.r3.util.ArrayUtils;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.filters.DirectoriesOnlyFilter;
 import edu.stanford.hci.r3.util.files.filters.FileExtensionFilter;
 import edu.stanford.hci.r3.util.files.filters.FilesOnlyFilter;
@@ -53,7 +56,8 @@ public class FileUtils {
 	private static JFileChooser fileChooser;
 
 	/**
-	 * @param extensions should NOT have a . in front of them... i.e., xml, and NOT .xml
+	 * @param extensions
+	 *            should NOT have a . in front of them... i.e., xml, and NOT .xml
 	 * @return
 	 */
 	public static JFileChooser createNewFileChooser(String[] extensions) {
@@ -62,7 +66,7 @@ public class FileUtils {
 		chooser.setFileFilter((javax.swing.filechooser.FileFilter) filter);
 		return chooser;
 	}
-	
+
 	/**
 	 * @param url
 	 * @param result
@@ -73,7 +77,7 @@ public class FileUtils {
 		InputStream is = null;
 		DataInputStream dis = null;
 		FileOutputStream fos = null;
-		
+
 		byte[] buf = new byte[1024];
 		try {
 			is = url.openStream();
@@ -85,20 +89,69 @@ public class FileUtils {
 				fos.write(buf, 0, bytesRead);
 				bytesRead = dis.read(buf);
 			}
-		}
-		catch (IOException ioe) {
+		} catch (IOException ioe) {
 			exception = ioe;
-		}
-		finally {
+		} finally {
 			try {
-				if (is != null) is.close();
-			} catch (IOException ioe) { }
-			
+				if (is != null)
+					is.close();
+			} catch (IOException ioe) {
+			}
+
 			try {
-				if (fos != null) fos.close();
-			} catch (IOException ioe) { }
-			if (exception != null) throw exception;
+				if (fos != null)
+					fos.close();
+			} catch (IOException ioe) {
+			}
+			if (exception != null)
+				throw exception;
 		}
+	}
+
+	/**
+	 * @return The current time, with symbols replaced with underscores, so that we can use it in
+	 *         file names. This is great for logs that have to be tagged with dates.
+	 */
+	public static String getCurrentTimeForUseInAFileName() {
+		String time = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+		// remove symbols that break Windows file names
+		time = time.replaceAll(":", "_");
+		time = time.replaceAll(",", "");
+		return time;
+	}
+
+	/**
+	 * @return
+	 */
+	public static String getCurrentTimeForUseInASortableFileName() {
+		final Calendar c = Calendar.getInstance();
+		final int month = c.get(Calendar.MONTH) + 1; // Calendar.January == 0
+		final int date = c.get(Calendar.DATE);
+		final int year = c.get(Calendar.YEAR);
+
+		final int twentyFourHour = c.get(Calendar.HOUR_OF_DAY);
+		final int minute = c.get(Calendar.MINUTE);
+		final int seconds = c.get(Calendar.SECOND);
+
+		final String monthStr = padToTwoDigitsWithZeroes(month);
+		final String dateStr = padToTwoDigitsWithZeroes(date);
+		final String hourStr = padToTwoDigitsWithZeroes(twentyFourHour);
+		final String minuteStr = padToTwoDigitsWithZeroes(minute);
+		final String secondsStr = padToTwoDigitsWithZeroes(seconds);
+
+		return year + "_" + monthStr + "_" + dateStr + "__" + //
+				hourStr + "_" + minuteStr + "_" + secondsStr;
+	}
+
+	/**
+	 * Works with positive numbers... and has a corner case where value=0 and numDigits=1 will fail.
+	 * 
+	 * @param value
+	 * @param numDigits
+	 * @return
+	 */
+	private static String padToTwoDigitsWithZeroes(int value) {
+		return (value < 10) ? "0" + value : "" + value;
 	}
 
 	/**
@@ -108,6 +161,7 @@ public class FileUtils {
 	public static boolean isHiddenOrDotFile(final File possiblyHiddenFile) {
 		return possiblyHiddenFile.isHidden() || possiblyHiddenFile.getName().startsWith(".");
 	}
+
 	/**
 	 * Return only directories (that are children of the given path) that are not hidden.
 	 * 
@@ -119,7 +173,6 @@ public class FileUtils {
 		return ArrayUtils.convertArrayToList(files);
 	}
 
-	
 	/**
 	 * Return only files (that are children of the given path) that are not hidden.
 	 * 
@@ -141,7 +194,7 @@ public class FileUtils {
 	public static StringBuilder readFileIntoStringBuffer(File f) {
 		return readFileIntoStringBuffer(f, false);
 	}
-	
+
 	/**
 	 * Includes the workaround for bug in setting the user.dir:
 	 * http://bugs.sun.com/bugdatabase/view_bug.do;:YfiG?bug_id=4117557
@@ -184,14 +237,14 @@ public class FileUtils {
 		if (directoryChooser == null) {
 			directoryChooser = new JFileChooser();
 			directoryChooser.setDialogTitle(title);
-			directoryChooser.setCurrentDirectory(FileSystemView.getFileSystemView().getDefaultDirectory());
+			directoryChooser.setCurrentDirectory(FileSystemView.getFileSystemView()
+					.getDefaultDirectory());
 			directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		}
 		int returnVal = directoryChooser.showOpenDialog(parent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			return directoryChooser.getSelectedFile();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -252,7 +305,7 @@ public class FileUtils {
 		}
 
 	}
-	
+
 	/**
 	 * @param string
 	 * @param file
@@ -266,5 +319,5 @@ public class FileUtils {
 		}
 		writeStringToFile(string, file);
 	}
-	
+
 }
