@@ -64,10 +64,12 @@ public class PenServerJavaObjectXMLSender implements PenServerSender {
 	public void sendSample(PenSample as) throws IOException {
 		String xmlString = PaperToolkit.toXML(as);
 
+		// remove line endings
 		if (xmlString.contains("\n")) {
 			xmlString = xmlString.replace("\n", "");
 		}
 
+		// remove spaces
 		if (xmlString.contains(" ")) {
 			xmlString = xmlString.replace(" ", "");
 		}
