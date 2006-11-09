@@ -35,6 +35,6 @@
 	<classpathentry kind="lib" path="lib/piccolo/piccolo.jar"/>
 	<classpathentry kind="lib" path="lib/piccolo/piccolox.jar"/>
 	<classpathentry kind="lib" path="lib/forms-1.0.7.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/prefuse-beta"/>
+	<classpathentry kind="lib" path="lib/prefuse.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
