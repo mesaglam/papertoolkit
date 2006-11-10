@@ -97,6 +97,9 @@ public class EventBrowser {
 		view = new EventBrowserView(display);
 	}
 
+	/**
+	 * @return
+	 */
 	private Table getPenEventsTable() {
 		if (dataTable == null) {
 			dataTable = new Table();

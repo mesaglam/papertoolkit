@@ -20,9 +20,11 @@ public class PenEvent {
 	/**
 	 * What type of event is this? DOWN, UP, ...OTHER?
 	 */
-	protected static final int PEN_DOWN_MODIFIER = 1;
+	public static final int PEN_DOWN_MODIFIER = 1;
 
-	protected static final int PEN_UP_MODIFIER = 2;
+	public static final int PEN_REGULAR_SAMPLE_MODIFIER = 0;
+
+	public static final int PEN_UP_MODIFIER = 2;
 
 	/**
 	 * Whether this event should not be processed anymore by handlers deeper in the queue. FALSE by
@@ -36,7 +38,7 @@ public class PenEvent {
 	/**
 	 * Was it a pen up or down, or just a regular sample? Regular Sample --> 0 (the default)
 	 */
-	private int eventModifier = 0;
+	private int eventModifier = PEN_REGULAR_SAMPLE_MODIFIER;
 
 	/**
 	 * Where did the event occur?
@@ -77,6 +79,13 @@ public class PenEvent {
 	 */
 	public void consume() {
 		consumed = true;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getModifier() {
+		return eventModifier;
 	}
 
 	/**
@@ -158,6 +167,8 @@ public class PenEvent {
 	}
 
 	/**
+	 * TODO: Change this to an enum?
+	 * 
 	 * @param modifier
 	 */
 	public void setModifier(int modifier) {

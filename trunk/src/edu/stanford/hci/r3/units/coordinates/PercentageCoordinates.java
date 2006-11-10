@@ -18,13 +18,13 @@ import edu.stanford.hci.r3.units.Units;
 public class PercentageCoordinates extends Coordinates {
 
 	/**
-	 * @param x
-	 * @param y
+	 * @param pctInX
+	 * @param pctInY
 	 */
 	public PercentageCoordinates(Percentage pctInX, Percentage pctInY) {
 		super(pctInX, pctInY);
 	}
-
+	
 	/**
 	 * @return
 	 */

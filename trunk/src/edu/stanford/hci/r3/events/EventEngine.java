@@ -11,7 +11,7 @@ import edu.stanford.hci.r3.events.replay.EventReplayManager;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
-import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
+import edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
@@ -172,10 +172,13 @@ public class EventEngine {
 			public void penUp(PenSample sample) {
 				final PenEvent event = createPenEvent(penName, penID, sample);
 				event.setModifier(PenEvent.PEN_UP_MODIFIER);
-				event.setPercentageLocation(lastKnownLocation);
 
 				// save the pen up also!
+				// do this before setting the location
+				// the location will be determined later, when the event is resent
 				replayManager.saveEvent(event);
+
+				event.setPercentageLocation(lastKnownLocation);
 
 				for (EventHandler h : mostRecentEventHandlers) {
 					h.handleEvent(event);
@@ -222,7 +225,7 @@ public class EventEngine {
 				// the event engine figues out which pattern region contains
 				// this sample. This determines the set of event handlers the event
 				// should be sent to
-				final TiledPatternCoordinateConverter coordinateConverter = pmap
+				final PatternCoordinateConverter coordinateConverter = pmap
 						.getCoordinateConverterForSample(penEvent.getOriginalSample());
 
 				// this map doesn't know about this sample; next!

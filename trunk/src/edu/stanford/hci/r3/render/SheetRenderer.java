@@ -21,7 +21,7 @@ import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
-import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
+import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pattern.output.PDFPatternGenerator;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
@@ -38,8 +38,8 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
  * This class will render a Sheet into a JPEG, PDF, or Java2D graphics context.
  * </p>
  * <p>
- * For individual regions, it will use specific region renderers (e.g., ImageRenderer, PolygonRenderer, and
- * TextRenderer).
+ * For individual regions, it will use specific region renderers (e.g., ImageRenderer,
+ * PolygonRenderer, and TextRenderer).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -61,21 +61,21 @@ public class SheetRenderer {
 	private File mostRecentlyRenderedPDFFile;
 
 	/**
-	 * You can make the pattern bigger or smaller depending on your printer... 0 == default. - --> smaller, +
-	 * --> bigger. Each unit corresponds to two font points.
+	 * You can make the pattern bigger or smaller depending on your printer... 0 == default. - -->
+	 * smaller, + --> bigger. Each unit corresponds to two font points.
 	 */
 	private int patternDotSizeAdjustment = 0;
 
 	/**
-	 * Populate this only when we render the pattern (renderToPDF). After we render to pdf, we can save the
-	 * information to a file, for so that we can run the application in the future without rendering more
-	 * pattern.
+	 * Populate this only when we render the pattern (renderToPDF). After we render to pdf, we can
+	 * save the information to a file, for so that we can run the application in the future without
+	 * rendering more pattern.
 	 */
 	private PatternLocationToSheetLocationMapping patternInformation;
 
 	/**
-	 * By default, any active regions will be overlaid with pattern (unique to at least this sheet, unless
-	 * otherwise specified).
+	 * By default, any active regions will be overlaid with pattern (unique to at least this sheet,
+	 * unless otherwise specified).
 	 */
 	protected boolean renderActiveRegionsWithPattern = true;
 
@@ -94,8 +94,8 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * Feel free to share TiledPatternGenerator between Sheets. That way, you can get unique pattern across
-	 * multiple Sheets.
+	 * Feel free to share TiledPatternGenerator between Sheets. That way, you can get unique pattern
+	 * across multiple Sheets.
 	 * 
 	 * @param s
 	 * @param patternGenerator
@@ -114,9 +114,9 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * We will render pattern when outputting PDFs. Rendering pattern to screen is a waste of time, since dots
-	 * are not resolvable on screen. Perhaps for screen display (i.e., anything < 600 dpi), we should render
-	 * pattern as a faint dotted overlay?
+	 * We will render pattern when outputting PDFs. Rendering pattern to screen is a waste of time,
+	 * since dots are not resolvable on screen. Perhaps for screen display (i.e., anything < 600
+	 * dpi), we should render pattern as a faint dotted overlay?
 	 * 
 	 * WARNING: Does not work for multiple sheets, as we will get the same pattern....
 	 * 
@@ -129,7 +129,8 @@ public class SheetRenderer {
 		final List<Region> regions = sheet.getRegions();
 
 		// this object will generate the right PDF (itext) calls to create pattern
-		final PDFPatternGenerator pgen = new PDFPatternGenerator(cb, sheet.getWidth(), sheet.getHeight());
+		final PDFPatternGenerator pgen = new PDFPatternGenerator(cb, sheet.getWidth(), sheet
+				.getHeight());
 
 		// adjust the font size of the pattern...
 		pgen.adjustPatternSize(patternDotSizeAdjustment);
@@ -167,7 +168,7 @@ public class SheetRenderer {
 			// also, at this point, we know what pattern we have assigned to each region
 			// we should be able to assign a tile configuration to each region
 			// We retrieve it from the HashMap so we can SET the values in the line below
-			final TiledPatternCoordinateConverter tiledPatternInRegion = patternInformation
+			final TiledPatternCoordinateConverter tiledPatternInRegion = (TiledPatternCoordinateConverter) patternInformation
 					.getPatternBoundsOfRegion(r);
 			tiledPatternInRegion.setPatternInformationByReadingItFrom(pattern);
 			// the name should already be correct, barring the UnitializedMapping business...
@@ -196,8 +197,8 @@ public class SheetRenderer {
 	/**
 	 * We assume the g2d is big enough for us to draw this Sheet to.
 	 * 
-	 * By default, the transforms works at 72 dots per inch. Scale the transform beforehand if you would like
-	 * better or worse rendering.
+	 * By default, the transforms works at 72 dots per inch. Scale the transform beforehand if you
+	 * would like better or worse rendering.
 	 * 
 	 * 
 	 * @param g2d
@@ -237,9 +238,10 @@ public class SheetRenderer {
 	/**
 	 * @param destJPEGFile
 	 * @param destUnits
-	 *            Converts the graphics2D object into a new coordinate space based on the destination units'
-	 *            pixels per inch. This is for the purposes of rendering the document to screen, where
-	 *            Graphics2D's default 72ppi isn't always the right way to do it.
+	 *            Converts the graphics2D object into a new coordinate space based on the
+	 *            destination units' pixels per inch. This is for the purposes of rendering the
+	 *            document to screen, where Graphics2D's default 72ppi isn't always the right way to
+	 *            do it.
 	 */
 	public void renderToJPEG(File destJPEGFile, Pixels destUnits) {
 		final Units width = sheet.getWidth();
@@ -268,8 +270,8 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * Uses the iText package to render a PDF file from scratch. iText is nice because we can write to a
-	 * Graphics2D context. Alternatively, we can use PDF-like commands.
+	 * Uses the iText package to render a PDF file from scratch. iText is nice because we can write
+	 * to a Graphics2D context. Alternatively, we can use PDF-like commands.
 	 * 
 	 * @param destPDFFile
 	 */
@@ -334,8 +336,8 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * This saves an xml file with the same name/path, but different extension as the most-recently rendered
-	 * PDF file.
+	 * This saves an xml file with the same name/path, but different extension as the most-recently
+	 * rendered PDF file.
 	 */
 	public void savePatternInformation() {
 		if (mostRecentlyRenderedPDFFile == null) {
@@ -356,8 +358,8 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * After Rendering Pattern, we now know the particulars of the pattern coordinates for each region. Save
-	 * that information to disk.
+	 * After Rendering Pattern, we now know the particulars of the pattern coordinates for each
+	 * region. Save that information to disk.
 	 * 
 	 * @param patternInfoFile
 	 */
@@ -368,9 +370,9 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * Useful for when rendering many sheets at a time. This can guarantee that the pattern is unique across
-	 * sheets. If you want to reset the pattern, or pick a particular sheet, you may, by interacting with the
-	 * generator object.
+	 * Useful for when rendering many sheets at a time. This can guarantee that the pattern is
+	 * unique across sheets. If you want to reset the pattern, or pick a particular sheet, you may,
+	 * by interacting with the generator object.
 	 * 
 	 * @param tiledPatternGenerator
 	 */

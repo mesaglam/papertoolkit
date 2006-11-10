@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -56,7 +57,7 @@ import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.RegionID;
-import edu.stanford.hci.r3.pattern.coordinates.TiledPatternCoordinateConverter;
+import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchServer;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
@@ -121,6 +122,9 @@ public class PaperToolkit {
 	 */
 	private static XStream xmlEngine;
 
+	/**
+	 * Print an Intro Message.
+	 */
 	static {
 		printInitializationMessages();
 	}
@@ -321,6 +325,10 @@ public class PaperToolkit {
 		}
 	}
 
+	/**
+	 * @param o
+	 * @return an XML string representation of the object, without line breaks.
+	 */
 	public static String toXMLNoLineBreaks(Object o) {
 		return toXML(o).replace("\n", "");
 	}
@@ -344,6 +352,8 @@ public class PaperToolkit {
 	private JPanel controls;
 
 	private JButton designSheetsButton;
+
+	private JButton eventBrowserButton;
 
 	/**
 	 * The engine that processes all pen events, producing the correct outputs and calling the right
@@ -510,7 +520,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return
+	 * @return The strip of buttons on the right.
 	 */
 	private Component getControls() {
 		if (controls == null) {
@@ -518,7 +528,9 @@ public class PaperToolkit {
 			controls.setLayout(new StackedLayout(StackedLayout.VERTICAL));
 			controls.add(getDesignSheetsButton(), "TopWide");
 			controls.add(getRenderSheetsButton(), "TopWide");
+			controls.add(Box.createVerticalStrut(10), "TopWide");
 			controls.add(getStartApplicationButton(), "TopWide");
+			controls.add(getEventBrowserButton(), "TopWide");
 			controls.add(getStopApplicationButton(), "TopWide");
 		}
 		return controls;
@@ -538,6 +550,22 @@ public class PaperToolkit {
 			});
 		}
 		return designSheetsButton;
+	}
+
+	/**
+	 * @return button for accessing the EventReplayManager's GUI, which allows us to load up and
+	 *         replay eventData files.
+	 */
+	private Component getEventBrowserButton() {
+		if (eventBrowserButton == null) {
+			eventBrowserButton = new JButton("View/Replay Events");
+			eventBrowserButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+				}
+			});
+		}
+		return eventBrowserButton;
 	}
 
 	/**
@@ -725,6 +753,8 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Adds an application to the loaded list, and displays the application manager.
+	 * 
 	 * @param app
 	 */
 	public void loadApplication(Application app) {

@@ -11,6 +11,8 @@ import java.util.Set;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter;
+import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
@@ -51,7 +53,7 @@ public class PatternLocationToSheetLocationMapping {
 	 * Binds regions to pattern bounds, specified in logical (batched) and physical (streamed)
 	 * coordinates.
 	 */
-	private Map<Region, TiledPatternCoordinateConverter> regionToPatternBounds = new HashMap<Region, TiledPatternCoordinateConverter>();
+	private Map<Region, PatternCoordinateConverter> regionToPatternBounds = new HashMap<Region, PatternCoordinateConverter>();
 
 	/**
 	 * The mapping is bound to one sheet.
@@ -98,9 +100,9 @@ public class PatternLocationToSheetLocationMapping {
 	 * @param sample
 	 * @return
 	 */
-	public TiledPatternCoordinateConverter getCoordinateConverterForSample(PenSample sample) {
+	public PatternCoordinateConverter getCoordinateConverterForSample(PenSample sample) {
 		for (Region r : regionToPatternBounds.keySet()) {
-			TiledPatternCoordinateConverter converter = regionToPatternBounds.get(r);
+			PatternCoordinateConverter converter = regionToPatternBounds.get(r);
 			final StreamedPatternCoordinates coord = new StreamedPatternCoordinates(sample);
 			if (converter.contains(coord)) {
 				// DebugUtils.println("Sample is on: " + r.getName());
@@ -128,7 +130,7 @@ public class PatternLocationToSheetLocationMapping {
 	 *            find the coordinate converter for this region.
 	 * @return the converter that enables you to figure out where on the region a sample falls.
 	 */
-	public TiledPatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
+	public PatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
 		DebugUtils.println(regionToPatternBounds.size() + " " + r.getName() + " "
 				+ regionToPatternBounds);
 
@@ -192,13 +194,15 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
+	 * On Nov 9, 2006, I changed this to use the interface... I'll need to run some regression tests
+	 * to make sure I didn't break anything.
 	 * 
 	 * @param xmlFile
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadConfigurationFromXML(File xmlFile) {
 		// for each region, there should be a specification of the pattern information
-		final HashMap<RegionID, TiledPatternCoordinateConverter> regionIDToPattern = (HashMap<RegionID, TiledPatternCoordinateConverter>) PaperToolkit
+		final HashMap<RegionID, PatternCoordinateConverter> regionIDToPattern = (HashMap<RegionID, PatternCoordinateConverter>) PaperToolkit
 				.fromXML(xmlFile);
 		for (Region r : regionToPatternBounds.keySet()) {
 			final RegionID xmlKey = new RegionID(r);
@@ -230,13 +234,13 @@ public class PatternLocationToSheetLocationMapping {
 		try {
 			// create a new map that goes from name+origin to pattern bounds mapping
 			// only save active regions... because we don't render pattern for nonactive regions
-			HashMap<RegionID, TiledPatternCoordinateConverter> regionIDToPattern = new HashMap<RegionID, TiledPatternCoordinateConverter>();
-			Set<Region> regions = regionToPatternBounds.keySet();
+			final HashMap<RegionID, PatternCoordinateConverter> regionIDToPattern = new HashMap<RegionID, PatternCoordinateConverter>();
+			final Set<Region> regions = regionToPatternBounds.keySet();
 			for (Region r : regions) {
 				if (!r.isActive()) {
 					continue;
 				}
-				RegionID rid = new RegionID(r);
+				final RegionID rid = new RegionID(r);
 				regionIDToPattern.put(rid, regionToPatternBounds.get(r));
 			}
 			if (xmlFile.exists()) {
@@ -246,6 +250,25 @@ public class PatternLocationToSheetLocationMapping {
 			PaperToolkit.toXML(regionIDToPattern, new FileOutputStream(xmlFile));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * For a region on our sheet, update the coordinate information so that it can be accessed at
+	 * runtime by our EventEngine. The coordinateInfo object will translate incoming samples to
+	 * coordinates relative to the region.
+	 * 
+	 * @param r
+	 * @param coordinateInfo
+	 */
+	public void setPatternInformationOfRegion(Region r, PatternCoordinateConverter coordinateInfo) {
+		if (regionToPatternBounds.containsKey(r) || sheet.containsRegion(r)) {
+			// updating an already-known region OR
+			// adding a new region (probably added to the sheet after this object was constructed)
+			regionToPatternBounds.put(r, coordinateInfo);
+		} else {
+			System.err.println("PatternLocationToSheetLocationMapping.java: Region unknown. "
+					+ "Please add it to the sheet before updating this mapping.");
 		}
 	}
 
@@ -267,25 +290,6 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * For a region on our sheet, update the coordinate information so that it can be accessed in
-	 * runtime by our EventEngine.
-	 * 
-	 * @param r
-	 * @param coordinateInfo
-	 */
-	public void setPatternInformationOfRegion(Region r,
-			TiledPatternCoordinateConverter coordinateInfo) {
-		if (regionToPatternBounds.containsKey(r) || sheet.containsRegion(r)) {
-			// updating an already-known region OR
-			// adding a new region (probably added to the sheet after this object was constructed)
-			regionToPatternBounds.put(r, coordinateInfo);
-		} else {
-			System.err.println("PatternLocationToSheetLocationMapping.java: Region unknown. "
-					+ "Please add it to the sheet before updating this mapping.");
-		}
-	}
-
-	/**
 	 * @param s
 	 */
 	public void setSheet(Sheet s) {
@@ -299,7 +303,7 @@ public class PatternLocationToSheetLocationMapping {
 		final StringBuilder sb = new StringBuilder();
 		for (final Region r : regionToPatternBounds.keySet()) {
 			sb.append(r.getName() + " --> ");
-			TiledPatternCoordinateConverter bounds = regionToPatternBounds.get(r);
+			final PatternCoordinateConverter bounds = regionToPatternBounds.get(r);
 			sb.append(bounds);
 		}
 		return sb.toString();
