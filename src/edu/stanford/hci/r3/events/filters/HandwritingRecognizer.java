@@ -17,7 +17,6 @@ import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 /**
  * <p>
  * Produces ASCII text from input samples. Listeners can be notified whenever we have enough text.
- * Unimplemented.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -49,20 +48,23 @@ public class HandwritingRecognizer extends ContentFilter {
 	private List<InkStroke> strokes = Collections.synchronizedList(new ArrayList<InkStroke>());
 
 	/**
-	 * 
+	 * Gets access to the HandwritingRecognitionService, which wraps the communication with the
+	 * Handwriting Recognition Server.
 	 */
 	public HandwritingRecognizer() {
 		recognizerService = HandwritingRecognitionService.getInstance();
 	}
 
 	/**
-	 * 
+	 * Clear the internal strokes storage.
 	 */
 	public void clear() {
 		strokes.clear();
 	}
 
 	/**
+	 * Capture Ink Strokes and notify listeners on every Pen Up.
+	 * 
 	 * @see edu.stanford.hci.r3.events.ContentFilter#filterEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
 	@Override
@@ -76,20 +78,20 @@ public class HandwritingRecognizer extends ContentFilter {
 		if (event.isPenDown()) {
 			// not a pen error!
 			currentStrokeSamples.clear();
-			currentStrokeSamples
-					.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
+			currentStrokeSamples.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128,
+					timestamp));
 		} else if (event.isPenUp()) {
 			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
 			notifyAllListenersOfNewContent();
 			// System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
-			currentStrokeSamples
-					.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
+			currentStrokeSamples.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128,
+					timestamp));
 		}
 	}
 
 	/**
-	 * @return
+	 * @return the top-ranked ASCII translation for the ink strokes.
 	 */
 	public String recognizeHandwriting() {
 		final Ink ink = new Ink(strokes);
@@ -106,9 +108,12 @@ public class HandwritingRecognizer extends ContentFilter {
 		return recognizerService.getAlternatives();
 	}
 
+	/**
+	 * @see edu.stanford.hci.r3.events.ContentFilter#toString()
+	 */
 	@Override
 	public String toString() {
-		return "Handwriting Recognizer";
+		return "Handwriting Recognizer: " + strokes.size() + " strokes.";
 	}
 
 }

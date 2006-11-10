@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pattern.coordinates;
+package edu.stanford.hci.r3.pattern.coordinates.conversion;
 
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.PatternDots;
@@ -18,7 +18,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class TiledPatternCoordinateConverter {
+public class TiledPatternCoordinateConverter implements PatternCoordinateConverter {
 
 	private int bottomMostVoidSpaceInDots;
 
@@ -340,6 +340,7 @@ public class TiledPatternCoordinateConverter {
 		final int tileRow = tileOffset / numTilesAcross;
 		final int tileCol = tileOffset % numTilesAcross;
 
+		// how many dots are we in x & y
 		final double totalDotsX = tileCol * dotsPerTileHorizontal + xRelativeToTile;
 		final double totalDotsY = tileRow * dotsPerTileVertical + yRelativeToTile;
 

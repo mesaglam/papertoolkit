@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
 import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
