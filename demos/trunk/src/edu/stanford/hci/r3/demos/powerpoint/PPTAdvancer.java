@@ -8,7 +8,7 @@ import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.types.RobotAction;
 import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.events.handlers.GestureHandler;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
@@ -33,15 +33,9 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class PPTAdvancer {
 
 	private static EventHandler getClickHandler() {
-		return new ClickHandler() {
+		return new ClickAdapter() {
 			public void clicked(PenEvent e) {
 				DebugUtils.println("Clicked " + clickCount + " times...");
-			}
-
-			public void pressed(PenEvent e) {
-			}
-
-			public void released(PenEvent e) {
 			}
 		};
 	}
@@ -78,7 +72,6 @@ public class PPTAdvancer {
 	}
 
 	public static void main(String[] args) {
-
 		Application app = new Application("Advancer");
 		final Sheet s = new Sheet(new Inches(8.5), new Inches(11));
 		final Region r = new Region("Button", 1, 1, 4, 2);
@@ -118,8 +111,7 @@ public class PPTAdvancer {
 								new PatternDots(minX), new PatternDots(minY), // 
 								new PatternDots(width), new PatternDots(height));
 						// save it out to the file
-						mapping.saveConfigurationToXML(new File(
-								"data/Powerpoint/PPT.patternInfo.xml"));
+						mapping.saveConfigurationToXML(new File("data/Powerpoint/PPT.patternInfo.xml"));
 					}
 				}
 			});
