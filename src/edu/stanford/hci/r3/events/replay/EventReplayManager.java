@@ -109,6 +109,6 @@ public class EventReplayManager {
 	 * @param event
 	 */
 	public void saveEvent(PenEvent event) {
-		output.println(createStringFromEvent(event));
+		getOutput().println(createStringFromEvent(event));
 	}
 }
