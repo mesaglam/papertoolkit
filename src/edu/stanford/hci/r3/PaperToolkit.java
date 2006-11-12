@@ -764,14 +764,13 @@ public class PaperToolkit {
 		// show the app manager
 		if (useAppManager) {
 			getApplicationManager();
+			updateListOfApps();
 		} else {
 			DebugUtils
 					.println("Not using the Application Manager. "
 							+ "If you would like to use the GUI launcher, "
 							+ "call PaperToolkit.useAppManager(true)");
 		}
-
-		updateListOfApps();
 	}
 
 	/**

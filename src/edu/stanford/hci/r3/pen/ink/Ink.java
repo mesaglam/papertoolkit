@@ -165,7 +165,7 @@ public class Ink {
 	}
 
 	/**
-	 * @return
+	 * @return the page address that generated this ink.
 	 */
 	public PageAddress getSourcePageAddress() {
 		return pageAddress;
