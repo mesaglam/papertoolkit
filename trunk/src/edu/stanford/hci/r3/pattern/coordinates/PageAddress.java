@@ -38,6 +38,9 @@ public class PageAddress {
 		page = thePage;
 	}
 
+	/**
+	 * @param pageAddress
+	 */
 	public PageAddress(String pageAddress) {
 		// extract the segment, shelf, book, and page from the pageAddress
 		final Matcher matcherPageAddress = PATTERN_ADDRESS.matcher(pageAddress);
@@ -54,7 +57,8 @@ public class PageAddress {
 			book = Integer.parseInt(bookStr);
 			page = Integer.parseInt(pageStr);
 		} else {
-			System.err.println("PageAddress: " + pageAddress + " is not a valid logical page address.");
+			System.err.println("PageAddress: " + pageAddress
+					+ " is not a valid logical page address.");
 			// do nothing, and leave all the fields blank
 		}
 	}

@@ -93,7 +93,7 @@ public class CalibrationEngine {
 		PageAddress bPageAddress = batchedInk.getSourcePageAddress();
 
 		double avgMillisBehind = 0;
-		int numSamples = 0;
+		double numSamples = 0;
 
 		for (int i = 0; i < streamedStrokes.size(); i++) {
 			DebugUtils.println("Aligning Stroke");
@@ -114,9 +114,8 @@ public class CalibrationEngine {
 
 			for (int j = 0; j < sForceSamples.length; j++) {
 				if (sForceSamples[j] == bForceSamples[j]) {
-					double millisBehind = (sTimeSamples[j] - bTimeSamples[j]);
-
-					String behindOrAhead = getBehindOrAheadString(millisBehind);
+					final double millisBehind = (sTimeSamples[j] - bTimeSamples[j]);
+					final String behindOrAhead = getBehindOrAheadString(millisBehind);
 
 					DebugUtils.println("Streamed: " + sSamplesX[j] + ", " + sSamplesY[j] + " <--> "
 							+ bSamplesX[j] + ", " + bSamplesY[j] + " on page " + bPageAddress
@@ -127,7 +126,7 @@ public class CalibrationEngine {
 					numSamples++;
 					avgMillisBehind = (avgMillisBehind * ((numSamples - 1) / numSamples))
 							+ (millisBehind / numSamples);
-					DebugUtils.println(avgMillisBehind);
+					DebugUtils.println("Average: " + avgMillisBehind);
 				}
 			}
 		}
