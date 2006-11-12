@@ -9,8 +9,8 @@ import edu.stanford.hci.r3.actions.remote.ActionSender;
 import edu.stanford.hci.r3.devices.channels.ActionChannel;
 import edu.stanford.hci.r3.devices.channels.AudioChannel;
 import edu.stanford.hci.r3.devices.channels.DisplayChannel;
-import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>

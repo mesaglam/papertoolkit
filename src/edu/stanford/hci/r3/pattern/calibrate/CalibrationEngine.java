@@ -137,6 +137,10 @@ public class CalibrationEngine {
 				+ " milliseconds, on average.");
 	}
 
+	/**
+	 * @param millisBehind
+	 * @return
+	 */
 	private String getBehindOrAheadString(double millisBehind) {
 		String behindOrAhead = (millisBehind < 0) ? " ahead " : " behind ";
 		return behindOrAhead;

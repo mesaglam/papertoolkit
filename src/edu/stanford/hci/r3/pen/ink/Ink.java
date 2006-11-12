@@ -2,12 +2,17 @@ package edu.stanford.hci.r3.pen.ink;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
-import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -24,6 +29,7 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class Ink {
 
+
 	/**
 	 * <p>
 	 * Helps us determine where we got this ink from. It is not a required field, but is set when it is
@@ -33,6 +39,7 @@ public class Ink {
 	public enum InkSource {
 		BATCHED, STREAMED, UNKNOWN
 	}
+
 
 	/**
 	 * Mostly Black, but with some transparency.
@@ -55,13 +62,14 @@ public class Ink {
 	 */
 	private PageAddress pageAddress;
 
+
 	/**
-	 * 
+	 * The source of this Ink object.
 	 */
 	private InkSource sourceType = InkSource.UNKNOWN;
 
 	/**
-	 * 
+	 * An Ink object is essentially a list of InkStroke objects.
 	 */
 	private List<InkStroke> strokes;
 
@@ -73,27 +81,32 @@ public class Ink {
 	}
 
 	/**
+	 * Create an ink object from a serialized XML file.
+	 * 
+	 * @param xmlFile
+	 */
+	public Ink(File xmlFile) {
+		this(); // empty list of strokes
+		loadFromXMLFile(xmlFile);
+	}
+
+	/**
 	 * @param theStrokes
 	 */
 	public Ink(List<InkStroke> theStrokes) {
 		strokes = theStrokes;
 	}
 
-	public Ink(File xmlFile) {
-		// ... load it from xml here...
-		// TODO
-		DebugUtils.println("Unimplemented");
-	}
-
 	/**
 	 * @param s
+	 *            the stroke to be added to the internal list.
 	 */
 	public void addStroke(InkStroke s) {
 		strokes.add(s);
 	}
 
 	/**
-	 * @return
+	 * @return return an XML representation of this Ink object.
 	 */
 	public String getAsXML() {
 		return getAsXML(true);
@@ -143,12 +156,15 @@ public class Ink {
 	}
 
 	/**
-	 * @return
+	 * @return the number of strokes in this ink object.
 	 */
 	public int getNumStrokes() {
 		return strokes.size();
 	}
 
+	/**
+	 * @return
+	 */
 	private String getOpenTagXML() {
 		if (pageAddress == null) {
 			return "<ink>";
@@ -171,6 +187,9 @@ public class Ink {
 		return pageAddress;
 	}
 
+	/**
+	 * @return
+	 */
 	public InkSource getSourceType() {
 		return sourceType;
 	}
@@ -181,6 +200,32 @@ public class Ink {
 	public List<InkStroke> getStrokes() {
 		return strokes;
 	}
+
+	/**
+	 * Load strokes and other information from an xml file. It will clear this object before the load occurs,
+	 * effectively replacing this Ink object with the one represented by the XML file.
+	 * 
+	 * @param xmlFileSource
+	 */
+	public void loadFromXMLFile(File xmlFileSource) {
+		// Create an input factory
+		final XMLInputFactory xmlif = XMLInputFactory.newInstance();
+		// Create an XML stream reader
+		XMLStreamReader xmlr;
+		try {
+			xmlr = xmlif.createXMLStreamReader(new FileReader(xmlFileSource));
+			// Loop over XML input stream and process events
+			while (xmlr.hasNext()) {
+				processEvent(xmlr);
+				xmlr.next();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (XMLStreamException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	/**
 	 * @param s
@@ -197,10 +242,12 @@ public class Ink {
 	}
 
 	/**
-	 * @param xmlFile
+	 * Save this object out as an XML file.
+	 * 
+	 * @param xmlFileDest
 	 */
-	public void saveAsXMLFile(File xmlFile) {
-		FileUtils.writeStringToFile(getAsXML(true), xmlFile);
+	public void saveToXMLFile(File xmlFileDest) {
+		FileUtils.writeStringToFile(getAsXML(true), xmlFileDest);
 	}
 
 	/**

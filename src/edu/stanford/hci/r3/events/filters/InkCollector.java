@@ -307,7 +307,7 @@ public class InkCollector extends ContentFilter {
 	 * @param xmlFile
 	 */
 	public void saveInkToXMLFile(File xmlFile) {
-		new Ink(strokes).saveAsXMLFile(xmlFile);
+		new Ink(strokes).saveToXMLFile(xmlFile);
 	}
 
 	/**

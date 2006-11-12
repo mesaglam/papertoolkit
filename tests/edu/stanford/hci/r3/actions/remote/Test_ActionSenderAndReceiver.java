@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import edu.stanford.hci.r3.actions.types.OpenURL2Action;
-import edu.stanford.hci.r3.networking.ClientServerType;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>

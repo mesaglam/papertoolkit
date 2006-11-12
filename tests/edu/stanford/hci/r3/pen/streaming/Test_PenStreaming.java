@@ -1,6 +1,6 @@
 package edu.stanford.hci.r3.pen.streaming;
 
-import edu.stanford.hci.r3.networking.ClientServerType;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>

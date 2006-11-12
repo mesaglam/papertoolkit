@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.networking;
 
+import edu.stanford.hci.r3.util.networking.ClientServerType;
+
 /**
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.networking;
+package edu.stanford.hci.r3.util.networking;
 
 /**
  * <p>

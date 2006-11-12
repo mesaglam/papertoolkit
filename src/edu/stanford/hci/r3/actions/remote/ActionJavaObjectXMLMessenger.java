@@ -1,6 +1,5 @@
 package edu.stanford.hci.r3.actions.remote;
 
-import java.io.IOException;
 import java.net.Socket;
 
 import edu.stanford.hci.r3.PaperToolkit;
@@ -27,7 +26,6 @@ public class ActionJavaObjectXMLMessenger extends ActionMessenger {
 
 	/**
 	 * @param s
-	 * @throws IOException
 	 */
 	public ActionJavaObjectXMLMessenger(Socket s) {
 		super(s);

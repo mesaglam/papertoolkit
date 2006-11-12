@@ -3,8 +3,8 @@ package edu.stanford.hci.r3.actions.remote;
 import java.awt.Color;
 
 import edu.stanford.hci.r3.actions.types.DisplayGraphicsAction;
-import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.util.WindowUtils;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>
