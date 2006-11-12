@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.xml.TagType;
@@ -33,7 +34,7 @@ public class InkXMLParser {
 	 * </p>
 	 */
 	public enum Attributes {
-		BEGIN, END, F, T, X, Y
+		ADDRESS, BEGIN, END, F, T, X, Y
 	}
 
 	/**
@@ -103,12 +104,15 @@ public class InkXMLParser {
 		// String prefix = xmlr.getAttributePrefix(index);
 		// String namespace = xmlr.getAttributeNamespace(index);
 		final String localName = xmlr.getAttributeName(index).toString();
-		DebugUtils.println(localName);
+		// DebugUtils.println(localName);
 
 		try {
 			final Attributes type = Attributes.valueOf(localName.toUpperCase());
 			final String value = xmlr.getAttributeValue(index);
 			switch (type) {
+			case ADDRESS:
+				ink.setSourcePageAddress(new PageAddress(value));
+				break;
 			case BEGIN:
 				beginTS = Long.parseLong(value);
 				break;
