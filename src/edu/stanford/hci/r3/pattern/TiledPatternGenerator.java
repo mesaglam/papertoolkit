@@ -295,6 +295,8 @@ public class TiledPatternGenerator {
 	 */
 	public void resetUniquePatternTracker() {
 		patternFileNumber = 0;
+		lastDotUsedY = 0;
+		lastDotUsedX = 0;
 	}
 
 	/**
@@ -318,6 +320,7 @@ public class TiledPatternGenerator {
 	 * @param num
 	 */
 	public void setPatternFileNumber(int num) {
+		resetUniquePatternTracker();
 		patternFileNumber = num;
 	}
 
