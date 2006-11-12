@@ -17,8 +17,8 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * On its surface, this is just a <code>List&lt;InkStroke&gt;</code>... However, this class will provide
- * nice functions for clustering strokes, selecting strokes, etc.
+ * On its surface, this is just a <code>List&lt;InkStroke&gt;</code>... However, this class will
+ * provide nice functions for clustering strokes, selecting strokes, etc.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -29,17 +29,15 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class Ink {
 
-
 	/**
 	 * <p>
-	 * Helps us determine where we got this ink from. It is not a required field, but is set when it is
-	 * convenient.
+	 * Helps us determine where we got this ink from. It is not a required field, but is set when it
+	 * is convenient.
 	 * </p>
 	 */
 	public enum InkSource {
 		BATCHED, STREAMED, UNKNOWN
 	}
-
 
 	/**
 	 * Mostly Black, but with some transparency.
@@ -57,11 +55,10 @@ public class Ink {
 	private String name;
 
 	/**
-	 * For ink that has sourceType set to BATCHED, this field is meaningful. It tells us which logical page
-	 * this ink came from. For STREAMED ink, this field will be left NULL.
+	 * For ink that has sourceType set to BATCHED, this field is meaningful. It tells us which
+	 * logical page this ink came from. For STREAMED ink, this field will be left NULL.
 	 */
 	private PageAddress pageAddress;
-
 
 	/**
 	 * The source of this Ink object.
@@ -124,16 +121,15 @@ public class Ink {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getOpenTagXML() + separator);
 		for (InkStroke s : strokes) {
-			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\"" + s.getLastTimestamp() + "\">"
-					+ separator);
+			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\""
+					+ s.getLastTimestamp() + "\">" + separator);
 			double[] x = s.getXSamples();
 			double[] y = s.getYSamples();
 			int[] f = s.getForceSamples();
 			long[] ts = s.getTimeSamples();
 			for (int i = 0; i < x.length; i++) {
-				sb
-						.append("<p x=\"" + x[i] + "\" y=\"" + y[i] + "\" f=\"" + f[i] + "\" t=\"" + ts[i]
-								+ "\"/>");
+				sb.append("<p x=\"" + x[i] + "\" y=\"" + y[i] + "\" f=\"" + f[i] + "\" t=\""
+						+ ts[i] + "\"/>");
 			}
 			sb.append("</stroke>" + separator);
 		}
@@ -195,37 +191,21 @@ public class Ink {
 	}
 
 	/**
-	 * @return
+	 * @return the strokes that this Ink object comprises.
 	 */
 	public List<InkStroke> getStrokes() {
 		return strokes;
 	}
 
 	/**
-	 * Load strokes and other information from an xml file. It will clear this object before the load occurs,
-	 * effectively replacing this Ink object with the one represented by the XML file.
+	 * Load strokes and other information from an xml file. It will clear this object before the
+	 * load occurs, effectively replacing this Ink object with the one represented by the XML file.
 	 * 
 	 * @param xmlFileSource
 	 */
 	public void loadFromXMLFile(File xmlFileSource) {
-		// Create an input factory
-		final XMLInputFactory xmlif = XMLInputFactory.newInstance();
-		// Create an XML stream reader
-		XMLStreamReader xmlr;
-		try {
-			xmlr = xmlif.createXMLStreamReader(new FileReader(xmlFileSource));
-			// Loop over XML input stream and process events
-			while (xmlr.hasNext()) {
-				processEvent(xmlr);
-				xmlr.next();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
-		}
+		new InkXMLParser(this).parse(xmlFileSource);
 	}
-
 
 	/**
 	 * @param s
@@ -258,7 +238,8 @@ public class Ink {
 	}
 
 	/**
-	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink clusters.
+	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink
+	 * clusters.
 	 * 
 	 * @param theName
 	 */
@@ -267,8 +248,8 @@ public class Ink {
 	}
 
 	/**
-	 * Set the Anoto page address that we got this Ink object from. When we do this, it is implied that our
-	 * sourceType is BATCHED.
+	 * Set the Anoto page address that we got this Ink object from. When we do this, it is implied
+	 * that our sourceType is BATCHED.
 	 * 
 	 * @param address
 	 */
