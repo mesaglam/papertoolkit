@@ -18,14 +18,14 @@ import prefuse.render.ShapeRenderer;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import prefuse.visual.expression.VisiblePredicate;
-import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.EventType;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Allows developers to load a saved event stream (either from batched or streaming modes) and
- * replay them. You can also load ALL events, and browse through them.
+ * Allows developers to load a saved event stream (either from batched or streaming modes) and replay them.
+ * You can also load ALL events, and browse through them. This class maintains the Visualization, and
+ * interacts with the EventReplayManager, which does all the hard work.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -37,64 +37,44 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class EventBrowser {
 
 	/**
-	 * Folder where the event data is stored.
+	 * 
 	 */
+	private static final String penEventsGroup = "PenEventsGroup";
 
 	/**
-	 * The event data we read in.
+	 * 
 	 */
-
-	private EventBrowserView view;
-
-	private Visualization vis;
-
 	private Table dataTable;
 
+	/**
+	 * 
+	 */
 	private Display display;
 
 	/**
-	 * HSQLDB access, perhaps.
+	 * Send events here...
 	 */
+	private EventReplayManager eventReplayManager;
 
-	private static final String penEventsGroup = "PenEventsGroup";
+	/**
+	 * 
+	 */
+	private EventBrowserView view;
 
-	public EventBrowser() {
-		vis = new Visualization();
-		VisualTable vt = vis.addTable(penEventsGroup, getPenEventsTable());
-		vis.setRendererFactory(new RendererFactory() {
-			AbstractShapeRenderer sr = new ShapeRenderer();
+	/**
+	 * 
+	 */
+	private Visualization vis;
 
-			Renderer arY = new AxisRenderer(Constants.RIGHT, Constants.TOP);
-
-			Renderer arX = new AxisRenderer(Constants.CENTER, Constants.FAR_BOTTOM);
-
-			public Renderer getRenderer(VisualItem item) {
-				return item.isInGroup("ylab") ? arY : item.isInGroup("xlab") ? arX : sr;
-			}
-		});
-
-		// --------------------------------------------------------------------
-		// STEP 2: create actions to process the visual data
-
-		// set up dynamic queries, search set
-		RangeQueryBinding eventsQuery = new RangeQueryBinding(vt, "Timestamp");
-
-        AxisLayout yaxis = new AxisLayout("Events Group", "Timestamp",
-                Constants.Y_AXIS, VisiblePredicate.TRUE);
-
-		
-        AndPredicate filter = new AndPredicate(eventsQuery.getPredicate());
-
-        
-        ActionList update = new ActionList();
-        update.add(new VisibilityFilter(penEventsGroup, filter));
-        update.add(yaxis);
-        update.add(new RepaintAction());
-        vis.putAction("update", update);
-
-		
-		display = new Display(vis);
-		view = new EventBrowserView(display);
+	/**
+	 * @param eventReplayManager
+	 * 
+	 */
+	public EventBrowser(EventReplayManager replayMgr) {
+		eventReplayManager = replayMgr;
+		setupVisualization();
+		view = new EventBrowserView(this, display);
+		eventReplayManager.loadMostRecentEventData();
 	}
 
 	/**
@@ -107,7 +87,7 @@ public class EventBrowser {
 			dataTable.addColumn("Type", EventType.class);
 
 			importData(dataTable);
-			
+
 			final int numRows = dataTable.getRowCount();
 			final int numCols = dataTable.getColumnCount();
 			for (int r = 0; r < numRows; r++) {
@@ -121,6 +101,9 @@ public class EventBrowser {
 		return dataTable;
 	}
 
+	/**
+	 * @param data
+	 */
 	private void importData(Table data) {
 		data.addRows(1);
 		data.set(0, 0, 123L);
@@ -129,10 +112,53 @@ public class EventBrowser {
 
 	/**
 	 * 
-	 * @param args
 	 */
-	public static void main(String[] args) {
-		PaperToolkit.initializeLookAndFeel();
-		new EventBrowser();
+	public void replayLoadedEvents() {
+		eventReplayManager.replayLoadedEvents();
+	}
+
+	/**
+	 * 
+	 */
+	private void setupVisualization() {
+		vis = new Visualization();
+		VisualTable vt = vis.addTable(penEventsGroup, getPenEventsTable());
+		vis.setRendererFactory(new RendererFactory() {
+			Renderer arX = new AxisRenderer(Constants.CENTER, Constants.FAR_BOTTOM);
+
+			Renderer arY = new AxisRenderer(Constants.RIGHT, Constants.TOP);
+
+			AbstractShapeRenderer sr = new ShapeRenderer();
+
+			public Renderer getRenderer(VisualItem item) {
+				return item.isInGroup("ylab") ? arY : item.isInGroup("xlab") ? arX : sr;
+			}
+		});
+
+		// --------------------------------------------------------------------
+		// STEP 2: create actions to process the visual data
+
+		// set up dynamic queries, search set
+		RangeQueryBinding eventsQuery = new RangeQueryBinding(vt, "Timestamp");
+
+		AxisLayout yaxis = new AxisLayout("Events Group", "Timestamp", Constants.Y_AXIS,
+				VisiblePredicate.TRUE);
+
+		AndPredicate filter = new AndPredicate(eventsQuery.getPredicate());
+
+		ActionList update = new ActionList();
+		update.add(new VisibilityFilter(penEventsGroup, filter));
+		update.add(yaxis);
+		update.add(new RepaintAction());
+		vis.putAction("update", update);
+
+		display = new Display(vis);
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setVisible(boolean b) {
+		view.setVisible(true);
 	}
 }

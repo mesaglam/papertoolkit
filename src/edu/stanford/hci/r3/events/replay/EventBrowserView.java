@@ -4,13 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoundedRangeModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import prefuse.Display;
 import prefuse.data.query.NumberRangeModel;
@@ -20,8 +25,7 @@ import edu.stanford.hci.r3.util.components.JRangeSlider;
 
 /**
  * <p>
- * The GUI for the Event Browser. It contains a JFrame with some cool visualizations that allow us
- * to
+ * The GUI for the Event Browser. It contains a JFrame with some cool visualizations that allow us to
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -32,38 +36,83 @@ import edu.stanford.hci.r3.util.components.JRangeSlider;
  */
 public class EventBrowserView extends JFrame {
 
-	private JPanel commandButtonsPanel;
+	/**
+	 * The model.
+	 */
+	private EventBrowser browser;
+
+	private JPanel commandsPanel;
+
+	private Display display;
 
 	private JPanel eventSliderPanel;
 
 	private JPanel eventVizView;
 
+	private JButton playButton;
+
 	private BoundedRangeModel rangeModel;
 
 	private JRangeSlider rangeSlider;
 
-	private Display display;
+	private JTextArea infoArea;
 
-	public EventBrowserView(Display disp) {
+	private JPanel bottomPanel;
+
+	/**
+	 * @param browser
+	 * @param disp
+	 */
+	public EventBrowserView(EventBrowser brows, Display disp) {
+		browser = brows;
 		display = disp;
 		setTitle("Event Browser");
 		setSize(800, 320);
 		setupComponents();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// this frame is displayed by the application manager
+		// so it should not exit the application on close
+
+		// center it relative to the dekstop
 		setLocation(WindowUtils.getWindowOrigin(this, WindowUtils.DESKTOP_CENTER));
-		setVisible(true);
 	}
 
-	private Component getCommandButtons() {
-		if (commandButtonsPanel == null) {
-			commandButtonsPanel = new JPanel();
-			commandButtonsPanel.add(new JButton("Import"));
-			commandButtonsPanel.add(new JButton("Export"));
-			commandButtonsPanel.add(new JButton("Play"));
+	/**
+	 * @return
+	 */
+	private JButton getClearButton() {
+		return new JButton("Clear");
+	}
+
+	/**
+	 * @return
+	 */
+	private Component getCommandsPanel() {
+		if (commandsPanel == null) {
+			commandsPanel = new JPanel();
+			commandsPanel.add(getClearButton());
+			commandsPanel.add(getImportButton());
+			commandsPanel.add(getExportButton());
+			commandsPanel.add(getPlayButton());
 		}
-		return commandButtonsPanel;
+		return commandsPanel;
 	}
 
+	private Component getInfoArea() {
+		if (infoArea == null) {
+			infoArea = new JTextArea();
+			infoArea.setEditable(false);
+			infoArea.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			infoArea.setBorder(BorderFactory.createEmptyBorder(7,5,7,5));
+			infoArea.setForeground(Color.WHITE);
+			infoArea.setText("Ready...");
+		}
+		return infoArea;
+	}
+
+	/**
+	 * @return
+	 */
 	private Component getEventSliderPanel() {
 		if (eventSliderPanel == null) {
 			eventSliderPanel = new JPanel();
@@ -74,6 +123,9 @@ public class EventBrowserView extends JFrame {
 		return eventSliderPanel;
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getEventVizView() {
 		if (eventVizView == null) {
 			eventVizView = new JPanel();
@@ -83,6 +135,45 @@ public class EventBrowserView extends JFrame {
 		return eventVizView;
 	}
 
+	/**
+	 * @return
+	 */
+	private JButton getExportButton() {
+		return new JButton("Export");
+	}
+
+	/**
+	 * @return
+	 */
+	private JButton getImportButton() {
+		return new JButton("Import");
+	}
+
+	/**
+	 * @return
+	 */
+	private JButton getPlayButton() {
+		if (playButton == null) {
+			playButton = new JButton("Play");
+			playButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						DebugUtils.println("Waiting 1.5 seconds...");
+						Thread.sleep(1500);
+						DebugUtils.println("Play Events Now...");
+					} catch (InterruptedException ex) {
+						ex.printStackTrace();
+					}
+					browser.replayLoadedEvents();
+				}
+			});
+		}
+		return playButton;
+	}
+
+	/**
+	 * @return
+	 */
 	private BoundedRangeModel getRangeModel() {
 		if (rangeModel == null) {
 			rangeModel = new NumberRangeModel(0, 1000, 0, 1000);
@@ -90,6 +181,9 @@ public class EventBrowserView extends JFrame {
 		return rangeModel;
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getRangeSlider() {
 		if (rangeSlider == null) {
 			rangeSlider = new EventSlider(getRangeModel(), JRangeSlider.HORIZONTAL,
@@ -112,9 +206,23 @@ public class EventBrowserView extends JFrame {
 		return rangeSlider;
 	}
 
+	/**
+	 * 
+	 */
 	private void setupComponents() {
 		final Container contentPane = getContentPane();
 		contentPane.add(getEventSliderPanel(), BorderLayout.CENTER);
-		contentPane.add(getCommandButtons(), BorderLayout.SOUTH);
+		contentPane.add(getBottomPanel(), BorderLayout.SOUTH);
+	}
+
+	private Component getBottomPanel() {
+		if (bottomPanel == null) {
+			bottomPanel = new JPanel();
+			bottomPanel.setLayout(new BorderLayout());
+			bottomPanel.add(getInfoArea(), BorderLayout.CENTER);
+			bottomPanel.add(getCommandsPanel(), BorderLayout.EAST);
+
+		}
+		return bottomPanel;
 	}
 }
