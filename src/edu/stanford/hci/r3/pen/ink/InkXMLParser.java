@@ -1,14 +1,23 @@
 package edu.stanford.hci.r3.pen.ink;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.xml.TagType;
 
 /**
  * <p>
- * Responsible for Reading from XML Files that have been saved through Ink.saveToXMLFile(File xmlFileDest)
+ * Responsible for Reading from XML Files that have been saved through Ink.saveToXMLFile(File
+ * xmlFileDest)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -35,10 +44,56 @@ public class InkXMLParser {
 		INK, P, STROKE
 	}
 
+	private Ink ink;
+
 	/**
 	 * What was seen recently during parsing of XML files.
 	 */
 	private String recentXMLText = "";
+
+	private ArrayList<PenSample> currentStroke;
+
+	private PenSample currentSample;
+
+	private long t;
+
+	private int f;
+
+	private double y;
+
+	private double x;
+
+	private long endTS;
+
+	private long beginTS;
+
+	public InkXMLParser(Ink theInk) {
+		ink = theInk;
+	}
+
+	/**
+	 * 
+	 * @param xmlFileSource
+	 */
+	public void parse(File xmlFileSource) {
+		// Create an input factory
+		final XMLInputFactory xmlif = XMLInputFactory.newInstance();
+		// Create an XML stream reader
+		XMLStreamReader xmlr;
+		try {
+			xmlr = xmlif.createXMLStreamReader(new FileReader(xmlFileSource));
+			// Loop over XML input stream and process events
+			while (xmlr.hasNext()) {
+				processEvent(xmlr);
+				xmlr.next();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (XMLStreamException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	/**
 	 * @param xmlr
@@ -54,7 +109,24 @@ public class InkXMLParser {
 			final Attributes type = Attributes.valueOf(localName.toUpperCase());
 			final String value = xmlr.getAttributeValue(index);
 			switch (type) {
-
+			case BEGIN:
+				beginTS = Long.parseLong(value);
+				break;
+			case END:
+				endTS = Long.parseLong(value);
+				break;
+			case X:
+				x = Double.parseDouble(value);
+				break;
+			case Y:
+				y = Double.parseDouble(value);
+				break;
+			case F:
+				f = Integer.parseInt(value);
+				break;
+			case T:
+				t = Long.parseLong(value);
+				break;
 			}
 		} catch (IllegalArgumentException iae) {
 			// System.out.println("Not Handling Attribute: " + localName);
@@ -119,15 +191,25 @@ public class InkXMLParser {
 			switch (type) {
 			case STROKE:
 				DebugUtils.println("Stroke");
+				currentStroke = new ArrayList<PenSample>();
 				break;
 			case P:
+				break;
+			case INK:
 				break;
 			}
 		} else { // END
 			switch (type) {
 			case STROKE:
+				// set the up flag for the last sample we parsed
+				currentSample.setPenUp(true);
+				ink.addStroke(new InkStroke(currentStroke));
 				break;
 			case P:
+				currentSample = new PenSample(x, y, f, t);
+				currentStroke.add(currentSample);
+				break;
+			case INK:
 				break;
 			}
 		}
