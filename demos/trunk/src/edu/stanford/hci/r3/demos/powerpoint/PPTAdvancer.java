@@ -30,58 +30,38 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PPTAdvancer {
+public class PPTAdvancer extends Application {
 
-	private static EventHandler getClickHandler() {
-		return new ClickAdapter() {
-			public void clicked(PenEvent e) {
-				DebugUtils.println("Clicked " + clickCount + " times...");
-			}
-		};
-	}
-
-	private static EventHandler getMarkHandler() {
-		return new GestureHandler() {
-			public void handleMark(PenEvent e, GestureDirection dir) {
-				DebugUtils.println(dir);
-				final RobotAction robot = new RobotAction();
-				switch (dir) {
-				case N:
-				case S:
-					robot.keyPress(KeyEvent.VK_ALT);
-					robot.keyType(KeyEvent.VK_TAB);
-					robot.keyRelease(KeyEvent.VK_ALT);
-					robot.invoke();
-					break;
-				case NW:
-				case W:
-				case SW:
-					robot.keyType(KeyEvent.VK_LEFT);
-					robot.invoke();
-					break;
-				case NE:
-				case E:
-				case SE:
-				default:
-					robot.keyType(KeyEvent.VK_RIGHT);
-					robot.invoke();
-					break;
-				}
-			}
-		};
-	}
-
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		Application app = new Application("Advancer");
+		PaperToolkit toolkit = new PaperToolkit(true, true, false);
+		toolkit.startApplication(new PPTAdvancer());
+	}
+
+	/**
+	 * 
+	 */
+	public PPTAdvancer() {
+		this(false);
+	}
+
+	/**
+	 * @param configureApp
+	 */
+	public PPTAdvancer(boolean configureApp) {
+		super("Advancer");
+
 		final Sheet s = new Sheet(new Inches(8.5), new Inches(11));
 		final Region r = new Region("Button", 1, 1, 4, 2);
 		r.addEventHandler(getMarkHandler());
 		r.addEventHandler(getClickHandler());
 		s.addRegion(r);
 		final Pen pen = new Pen("Primary Pen");
-		app.addPen(pen);
+		addPen(pen);
 
-		if (false) {
+		if (configureApp) {
 			// get two points from the pen...
 			pen.addLivePenListener(new PenAdapter() {
 				private int pointCount = 0;
@@ -117,11 +97,55 @@ public class PPTAdvancer {
 			});
 
 		} else {
-			app.addSheet(s, new File("data/Powerpoint/PPT.patternInfo.xml"));
+			// this one works with page 13 of the Mead 5x8 notebook...
+			addSheet(s, new File("data/Powerpoint/PPT.patternInfo.xml"));
 		}
 
-		PaperToolkit toolkit = new PaperToolkit(true, true, false);
-		toolkit.startApplication(app);
+	}
+
+	/**
+	 * @return
+	 */
+	private EventHandler getClickHandler() {
+		return new ClickAdapter() {
+			public void clicked(PenEvent e) {
+				DebugUtils.println("Clicked " + clickCount + " times...");
+			}
+		};
+	}
+
+	/**
+	 * @return
+	 */
+	private EventHandler getMarkHandler() {
+		return new GestureHandler() {
+			public void handleMark(PenEvent e, GestureDirection dir) {
+				DebugUtils.println(dir);
+				final RobotAction robot = new RobotAction();
+				switch (dir) {
+				case N:
+				case S:
+					robot.keyPress(KeyEvent.VK_ALT);
+					robot.keyType(KeyEvent.VK_TAB);
+					robot.keyRelease(KeyEvent.VK_ALT);
+					robot.invoke();
+					break;
+				case NW:
+				case W:
+				case SW:
+					robot.keyType(KeyEvent.VK_LEFT);
+					robot.invoke();
+					break;
+				case NE:
+				case E:
+				case SE:
+				default:
+					robot.keyType(KeyEvent.VK_RIGHT);
+					robot.invoke();
+					break;
+				}
+			}
+		};
 	}
 
 }

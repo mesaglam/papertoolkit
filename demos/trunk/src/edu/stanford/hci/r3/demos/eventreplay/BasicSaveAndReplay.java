@@ -2,8 +2,9 @@ package edu.stanford.hci.r3.demos.eventreplay;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.demos.powerpoint.PPTAdvancer;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -30,7 +31,7 @@ public class BasicSaveAndReplay extends Application {
 	 */
 	public static void main(String[] args) {
 		PaperToolkit toolkit = new PaperToolkit(true, true, false);
-		toolkit.startApplication(new BasicSaveAndReplay());
+		toolkit.loadApplication(new PPTAdvancer());
 	}
 
 	private Region floatingRegion;
@@ -50,26 +51,17 @@ public class BasicSaveAndReplay extends Application {
 		addPen(getPen());
 	}
 
+	/**
+	 * @return
+	 */
 	private Region getFloatingRegion() {
 		if (floatingRegion == null) {
 			floatingRegion = new Region("Floating Region", //
 					new Inches(0), new Inches(0), new Inches(8.5), new Inches(11));
-			floatingRegion.addEventHandler(new ClickHandler() {
+			floatingRegion.addEventHandler(new ClickAdapter() {
 				@Override
 				public void clicked(PenEvent e) {
 					DebugUtils.println("Clicked at: " + e.getPercentageLocation());
-				}
-
-				@Override
-				public void pressed(PenEvent e) {
-					// TODO Auto-generated method stub
-
-				}
-
-				@Override
-				public void released(PenEvent e) {
-					// TODO Auto-generated method stub
-
 				}
 			});
 			// floatingRegion.addContentFilter(new HandwritingRecognizer());
@@ -93,6 +85,9 @@ public class BasicSaveAndReplay extends Application {
 		return mapping;
 	}
 
+	/**
+	 * @return
+	 */
 	private Pen getPen() {
 		if (pen == null) {
 			pen = new Pen();
@@ -101,8 +96,8 @@ public class BasicSaveAndReplay extends Application {
 	}
 
 	/**
-	 * A "floating" sheet is one that contains "floating" regions, which can accept pen data from
-	 * pretty much any patterned paper.
+	 * A "floating" sheet is one that contains "floating" regions, which can accept pen data from pretty much
+	 * any patterned paper.
 	 * 
 	 * @return
 	 */
