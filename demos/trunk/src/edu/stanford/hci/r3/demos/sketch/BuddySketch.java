@@ -1,6 +1,10 @@
 package edu.stanford.hci.r3.demos.sketch;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +13,16 @@ import javax.swing.JOptionPane;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.R3Action;
-import edu.stanford.hci.r3.actions.remote.*;
+import edu.stanford.hci.r3.actions.remote.ActionHandler;
+import edu.stanford.hci.r3.actions.remote.ActionReceiver;
+import edu.stanford.hci.r3.actions.remote.ActionReceiverConnectionListener;
 import edu.stanford.hci.r3.actions.types.ProcessInformationAction;
 import edu.stanford.hci.r3.devices.Device;
-import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.components.EndlessProgressDialog;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>
