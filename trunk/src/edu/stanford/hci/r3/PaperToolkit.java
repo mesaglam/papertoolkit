@@ -54,6 +54,7 @@ import edu.stanford.hci.r3.design.acrobat.AcrobatDesignerLauncher;
 import edu.stanford.hci.r3.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.replay.EventBrowser;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.RegionID;
@@ -75,10 +76,9 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
 
 /**
  * <p>
- * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the
- * system. A PaperToolkit can run one or more Applications at the same time. You can also deactivate
- * applications (to pause them). Or, you can remove them altogether. (These features are not yet
- * fully implemented.)
+ * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the system. A
+ * PaperToolkit can run one or more Applications at the same time. You can also deactivate applications (to
+ * pause them). Or, you can remove them altogether. (These features are not yet fully implemented.)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -158,11 +158,11 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently,
-	 * this does NOT work as a packaged jar.
+	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently, this does
+	 * NOT work as a packaged jar.
 	 * 
-	 * @return the root path to the toolkit (or some other canonical path where we can expect to
-	 *         find certain resources, like the HandwritingRecognition Server)
+	 * @return the root path to the toolkit (or some other canonical path where we can expect to find certain
+	 *         resources, like the HandwritingRecognition Server)
 	 */
 	public static File getToolkitRootPath() {
 		File file = null;
@@ -195,8 +195,7 @@ public class PaperToolkit {
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
 			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
-			xmlEngine.alias("TiledPatternCoordinateConverter",
-					TiledPatternCoordinateConverter.class);
+			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 			xmlEngine.alias("PenEvent", PenEvent.class);
 
@@ -205,9 +204,9 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external
-	 * class. If you use the default PaperToolkit() constructor, it will also use the custom look
-	 * and feel. All PaperToolkit utility classes will also use this look and feel.
+	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external class. If you
+	 * use the default PaperToolkit() constructor, it will also use the custom look and feel. All PaperToolkit
+	 * utility classes will also use this look and feel.
 	 */
 	public static void initializeLookAndFeel() {
 		if (!lookAndFeelInitialized) {
@@ -254,8 +253,7 @@ public class PaperToolkit {
 	private static void printInitializationMessages() {
 		final String dashes = StringUtils.repeat("-", versionString.length());
 		System.out.println("-----------------------------------------------------------" + dashes);
-		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. "
-				+ versionString);
+		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. " + versionString);
 		System.out.println("-----------------------------------------------------------" + dashes);
 	}
 
@@ -353,11 +351,13 @@ public class PaperToolkit {
 
 	private JButton designSheetsButton;
 
+	private EventBrowser eventBrowser;
+
 	private JButton eventBrowserButton;
 
 	/**
-	 * The engine that processes all pen events, producing the correct outputs and calling the right
-	 * event handlers.
+	 * The engine that processes all pen events, producing the correct outputs and calling the right event
+	 * handlers.
 	 */
 	private EventEngine eventEngine;
 
@@ -407,8 +407,8 @@ public class PaperToolkit {
 	private JButton stopAppButton;
 
 	/**
-	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false.
-	 * True is useful for debugging and stopping apps that don't have a GUI.
+	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false. True is
+	 * useful for debugging and stopping apps that don't have a GUI.
 	 */
 	private boolean useAppManager = false;
 
@@ -418,10 +418,9 @@ public class PaperToolkit {
 	private boolean useHandwriting;
 
 	/**
-	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
-	 * accordingly (and between applications, ideally). There will be one event engine in the paper
-	 * toolkit, and all events that applications generate will be fed through this single event
-	 * engine.
+	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
+	 * (and between applications, ideally). There will be one event engine in the paper toolkit, and all
+	 * events that applications generate will be fed through this single event engine.
 	 */
 	public PaperToolkit() {
 		this(false);
@@ -437,8 +436,7 @@ public class PaperToolkit {
 	/**
 	 * @param useAppManager
 	 */
-	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager,
-			boolean useHandwritingRecognitionServer) {
+	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager, boolean useHandwritingRecognitionServer) {
 		loadStartupConfiguration();
 
 		if (useLookAndFeel) {
@@ -498,8 +496,7 @@ public class PaperToolkit {
 			appManager.add(getControls(), BorderLayout.EAST);
 
 			appManager.setSize(640, 480);
-			appManager.setLocation(WindowUtils.getWindowOrigin(appManager,
-					WindowUtils.DESKTOP_CENTER));
+			appManager.setLocation(WindowUtils.getWindowOrigin(appManager, WindowUtils.DESKTOP_CENTER));
 			appManager.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			appManager.setVisible(true);
 		}
@@ -553,15 +550,18 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return button for accessing the EventReplayManager's GUI, which allows us to load up and
-	 *         replay eventData files.
+	 * @return button for accessing the EventReplayManager's GUI, which allows us to load up and replay
+	 *         eventData files.
 	 */
 	private Component getEventBrowserButton() {
 		if (eventBrowserButton == null) {
 			eventBrowserButton = new JButton("View/Replay Events");
 			eventBrowserButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					
+				public void actionPerformed(ActionEvent ae) {
+					if (eventBrowser == null) {
+						eventBrowser = new EventBrowser(eventEngine.getEventReplayManager());
+					}
+					eventBrowser.setVisible(true);
 				}
 			});
 		}
@@ -609,18 +609,9 @@ public class PaperToolkit {
 	/**
 	 * @return a GUI list of loaded applications (running or not).
 	 */
-	private Component getListOfApps() {
+	private JXList getListOfApps() {
 		if (listOfApps == null) {
-			ListModel model = new AbstractListModel() {
-				public Object getElementAt(int appIndex) {
-					return loadedApplications.get(appIndex);
-				}
-
-				public int getSize() {
-					return loadedApplications.size();
-				}
-			};
-			listOfApps = new JXList(model);
+			listOfApps = new JXList();
 			listOfApps.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent event) {
 					Application selectedApp = (Application) listOfApps.getSelectedValue();
@@ -637,8 +628,7 @@ public class PaperToolkit {
 				}
 			});
 
-			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0,
-					-1) {
+			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0, -1) {
 				@Override
 				protected boolean test(ComponentAdapter c) {
 					if (c.getValue() instanceof Application) {
@@ -662,16 +652,14 @@ public class PaperToolkit {
 							appDescription = appDescription + " [stopped]";
 						}
 					}
-					return super.getListCellRendererComponent(list, appDescription, index,
-							isSelected, cellHasFocus);
+					return super.getListCellRendererComponent(list, appDescription, index, isSelected,
+							cellHasFocus);
 				}
 			});
 			listOfApps.setBorder(BorderFactory.createEmptyBorder(20, 5, 20, 5));
 			listOfApps.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			listOfApps.setFont(APP_MANAGER_FONT);
-			if (model.getSize() > 0) {
-				listOfApps.setSelectedIndex(0);
-			}
+			updateListOfApps();
 		}
 		return listOfApps;
 	}
@@ -687,6 +675,19 @@ public class PaperToolkit {
 			mainMessage.setFont(APP_MANAGER_FONT);
 		}
 		return mainMessage;
+	}
+
+	private ListModel getModel() {
+		final ListModel model = new AbstractListModel() {
+			public Object getElementAt(int appIndex) {
+				return loadedApplications.get(appIndex);
+			}
+
+			public int getSize() {
+				return loadedApplications.size();
+			}
+		};
+		return model;
 	}
 
 	/**
@@ -764,10 +765,13 @@ public class PaperToolkit {
 		if (useAppManager) {
 			getApplicationManager();
 		} else {
-			DebugUtils.println("Not using the Application Manager. "
-					+ "If you would like to use the GUI launcher, "
-					+ "call PaperToolkit.useAppManager(true)");
+			DebugUtils
+					.println("Not using the Application Manager. "
+							+ "If you would like to use the GUI launcher, "
+							+ "call PaperToolkit.useAppManager(true)");
 		}
+
+		updateListOfApps();
 	}
 
 	/**
@@ -779,8 +783,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
-	 * printer.
+	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default printer.
 	 * 
 	 * @param sheet
 	 */
@@ -819,8 +822,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Start this application and register all live pens with the event engine. The event engine
-	 * will then start dispatching events for this application until the application is stopped.
+	 * Start this application and register all live pens with the event engine. The event engine will then
+	 * start dispatching events for this application until the application is stopped.
 	 * 
 	 * @param paperApp
 	 */
@@ -892,6 +895,16 @@ public class PaperToolkit {
 	 */
 	public void unloadApplication(Application app) {
 		loadedApplications.remove(app);
+	}
+
+	/**
+	 * 
+	 */
+	private void updateListOfApps() {
+		listOfApps.setModel(getModel());
+		if (getModel().getSize() > 0) {
+			listOfApps.setSelectedIndex(0);
+		}
 	}
 
 	/**

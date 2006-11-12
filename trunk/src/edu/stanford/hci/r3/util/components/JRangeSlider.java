@@ -25,8 +25,7 @@ import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
- * Implements a Swing-based Range slider, which allows the user to enter a range (minimum and
- * maximum) value.
+ * Implements a Swing-based Range slider, which allows the user to enter a range (minimum and maximum) value.
  * </p>
  * 
  * @author Ben Bederson
@@ -36,23 +35,21 @@ import edu.stanford.hci.r3.util.MathUtils;
  * @author jeffrey heer
  * @author Ron B. Yeh
  */
-public class JRangeSlider extends JComponent implements MouseListener, MouseMotionListener,
-		KeyListener {
+public class JRangeSlider extends JComponent implements MouseListener, MouseMotionListener, KeyListener {
 	/*
-	 * NOTE: This is a modified version of the original class distributed by Ben Bederson, Jesse
-	 * Grosjean, and Jon Meyer as part of an HCIL Tech Report. It is modified to allow both vertical
-	 * and horitonal modes. It also fixes a bug with offset on the buttons. Also fixed a bug with
-	 * rendering using (x,y) instead of (0,0) as origin. Also modified to render arrows as a series
-	 * of lines rather than as a GeneralPath. Also modified to fix rounding errors on toLocal and
-	 * toScreen.
+	 * NOTE: This is a modified version of the original class distributed by Ben Bederson, Jesse Grosjean, and
+	 * Jon Meyer as part of an HCIL Tech Report. It is modified to allow both vertical and horitonal modes. It
+	 * also fixes a bug with offset on the buttons. Also fixed a bug with rendering using (x,y) instead of
+	 * (0,0) as origin. Also modified to render arrows as a series of lines rather than as a GeneralPath. Also
+	 * modified to fix rounding errors on toLocal and toScreen.
 	 * 
-	 * With inclusion in prefuse, this class has been further modified to use a bounded range model,
-	 * support keyboard commands and more extensize parameterization of rendering/appearance
-	 * options. Furthermore, a stub method has been introduced to allow subclasses to perform custom
-	 * rendering within the slider through.
+	 * With inclusion in prefuse, this class has been further modified to use a bounded range model, support
+	 * keyboard commands and more extensize parameterization of rendering/appearance options. Furthermore, a
+	 * stub method has been introduced to allow subclasses to perform custom rendering within the slider
+	 * through.
 	 * 
-	 * With inclusion into r3, this class has been modified to provide more flexibility in
-	 * rendering, such as having the option of not using the 3D highlights.
+	 * With inclusion into r3, this class has been modified to provide more flexibility in rendering, such as
+	 * having the option of not using the 3D highlights.
 	 */
 
 	/**
@@ -187,10 +184,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 	 * @param direction -
 	 *            Is the slider left-to-right/top-to-bottom or right-to-left/bottom-to-top
 	 */
-	public JRangeSlider(int minimum, int maximum, int lowValue, int highValue, int orientation,
-			int direction) {
-		this(new DefaultBoundedRangeModel(lowValue, highValue, minimum, maximum), orientation,
-				direction);
+	public JRangeSlider(int minimum, int maximum, int lowValue, int highValue, int orientation, int direction) {
+		this(new DefaultBoundedRangeModel(lowValue, highValue, minimum, maximum), orientation, direction);
 	}
 
 	/**
@@ -243,16 +238,16 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 	}
 
 	/**
-	 * Returns the current "high" value shown by the range slider's bar. The high value meets the
-	 * constraint minimum <= lowValue <= highValue <= maximum.
+	 * Returns the current "high" value shown by the range slider's bar. The high value meets the constraint
+	 * minimum <= lowValue <= highValue <= maximum.
 	 */
 	public int getHighValue() {
 		return model.getValue() + model.getExtent();
 	}
 
 	/**
-	 * Returns the current "low" value shown by the range slider's bar. The low value meets the
-	 * constraint minimum <= lowValue <= highValue <= maximum.
+	 * Returns the current "low" value shown by the range slider's bar. The low value meets the constraint
+	 * minimum <= lowValue <= highValue <= maximum.
 	 */
 	public int getLowValue() {
 		return model.getValue();
@@ -306,8 +301,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 	}
 
 	private void grow(int increment) {
-		model.setRangeProperties(model.getValue() - increment, model.getExtent() + 2 * increment,
-				model.getMinimum(), model.getMaximum(), false);
+		model.setRangeProperties(model.getValue() - increment, model.getExtent() + 2 * increment, model
+				.getMinimum(), model.getMaximum(), false);
 	}
 
 	// ------------------------------------------------------------------------
@@ -524,8 +519,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 	}
 
 	/**
-	 * This draws an arrow as a series of lines within the specified box. The last boolean specifies
-	 * whether the point should be at the right/bottom or left/top.
+	 * This draws an arrow as a series of lines within the specified box. The last boolean specifies whether
+	 * the point should be at the right/bottom or left/top.
 	 */
 	protected void paintArrow(Graphics2D g2, double x, double y, int w, int h, boolean topDown) {
 		int intX = (int) (x + 0.5);
@@ -551,20 +546,36 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 			}
 
 			// do this for vertical also (ronyeh)
+			final int x_1 = intX + 1;
+			final int h_1 = h + 1;
+			final int h_over_2_plus_1 = MathUtils.rint(h / 2.0) + 1;
+			final int h_1_5_minus_1 = MathUtils.rint(1.5 * h) - 1;
+			final int x_w_minus_1 = intX + w - 1;
+			final int x_w_minus_2 = intX + w - 2;
+
 			if (topDown) {
-				g2.drawLine(intX - 1, MathUtils.rint(h / 2.0), intX + w - 2, h);
-				g2.drawLine(intX - 1, MathUtils.rint(1.5 * h), intX + w - 2, h + 1);
-				g2.drawLine(intX, MathUtils.rint(h / 2.0), intX + w - 1, h);
-				g2.drawLine(intX, MathUtils.rint(1.5 * h), intX + w - 1, h + 1);
-				g2.drawLine(intX + 1, MathUtils.rint(h / 2.0), intX + w, h);
-				g2.drawLine(intX + 1, MathUtils.rint(1.5 * h), intX + w, h + 1);
+				// leftmost
+				g2.drawLine(intX, h_over_2_plus_1, x_w_minus_2, h);
+				g2.drawLine(intX, h_1_5_minus_1, x_w_minus_2, h_1);
+
+				// middle
+				g2.drawLine(x_1, h_over_2_plus_1, x_w_minus_1, h);
+				g2.drawLine(x_1, h_1_5_minus_1, x_w_minus_1, h_1);
+
+				// right most
+				g2.drawLine(x_1, h_over_2_plus_1 - 1, intX + w, h);
+				g2.drawLine(x_1, h_1_5_minus_1 + 1, intX + w, h_1);
 			} else {
-				g2.drawLine(intX + w, MathUtils.rint(h / 2.0), intX + 1, h);
-				g2.drawLine(intX + w, MathUtils.rint(1.5 * h), intX + 1, h + 1);
-				g2.drawLine(intX + w - 1, MathUtils.rint(h / 2.0), intX, h);
-				g2.drawLine(intX + w - 1, MathUtils.rint(1.5 * h), intX, h + 1);
-				g2.drawLine(intX + w - 2, MathUtils.rint(h / 2.0), intX - 1, h);
-				g2.drawLine(intX + w - 2, MathUtils.rint(1.5 * h), intX - 1, h + 1);
+				g2.drawLine(x_w_minus_1, h_over_2_plus_1, x_1, h);
+				g2.drawLine(x_w_minus_1, h_1_5_minus_1, x_1, h_1);
+
+				// middle
+				g2.drawLine(x_w_minus_2, h_over_2_plus_1, intX, h);
+				g2.drawLine(x_w_minus_2, h_1_5_minus_1, intX, h_1);
+
+				// left most
+				g2.drawLine(x_w_minus_2, h_over_2_plus_1 - 1, intX - 1, h);
+				g2.drawLine(x_w_minus_2, h_1_5_minus_1 + 1, intX - 1, h_1);
 			}
 		}
 	}
@@ -620,8 +631,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 
 				// Draw arrows
 				g2.setColor(arrowColor);
-				paintArrow(g2, (width - ARROW_WIDTH) / 2.0, min - ARROW_SZ
-						+ (ARROW_SZ - ARROW_HEIGHT) / 2.0, ARROW_WIDTH, ARROW_HEIGHT, true);
+				paintArrow(g2, (width - ARROW_WIDTH) / 2.0, min - ARROW_SZ + (ARROW_SZ - ARROW_HEIGHT) / 2.0,
+						ARROW_WIDTH, ARROW_HEIGHT, true);
 				paintArrow(g2, (width - ARROW_WIDTH) / 2.0, max + (ARROW_SZ - ARROW_HEIGHT) / 2.0,
 						ARROW_WIDTH, ARROW_HEIGHT, false);
 			} else {
@@ -643,8 +654,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 				g2.setColor(arrowColor);
 				paintArrow(g2, (width - ARROW_WIDTH) / 2.0, min + (ARROW_SZ - ARROW_HEIGHT) / 2.0,
 						ARROW_WIDTH, ARROW_HEIGHT, false);
-				paintArrow(g2, (width - ARROW_WIDTH) / 2.0, max - ARROW_SZ
-						+ (ARROW_SZ - ARROW_HEIGHT) / 2.0, ARROW_WIDTH, ARROW_HEIGHT, true);
+				paintArrow(g2, (width - ARROW_WIDTH) / 2.0, max - ARROW_SZ + (ARROW_SZ - ARROW_HEIGHT) / 2.0,
+						ARROW_WIDTH, ARROW_HEIGHT, true);
 			}
 		} else { // HORIZONTAL
 			if (direction == LEFTRIGHT_TOPBOTTOM) {
@@ -743,8 +754,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 	}
 
 	/**
-	 * Sets the high value shown by this range slider. This causes the range slider to be repainted
-	 * and a ChangeEvent to be fired.
+	 * Sets the high value shown by this range slider. This causes the range slider to be repainted and a
+	 * ChangeEvent to be fired.
 	 * 
 	 * @param highValue
 	 *            the high value to use
@@ -754,8 +765,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 	}
 
 	/**
-	 * Sets the low value shown by this range slider. This causes the range slider to be repainted
-	 * and a ChangeEvent to be fired.
+	 * Sets the low value shown by this range slider. This causes the range slider to be repainted and a
+	 * ChangeEvent to be fired.
 	 * 
 	 * @param lowValue
 	 *            the low value to use
@@ -777,9 +788,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 	}
 
 	/**
-	 * Sets the minimum extent (difference between low and high values). This method <strong>does
-	 * not</strong> change the current state of the model, but can affect all subsequent
-	 * interaction.
+	 * Sets the minimum extent (difference between low and high values). This method <strong>does not</strong>
+	 * change the current state of the model, but can affect all subsequent interaction.
 	 * 
 	 * @param minExtent
 	 *            the minimum extent allowed in subsequent interaction
@@ -820,8 +830,8 @@ public class JRangeSlider extends JComponent implements MouseListener, MouseMoti
 	 *            the high value of the slider range
 	 */
 	public void setRange(int lowValue, int highValue) {
-		model.setRangeProperties(lowValue, highValue - lowValue, model.getMinimum(), model
-				.getMaximum(), false);
+		model.setRangeProperties(lowValue, highValue - lowValue, model.getMinimum(), model.getMaximum(),
+				false);
 	}
 
 	/**

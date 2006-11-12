@@ -10,6 +10,16 @@ import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.components.JRangeSlider;
 
+/**
+ * <p>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ */
 public class EventSlider extends JRangeSlider {
 
 	final BasicStroke centerStroke = new BasicStroke(2);
@@ -26,8 +36,7 @@ public class EventSlider extends JRangeSlider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see edu.stanford.hci.r3.util.components.JRangeSlider#customPaint(java.awt.Graphics2D, int,
-	 *      int)
+	 * @see edu.stanford.hci.r3.util.components.JRangeSlider#customPaint(java.awt.Graphics2D, int, int)
 	 */
 	protected void customPaint(Graphics2D g, int width, int height) {
 		final int lo = toScreen(getLowValue());
