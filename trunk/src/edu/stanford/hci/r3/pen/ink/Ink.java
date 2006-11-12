@@ -2,14 +2,8 @@ package edu.stanford.hci.r3.pen.ink;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
