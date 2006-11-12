@@ -18,8 +18,8 @@ import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.config.Configuration;
-import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>
@@ -39,6 +39,9 @@ public class ActionReceiver {
 	 */
 	public static final String CONFIG_FILE_KEY = "actionreceiver.trustedsenders";
 
+	/**
+	 * 
+	 */
 	public static final String CONFIG_FILE_VALUE = "/config/ActionReceiver.xml";
 
 	/**
@@ -56,6 +59,9 @@ public class ActionReceiver {
 	 */
 	private static ActionReceiver javaDaemon;
 
+	/**
+	 * 
+	 */
 	private static final String PROPERTY_NAME = "trustedClients";
 
 	/**

@@ -15,6 +15,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
+import edu.stanford.hci.r3.util.xml.TagType;
 
 /**
  * <p>
@@ -38,10 +39,7 @@ public class BatchFileCreator {
 	public enum Nodes {
 		CLASSPATH, CLASSPATHENTRY, ATTRIBUTES, ATTRIBUTE
 	}
-	public enum TagType {
-		BEGIN_TAG, END_TAG
-	}
-
+	
 	private class ClassPathEntry {
 
 		public boolean excluding = false;
@@ -97,7 +95,9 @@ public class BatchFileCreator {
 
 	private String prefix;
 
-	// what was seen recently during parsing
+	/**
+	 * what was seen recently during parsing
+	 */
 	private String recentText = "";
 
 	private Set<String> referencePaths;

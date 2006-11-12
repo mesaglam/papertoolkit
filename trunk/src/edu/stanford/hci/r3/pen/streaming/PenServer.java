@@ -6,13 +6,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerJavaObjectXMLSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerPlainTextSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerSender;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>

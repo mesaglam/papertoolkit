@@ -19,10 +19,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.components.SuperJTextField;
 import edu.stanford.hci.r3.util.graphics.ImageCache;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>

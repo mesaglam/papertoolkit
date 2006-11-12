@@ -5,8 +5,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import edu.stanford.hci.r3.actions.R3Action;
-import edu.stanford.hci.r3.networking.ClientServerType;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>
