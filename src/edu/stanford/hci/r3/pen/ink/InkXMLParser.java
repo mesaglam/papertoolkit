@@ -12,13 +12,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.pen.PenSample;
-import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.xml.TagType;
 
 /**
  * <p>
- * Responsible for Reading from XML Files that have been saved through Ink.saveToXMLFile(File
- * xmlFileDest)
+ * Responsible for Reading from XML Files that have been saved through Ink.saveToXMLFile(File xmlFileDest)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -194,7 +192,7 @@ public class InkXMLParser {
 		if (beginOrEnd == TagType.BEGIN_TAG) { // BEGIN
 			switch (type) {
 			case STROKE:
-				DebugUtils.println("Stroke");
+				// DebugUtils.println("Stroke");
 				currentStroke = new ArrayList<PenSample>();
 				break;
 			case P:

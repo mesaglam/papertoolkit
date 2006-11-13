@@ -28,29 +28,28 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * This class helps us create a mapping between the streamed (physical) coordinates and the batched
- * (logical) coordinates for Anoto digital pens. This is important to allow us to mix streaming with
- * batched event handling.
+ * This class helps us create a mapping between the streamed (physical) coordinates and the batched (logical)
+ * coordinates for Anoto digital pens. This is important to allow us to mix streaming with batched event
+ * handling.
  * </p>
  * <p>
  * Calibrate the Clock First, then Calibrate the X & Y...
  * 
- * This is an an app that takes two strokes and records them. Then, it finds the orientation of the
- * two strokes and calculates the crossing point of the two strokes, recording this as a set of
- * streamed coordinate. It then does the same thing with the batched ink... And calibrates the
- * coordinates.
+ * This is an an app that takes two strokes and records them. Then, it finds the orientation of the two
+ * strokes and calculates the crossing point of the two strokes, recording this as a set of streamed
+ * coordinate. It then does the same thing with the batched ink... And calibrates the coordinates.
  * </p>
  * <p>
- * For time-sensitive applications, this also allows us to calibrate the clock of the pen to the
- * system's clock.
+ * For time-sensitive applications, this also allows us to calibrate the clock of the pen to the system's
+ * clock.
  * </p>
  * <p>
- * Usage: Make sure the pen is either empty, or you have download all the data off of your pen. You
- * want to make sure that when you synchronize your pen, it will give the same number of strokes
- * that were detected during streaming.
+ * Usage: Make sure the pen is either empty, or you have download all the data off of your pen. You want to
+ * make sure that when you synchronize your pen, it will give the same number of strokes that were detected
+ * during streaming.
  * 
- * Draw a few strokes on your page. Then turn off streaming. Upload your pen data. The two ink
- * objects are synchronized automatically.
+ * Draw a few strokes on your page. Then turn off streaming. Upload your pen data. The two ink objects are
+ * synchronized automatically.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -136,7 +135,7 @@ public class CalibrationCaptureApp {
 	}
 
 	/**
-	 * @return
+	 * @return the button to align the two sets of strokes
 	 */
 	private Component getCalibrateButton() {
 		if (calibrateButton == null) {
@@ -151,6 +150,9 @@ public class CalibrationCaptureApp {
 		return calibrateButton;
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getPanel() {
 		if (mainPanel == null) {
 			mainPanel = new JPanel();
@@ -230,6 +232,8 @@ public class CalibrationCaptureApp {
 	}
 
 	/**
+	 * Will only work for the last page you wrote on.
+	 * 
 	 * @param inkOnThisPage
 	 */
 	private void saveBatchedStrokes(Ink inkOnThisPage) {
