@@ -34,13 +34,13 @@ public class BundleRenderer {
 	 * @param fileNameWithoutExtension
 	 */
 	public void renderToIndividualPDFs(File parentPath, String fileNameWithoutExtension) {
-		List<Sheet> sheets = bundle.getSheets();
-		TiledPatternGenerator sharedPatternGenerator = new TiledPatternGenerator();
+		final List<Sheet> sheets = bundle.getSheets();
+		final TiledPatternGenerator sharedPatternGenerator = new TiledPatternGenerator();
 		int n = 0;
 		for (Sheet s : sheets) {
 			final File destFile = new File(parentPath, fileNameWithoutExtension + "_" + n + ".pdf");
-			DebugUtils.println(destFile);
-			SheetRenderer sr = new SheetRenderer(s, sharedPatternGenerator);
+			DebugUtils.println("Rendering " + destFile);
+			final SheetRenderer sr = new SheetRenderer(s, sharedPatternGenerator);
 			sr.renderToPDF(destFile);
 			n++;
 		}

@@ -26,9 +26,9 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 public class CalibrationEngine {
 
 	/**
-	 * If you run it from the command line, it asks you to provide two xml files (which are then
-	 * read in to create Ink objects). Alternatively, you can use this class directly. For example,
-	 * CalibrationCaptureApp uses it to align two strokes as soon as possible.
+	 * If you run it from the command line, it asks you to provide two xml files (which are then read in to
+	 * create Ink objects). Alternatively, you can use this class directly. For example, CalibrationCaptureApp
+	 * uses it to align two strokes as soon as possible.
 	 * 
 	 * @param args
 	 */
@@ -64,8 +64,7 @@ public class CalibrationEngine {
 
 					if ((streamed != null) && (batched != null)) {
 						// once we have both... align them using this class
-						new CalibrationEngine()
-								.alignInkStrokes(new Ink(streamed), new Ink(batched));
+						new CalibrationEngine().alignInkStrokes(new Ink(streamed), new Ink(batched));
 					}
 				}
 			}
@@ -91,7 +90,7 @@ public class CalibrationEngine {
 		final List<InkStroke> streamedStrokes = streamedInk.getStrokes();
 		final List<InkStroke> batchedStrokes = batchedInk.getStrokes();
 
-		PageAddress bPageAddress = batchedInk.getSourcePageAddress();
+		final PageAddress bPageAddress = batchedInk.getSourcePageAddress();
 
 		double avgMillisBehind = 0;
 		double numSamples = 0;
@@ -118,16 +117,27 @@ public class CalibrationEngine {
 					final double millisBehind = (sTimeSamples[j] - bTimeSamples[j]);
 					final String behindOrAhead = getBehindOrAheadString(millisBehind);
 
-					DebugUtils.println("Streamed: " + sSamplesX[j] + ", " + sSamplesY[j] + " <--> "
-							+ bSamplesX[j] + ", " + bSamplesY[j] + " on page " + bPageAddress
-							+ " with the Pen's Clock" + behindOrAhead + "by "
-							+ Math.abs(millisBehind) + " milliseconds.");
+					final double currStreamedX = sSamplesX[j];
+					final double currStreamedY = sSamplesY[j];
+					final double currBatchedY = bSamplesY[j];
+					final double currBatchedX = bSamplesX[j];
+					
+					DebugUtils.println("Streamed: " + currStreamedX + ", " + currStreamedY + " <--> "
+							+ currBatchedX + ", " + currBatchedY + " on page " + bPageAddress
+							+ " with the Pen's Clock" + behindOrAhead + "by " + Math.abs(millisBehind)
+							+ " milliseconds.");
 
 					// an incremental averaging...
 					numSamples++;
 					avgMillisBehind = (avgMillisBehind * ((numSamples - 1) / numSamples))
 							+ (millisBehind / numSamples);
 					// DebugUtils.println("Average: " + avgMillisBehind);
+
+					final double offsetX = currStreamedX - currBatchedX;
+					final double offsetY = currStreamedY - currBatchedY;
+					
+					DebugUtils.println(offsetX + " " + offsetY);
+
 				}
 			}
 		}

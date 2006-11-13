@@ -202,14 +202,14 @@ public class PatternPackage {
 	}
 
 	/**
-	 * @return
+	 * @return the minimum horizontal physical (streamed) coordinate
 	 */
 	public PatternDots getMinPatternX() {
 		return minPatternX;
 	}
 
 	/**
-	 * @return
+	 * @return the minimum vertical physical (streamed) coordinate
 	 */
 	public PatternDots getMinPatternY() {
 		return minPatternY;
@@ -229,6 +229,9 @@ public class PatternPackage {
 		return numDotsHorizontalBetweenOriginOfPages;
 	}
 
+	/**
+	 * @return
+	 */
 	public double getNumDotsVerticalBetweenPages() {
 		return numDotsVerticalBetweenOriginOfPages;
 	}
