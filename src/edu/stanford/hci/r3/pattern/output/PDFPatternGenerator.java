@@ -17,8 +17,8 @@ import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
- * This sits on top of PatternPackage and/or TiledPattern to create PDFs that can be printed. It
- * uses the iText library to create and manipulate PDFs.
+ * This sits on top of PatternPackage and/or TiledPattern to create PDFs that can be printed. It uses the
+ * iText library to create and manipulate PDFs.
  * </p>
  * <p>
  * The circle approach works best. We draw and fill a circle the size of an Anoto pattern dot.
@@ -26,14 +26,14 @@ import edu.stanford.hci.r3.util.MathUtils;
  * <p>
  * Other approaches that this class supports:
  * 
- * Printing dots with the bullet point • in Tahoma works decently. We will also try drawing circles,
- * or using some sort of stamping pattern if possible.
+ * Printing dots with the bullet point • in Tahoma works decently. We will also try drawing circles, or using
+ * some sort of stamping pattern if possible.
  * 
- * setFontSize(...) is an important method, as you will need to adjust it based on your printer. We
- * picked a decent default (21 pt Tahoma) since it works for both of our printers.
+ * setFontSize(...) is an important method, as you will need to adjust it based on your printer. We picked a
+ * decent default (21 pt Tahoma) since it works for both of our printers.
  * 
- * ZapfDingbats seems to work even better, as it is a built-in Adobe font. The 'l' lowercase L
- * character looks like a dot. =)
+ * ZapfDingbats seems to work even better, as it is a built-in Adobe font. The 'l' lowercase L character looks
+ * like a dot. =)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -44,14 +44,19 @@ import edu.stanford.hci.r3.util.MathUtils;
  */
 public class PDFPatternGenerator {
 
-	// font creation
+	/**
+	 * font creation
+	 */
 	private static final BaseFont BFONT_TAHOMA = createBaseFontTahoma();
 
+	/**
+	 * 
+	 */
 	private static final BaseFont BFONT_ZAPF = createBaseFontZapfDingbats();
 
 	/**
-	 * Given a value in Hundredths of a millimeter (1/2540 inches) convert it to the same length in
-	 * Points (1/72 of an inch). So, 2540 hundredths of mm == 72 points.
+	 * Given a value in Hundredths of a millimeter (1/2540 inches) convert it to the same length in Points
+	 * (1/72 of an inch). So, 2540 hundredths of mm == 72 points.
 	 */
 	private static final double convertHundredthsOfMMToPoints = 72 / 2540.0;
 
@@ -65,12 +70,24 @@ public class PDFPatternGenerator {
 	 */
 	private static final boolean DEBUG_PATTERN = false;
 
+	/**
+	 * 
+	 */
 	private static final int DEFAULT_JITTER = 5;
 
+	/**
+	 * 
+	 */
 	private static final int DEFAULT_PADDING = 30;
 
+	/**
+	 * 
+	 */
 	private static final int X_FONT_OFFSET = -2;
 
+	/**
+	 * 
+	 */
 	private static final int Y_FONT_OFFSET = 9;
 
 	/**
@@ -92,8 +109,7 @@ public class PDFPatternGenerator {
 	 */
 	private static BaseFont createBaseFontZapfDingbats() {
 		try {
-			return BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.CP1252,
-					BaseFont.NOT_EMBEDDED);
+			return BaseFont.createFont(BaseFont.ZAPFDINGBATS, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -107,8 +123,14 @@ public class PDFPatternGenerator {
 	 */
 	private PdfContentByte content;
 
+	/**
+	 * 
+	 */
 	private BaseFont debugFont;
 
+	/**
+	 * 
+	 */
 	private String dotSymbol;
 
 	/**
@@ -123,6 +145,14 @@ public class PDFPatternGenerator {
 	 */
 	private Units height;
 
+	/**
+	 * The default color of pattern dots is Black. You can customize this if you like (useful for testing).
+	 */
+	private Color patternColor = Color.BLACK;
+
+	/**
+	 * 
+	 */
 	private BaseFont patternFont;
 
 	/**
@@ -137,9 +167,9 @@ public class PDFPatternGenerator {
 
 	/**
 	 * @param cb
-	 *            The content byte that you pass into this object will be transformed! Beware if you
-	 *            want to use it later on for another purpose. Probably, it would be good to
-	 *            dedicate a content layer for this pattern generator.
+	 *            The content byte that you pass into this object will be transformed! Beware if you want to
+	 *            use it later on for another purpose. Probably, it would be good to dedicate a content layer
+	 *            for this pattern generator.
 	 * @param w
 	 *            Width of the PDF Document.
 	 * @param h
@@ -168,6 +198,21 @@ public class PDFPatternGenerator {
 	}
 
 	/**
+	 * 0 means no adjustment. - implies smaller pattern, + implies calls to larger pattern
+	 * 
+	 * @param patternDotSizeAdjustment
+	 */
+	public void adjustPatternSize(int patternDotSizeAdjustment) {
+		if (useTemplateInsteadOfFont) {
+			// if template aproach
+			createDotTemplate(patternDotSizeAdjustment);
+		} else {
+			// if font approach
+			fontSize += patternDotSizeAdjustment;
+		}
+	}
+
+	/**
 	 * defaultRadius = 3 works great
 	 * 
 	 * 
@@ -186,21 +231,6 @@ public class PDFPatternGenerator {
 	}
 
 	/**
-	 * 0 means no adjustment. - implies smaller pattern, + implies calls to larger pattern
-	 * 
-	 * @param patternDotSizeAdjustment
-	 */
-	public void adjustPatternSize(int patternDotSizeAdjustment) {
-		if (useTemplateInsteadOfFont) {
-			// if template aproach
-			createDotTemplate(patternDotSizeAdjustment);
-		} else {
-			// if font approach
-			fontSize += patternDotSizeAdjustment;
-		}
-	}
-
-	/**
 	 * 21 works for both laser and wide-format inkjet.
 	 */
 	@SuppressWarnings("unused")
@@ -212,8 +242,8 @@ public class PDFPatternGenerator {
 	}
 
 	/**
-	 * Font size 11 works for laser printers. Font size 7 works for Epson 9800 at 1440. Let's see
-	 * how small we can get and still have it work on a laser printer.
+	 * Font size 11 works for laser printers. Font size 7 works for Epson 9800 at 1440. Let's see how small we
+	 * can get and still have it work on a laser printer.
 	 */
 	private void initializePatternFont_Zapf() {
 		setPatternFontSize(7);
@@ -223,8 +253,8 @@ public class PDFPatternGenerator {
 	}
 
 	/**
-	 * Render the given pattern starting at the designated origin. Also render a white box
-	 * underneath the pattern, if we were asked to do so... This helps the pattern stand out better.
+	 * Render the given pattern starting at the designated origin. Also render a white box underneath the
+	 * pattern, if we were asked to do so... This helps the pattern stand out better.
 	 * 
 	 * @param pattern
 	 * @param xOrigin
@@ -256,15 +286,17 @@ public class PDFPatternGenerator {
 			// GRAY, etc. do not work! The printer will do halftoning, which messes things up.
 			content.setFontAndSize(patternFont, fontSize);
 		}
-		content.setColorFill(Color.BLACK);
+
+		content.setColorFill(patternColor);
+		// content.setColorFill(Color.CYAN);
+		// content.setColorFill(Color.BLACK);
 
 		final int initX = MathUtils.rint(xOrigInPoints * convertPointsToHundredthsOfMM);
 
 		int gridXPosition = initX;
 		int gridYPosition = MathUtils.rint(yOrigInPoints * convertPointsToHundredthsOfMM);
 
-		DebugUtils.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " "
-				+ gridYPosition);
+		DebugUtils.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " " + gridYPosition);
 
 		int xJitter = 0;
 		int yJitter = 0;
@@ -326,8 +358,15 @@ public class PDFPatternGenerator {
 	}
 
 	/**
-	 * You will need to customize the font size. Different sizes work for different printers at
-	 * different DPIs.
+	 * @param c
+	 */
+	public void setPatternColor(Color c) {
+		patternColor = c;
+	}
+
+	/**
+	 * You will need to customize the font size. Different sizes work for different printers at different
+	 * DPIs.
 	 * 
 	 * @param size
 	 */
