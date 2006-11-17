@@ -14,8 +14,8 @@ package edu.stanford.hci.r3.demos.handwriting;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class HWRecognition {
-
 	public static void main(String[] args) {
+		
 		
 		
 	}
