@@ -212,6 +212,7 @@ public class EventReplayManager {
 
 					lastTimeStamp = event.getTimestamp();
 				}
+				DebugUtils.println("Done. Replayed " + events.size() + " Events");
 			}
 		}).start();
 	}
