@@ -6,4 +6,15 @@
 	<entry key="minPatternY">7187.0</entry>
 	<entry key="numHorizontalDotsBetweenOriginOfPages">1330</entry>
 	<entry key="numVerticalDotsBetweenOriginOfPages">0</entry>
+	<entry key="packageName">0</entry>
+	
+	<entry key="evenPage">48.0.12.8</entry>
+	<entry key="evenPageOriginX">4097107.0</entry>
+	<entry key="evenPageOriginY">8389499.0</entry>
+
+	<entry key="perPageOffsetX">1330</entry>
+	<entry key="perPageOffsetY">0</entry>
+
+	<entry key="oddPageOffsetX">15</entry>
+	<entry key="oddPageOffsetY">-1</entry>
 </properties>
