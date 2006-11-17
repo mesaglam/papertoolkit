@@ -34,6 +34,11 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 public class EventReplayManager {
 
 	/**
+	 * 
+	 */
+	public static final String[] FILE_EXTENSION = new String[] { "eventData" };
+
+	/**
 	 * For tab-delimiting the fields in the eventData file.
 	 */
 	private static final String SEPARATOR = "\t";
@@ -46,7 +51,7 @@ public class EventReplayManager {
 	/**
 	 * Events that we can replay...
 	 */
-	private ArrayList<PenEvent> loadedEvents;
+	private ArrayList<PenEvent> loadedEvents = new ArrayList<PenEvent>();
 
 	/**
 	 * Allows us to write to our output file for serializing the event stream.
@@ -58,11 +63,20 @@ public class EventReplayManager {
 	 */
 	private File outputFile;
 
+	private boolean playEventsInRealTime = true;
+
 	/**
 	 * @param engine
 	 */
 	public EventReplayManager(EventEngine engine) {
 		eventEngine = engine;
+	}
+
+	/**
+	 * 
+	 */
+	public void clearLoadedEvents() {
+		loadedEvents = new ArrayList<PenEvent>();
 	}
 
 	/**
@@ -126,29 +140,38 @@ public class EventReplayManager {
 	}
 
 	/**
+	 * @param eventDataFile
+	 */
+	public void loadEventDataFrom(File eventDataFile) {
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(eventDataFile));
+			String inputLine = null;
+			while ((inputLine = br.readLine()) != null) {
+				PenEvent event = createEventFromString(inputLine);
+				loadedEvents.add(event);
+			}
+			DebugUtils.println("Loaded " + loadedEvents.size() + " events.");
+			br.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
 	 * Load the most recent event data file...
 	 */
 	public void loadMostRecentEventData() {
-		final List<File> eventFiles = FileUtils.listVisibleFiles(getEventStoragePath(),
-				new String[] { "eventData" });
-		loadedEvents = new ArrayList<PenEvent>();
+		final List<File> eventFiles = FileUtils.listVisibleFiles(getEventStoragePath(), FILE_EXTENSION);
 		if (eventFiles.size() > 0) {
 			final File mostRecentFile = eventFiles.get(eventFiles.size() - 1);
 			DebugUtils.println(mostRecentFile);
-			BufferedReader br;
-			try {
-				br = new BufferedReader(new FileReader(mostRecentFile));
-				String inputLine = null;
-				while ((inputLine = br.readLine()) != null) {
-					PenEvent event = createEventFromString(inputLine);
-					loadedEvents.add(event);
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
+			loadEventDataFrom(mostRecentFile);
+		} else {
+			DebugUtils.println("No Event Data Files Found in " + getEventStoragePath());
 		}
 	}
 
@@ -156,31 +179,41 @@ public class EventReplayManager {
 	 * Replays the list of events... Ideally, this should play it back at real time or some multiple of
 	 * realtime...
 	 * 
+	 * Threaded, because we do not want any GUI to block when calling this. Alternatively, refactor this into
+	 * blocking & nonblocking versions.
+	 * 
 	 * @param events
 	 */
-	public void replay(List<PenEvent> events) {
-		long lastTimeStamp = 0;
+	public void replay(final List<PenEvent> events) {
+		new Thread(new Runnable() {
+			public void run() {
+				long lastTimeStamp = 0;
+				for (PenEvent event : events) {
+					if (playEventsInRealTime && lastTimeStamp != 0) {
+						try {
+							// pause some amount, to replicate realtime...
+							long diff = event.getTimestamp() - lastTimeStamp;
+							if (diff > 0) {
+								// DebugUtils.println("Sleeping for " + diff + " ms between events.");
+								Thread.sleep(diff);
+							}
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 
-		for (PenEvent event : events) {
-			if (lastTimeStamp != 0) {
-				// pause some amount, to replicate realtime...
-				long diff = event.getTimestamp() - lastTimeStamp;
-				try {
-					Thread.sleep(diff);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					}
+
+					// assume here that all PenEvent objects have their flags set correctly
+					if (event.isPenUp()) {
+						eventEngine.handlePenUpEvent(event);
+					} else {
+						eventEngine.handlePenEvent(event);
+					}
+
+					lastTimeStamp = event.getTimestamp();
 				}
 			}
-
-			// assume here that all PenEvent objects have their flags set correctly
-			if (event.isPenUp()) {
-				eventEngine.handlePenUpEvent(event);
-			} else {
-				eventEngine.handlePenEvent(event);
-			}
-
-			lastTimeStamp = event.getTimestamp();
-		}
+		}).start();
 	}
 
 	/**

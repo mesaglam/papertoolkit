@@ -9,19 +9,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoundedRangeModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import prefuse.Display;
 import prefuse.data.query.NumberRangeModel;
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.pattern.calibrate.CalibrationEngine;
+import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.components.JRangeSlider;
+import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -59,6 +65,12 @@ public class EventBrowserView extends JFrame {
 
 	private JPanel bottomPanel;
 
+	private JButton importButton;
+
+	private JButton clearButton;
+
+	private JButton playFastButton;
+
 	/**
 	 * @param browser
 	 * @param disp
@@ -81,7 +93,15 @@ public class EventBrowserView extends JFrame {
 	 * @return
 	 */
 	private JButton getClearButton() {
-		return new JButton("Clear");
+		if (clearButton == null) {
+			clearButton = new JButton("Clear");
+			clearButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					browser.clearLoadedEvents();
+				}
+			});
+		}
+		return clearButton;
 	}
 
 	/**
@@ -103,7 +123,7 @@ public class EventBrowserView extends JFrame {
 			infoArea = new JTextArea();
 			infoArea.setEditable(false);
 			infoArea.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			infoArea.setBorder(BorderFactory.createEmptyBorder(7,5,7,5));
+			infoArea.setBorder(BorderFactory.createEmptyBorder(7, 5, 7, 5));
 			infoArea.setForeground(Color.WHITE);
 			infoArea.setText("Ready...");
 		}
@@ -146,7 +166,26 @@ public class EventBrowserView extends JFrame {
 	 * @return
 	 */
 	private JButton getImportButton() {
-		return new JButton("Import");
+		if (importButton == null) {
+			importButton = new JButton("Import");
+			importButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JFileChooser chooser = FileUtils.createNewFileChooser(EventReplayManager.FILE_EXTENSION);
+					chooser.setCurrentDirectory(new File(PaperToolkit.getToolkitRootPath(), "eventData/"));
+					chooser.setMultiSelectionEnabled(true);
+					int result = chooser.showDialog(null, "Import Event Data");
+					if (result == JFileChooser.APPROVE_OPTION) {
+						File[] selectedFiles = chooser.getSelectedFiles();
+						for (File f : selectedFiles) {
+							DebugUtils.println("Loading " + f);
+							browser.loadEventData(f);
+						}
+					}
+
+				}
+			});
+		}
+		return importButton;
 	}
 
 	/**
@@ -169,6 +208,25 @@ public class EventBrowserView extends JFrame {
 			});
 		}
 		return playButton;
+	}
+
+	private JButton getPlayFastButton() {
+		if (playFastButton == null) {
+			playFastButton = new JButton("Play Fast");
+			playFastButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						DebugUtils.println("Waiting 1.5 seconds...");
+						Thread.sleep(1500);
+						DebugUtils.println("Play Events Now...");
+					} catch (InterruptedException ex) {
+						ex.printStackTrace();
+					}
+					browser.replayLoadedEvents();
+				}
+			});
+		}
+		return playFastButton;
 	}
 
 	/**
