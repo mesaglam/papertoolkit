@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.pattern;
 
+import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,8 +12,10 @@ import edu.stanford.hci.r3.util.ArrayUtils;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -66,4 +69,8 @@ public class Test_PatternPackage {
 		System.out.println(pattern[2].length());
 	}
 
+	
+	public static void main(String[] args) {
+		new PatternPackage(new File("data/pattern/Mead5x8"));
+	}
 }

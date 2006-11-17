@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
+import edu.stanford.hci.r3.pattern.PatternPackage;
+
 /**
  * <p>
  * Given a coordinate in physical (streamed) anoto space, it returns a coordinate in logical (batched) space.
@@ -25,5 +27,11 @@ public class CoordinateTranslator {
 	// add offsets X & Y * page number
 	// adjust for even or odd!
 	// Done!
+
+
+	public CoordinateTranslator() {
+
+	}
+
 
 }

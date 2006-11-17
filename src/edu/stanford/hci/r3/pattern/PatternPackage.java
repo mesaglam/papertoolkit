@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import edu.stanford.hci.r3.pattern.coordinates.CoordinateTranslator;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
@@ -39,6 +40,27 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PatternPackage {
+
+	/**
+	 * @return the Pattern Packages that are available to the system. Packages are stored in the directory
+	 *         (pattern/). We return a Map<String, PatternPackage> so you can address the package by name.
+	 */
+	public static Map<String, PatternPackage> getAvailablePatternPackages(File patternLocation) {
+		final HashMap<String, PatternPackage> packages = new HashMap<String, PatternPackage>();
+
+		// list the available directories
+		final List<File> visibleDirs = FileUtils.listVisibleDirs(patternLocation);
+		// System.out.println(visibleDirs);
+
+		// create new PatternPackage objects from the directories
+		for (final File f : visibleDirs) {
+			final PatternPackage patternPackage = new PatternPackage(f);
+			packages.put(patternPackage.getName(), patternPackage);
+		}
+
+		// return the list of packages
+		return packages;
+	}
 
 	/**
 	 * The pattern X coordinate of the top left of page 0. This is the key for the config.xml file (stored in
@@ -126,6 +148,11 @@ public class PatternPackage {
 	 */
 	private List<File> patternFiles;
 
+	/**
+	 * For going between Batched & Streamed coordinates.
+	 */
+	private CoordinateTranslator coordinateTranslator;
+	
 	/**
 	 * @param location
 	 *            this directory contains .pattern files (text files that contain the pattern as described by

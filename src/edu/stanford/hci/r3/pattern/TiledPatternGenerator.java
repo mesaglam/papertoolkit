@@ -50,7 +50,7 @@ public class TiledPatternGenerator {
 	public static final File PATTERN_PATH = getPatternPath();
 
 	/**
-	 * @return
+	 * @return the location of pattern data, from the configuration files.
 	 */
 	private static File getPatternPath() {
 		return Configuration.getConfigFile(CONFIG_PATH_KEY);
@@ -100,9 +100,7 @@ public class TiledPatternGenerator {
 	 * move to the .jar deployment.
 	 */
 	public TiledPatternGenerator() {
-		patternPath = PATTERN_PATH;
-		availablePackages = getAvailablePatternPackages();
-		setPackage(DEFAULT_PATTERN_PACKAGE_NAME);
+		this(PATTERN_PATH);
 	}
 
 	/**
@@ -110,7 +108,7 @@ public class TiledPatternGenerator {
 	 */
 	public TiledPatternGenerator(File patternPathLocation) {
 		patternPath = patternPathLocation;
-		availablePackages = getAvailablePatternPackages();
+		availablePackages = PatternPackage.getAvailablePatternPackages(patternPath);
 		setPackage(DEFAULT_PATTERN_PACKAGE_NAME);
 	}
 
@@ -157,27 +155,6 @@ public class TiledPatternGenerator {
 		System.out.println("}");
 	}
 
-	/**
-	 * @return the Pattern Packages that are available to the system. Packages are stored in the
-	 *         directory (pattern/). We return a Map<String, PatternPackage> so you can address the
-	 *         package by name.
-	 */
-	private Map<String, PatternPackage> getAvailablePatternPackages() {
-		final HashMap<String, PatternPackage> packages = new HashMap<String, PatternPackage>();
-
-		// list the available directories
-		final List<File> visibleDirs = FileUtils.listVisibleDirs(patternPath);
-		// System.out.println(visibleDirs);
-
-		// create new PatternPackage objects from the directories
-		for (File f : visibleDirs) {
-			PatternPackage patternPackage = new PatternPackage(f);
-			packages.put(patternPackage.getName(), patternPackage);
-		}
-
-		// return the list of packages
-		return packages;
-	}
 
 	/**
 	 * @return the current pattern package.
@@ -300,6 +277,7 @@ public class TiledPatternGenerator {
 	}
 
 	/**
+	 * Choose the package of pattern data. 
 	 * @param packageName
 	 */
 	private void setPackage(String packageName) {
