@@ -16,8 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
-
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pen.ink.InkPanel;
 import edu.stanford.hci.r3.util.DebugUtils;

@@ -1,5 +1,9 @@
 package edu.stanford.hci.r3.events.replay;
 
+import java.io.File;
+
+import javax.swing.JFrame;
+
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
@@ -18,6 +22,8 @@ import prefuse.render.ShapeRenderer;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import prefuse.visual.expression.VisiblePredicate;
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.events.EventType;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -40,6 +46,15 @@ public class EventBrowser {
 	 * 
 	 */
 	private static final String penEventsGroup = "PenEventsGroup";
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		PaperToolkit.initializeLookAndFeel();
+		EventBrowser browser = new EventBrowser(new EventEngine().getEventReplayManager());
+		browser.setVisible(true);
+	}
 
 	/**
 	 * 
@@ -78,6 +93,13 @@ public class EventBrowser {
 	}
 
 	/**
+	 * 
+	 */
+	public void clearLoadedEvents() {
+		eventReplayManager.clearLoadedEvents();
+	}
+
+	/**
 	 * @return
 	 */
 	private Table getPenEventsTable() {
@@ -111,10 +133,24 @@ public class EventBrowser {
 	}
 
 	/**
+	 * @param f
+	 */
+	public void loadEventData(File f) {
+		eventReplayManager.loadEventDataFrom(f);
+	}
+
+	/**
 	 * 
 	 */
 	public void replayLoadedEvents() {
 		eventReplayManager.replayLoadedEvents();
+	}
+
+	/**
+	 * 
+	 */
+	public void setDefaultCloseOperationToExit() {
+		view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	/**

@@ -10,8 +10,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
-import com.sun.org.apache.xml.internal.resolver.helpers.FileURL;
-
 import edu.stanford.hci.r3.util.components.ribbons.RibbonPanel;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -56,12 +54,15 @@ public class DocumentTasks {
 		return filePanel;
 	}
 
+	/**
+	 * @return
+	 */
 	private Component getImportFile() {
 		importFileButton = new JButton("Import File");
 		importFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				System.out.println("Import File");
-				JFileChooser chooser = FileUtils.createNewFileChooser(new String[] {"jpg", "pdf"});
+				JFileChooser chooser = FileUtils.createNewFileChooser(new String[] { "jpg", "pdf" });
 				chooser.showOpenDialog(null);
 			}
 		});
@@ -136,7 +137,7 @@ public class DocumentTasks {
 			openDocumentButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					System.out.println("Open Document");
-					FileUtils.createNewFileChooser(new String[] {"jpg", "pdf"});
+					FileUtils.createNewFileChooser(new String[] { "jpg", "pdf" });
 				}
 			});
 
