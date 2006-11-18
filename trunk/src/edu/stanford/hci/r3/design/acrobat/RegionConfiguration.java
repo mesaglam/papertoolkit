@@ -8,8 +8,9 @@ import edu.stanford.hci.r3.units.Points;
 
 /**
  * <p>
- * This class is used for communicating the region definition between the Acrobat plugin and the R3
- * toolkit.
+ * This class is used for communicating the region definition between the Acrobat plugin and the R3 toolkit.
+ * It can also be used to serialize and unserialize regions, if you need to build your own sheet/region design
+ * tool.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -20,10 +21,16 @@ import edu.stanford.hci.r3.units.Points;
  */
 public class RegionConfiguration {
 
+	/**
+	 * Height of the Sheet.
+	 */
 	private Points heightInPoints;
 
 	private List<Region> regions = new ArrayList<Region>();
 
+	/**
+	 * Width of the sheet.
+	 */
 	private Points widthInPoints;
 
 	/**
