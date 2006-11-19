@@ -856,6 +856,12 @@ public class PaperToolkit {
 		// keep track of the pattern assigned to different sheets and regions
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
+		
+		// XXX
+		Here, we should pass the event engine over...
+		When the Batch Server gets in the data, it will translate it to streaming event coordinates
+		And then pass it to the Event Engine
+		
 
 		DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);

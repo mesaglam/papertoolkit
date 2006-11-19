@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.pattern.PatternPackage;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -55,6 +56,11 @@ public class BatchServer {
 	private int serverPort;
 
 	private ServerSocket serverSocket;
+
+	/**
+	 * 
+	 */
+	private List<PatternPackage> patternPackages = PatternPackage.getAvailablePatternPackages(patternPath);
 
 	/**
 	 * 

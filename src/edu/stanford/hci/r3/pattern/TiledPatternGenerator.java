@@ -2,14 +2,12 @@ package edu.stanford.hci.r3.pattern;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -51,7 +49,9 @@ public class TiledPatternGenerator {
 
 	/**
 	 * @return the location of pattern data, from the configuration files.
+	 * 
 	 */
+	This should be moved to the PaperToolkit! So that the Batched EventHandlers can get at it too...
 	private static File getPatternPath() {
 		return Configuration.getConfigFile(CONFIG_PATH_KEY);
 	}

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import edu.stanford.hci.r3.pattern.coordinates.CoordinateTranslator;
+import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
@@ -152,7 +153,7 @@ public class PatternPackage {
 	 * For going between Batched & Streamed coordinates.
 	 */
 	private CoordinateTranslator coordinateTranslator;
-	
+
 	/**
 	 * @param location
 	 *            this directory contains .pattern files (text files that contain the pattern as described by
@@ -424,12 +425,24 @@ public class PatternPackage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		minPatternX = new PatternDots(Double.parseDouble(props.getProperty(MIN_PATTERN_X)));
 		minPatternY = new PatternDots(Double.parseDouble(props.getProperty(MIN_PATTERN_Y)));
 		numDotsHorizontalBetweenOriginOfPages = Double.parseDouble(props
 				.getProperty(NUM_HORIZ_DOTS_BETWEEN_PAGES));
 		numDotsVerticalBetweenOriginOfPages = Double.parseDouble(props
 				.getProperty(NUM_VERT_DOTS_BETWEEN_PAGES));
+
+		String evenPage = props.getProperty("evenPage");
+		double evenPageOriginX = Double.parseDouble(props.getProperty("evenPageOriginX"));
+		double evenPageOriginY = Double.parseDouble(props.getProperty("evenPageOriginY"));
+		double oddPageOffsetX = Double.parseDouble(props.getProperty("oddPageOffsetX"));
+		double oddPageOffsetY = Double.parseDouble(props.getProperty("oddPageOffsetY"));
+
+		// create the translator for batched <--> streaming
+		coordinateTranslator = new CoordinateTranslator(new PageAddress(evenPage), new PatternDots(
+				evenPageOriginX), new PatternDots(evenPageOriginY), oddPageOffsetX, oddPageOffsetY,
+				numDotsHorizontalBetweenOriginOfPages, numDotsVerticalBetweenOriginOfPages);
 
 		// System.out.println("PatternPackage: minPatternX=" + minPatternX + " minPatternY="
 		// + minPatternY + " numHorizDotsBetweenPages="

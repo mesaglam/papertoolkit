@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.units.coordinates;
 
+import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 
@@ -22,45 +23,80 @@ import edu.stanford.hci.r3.units.Units;
  */
 public class BatchedPatternCoordinates extends Coordinates {
 
-	private int book;
-
-	private int page;
-
-	private int segment;
-
-	private int shelf;
+	/**
+	 * Which page is this coordinate located on?
+	 */
+	private PageAddress pageAddress;
 
 	/**
 	 * @param xCoord
 	 * @param yCoord
 	 */
 	public BatchedPatternCoordinates(int theSegment, int theShelf, int theBook, int thePage,
-			PatternDots xCoord, PatternDots yCoord) {
-		super(xCoord, yCoord);
-		segment = theSegment;
-		shelf = theShelf;
-		book = theBook;
-		page = thePage;
+			double xCoordDots, double yCoordDots) {
+		this(new PageAddress(theSegment, theShelf, theBook, thePage), new PatternDots(xCoordDots),
+				new PatternDots(yCoordDots));
 	}
 
-	public String getAddress() {
-		return segment + "." + shelf + "." + book + "." + page;
+	/**
+	 * @param address
+	 * @param x
+	 * @param y
+	 */
+	public BatchedPatternCoordinates(PageAddress address, PatternDots x, PatternDots y) {
+		super(x, y);
+		pageAddress = address;
 	}
 
-	public int getBook() {
-		return book;
+	/**
+	 * @param pageAddress
+	 * @param xCoord
+	 * @param yCoord
+	 */
+	public BatchedPatternCoordinates(String pageAddr, double xCoordDots, double yCoordDots) {
+		this(new PageAddress(pageAddr), new PatternDots(xCoordDots), new PatternDots(yCoordDots));
 	}
 
-	public int getPage() {
-		return page;
+	/**
+	 * @return
+	 */
+	private int getBook() {
+		return pageAddress.getBook();
 	}
 
-	public int getSegment() {
-		return segment;
+	/**
+	 * @return
+	 */
+	private int getPage() {
+		return pageAddress.getPage();
 	}
 
-	public int getShelf() {
-		return shelf;
+	/**
+	 * @return
+	 */
+	public PageAddress getPageAddress() {
+		return pageAddress;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getPageAddressString() {
+		return getSegment() + "." + getShelf() + "." + getBook() + "." + getPage();
+	}
+
+	/**
+	 * @return
+	 */
+	private int getSegment() {
+		return pageAddress.getSegment();
+	}
+
+	/**
+	 * @return
+	 */
+	private int getShelf() {
+		return pageAddress.getShelf();
 	}
 
 	/**
@@ -133,6 +169,6 @@ public class BatchedPatternCoordinates extends Coordinates {
 	 * @see edu.stanford.hci.r3.units.coordinates.Coordinates#toString()
 	 */
 	public String toString() {
-		return getAddress() + " [" + x + ", " + y + "]";
+		return getPageAddressString() + " [" + x + ", " + y + "]";
 	}
 }

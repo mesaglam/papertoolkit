@@ -57,8 +57,7 @@ public class PageAddress {
 			book = Integer.parseInt(bookStr);
 			page = Integer.parseInt(pageStr);
 		} else {
-			System.err.println("PageAddress: " + pageAddress
-					+ " is not a valid logical page address.");
+			System.err.println("PageAddress: " + pageAddress + " is not a valid logical page address.");
 			// do nothing, and leave all the fields blank
 		}
 	}
@@ -89,6 +88,13 @@ public class PageAddress {
 	 */
 	public int getShelf() {
 		return shelf;
+	}
+
+	/**
+	 * @return if the page address is odd numbered.
+	 */
+	public boolean isOddPage() {
+		return page % 2 == 1;
 	}
 
 	/**
