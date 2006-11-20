@@ -76,9 +76,10 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
 
 /**
  * <p>
- * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the system. A
- * PaperToolkit can run one or more Applications at the same time. You can also deactivate applications (to
- * pause them). Or, you can remove them altogether. (These features are not yet fully implemented.)
+ * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the
+ * system. A PaperToolkit can run one or more Applications at the same time. You can also deactivate
+ * applications (to pause them). Or, you can remove them altogether. (These features are not yet
+ * fully implemented.)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -98,10 +99,19 @@ public class PaperToolkit {
 
 	public static final String CONFIG_FILE_VALUE = "/config/PaperToolkit.xml";
 
+	public static final String CONFIG_PATTERN_PATH_KEY = "tiledpatterngenerator.patternpath";
+
+	public static final String CONFIG_PATTERN_PATH_VALUE = "/pattern/";
+
 	/**
 	 * Whether we have called initializeLookAndFeel() yet...
 	 */
 	private static boolean lookAndFeelInitialized = false;
+
+	/**
+	 * Where to find the directories that store our pattern definition files.
+	 */
+	public static final File PATTERN_PATH = getPatternPath();
 
 	private static PaperToolkit toolkitInstance;
 
@@ -144,6 +154,13 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @return the location of pattern data, from the configuration files.
+	 */
+	public static File getPatternPath() {
+		return Configuration.getConfigFile(CONFIG_PATTERN_PATH_KEY);
+	}
+
+	/**
 	 * @param resourcePath
 	 * @return
 	 */
@@ -158,11 +175,11 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently, this does
-	 * NOT work as a packaged jar.
+	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently,
+	 * this does NOT work as a packaged jar.
 	 * 
-	 * @return the root path to the toolkit (or some other canonical path where we can expect to find certain
-	 *         resources, like the HandwritingRecognition Server)
+	 * @return the root path to the toolkit (or some other canonical path where we can expect to
+	 *         find certain resources, like the HandwritingRecognition Server)
 	 */
 	public static File getToolkitRootPath() {
 		File file = null;
@@ -195,7 +212,8 @@ public class PaperToolkit {
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
 			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
-			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
+			xmlEngine.alias("TiledPatternCoordinateConverter",
+					TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 			xmlEngine.alias("PenEvent", PenEvent.class);
 
@@ -204,9 +222,9 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external class. If you
-	 * use the default PaperToolkit() constructor, it will also use the custom look and feel. All PaperToolkit
-	 * utility classes will also use this look and feel.
+	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external
+	 * class. If you use the default PaperToolkit() constructor, it will also use the custom look
+	 * and feel. All PaperToolkit utility classes will also use this look and feel.
 	 */
 	public static void initializeLookAndFeel() {
 		if (!lookAndFeelInitialized) {
@@ -253,7 +271,8 @@ public class PaperToolkit {
 	private static void printInitializationMessages() {
 		final String dashes = StringUtils.repeat("-", versionString.length());
 		System.out.println("-----------------------------------------------------------" + dashes);
-		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. " + versionString);
+		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. "
+				+ versionString);
 		System.out.println("-----------------------------------------------------------" + dashes);
 	}
 
@@ -356,8 +375,8 @@ public class PaperToolkit {
 	private JButton eventBrowserButton;
 
 	/**
-	 * The engine that processes all pen events, producing the correct outputs and calling the right event
-	 * handlers.
+	 * The engine that processes all pen events, producing the correct outputs and calling the right
+	 * event handlers.
 	 */
 	private EventEngine eventEngine;
 
@@ -407,8 +426,8 @@ public class PaperToolkit {
 	private JButton stopAppButton;
 
 	/**
-	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false. True is
-	 * useful for debugging and stopping apps that don't have a GUI.
+	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false.
+	 * True is useful for debugging and stopping apps that don't have a GUI.
 	 */
 	private boolean useAppManager = false;
 
@@ -418,9 +437,10 @@ public class PaperToolkit {
 	private boolean useHandwriting;
 
 	/**
-	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
-	 * (and between applications, ideally). There will be one event engine in the paper toolkit, and all
-	 * events that applications generate will be fed through this single event engine.
+	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
+	 * accordingly (and between applications, ideally). There will be one event engine in the paper
+	 * toolkit, and all events that applications generate will be fed through this single event
+	 * engine.
 	 */
 	public PaperToolkit() {
 		this(false);
@@ -436,7 +456,8 @@ public class PaperToolkit {
 	/**
 	 * @param useAppManager
 	 */
-	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager, boolean useHandwritingRecognitionServer) {
+	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager,
+			boolean useHandwritingRecognitionServer) {
 		loadStartupConfiguration();
 
 		if (useLookAndFeel) {
@@ -444,7 +465,7 @@ public class PaperToolkit {
 		}
 
 		eventEngine = new EventEngine();
-		batchServer = new BatchServer();
+		batchServer = new BatchServer(eventEngine);
 
 		// Start the local server up whenever the paper toolkit is initialized.
 		// the either flag can override the other. They will both need to be TRUE to actually load
@@ -496,7 +517,8 @@ public class PaperToolkit {
 			appManager.add(getControls(), BorderLayout.EAST);
 
 			appManager.setSize(640, 480);
-			appManager.setLocation(WindowUtils.getWindowOrigin(appManager, WindowUtils.DESKTOP_CENTER));
+			appManager.setLocation(WindowUtils.getWindowOrigin(appManager,
+					WindowUtils.DESKTOP_CENTER));
 			appManager.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			appManager.setVisible(true);
 		}
@@ -550,8 +572,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return button for accessing the EventReplayManager's GUI, which allows us to load up and replay
-	 *         eventData files.
+	 * @return button for accessing the EventReplayManager's GUI, which allows us to load up and
+	 *         replay eventData files.
 	 */
 	private Component getEventBrowserButton() {
 		if (eventBrowserButton == null) {
@@ -628,7 +650,8 @@ public class PaperToolkit {
 				}
 			});
 
-			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0, -1) {
+			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0,
+					-1) {
 				@Override
 				protected boolean test(ComponentAdapter c) {
 					if (c.getValue() instanceof Application) {
@@ -652,8 +675,8 @@ public class PaperToolkit {
 							appDescription = appDescription + " [stopped]";
 						}
 					}
-					return super.getListCellRendererComponent(list, appDescription, index, isSelected,
-							cellHasFocus);
+					return super.getListCellRendererComponent(list, appDescription, index,
+							isSelected, cellHasFocus);
 				}
 			});
 			listOfApps.setBorder(BorderFactory.createEmptyBorder(20, 5, 20, 5));
@@ -766,10 +789,9 @@ public class PaperToolkit {
 			getApplicationManager();
 			updateListOfApps();
 		} else {
-			DebugUtils
-					.println("Not using the Application Manager. "
-							+ "If you would like to use the GUI launcher, "
-							+ "call PaperToolkit.useAppManager(true)");
+			DebugUtils.println("Not using the Application Manager. "
+					+ "If you would like to use the GUI launcher, "
+					+ "call PaperToolkit.useAppManager(true)");
 		}
 	}
 
@@ -782,7 +804,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default printer.
+	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
+	 * printer.
 	 * 
 	 * @param sheet
 	 */
@@ -821,8 +844,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Start this application and register all live pens with the event engine. The event engine will then
-	 * start dispatching events for this application until the application is stopped.
+	 * Start this application and register all live pens with the event engine. The event engine
+	 * will then start dispatching events for this application until the application is stopped.
 	 * 
 	 * @param paperApp
 	 */
@@ -858,9 +881,9 @@ public class PaperToolkit {
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 		
 		// XXX
-		Here, we should pass the event engine over...
-		When the Batch Server gets in the data, it will translate it to streaming event coordinates
-		And then pass it to the Event Engine
+//		Here, we should pass the event engine over...
+//		When the Batch Server gets in the data, it will translate it to streaming event coordinates
+//		And then pass it to the Event Engine
 		
 
 		DebugUtils.println("Starting Application: " + paperApp.getName());

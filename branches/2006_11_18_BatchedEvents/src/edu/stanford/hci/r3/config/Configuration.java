@@ -12,7 +12,6 @@ import java.util.Properties;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.remote.ActionReceiver;
-import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Pixels;
 
@@ -128,8 +127,8 @@ public class Configuration extends Properties {
 		// part of the resources in the JAR File (or export directory)
 		setProperty(Pixels.CONFIG_FILE_KEY, Pixels.CONFIG_FILE_VALUE);
 		setProperty(RegionRenderer.CONFIG_FILE_KEY, RegionRenderer.CONFIG_FILE_VALUE);
-		setProperty(TiledPatternGenerator.CONFIG_PATH_KEY, TiledPatternGenerator.CONFIG_PATH_VALUE);
 		setProperty(ActionReceiver.CONFIG_FILE_KEY, ActionReceiver.CONFIG_FILE_VALUE);
+		setProperty(PaperToolkit.CONFIG_PATTERN_PATH_KEY, PaperToolkit.CONFIG_PATTERN_PATH_VALUE);
 		setProperty(PaperToolkit.CONFIG_FILE_KEY, PaperToolkit.CONFIG_FILE_VALUE);
 	}
 
