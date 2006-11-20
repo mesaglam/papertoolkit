@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.stanford.hci.r3.config.Configuration;
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -33,28 +33,13 @@ public class TiledPatternGenerator {
 	 */
 	private static final int BUFFER = 30;
 
-	public static final String CONFIG_PATH_KEY = "tiledpatterngenerator.patternpath";
 
-	public static final String CONFIG_PATH_VALUE = "/pattern/";
 
 	/**
 	 * The name of the default pattern package (stored in pattern/default/).
 	 */
 	public static final String DEFAULT_PATTERN_PACKAGE_NAME = "default";
 
-	/**
-	 * Where to find the directories that store our pattern definition files.
-	 */
-	public static final File PATTERN_PATH = getPatternPath();
-
-	/**
-	 * @return the location of pattern data, from the configuration files.
-	 * 
-	 */
-	This should be moved to the PaperToolkit! So that the Batched EventHandlers can get at it too...
-	private static File getPatternPath() {
-		return Configuration.getConfigFile(CONFIG_PATH_KEY);
-	}
 
 	/**
 	 * Packages indexed by name.
@@ -100,7 +85,7 @@ public class TiledPatternGenerator {
 	 * move to the .jar deployment.
 	 */
 	public TiledPatternGenerator() {
-		this(PATTERN_PATH);
+		this(PaperToolkit.getPatternPath());
 	}
 
 	/**
