@@ -277,7 +277,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 	 */
 	private void startApp() {
 		app = new CaptureApplication(this);
-		PaperToolkit p = new PaperToolkit();
+		PaperToolkit p = new PaperToolkit(true, true /* app manager */, true);
 		p.startApplication(app);
 	}
 
