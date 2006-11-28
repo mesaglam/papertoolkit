@@ -2,23 +2,21 @@ package edu.stanford.hci.r3.pattern;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.stanford.hci.r3.config.Configuration;
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
  * Creates arbitrary-sized pattern blocks, assuming you have enough pattern files to supply it with.
  * </p>
  * <p>
- * This object keeps track of what pattern blocks you have used. It stores it in a map of each page
- * (basically a Rectangle2D bounds). Once a request comes in that is not servicable by this SINGLE
- * page, it will increment the patternFile Number, and allow you to get pattern from the next page.
+ * This object keeps track of what pattern blocks you have used. It stores it in a map of each page (basically
+ * a Rectangle2D bounds). Once a request comes in that is not servicable by this SINGLE page, it will
+ * increment the patternFile Number, and allow you to get pattern from the next page.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -30,31 +28,15 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 public class TiledPatternGenerator {
 
 	/**
-	 * Number of dots we pad between pattern requests, so that no two pattern requests are touching
-	 * each other.
+	 * Number of dots we pad between pattern requests, so that no two pattern requests are touching each
+	 * other.
 	 */
 	private static final int BUFFER = 30;
-
-	public static final String CONFIG_PATH_KEY = "tiledpatterngenerator.patternpath";
-
-	public static final String CONFIG_PATH_VALUE = "/pattern/";
 
 	/**
 	 * The name of the default pattern package (stored in pattern/default/).
 	 */
 	public static final String DEFAULT_PATTERN_PACKAGE_NAME = "default";
-
-	/**
-	 * Where to find the directories that store our pattern definition files.
-	 */
-	public static final File PATTERN_PATH = getPatternPath();
-
-	/**
-	 * @return the location of pattern data, from the configuration files.
-	 */
-	private static File getPatternPath() {
-		return Configuration.getConfigFile(CONFIG_PATH_KEY);
-	}
 
 	/**
 	 * Packages indexed by name.
@@ -79,8 +61,8 @@ public class TiledPatternGenerator {
 	private int numTimesGetPatternCalled = 0;
 
 	/**
-	 * Where we should start getting our pattern from. This is incremented by some amount every time
-	 * we call getPattern(...), so that the pattern returned will be unique.
+	 * Where we should start getting our pattern from. This is incremented by some amount every time we call
+	 * getPattern(...), so that the pattern returned will be unique.
 	 */
 	private int patternFileNumber = 0;
 
@@ -95,12 +77,12 @@ public class TiledPatternGenerator {
 	private File patternPath;
 
 	/**
-	 * Default Pattern Path Location (PaperToolkit\data\pattern), automatically copied by eclipse to
-	 * the export folder: PaperToolkit\bin\pattern. This will have to change at some point, when we
-	 * move to the .jar deployment.
+	 * Default Pattern Path Location (PaperToolkit\data\pattern), automatically copied by eclipse to the
+	 * export folder: PaperToolkit\bin\pattern. This will have to change at some point, when we move to the
+	 * .jar deployment.
 	 */
 	public TiledPatternGenerator() {
-		this(PATTERN_PATH);
+		this(PaperToolkit.getPatternPath());
 	}
 
 	/**
@@ -148,13 +130,12 @@ public class TiledPatternGenerator {
 		// numTilesNeededX, numTilesNeededY
 		// numDotsXFromRightMostTiles, numDotsYFromBottomMostTiles
 		System.out.println("Tiling Information (" + horizontal + ", " + vertical + ") {");
-		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with "
-				+ numDotsXFromRightMostTiles + " horizontal dots from the rightmost tiles.");
-		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with "
-				+ numDotsYFromBottomMostTiles + " vertical dots from the bottommost tiles.");
+		System.out.println("\t" + numTilesNeededX + " Tile(s) in X, with " + numDotsXFromRightMostTiles
+				+ " horizontal dots from the rightmost tiles.");
+		System.out.println("\t" + numTilesNeededY + " Tile(s) in Y, with " + numDotsYFromBottomMostTiles
+				+ " vertical dots from the bottommost tiles.");
 		System.out.println("}");
 	}
-
 
 	/**
 	 * @return the current pattern package.
@@ -164,9 +145,9 @@ public class TiledPatternGenerator {
 	}
 
 	/**
-	 * Returned pattern that is tiled appropriately, and automatically selected from the pattern
-	 * package. By default, this pattern generator class will keep track of which pattern it has
-	 * given you, and will give you unique pattern (if possible) every time you call this method.
+	 * Returned pattern that is tiled appropriately, and automatically selected from the pattern package. By
+	 * default, this pattern generator class will keep track of which pattern it has given you, and will give
+	 * you unique pattern (if possible) every time you call this method.
 	 * 
 	 * @param width
 	 *            the amount of pattern we need
@@ -244,8 +225,7 @@ public class TiledPatternGenerator {
 		// we are still tiling horizontally
 		// maintain our tallest Y to date
 		lastDotUsedX += numDotsXFromRightMostTiles + BUFFER;
-		maxOfRecentHeightsInDots = Math.max(maxOfRecentHeightsInDots, numDotsYFromBottomMostTiles
-				+ BUFFER);
+		maxOfRecentHeightsInDots = Math.max(maxOfRecentHeightsInDots, numDotsYFromBottomMostTiles + BUFFER);
 
 		return pattern;
 	}
@@ -267,8 +247,8 @@ public class TiledPatternGenerator {
 	}
 
 	/**
-	 * Resets the tracked history in this object. The next call to getPattern(...) will start over
-	 * at the default state after calling this function.
+	 * Resets the tracked history in this object. The next call to getPattern(...) will start over at the
+	 * default state after calling this function.
 	 */
 	public void resetUniquePatternTracker() {
 		patternFileNumber = 0;
@@ -277,7 +257,8 @@ public class TiledPatternGenerator {
 	}
 
 	/**
-	 * Choose the package of pattern data. 
+	 * Choose the package of pattern data.
+	 * 
 	 * @param packageName
 	 */
 	private void setPackage(String packageName) {
@@ -285,15 +266,15 @@ public class TiledPatternGenerator {
 		if (pkg == null) {
 			pkg = new ArrayList<PatternPackage>(availablePackages.values()).get(0);
 			System.err.println("Warning: " + packageName
-					+ " does not exist. Setting Pattern Package to the first one available ("
-					+ pkg.getName() + ").");
+					+ " does not exist. Setting Pattern Package to the first one available (" + pkg.getName()
+					+ ").");
 		}
 		patternPackage = pkg;
 	}
 
 	/**
-	 * Explicitly manipulate the page number which will be the source of pattern for the next call
-	 * to getPattern(...)
+	 * Explicitly manipulate the page number which will be the source of pattern for the next call to
+	 * getPattern(...)
 	 * 
 	 * @param num
 	 */

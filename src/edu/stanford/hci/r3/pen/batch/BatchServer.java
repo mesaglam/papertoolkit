@@ -10,13 +10,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.EventEngine;
+import edu.stanford.hci.r3.pattern.PatternPackage;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Wait at a socket (say: 9999) and receive xml files (or locations of them) over the wire. Then,
- * process them and call any event handlers you have registered at runtime.
+ * Wait at a socket (say: 9999) and receive the location of xml files that contain data from a pen synch
+ * action (the user drops the pen into the dock). Then, process them and call any event handlers you have
+ * registered at runtime.
+ * 
+ * Additionally, translate the batched data into streaming coordinates, and pass these events as if they
+ * happened in real time over to the event engine.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -43,6 +51,11 @@ public class BatchServer {
 	private List<Socket> clients = new ArrayList<Socket>();
 
 	/**
+	 * We will pass batched events to this event engine, to simulate event dispatch in "real time".
+	 */
+	private EventEngine eventEngine;
+
+	/**
 	 * 
 	 */
 	private List<BatchedEventHandler> eventHandlers = new ArrayList<BatchedEventHandler>();
@@ -52,15 +65,26 @@ public class BatchServer {
 	 */
 	private boolean exitFlag = false;
 
+	/**
+	 * Used for converting batched coordinates to streaming coordinates, which can be passed to our event
+	 * handlers.
+	 */
+	private Map<String, PatternPackage> patternPackages = PatternPackage
+			.getAvailablePatternPackages(PaperToolkit.getPatternPath());
+
+	/**
+	 * Wait for
+	 */
 	private int serverPort;
 
 	private ServerSocket serverSocket;
 
 	/**
-	 * 
+	 * @param eventEngine
 	 */
-	public BatchServer() {
+	public BatchServer(EventEngine theEventEngine) {
 		try {
+			eventEngine = theEventEngine;
 			serverSocket = new ServerSocket(DEFAULT_PLAINTEXT_PORT);
 			serverPort = DEFAULT_PLAINTEXT_PORT;
 			// start thread to accept connections
@@ -76,8 +100,15 @@ public class BatchServer {
 	 */
 	private Thread getClientHandlerThread(final Socket clientSocket) {
 		return new Thread() {
+
+			/**
+			 * Read from the client through this reader.
+			 */
 			private BufferedReader br;
 
+			/**
+			 * Disconnect from the import client (the C# monitor)
+			 */
 			public synchronized void disconnect() {
 				try {
 					if (!clientSocket.isClosed()) {
@@ -111,6 +142,7 @@ public class BatchServer {
 
 						// the file name is everything after...
 						if (line.toLowerCase().startsWith("xml: ")) {
+							// get the file name of the xml file
 							final String fileName = line.substring(5).trim();
 							// DebugUtils.println(fileName); // everything afterward
 							final File xmlFile = new File(fileName);
@@ -118,6 +150,7 @@ public class BatchServer {
 							if (xmlFile.exists()) {
 								// System.out.println("The file exists!");
 								for (BatchedEventHandler beh : eventHandlers) {
+									// send the xml file to the batched event handler...
 									beh.batchedDataArrived(xmlFile);
 								}
 							} else {
@@ -136,7 +169,7 @@ public class BatchServer {
 	}
 
 	/**
-	 * @return
+	 * @return the server thread.
 	 */
 	private Thread getDaemonThread() {
 		return new Thread() {
@@ -200,8 +233,7 @@ public class BatchServer {
 			for (Socket client : clients) {
 				client.close();
 			}
-			System.out.println("BatchServer on port " + serverSocket.getLocalPort()
-					+ " is stopping...");
+			System.out.println("BatchServer on port " + serverSocket.getLocalPort() + " is stopping...");
 			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();

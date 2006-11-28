@@ -98,10 +98,19 @@ public class PaperToolkit {
 
 	public static final String CONFIG_FILE_VALUE = "/config/PaperToolkit.xml";
 
+	public static final String CONFIG_PATTERN_PATH_KEY = "tiledpatterngenerator.patternpath";
+
+	public static final String CONFIG_PATTERN_PATH_VALUE = "/pattern/";
+
 	/**
 	 * Whether we have called initializeLookAndFeel() yet...
 	 */
 	private static boolean lookAndFeelInitialized = false;
+
+	/**
+	 * Where to find the directories that store our pattern definition files.
+	 */
+	public static final File PATTERN_PATH = getPatternPath();
 
 	private static PaperToolkit toolkitInstance;
 
@@ -141,6 +150,13 @@ public class PaperToolkit {
 			e.printStackTrace();
 		}
 		return o;
+	}
+
+	/**
+	 * @return the location of pattern data, from the configuration files.
+	 */
+	public static File getPatternPath() {
+		return Configuration.getConfigFile(CONFIG_PATTERN_PATH_KEY);
 	}
 
 	/**
@@ -444,7 +460,7 @@ public class PaperToolkit {
 		}
 
 		eventEngine = new EventEngine();
-		batchServer = new BatchServer();
+		batchServer = new BatchServer(eventEngine);
 
 		// Start the local server up whenever the paper toolkit is initialized.
 		// the either flag can override the other. They will both need to be TRUE to actually load
@@ -856,6 +872,12 @@ public class PaperToolkit {
 		// keep track of the pattern assigned to different sheets and regions
 		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
+
+		// XXX
+		// Here, we should pass the event engine over...
+		// When the Batch Server gets in the data, it will translate it to streaming event coordinates
+		// And then pass it to the Event Engine
+		// It will essentially "replay" the events as if it were through event save/replay
 
 		DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);
