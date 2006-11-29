@@ -1,0 +1,54 @@
+<html>
+<head><title>Tools of the Trade</title>
+<link href="../resources/styles.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<script language="javascript" type="text/javascript" 
+  src="../resources/header.js"></script>
+<p class="Heading"> Quick Start </p>
+<ol>
+  <li>Get an Anoto Pen. We use the Nokia SU-1B, but the Maxell Penit probably also works.</li>
+  <li>Install the Nokia SU-1B software and the Anoto SDK.</li>
+  <li>If the pen hasn't been upgraded, upgrade the firmware to allow for streaming. Install the Widcomm drivers for your bluetooth dongle.</li>
+  <li>Make sure you have .NET 2.0.</li>
+  <li>For handwriting recognition, install the Tablet PC SDK ver 1.7 and the Recognizer Pack. This only works on Windows Pro/Tablet editions.   If you have a Mac, unfortunately, you'll need to dual boot or run Parallels. </li>
+  <li><a href="http://www.eclipse.org/">Eclipse IDE</a><br>
+    Install this IDE, because the R3 toolkit is primarily in Java. If you need to customize any of the .NET parts of R3 (which is unlikely) you'll need Visual Studio .NET 2005. <br>
+  </li>
+  <li><a href="http://java.sun.com/javase/6/">Java 6</a><br>
+    Install the JDK/JRE.<br>
+  </li>
+  <li><a href="http://tortoisesvn.tigris.org/">TortoiseSVN</a><br> 
+  Get Tortoise v. 1.4 so that you can download the code.</li>
+  <li>Download the code from Google Code Hosting. Use the HTTPS version if you are a developer on this project. Otherwise, use the HTTP version (which is displayed below). <br>
+      <span class="Code">http://papertoolkit.googlecode.com/svn/trunk/<br>
+      </span>This is the main PaperToolkit project. I tend to put it under My Documents/Projects/PaperToolkit, but you can pick your favorite location. <br>
+      <br>
+    and<br>
+    <span class="Code"><br>
+    http://papertoolkit.googlecode.com/svn/demos/trunk/</span><br>
+    This contains the demonstration apps. I usually put it under My Documents/Projects/PaperToolkitDemos. <br> 
+   </li>
+  <li><a href="http://java.sun.com/products/javacomm/">Java Comm</a><br>
+    Under PaperToolkit\lib\comm, copy the <span class="Code">comm.jar</span> and <span class="Code">javax.comm.properties </span>files into the right places <br>
+    C:\Program Files\Java\jdk1.6.0\jre\lib<br>
+    and<br>
+  C:\Program Files\Java\jre1.6.0\lib</li>
+  <li>Install SVNKit (formerly known as JavaSVN) plugin for Eclipse.<br>
+  </li>
+  <li>Install <a href="http://subclipse.tigris.org/">Subclipse </a>or <a href="http://www.polarion.org/index.php?page=overview&project=subversive">Subversive</a>. They both seem to have plusses and minuses, although I currently have Subversive installed. Make sure you have subclipse use the SVNKit or JavaSVN that supports SVN 1.4, otherwise tortoise won't work well with your Eclipse SVN plugins. </li>
+  <li>The first demo you can try is the <a href="../tutorials/HandwritingRecognition/HandwritingRecognition.html">Handwriting Recognition</a> demo.... </li>
+</ol>
+<p class="Heading2">&nbsp;</p>
+<hr noshade size=1/>
+<p class="Author">Ron B. Yeh<br>
+Stanford University </p>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-522093-7";
+urchinTracker();
+</script>
+</body>
+</html>
