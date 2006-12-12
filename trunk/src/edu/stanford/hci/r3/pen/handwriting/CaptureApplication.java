@@ -219,6 +219,21 @@ public class CaptureApplication extends Application {
 		gui.getInkPanel().setScale(newScale);
 	}
 
+	private long lastTimeNewInkArrived = 0;
+
+	private Thread recognizeThread = new Thread(new Runnable() {
+		public void run() {
+			while (true) {
+				try {
+					wait();
+					
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	});
+	
 	/**
 	 * Add an inkcollector to display ink, and a handwriting recognizer to do the recognition.
 	 * 
@@ -237,14 +252,23 @@ public class CaptureApplication extends Application {
 			}
 		};
 
+
 		// for recognizing the strokes
 		handwritingRecognizer = new HandwritingRecognizer() {
+
 			@Override
 			public void contentArrived() {
+				
+				lastTimeNewInkArrived = System.currentTimeMillis();
+				
+				
+				
 				String text = recognizeHandwriting();
 				DebugUtils.println("Handwritten Content: " + text);
 				gui.setInfoText(text);
 				// gui.setAlternatives(topTen);
+				
+				
 			}
 		};
 
