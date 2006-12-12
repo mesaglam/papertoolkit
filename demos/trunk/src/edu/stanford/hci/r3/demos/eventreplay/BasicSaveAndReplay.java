@@ -31,7 +31,7 @@ public class BasicSaveAndReplay extends Application {
 	 */
 	public static void main(String[] args) {
 		PaperToolkit toolkit = new PaperToolkit(true, true, false);
-		toolkit.loadApplication(new PPTAdvancer());
+		toolkit.loadApplication(new PPTAdvancer(false));
 	}
 
 	private Region floatingRegion;

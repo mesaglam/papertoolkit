@@ -22,6 +22,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
+ * Shows how to create a Powerpoint advancer tool with pen-based marking gestures.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -32,19 +33,9 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class PPTAdvancer extends Application {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		PaperToolkit toolkit = new PaperToolkit(true, true, false);
-		toolkit.startApplication(new PPTAdvancer());
-	}
-
-	/**
-	 * 
-	 */
-	public PPTAdvancer() {
-		this(false);
+		toolkit.startApplication(new PPTAdvancer(false));
 	}
 
 	/**
@@ -91,7 +82,8 @@ public class PPTAdvancer extends Application {
 								new PatternDots(minX), new PatternDots(minY), // 
 								new PatternDots(width), new PatternDots(height));
 						// save it out to the file
-						mapping.saveConfigurationToXML(new File("data/Powerpoint/PPT.patternInfo.xml"));
+						mapping.saveConfigurationToXML(new File(
+								"data/Powerpoint/PPT.patternInfo.xml"));
 					}
 				}
 			});
