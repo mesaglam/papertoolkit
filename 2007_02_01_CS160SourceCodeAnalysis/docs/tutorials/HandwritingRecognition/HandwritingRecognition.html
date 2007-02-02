@@ -1,0 +1,54 @@
+<html>
+<head>
+<title>Streaming Live Data</title>
+<link href="../../resources/styles.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<script language="javascript" type="text/javascript" 
+  src="../../resources/header.js"></script>
+<p class="Heading">Handwriting Recognition  </p>
+<p>To use handwriting recognition, you will need to install both the Tablet PC SDK, and the Tablet PC Recognizer Pack. Support for Handwriting Recognition first appeared in R3 version 0.3 (27 Oct 2006). </p>
+<ol>
+  <li>We will walk through a demonstration application that also doubles as a way to make sure handwriting recognition is working. After setting up the two Tablet PC packages, make sure your bluetooth dongle is plugged in, and your pen is in streaming mode (the light is blinking). Also, make sure you have some patterned paper. Anything will do. In this example, we will use a page from our Mead 5x8 Digital Notebook. </li>
+  <li>Open up Eclipse to make sure everything is compiled.... Navigate to <span class="Code">edu.stanford.hci.r3.pen.handwriting</span> and run <span class="Code">HandwritingCaptureDebugger</span>.<br>
+    <br>
+  <img src="HWDebugger1.png" alt="HWDebugger" width="640" height="543"><br>
+  <br>
+  You will see this empty screen. To start, click the Calibrate button (or hit the space bar as Calibrate is already in focus). </li>
+  <li>Now, pick your favorite Anoto page and tap somewhere to define the <strong>top left corner</strong> of your region. <br>
+    <br>
+      <img src="TopLeft.png" alt="TopLeft" width="400" height="306"> <img src="BottomRight.png" alt="BottomRight" width="270" height="306"><br>
+    <br>
+  On the same page, tap somewhere else to define the<strong> bottom right corner</strong> of your region. (Note: we have just defined a region and added a new event handler to that region... all at paper-application runtime!)</li>
+  <li>Then, start writing in your newly defined region.  <br>
+    <br>
+      <img src="HWDebugger2.png" alt="HWDebugger" width="820" height="696"><br>
+      <br>
+    <img src="HWDebugger3.png" alt="HWDebugger" width="820" height="696"><br>
+      <br>
+      <img src="SuperCali.png" alt="SuperCali" width="400" height="247"><br>
+    <br>
+  As you write, the best guess is displayed in the text area at the bottom. The handwriting recognition filter also allows you to get a top ten list of Tablet PC's best guesses. Here, we just display the top guess. </li>
+  <li>You can hit the Clear button to wipe the slate clean. Or, you can choose Calibrate to define a new region somewhere else! <br>
+    <br>
+  <img src="HWDebugger4.png" alt="HWDebugger" width="697" height="606"><br>
+    <br>
+  Here, I defined a small region, so the text looks a lot bigger. </li>
+  <li>Hit save to see an XML representation of your handwriting. We can't do anything cool yet with this XML file, but future versions of the toolkit will enable us to save and load handwriting files.</li>
+</ol>
+<p class="Heading2">The Code</p>
+<ol>
+  <li>More to come...  </li>
+</ol>
+<hr noshade size=1/>
+<p class="Author">Ron B. Yeh<br>
+Stanford University </p>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-522093-7";
+urchinTracker();
+</script>
+</body>
+</html>

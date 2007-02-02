@@ -1,0 +1,103 @@
+/**
+ * 
+ */
+package edu.stanford.hci.r3.units;
+
+import edu.stanford.hci.r3.config.Configuration;
+
+/**
+ * <p>
+ * Represents a screen based unit. This depends on the Pixels Per Inch of the screen, of course.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ */
+public class Pixels extends Units {
+
+	/**
+	 * The Key to access the configuration file for Pixels.
+	 */
+	public static final String CONFIG_FILE_KEY = "pixels.pixelsperinch.file";
+
+	public static final String CONFIG_FILE_VALUE = "/config/PixelsPerInch.xml";
+
+	private static final double DEFAULT_PIXELS_PER_INCH = readPixelsPerInchFromConfigFile();
+
+	/**
+	 * The Identity Element representing one Pixel on a "default" screen at a default pixelsPerInch.
+	 */
+	public static final Pixels ONE = new Pixels(1);
+
+	/**
+	 * The key as stored in the xml file.
+	 */
+	private static final String PROPERTY_NAME = "pixelsPerInch";
+
+	/**
+	 * @param ppi
+	 * @return
+	 */
+	public static Pixels getPixelsPerInchObject(int ppi) {
+		return new Pixels(1, ppi);
+	}
+
+	/**
+	 * The interpretation of distance varies depending on the specifications of your monitor. We
+	 * store the value in an XML file that you can customize.
+	 * 
+	 * @return
+	 */
+	private static double readPixelsPerInchFromConfigFile() {
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
+				CONFIG_FILE_KEY);
+		final double ppi = Double.parseDouble(property);
+		return ppi;
+	}
+
+	/**
+	 * How many pixels (in this environment) equals one physical inch?
+	 */
+	private double pixelsPerInch = DEFAULT_PIXELS_PER_INCH;
+
+	/**
+	 * One little square on your monitor, containing a color. =)
+	 */
+	public Pixels() {
+		super(1);
+	}
+
+	/**
+	 * @param numPixels
+	 */
+	public Pixels(double numPixels) {
+		super(numPixels);
+	}
+
+	/**
+	 * @param numPixels
+	 */
+	public Pixels(double numPixels, double pixPerInch) {
+		super(numPixels);
+		pixelsPerInch = pixPerInch;
+	}
+
+	/**
+	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
+	 */
+	@Override
+	protected double getNumberOfUnitsInOneInch() {
+		return pixelsPerInch;
+	}
+
+	/**
+	 * @return how many pixels per inch shall we use to interpret this value?
+	 * 
+	 */
+	public double getPixelsPerInch() {
+		return pixelsPerInch;
+	}
+}

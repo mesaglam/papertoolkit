@@ -1,0 +1,6 @@
+Java Speech has to be installed in a super secret directory, similar to Java Comm.
+
+Depending on where JDK/JRE you use resides, you must put the speech.properties file 
+into the lib directory of the JDK/JRE. It is NOT sufficient to put it in your Java application's lib directory. :(
+
+For example, on my installation, the magic directory is: C:\Program Files\Java\jre1.6.0\lib
