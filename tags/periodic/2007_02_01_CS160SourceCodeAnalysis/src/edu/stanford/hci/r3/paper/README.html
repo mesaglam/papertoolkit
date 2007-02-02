@@ -1,0 +1,19 @@
+<html><title>Paper UI Construction - Architecture and API</title>
+<head>
+<link href="../../../../../../docs/resources/styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<p class="Heading">The R3 Paper UI Construction API</p>
+<p>Use these classes to construct the Paper User Interface. Sheets contain regions, which may be interactive.</p>
+<p><span class="Heading2">Sheet (<a href="Sheet.java" type="text/plain">Sheet.java</a>)</span><br>
+ The Sheet class represents a sheet of paper that is augmented with interactive capabilities. Add child objects to this class to build up a sheet that includes images, shapes, and dot pattern. The sheet can later be printed to PostScript, PDF, or straight to a Java2D printer (with different advantages to each printing technique, unfortunately). </p>
+<p><span class="Heading2">Bundle (<a href="Bundle.java" type="text/plain">Bundle.java</a>) </span><span class="Header1"><br>
+  </span>You can group a set of Sheets into a Bundle. If you want to prototype a notebook interaction (like in ButterflyNet), you would want to create a Bundle.</p>
+<p><span class="Heading2">Region (<a href="Region.java" type="text/plain">Region.java</a>) </span><span class="Header1"><br>
+  </span>Each Sheet has multiple Regions that represent visible data (such as Images) or active regions with event handlers (such as Buttons).</p>
+<hr noshade size=1/>
+<p class="Author">Ron B. Yeh<br>
+Stanford University </p>
+</body>
+</html>

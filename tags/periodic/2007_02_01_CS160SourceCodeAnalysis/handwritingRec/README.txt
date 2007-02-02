@@ -1,0 +1,1 @@
+You will need to install the Tablet PC Recognizer Pack.

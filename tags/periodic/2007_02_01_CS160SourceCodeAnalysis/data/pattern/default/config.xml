@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>Information about this pattern package. The values in this file are determined experimentally, by printing out pattern and testing it with a streaming pen. Also, we assume pattern spaces are wide strips. For example, in the BNet pattern, subsequent pages are laid out from left to right in the Anoto physical coordinate space. The BNet pattern is only one page tall, but 256 pages wide.</comment>
+	<entry key="minPatternX">184022418.0</entry>
+	<entry key="minPatternY">7187.0</entry>
+	<entry key="numHorizontalDotsBetweenOriginOfPages">1330</entry>
+	<entry key="numVerticalDotsBetweenOriginOfPages">0</entry>
+	<entry key="packageName">0</entry>
+	
+	<entry key="evenPage">48.0.12.8</entry>
+	<entry key="evenPageOriginX">4097107.0</entry>
+	<entry key="evenPageOriginY">8389499.0</entry>
+
+	<entry key="perPageOffsetX">1330</entry>
+	<entry key="perPageOffsetY">0</entry>
+
+	<entry key="oddPageOffsetX">15</entry>
+	<entry key="oddPageOffsetY">-1</entry>
+</properties>
