@@ -28,19 +28,20 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 public class InkPanel extends JPanel {
 
 	/**
-	 * 
+	 * Zoom in (> 1.0) or out (< 1.0) to the ink canvas.
 	 */
-	private List<Ink> inkWell = Collections.synchronizedList(new LinkedList<Ink>());
+	private double inkScale = 1.0;
+
+	/**
+	 * A collection of ink objects that have been added to this JPanel. Feel free to access it, if
+	 * you are a subclass. Make sure to call repaint though!
+	 */
+	protected List<Ink> inkWell = Collections.synchronizedList(new LinkedList<Ink>());
 
 	/**
 	 * 
 	 */
 	private InkRenderer renderer;
-
-	/**
-	 * Zoom in (> 1.0) or out (< 1.0) to the ink canvas.
-	 */
-	private double inkScale = 1.0;
 
 	/**
 	 * Default Catmull-Rom method.
@@ -68,16 +69,23 @@ public class InkPanel extends JPanel {
 		repaint();
 	}
 
-	public void setScale(double theScale) {
-		inkScale = theScale;
-	}
-
 	/**
 	 * 
 	 */
 	public void clear() {
 		inkWell.clear();
 		repaint();
+	}
+
+	/**
+	 * @return the reference to the ink. This is NOT a copy!
+	 */
+	public List<Ink> getAllInk() {
+		return inkWell;
+	}
+
+	public double getScale() {
+		return inkScale;
 	}
 
 	/**
@@ -114,5 +122,14 @@ public class InkPanel extends JPanel {
 				repaint();
 			}
 		}
+	}
+
+	public void setAllInk(List<Ink> theInk) {
+		inkWell = theInk;
+		repaint();
+	}
+
+	public void setScale(double theScale) {
+		inkScale = theScale;
 	}
 }

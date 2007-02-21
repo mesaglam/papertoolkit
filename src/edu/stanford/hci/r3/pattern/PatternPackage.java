@@ -22,14 +22,15 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * Represents a set of pattern files. One can tile these files, and create Postscript and PDF files out of
- * them. This package can load specific pattern files into byte[][] so that you can index them for drawing on
- * screen or into little graphics that represent pattern buttons.
+ * Represents a set of pattern files. One can tile these files, and create Postscript and PDF files
+ * out of them. This package can load specific pattern files into byte[][] so that you can index
+ * them for drawing on screen or into little graphics that represent pattern buttons.
  * </p>
  * <p>
- * All interaction with the specific pattern files should go in this class. This class also contains the
- * mapping between Streamed Pattern Coordinates and Batched Coordinates (from docking the pen). This mapping
- * is read from the XML file, and determined experimentally, by the Calibration classes.
+ * All interaction with the specific pattern files should go in this class. This class also contains
+ * the mapping between Streamed Pattern Coordinates and Batched Coordinates (from docking the pen).
+ * This mapping is read from the XML file, and determined experimentally, by the Calibration
+ * classes.
  * </p>
  * 
  * <p>
@@ -42,8 +43,9 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 public class PatternPackage {
 
 	/**
-	 * @return the Pattern Packages that are available to the system. Packages are stored in the directory
-	 *         (pattern/). We return a Map<String, PatternPackage> so you can address the package by name.
+	 * @return the Pattern Packages that are available to the system. Packages are stored in the
+	 *         directory (pattern/). We return a Map<String, PatternPackage> so you can address the
+	 *         package by name.
 	 */
 	public static Map<String, PatternPackage> getAvailablePatternPackages(File patternLocation) {
 		final HashMap<String, PatternPackage> packages = new HashMap<String, PatternPackage>();
@@ -63,8 +65,8 @@ public class PatternPackage {
 	}
 
 	/**
-	 * The pattern X coordinate of the top left of page 0. This is the key for the config.xml file (stored in
-	 * the pattern package's directory, alongside the .pattern files).
+	 * The pattern X coordinate of the top left of page 0. This is the key for the config.xml file
+	 * (stored in the pattern package's directory, alongside the .pattern files).
 	 */
 	private static final String MIN_PATTERN_X = "minPatternX";
 
@@ -109,9 +111,9 @@ public class PatternPackage {
 	private double numDotsHorizontalBetweenOriginOfPages;
 
 	/**
-	 * How many dots are between the top row of page N and the top row of page N+1? In the ButterflyNet
-	 * pattern space allocated by Anoto, this value is 0. This also seems to be the case for other pattern
-	 * spaces, although this may change, of course.
+	 * How many dots are between the top row of page N and the top row of page N+1? In the
+	 * ButterflyNet pattern space allocated by Anoto, this value is 0. This also seems to be the
+	 * case for other pattern spaces, although this may change, of course.
 	 */
 	private double numDotsVerticalBetweenOriginOfPages;
 
@@ -152,11 +154,12 @@ public class PatternPackage {
 	 * For going between Batched & Streamed coordinates.
 	 */
 	private CoordinateTranslator coordinateTranslator;
-	
+
 	/**
 	 * @param location
-	 *            this directory contains .pattern files (text files that contain the pattern as described by
-	 *            Anoto) and a config.xml file, which describes the physical coordinates, among other things.
+	 *            this directory contains .pattern files (text files that contain the pattern as
+	 *            described by Anoto) and a config.xml file, which describes the physical
+	 *            coordinates, among other things.
 	 */
 	public PatternPackage(File location) {
 		patternDefinitionPath = location;
@@ -170,10 +173,12 @@ public class PatternPackage {
 
 		numPatternFiles = visibleFiles.size();
 
+		DebugUtils.println("There are " + numPatternFiles + " pattern files in " + location);
 		if (numPatternFiles == 0) {
-			System.err.println("There are 0 pattern files in " + location);
-			System.err.println("This pattern package is not usable.");
+			DebugUtils.println("This pattern package is not usable.");
 			return;
+		} else {
+			DebugUtils.println("Loading pattern package information.");
 		}
 
 		patternFiles = visibleFiles;
@@ -183,7 +188,8 @@ public class PatternPackage {
 		for (File f : patternFiles) {
 			String fileName = f.getName();
 			// get the number in the name
-			Integer num = Integer.parseInt(fileName.substring(0, fileName.indexOf(PATTERN_FILE_EXTENSION)));
+			Integer num = Integer.parseInt(fileName.substring(0, fileName
+					.indexOf(PATTERN_FILE_EXTENSION)));
 			numToPatternFile.put(num, f);
 		}
 
@@ -278,8 +284,8 @@ public class PatternPackage {
 	}
 
 	/**
-	 * Given a starting pattern file, we can determine the origin (top left corner) based on our knowledge of
-	 * the origin of the first file, and the distance between each file.
+	 * Given a starting pattern file, we can determine the origin (top left corner) based on our
+	 * knowledge of the origin of the first file, and the distance between each file.
 	 * 
 	 * @param patternFileNumber
 	 * @return
@@ -293,9 +299,10 @@ public class PatternPackage {
 	}
 
 	/**
-	 * We verify that numDotsX and numDotsY do not exceed the amount of dots in one file. If so, the requested
-	 * number of dots are modified to fit. Thus, the dimension of the String[] may be smaller than you
-	 * requested. You may want to make sure numDotsX/Y are correct if you do not want to be surprised.
+	 * We verify that numDotsX and numDotsY do not exceed the amount of dots in one file. If so, the
+	 * requested number of dots are modified to fit. Thus, the dimension of the String[] may be
+	 * smaller than you requested. You may want to make sure numDotsX/Y are correct if you do not
+	 * want to be surprised.
 	 * 
 	 * @param numPatternFile
 	 *            The number of the pattern file (numPatternFile.pattern).
@@ -308,13 +315,14 @@ public class PatternPackage {
 	 * @param height
 	 *            How many dots down do we need?
 	 * 
-	 * @return a String[] representing the requested pattern (encoded as uldr directions) each entry of the
-	 *         array represents one row of pattern. The columns are represented in the String. We expect this
-	 *         will be much easier to manipulate, especially since we do not need to index dots randomly.
+	 * @return a String[] representing the requested pattern (encoded as uldr directions) each entry
+	 *         of the array represents one row of pattern. The columns are represented in the
+	 *         String. We expect this will be much easier to manipulate, especially since we do not
+	 *         need to index dots randomly.
 	 * 
 	 */
-	public String[] readPatternFromFile(int numPatternFile, Units originX, Units originY, Units width,
-			Units height) {
+	public String[] readPatternFromFile(int numPatternFile, Units originX, Units originY,
+			Units width, Units height) {
 
 		// regardless of the units, convert them to pattern dots
 		int startDotsX = (int) Math.round(originX.getValueInPatternDots());
@@ -373,7 +381,8 @@ public class PatternPackage {
 
 		// we are asking for pattern from an invalid file.
 		if (numPatternFile < 0 || numPatternFile >= numPatternFiles) {
-			DebugUtils.println("Pattern File " + numPatternFile + " does not exist in this package.");
+			DebugUtils.println("Pattern File " + numPatternFile
+					+ " does not exist in this package.");
 			return pattern;
 		}
 

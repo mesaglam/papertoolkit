@@ -52,6 +52,7 @@ import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
 import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.design.acrobat.AcrobatDesignerLauncher;
 import edu.stanford.hci.r3.design.acrobat.RegionConfiguration;
+import edu.stanford.hci.r3.development.debugging.DebuggingEnvironment;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.replay.EventBrowser;
@@ -119,12 +120,16 @@ public class PaperToolkit {
 	 * 
 	 * <p>
 	 * Version 0.3 should include:
-	 * <ol>
+	 * <ul>
 	 * <li>Better Batched Event Support</li>
-	 * </ol>
+	 * </ul>
+	 * Version 0.4 should include:
+	 * <ul>
+	 * <li>Better Debugging Tools</li>
+	 * </ul>
 	 * </p>
 	 */
-	private static String versionString = "0.3";
+	private static String versionString = "0.4";
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
@@ -269,7 +274,7 @@ public class PaperToolkit {
 	private static void printInitializationMessages() {
 		final String dashes = StringUtils.repeat("-", versionString.length());
 		System.out.println("-----------------------------------------------------------" + dashes);
-		System.out.println("Reduce, Recycle, Reuse: A Paper Applications Toolkit ver. " + versionString);
+		System.out.println("Reduce/Reuse/Recycle: A Paper Applications Toolkit ver. " + versionString);
 		System.out.println("-----------------------------------------------------------" + dashes);
 	}
 
@@ -836,6 +841,17 @@ public class PaperToolkit {
 		}).start();
 	}
 
+	/**
+	 * @param paperApp
+	 */
+	public void debugApplication(Application paperApp) {
+		DebugUtils.println("Starting Debugging...");
+		new DebuggingEnvironment(paperApp);
+		
+		// load the application too!
+		loadApplication(paperApp);
+	}
+	
 	/**
 	 * Start this application and register all live pens with the event engine. The event engine will then
 	 * start dispatching events for this application until the application is stopped.

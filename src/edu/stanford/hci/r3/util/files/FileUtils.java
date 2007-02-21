@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -23,8 +24,8 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
 import edu.stanford.hci.r3.util.ArrayUtils;
-import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.filters.DirectoriesOnlyFilter;
+import edu.stanford.hci.r3.util.files.filters.FileExcludeHiddenFilter;
 import edu.stanford.hci.r3.util.files.filters.FileExtensionFilter;
 import edu.stanford.hci.r3.util.files.filters.FilesOnlyFilter;
 
@@ -176,6 +177,8 @@ public class FileUtils {
 	/**
 	 * Return only files (that are children of the given path) that are not hidden.
 	 * 
+	 * TODO/BUG: Doesn't use FileExcludeHiddenFilter??
+	 * 
 	 * @param path
 	 * @param extensionFilter
 	 */
@@ -183,6 +186,39 @@ public class FileUtils {
 		final File[] files = path.listFiles((FileFilter) new FilesOnlyFilter(extensionFilter,
 				Visibility.VISIBLE));
 		return ArrayUtils.convertArrayToList(files);
+	}
+
+	/**
+	 * @param path
+	 * @param extensionFilter
+	 * @return a List of Files (guaranteed to be files, because if it's a dir, it will drill down)
+	 */
+	public static List<File> listVisibleFilesRecursively(File path, String[] extensionFilter) {
+
+		FileFilter filter = (FileFilter) new FileExcludeHiddenFilter(extensionFilter);
+
+		ArrayList<File> files = new ArrayList<File>();
+		ArrayList<File> dirsToProcess = new ArrayList<File>();
+
+		dirsToProcess.add(path);
+
+		while (dirsToProcess.size() != 0) {
+			File thisPath = dirsToProcess.remove(0);
+
+			// list it, and add all files to the files arraylist
+			// add all directories to dirsToProcess
+			File[] theseFiles = thisPath.listFiles(filter);
+			if (theseFiles != null) {
+				for (File f : theseFiles) {
+					if (f.isDirectory()) {
+						dirsToProcess.add(f);
+					} else {
+						files.add(f);
+					}
+				}
+			}
+		}
+		return files;
 	}
 
 	/**
