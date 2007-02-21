@@ -21,9 +21,9 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * When you ask the PaperToolkit to run a paper Application, there will be exactly one EventEngine handling
- * all pen events for that Application. This EventEngine will process batched pen data, and also handle
- * streaming data. We will tackle streaming first.
+ * When you ask the PaperToolkit to run a paper Application, there will be exactly one EventEngine
+ * handling all pen events for that Application. This EventEngine will process batched pen data, and
+ * also handle streaming data. We will tackle streaming first.
  * </p>
  * <p>
  * 
@@ -46,8 +46,8 @@ public class EventEngine {
 	private PercentageCoordinates lastKnownLocation;
 
 	/**
-	 * Used by penUp to notify content filters. This is because a pen up event has no coordinates, so we
-	 * cannot figure out what region it belongs to.
+	 * Used by penUp to notify content filters. This is because a pen up event has no coordinates,
+	 * so we cannot figure out what region it belongs to.
 	 */
 	private List<ContentFilter> mostRecentContentFilters = new ArrayList<ContentFilter>();
 
@@ -57,15 +57,15 @@ public class EventEngine {
 	private List<EventHandler> mostRecentEventHandlers = new ArrayList<EventHandler>();
 
 	/**
-	 * Lets us figure out which sheets and regions should handle which events. Interacting with this list
-	 * should be as efficient as possible, because many "events" may be thrown per second!
+	 * Lets us figure out which sheets and regions should handle which events. Interacting with this
+	 * list should be as efficient as possible, because many "events" may be thrown per second!
 	 */
 	private List<PatternLocationToSheetLocationMapping> patternToSheetMaps = Collections
 			.synchronizedList(new ArrayList<PatternLocationToSheetLocationMapping>());
 
 	/**
-	 * Keeps track of how many times a pen has been registered. If during an unregister, this count drops to
-	 * zero, we remove the pen altogether.
+	 * Keeps track of how many times a pen has been registered. If during an unregister, this count
+	 * drops to zero, we remove the pen altogether.
 	 */
 	private Map<Pen, Integer> penRegistrationCount = new HashMap<Pen, Integer>();
 
@@ -85,8 +85,9 @@ public class EventEngine {
 	private EventReplayManager replayManager;
 
 	/**
-	 * This object handles event dispatch by hooking up pen listeners to local and remote pen servers. It will
-	 * figure out where to dispatch incoming pen samples... and will activate the correct event handlers.
+	 * This object handles event dispatch by hooking up pen listeners to local and remote pen
+	 * servers. It will figure out where to dispatch incoming pen samples... and will activate the
+	 * correct event handlers.
 	 */
 	public EventEngine() {
 		replayManager = new EventReplayManager(this);
@@ -142,8 +143,9 @@ public class EventEngine {
 
 	/**
 	 * @param pen
-	 * @return a pen listener that will report data to this event engine. The engine will then package the
-	 *         data and report it to all event handlers (read: interactors) that are interested in this data.
+	 * @return a pen listener that will report data to this event engine. The engine will then
+	 *         package the data and report it to all event handlers (read: interactors) that are
+	 *         interested in this data.
 	 */
 	private PenListener getNewPenListener(final Pen pen) {
 		pensCurrentlyMonitoring.add(pen);
@@ -168,8 +170,8 @@ public class EventEngine {
 			}
 
 			/**
-			 * A penup sample has 0,0 coordinates, so we need to tell the LAST region handlers to handle the
-			 * penUp.
+			 * A penup sample has 0,0 coordinates, so we need to tell the LAST region handlers to
+			 * handle the penUp.
 			 * 
 			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penUp(edu.stanford.hci.r3.pen.PenSample)
 			 */
@@ -196,9 +198,9 @@ public class EventEngine {
 	}
 
 	/**
-	 * All pen events go through here. We dispatch it to the right handlers in this method. Will this have a
-	 * ConcurrentModification problem, because we are iterating through the actual patternToSheetMaps list
-	 * that can be updated at runtime?
+	 * All pen events go through here. We dispatch it to the right handlers in this method. Will
+	 * this have a ConcurrentModification problem, because we are iterating through the actual
+	 * patternToSheetMaps list that can be updated at runtime?
 	 * 
 	 * <p>
 	 * TODO: Should this be multithreaded, for performance reasons?
@@ -261,8 +263,7 @@ public class EventEngine {
 				} // check the next event handler
 
 				// also, send this event to all the filters, if the event is not yet consumed by one
-				// of
-				// the above handlers
+				// of the above handlers
 				final List<ContentFilter> eventFilters = region.getEventFilters();
 				for (ContentFilter ef : eventFilters) {
 					ef.filterEvent(penEvent);
@@ -299,13 +300,14 @@ public class EventEngine {
 		} else {
 			penRegistrationCount.put(pen, count + 1);
 		}
-		DebugUtils.println("We have registered " + penRegistrationCount.get(pen) + " pens in total.");
+		DebugUtils.println("We have registered " + penRegistrationCount.get(pen)
+				+ " pens in total.");
 	}
 
 	/**
-	 * If you register a pen multiple times, a different pen listener will be attached to the pen. Only ONE
-	 * EventEngine listener will be attached to a pen at one time. Otherwise, multiple events would get fired
-	 * by the same pen.
+	 * If you register a pen multiple times, a different pen listener will be attached to the pen.
+	 * Only ONE EventEngine listener will be attached to a pen at one time. Otherwise, multiple
+	 * events would get fired by the same pen.
 	 * 
 	 * @param pen
 	 */
@@ -366,7 +368,8 @@ public class EventEngine {
 	/**
 	 * @param patternMap
 	 */
-	public void unregisterPatternMapForEventHandling(PatternLocationToSheetLocationMapping patternMap) {
+	public void unregisterPatternMapForEventHandling(
+			PatternLocationToSheetLocationMapping patternMap) {
 		patternToSheetMaps.remove(patternMap);
 	}
 
