@@ -18,17 +18,23 @@ import edu.stanford.hci.r3.util.graphics.ImageUtils;
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a>
+ *         (ronyeh(AT)cs.stanford.edu)
  */
 public class PDFToThumbnails {
 
 	public static void main(String[] args) {
 
+		// File theFile = new File("data/TestFiles/ButterflyNetCHI2006.pdf");
+		File theFile = new File("data/TestFiles/PDFs/isese2004-Kimetal.pdf");
+
 		final PdfDecoder decoder = new PdfDecoder(true);
-		final double dpi = 72;
-		decoder.setExtractionMode(0, 72 /* Image DPI */, (float) (dpi / 72) /* Scaling */);
+		final double dpi = 150;
+		
+		decoder
+				.setExtractionMode(0, 72 /* Image DPI */, (float) (dpi / 72) /* Scaling */);
 		try {
-			decoder.openPdfFile(new File("data/TestFiles/ButterflyNetCHI2006.pdf").getAbsolutePath());
+			decoder.openPdfFile(theFile.getAbsolutePath());
 		} catch (PdfException e) {
 			e.printStackTrace();
 		}
@@ -41,12 +47,15 @@ public class PDFToThumbnails {
 		for (int page = start; page < end + 1; page++) { // read pages
 			try {
 				BufferedImage pageThumbnail = decoder.getPageAsImage(page);
-				ImageUtils.writeImageToJPEG(pageThumbnail, new File("data/TestFiles/Page" + page + ".jpeg"));
+				ImageUtils.writeImageToJPEG(pageThumbnail, new File(
+						"data/TestFiles/Page" + page + ".jpeg"));
 				decoder.flushObjectValues(true);
 			} catch (PdfException e) {
-				DebugUtils.println("Skipping page " + page + " due to " + e.getLocalizedMessage());
+				DebugUtils.println("Skipping page " + page + " due to "
+						+ e.getLocalizedMessage());
 			} catch (Exception e) {
-				DebugUtils.println("Skipping page " + page + " due to " + e.getLocalizedMessage());
+				DebugUtils.println("Skipping page " + page + " due to "
+						+ e.getLocalizedMessage());
 			}
 		}
 		decoder.closePdfFile();
