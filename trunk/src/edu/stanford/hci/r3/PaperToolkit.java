@@ -1,10 +1,15 @@
 package edu.stanford.hci.r3;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
@@ -73,13 +78,15 @@ import edu.stanford.hci.r3.util.StringUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.components.EndlessProgressDialog;
 import edu.stanford.hci.r3.util.files.FileUtils;
+import edu.stanford.hci.r3.util.graphics.ImageCache;
 import edu.stanford.hci.r3.util.layout.StackedLayout;
 
 /**
  * <p>
- * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the system. A
- * PaperToolkit can run one or more Applications at the same time. You can also deactivate applications (to
- * pause them). Or, you can remove them altogether. (These features are not yet fully implemented.)
+ * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the
+ * system. A PaperToolkit can run one or more Applications at the same time. You can also deactivate
+ * applications (to pause them). Or, you can remove them altogether. (These features are not yet
+ * fully implemented.)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -179,11 +186,11 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently, this does
-	 * NOT work as a packaged jar.
+	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently,
+	 * this does NOT work as a packaged jar.
 	 * 
-	 * @return the root path to the toolkit (or some other canonical path where we can expect to find certain
-	 *         resources, like the HandwritingRecognition Server)
+	 * @return the root path to the toolkit (or some other canonical path where we can expect to
+	 *         find certain resources, like the HandwritingRecognition Server)
 	 */
 	public static File getToolkitRootPath() {
 		File file = null;
@@ -216,7 +223,8 @@ public class PaperToolkit {
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
 			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
-			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
+			xmlEngine.alias("TiledPatternCoordinateConverter",
+					TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 			xmlEngine.alias("PenEvent", PenEvent.class);
 
@@ -225,9 +233,9 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external class. If you
-	 * use the default PaperToolkit() constructor, it will also use the custom look and feel. All PaperToolkit
-	 * utility classes will also use this look and feel.
+	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external
+	 * class. If you use the default PaperToolkit() constructor, it will also use the custom look
+	 * and feel. All PaperToolkit utility classes will also use this look and feel.
 	 */
 	public static void initializeLookAndFeel() {
 		if (!lookAndFeelInitialized) {
@@ -274,7 +282,8 @@ public class PaperToolkit {
 	private static void printInitializationMessages() {
 		final String dashes = StringUtils.repeat("-", versionString.length());
 		System.out.println("-----------------------------------------------------------" + dashes);
-		System.out.println("Reduce/Reuse/Recycle: A Paper Applications Toolkit ver. " + versionString);
+		System.out.println("Reduce/Reuse/Recycle: A Paper Applications Toolkit ver. "
+				+ versionString);
 		System.out.println("-----------------------------------------------------------" + dashes);
 	}
 
@@ -377,8 +386,8 @@ public class PaperToolkit {
 	private JButton eventBrowserButton;
 
 	/**
-	 * The engine that processes all pen events, producing the correct outputs and calling the right event
-	 * handlers.
+	 * The engine that processes all pen events, producing the correct outputs and calling the right
+	 * event handlers.
 	 */
 	private EventEngine eventEngine;
 
@@ -427,9 +436,11 @@ public class PaperToolkit {
 	 */
 	private JButton stopAppButton;
 
+	private TrayIcon trayIcon;
+
 	/**
-	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false. True is
-	 * useful for debugging and stopping apps that don't have a GUI.
+	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false.
+	 * True is useful for debugging and stopping apps that don't have a GUI.
 	 */
 	private boolean useAppManager = false;
 
@@ -438,10 +449,13 @@ public class PaperToolkit {
 	 */
 	private boolean useHandwriting;
 
+	private PopupMenu popupMenu;
+
 	/**
-	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
-	 * (and between applications, ideally). There will be one event engine in the paper toolkit, and all
-	 * events that applications generate will be fed through this single event engine.
+	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
+	 * accordingly (and between applications, ideally). There will be one event engine in the paper
+	 * toolkit, and all events that applications generate will be fed through this single event
+	 * engine.
 	 */
 	public PaperToolkit() {
 		this(false);
@@ -457,7 +471,8 @@ public class PaperToolkit {
 	/**
 	 * @param useAppManager
 	 */
-	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager, boolean useHandwritingRecognitionServer) {
+	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager,
+			boolean useHandwritingRecognitionServer) {
 		loadStartupConfiguration();
 
 		if (useLookAndFeel) {
@@ -517,7 +532,8 @@ public class PaperToolkit {
 			appManager.add(getControls(), BorderLayout.EAST);
 
 			appManager.setSize(640, 480);
-			appManager.setLocation(WindowUtils.getWindowOrigin(appManager, WindowUtils.DESKTOP_CENTER));
+			appManager.setLocation(WindowUtils.getWindowOrigin(appManager,
+					WindowUtils.DESKTOP_CENTER));
 			appManager.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			appManager.setVisible(true);
 		}
@@ -571,8 +587,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return button for accessing the EventReplayManager's GUI, which allows us to load up and replay
-	 *         eventData files.
+	 * @return button for accessing the EventReplayManager's GUI, which allows us to load up and
+	 *         replay eventData files.
 	 */
 	private Component getEventBrowserButton() {
 		if (eventBrowserButton == null) {
@@ -620,6 +636,20 @@ public class PaperToolkit {
 		return exitAppManagerButton;
 	}
 
+	private ActionListener getExitListener() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				System.out.println("Exiting the Paper Toolkit...");
+				if (trayIcon != null) {
+					TrayIcon iconToRemove = trayIcon;
+					trayIcon = null;
+					SystemTray.getSystemTray().remove(iconToRemove);
+				}
+				System.exit(0);
+			}
+		};
+	}
+
 	/**
 	 * @return where to save our Sheet PDFs. NULL if the user cancels.
 	 */
@@ -649,7 +679,8 @@ public class PaperToolkit {
 				}
 			});
 
-			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0, -1) {
+			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0,
+					-1) {
 				@Override
 				protected boolean test(ComponentAdapter c) {
 					if (c.getValue() instanceof Application) {
@@ -673,8 +704,8 @@ public class PaperToolkit {
 							appDescription = appDescription + " [stopped]";
 						}
 					}
-					return super.getListCellRendererComponent(list, appDescription, index, isSelected,
-							cellHasFocus);
+					return super.getListCellRendererComponent(list, appDescription, index,
+							isSelected, cellHasFocus);
 				}
 			});
 			listOfApps.setBorder(BorderFactory.createEmptyBorder(20, 5, 20, 5));
@@ -709,6 +740,31 @@ public class PaperToolkit {
 			}
 		};
 		return model;
+	}
+
+	private PopupMenu getPopupMenu() {
+		if (popupMenu == null) {
+			popupMenu = new PopupMenu("Paper Toolkit Options");
+
+			// exit the application
+			final MenuItem exitItem = new MenuItem("Exit");
+			exitItem.addActionListener(getExitListener());
+
+			popupMenu.add(exitItem);
+			popupMenu.add(new MenuItem("-")); // separator
+		}
+
+		return popupMenu;
+	}
+
+	private ActionListener getDebugListener(final Application app) {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				DebugUtils.println("Starting Debugging...");
+				new DebuggingEnvironment(app);
+			}
+		};
 	}
 
 	/**
@@ -774,6 +830,31 @@ public class PaperToolkit {
 		return stopAppButton;
 	}
 
+	private void getSystemTrayIcon() {
+		if (trayIcon == null) {
+			// this is the icon that sits in our tray...
+			trayIcon = new TrayIcon(ImageCache.loadBufferedImage(PaperToolkit.class
+					.getResource("/icons/glue.png")), "Paper Toolkit", getPopupMenu());
+			trayIcon.setImageAutoSize(true);
+			try {
+				if (SystemTray.isSupported()) {
+					SystemTray.getSystemTray().add(trayIcon);
+
+					Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+						@Override
+						public void run() {
+							if (trayIcon != null) {
+								SystemTray.getSystemTray().remove(trayIcon);
+							}
+						}
+					}));
+				}
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * Adds an application to the loaded list, and displays the application manager.
 	 * 
@@ -787,10 +868,16 @@ public class PaperToolkit {
 			getApplicationManager();
 			updateListOfApps();
 		} else {
-			DebugUtils
-					.println("Not using the Application Manager. "
-							+ "If you would like to use the GUI launcher, "
-							+ "call PaperToolkit.useAppManager(true)");
+			DebugUtils.println("Not using the Application Manager. "
+					+ "If you would like to use the GUI launcher, "
+					+ "call PaperToolkit.useAppManager(true)");
+			DebugUtils.println("We will use the System Tray icon instead.");
+			getSystemTrayIcon();
+
+			final MenuItem debugItem = new MenuItem("Debug [" + app.getName() + "]");
+			debugItem.addActionListener(getDebugListener(app));
+
+			getPopupMenu().add(debugItem); // separator
 		}
 	}
 
@@ -803,7 +890,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default printer.
+	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
+	 * printer.
 	 * 
 	 * @param sheet
 	 */
@@ -842,19 +930,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @param paperApp
-	 */
-	public void debugApplication(Application paperApp) {
-		DebugUtils.println("Starting Debugging...");
-		new DebuggingEnvironment(paperApp);
-		
-		// load the application too!
-		loadApplication(paperApp);
-	}
-	
-	/**
-	 * Start this application and register all live pens with the event engine. The event engine will then
-	 * start dispatching events for this application until the application is stopped.
+	 * Start this application and register all live pens with the event engine. The event engine
+	 * will then start dispatching events for this application until the application is stopped.
 	 * 
 	 * @param paperApp
 	 */
@@ -891,7 +968,8 @@ public class PaperToolkit {
 
 		// XXX
 		// Here, we should pass the event engine over...
-		// When the Batch Server gets in the data, it will translate it to streaming event coordinates
+		// When the Batch Server gets in the data, it will translate it to streaming event
+		// coordinates
 		// And then pass it to the Event Engine
 		// It will essentially "replay" the events as if it were through event save/replay
 
