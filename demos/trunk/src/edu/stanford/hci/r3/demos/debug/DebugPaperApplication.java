@@ -58,11 +58,11 @@ public class DebugPaperApplication {
 		sheet.addRegion(r);
 		sheet.addRegion(buttonRegion);
 
-		Application app = new Application("Debugging");
+		Application app = new Application("A Simple Debug Application");
 		app.addPen(new Pen("Single Pen"));
 		app.addSheet(sheet); // no pattern info xml file loaded...
 
 		PaperToolkit p = new PaperToolkit(true, false, false);
-		p.debugApplication(app);
+		p.loadApplication(app);
 	}
 }
