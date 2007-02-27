@@ -96,12 +96,15 @@ public class PenStreamingConnection implements SerialPortEventListener {
 				if (portID.getName().equals(port)) {
 					System.out.println(port + "}");
 					instance = new PenStreamingConnection();
+					System.out.flush();
 					return instance;
 				}
 			}
 		}
 		System.out.println("}");
 		System.out.println("Port " + port + " not found.");
+		System.out.flush();
+		System.err.println("Is JavaCOMM not installed?");
 		return null;
 	}
 
