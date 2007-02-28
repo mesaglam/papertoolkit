@@ -11,7 +11,7 @@ using Anoto.Service;
 using Anoto.Common;
 
 ///
-/// This Pen Monitor is called by Anoto Pen Drivers. It will invoke ButterflyNet, passing the request file along.
+/// This Pen Monitor is called by Anoto Pen Drivers. It will invoke ButterflyNet/R3, passing the request file along.
 /// BNet performs the actual pen synch import.
 ///
 namespace PenMonitor {
@@ -49,6 +49,7 @@ namespace PenMonitor {
             // display it in a message box
             form = new MessageForm();
             form.Show();
+            form.WindowState = System.Windows.Forms.FormWindowState.Minimized;
 
             // find the requests path from the windows registry
             // [HKEY_LOCAL_MACHINE\SOFTWARE\Classes\BNetPenMonitor]:"PenRequestsDir"
