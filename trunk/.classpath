@@ -32,7 +32,7 @@
 	<classpathentry kind="lib" path="lib/freetts/jsapi.jar"/>
 	<classpathentry kind="lib" path="lib/colt/colt.jar"/>
 	<classpathentry kind="lib" path="lib/colt/concurrent.jar"/>
-	<classpathentry kind="lib" path="lib/piccolo/piccolo.jar"/>
+	<classpathentry kind="lib" path="lib/piccolo/piccolo.jar" sourcepath="C:/Documents and Settings/Ron Yeh/My Documents/Projects/piccolo-1.2/src"/>
 	<classpathentry kind="lib" path="lib/piccolo/piccolox.jar"/>
 	<classpathentry kind="lib" path="lib/forms-1.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/prefuse.jar"/>

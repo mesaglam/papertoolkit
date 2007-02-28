@@ -42,7 +42,7 @@ public class DebugFrame extends JFrame {
 		setLayout(new BorderLayout());
 		
 		canvas = new DebugPCanvas();
-		add(canvas);
+		add(canvas, BorderLayout.CENTER);
 	}
 	
 	public DebugPCanvas getCanvas() {
