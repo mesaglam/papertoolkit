@@ -69,9 +69,9 @@ public class Sketch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Sketch(MODE_DESIGN_PDF);
+//		new Sketch(MODE_DESIGN_PDF);
 		// new Sketch(MODE_RENDER_PDF);
-		// new Sketch(MODE_RUN_APP);
+		 new Sketch(MODE_RUN_APP);
 	}
 
 	private JPanel colorPanel;
