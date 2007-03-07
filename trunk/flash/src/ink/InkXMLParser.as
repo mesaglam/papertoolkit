@@ -44,7 +44,7 @@ package ink {
 				var inkStroke:InkStroke = new InkStroke(stroke.@begin, stroke.@end);				
 				for each (var point:XML in points) {
 					//trace(point.@x + " " + point.@y);
-					inkStroke.addPoint(point.@x, point.@y);
+					inkStroke.addPoint(point.@x, point.@y, point.@f);
 				}
 				inkWell.addStroke(inkStroke);
 			}			
