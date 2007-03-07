@@ -17,7 +17,7 @@ package ink {
 
 		private var g:Graphics = graphics;
 
-		private var strokeWidth:Number = 1;
+		private var strokeWidth:Number = 1.5;
 
 		public function InkStroke(beginTS:String, endTS:String):void {			
 			trace(beginTS + " to " + endTS);
@@ -25,9 +25,24 @@ package ink {
 		}
 
 		
-		public function addPoint(xVal:Number, yVal:Number):void {
-			g.lineStyle(strokeWidth, 0xAAAAAA, .95);
-			strokeWidth += 0.1;
+		public function addPoint(xVal:Number, yVal:Number, f:Number):void {
+			// assume f is 0 to 128
+			// later: cap it to 0 to 128
+			
+			// vary opacity and width based on the force
+			// from about 70 to 100, treat the width the same, but vary opacity
+			// from about 0 to 70, vary width
+			// from about 100 to 128, vary width
+			
+			var modifiedStrokeWidth:Number = strokeWidth;
+			var delta:Number = 70 - f;
+			modifiedStrokeWidth -= delta * 0.01;
+			
+			
+			var modifiedAlpha:Number = .95;
+			modifiedAlpha -= delta * .01;
+			
+			g.lineStyle(modifiedStrokeWidth, 0xCCCCCC, modifiedAlpha);
 			if (xSamples.length == 0) {
 				g.moveTo(xVal, yVal);				
 			}
