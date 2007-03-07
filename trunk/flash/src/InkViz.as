@@ -12,6 +12,8 @@ package {
 
 		public function InkViz() {			
 
+
+
 			trace("InkViz Constructor");
 			trace(path);
 			

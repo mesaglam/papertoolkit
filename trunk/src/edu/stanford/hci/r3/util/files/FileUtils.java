@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,6 +56,125 @@ public class FileUtils {
 	 * one that we keep around, for reuse
 	 */
 	private static JFileChooser fileChooser;
+
+	public static void copy(File srcFileOrDir, File targetFileOrDir) {
+		try {
+			copy(srcFileOrDir, targetFileOrDir, false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * A flexible copy function. It will do slightly different things depending on what is passed
+	 * into the parameters. It can copy a file to another file, into a directory, or a directory
+	 * into another directory.
+	 * 
+	 * @param sourceFileOrDir
+	 * @param targetFileOrDir
+	 * @param b
+	 * @throws IOException
+	 */
+	public static void copy(File sourceFileOrDir, File targetFileOrDir, boolean visibleFilesOnly)
+			throws IOException {
+		// directories can be copied over a target directory
+		if (sourceFileOrDir.isDirectory()) {
+			if (!targetFileOrDir.exists()) {
+				targetFileOrDir.mkdirs();
+			}
+
+			if (!targetFileOrDir.isDirectory()) {
+				System.err.println("Error: Trying to copy a directory into a file.");
+			} else {
+				copyDirectory(sourceFileOrDir, targetFileOrDir, visibleFilesOnly);
+			}
+		}
+		// files can be copied over a target file (or into a directory)
+		else {
+			if (targetFileOrDir.isDirectory()) {
+				targetFileOrDir = new File(targetFileOrDir, sourceFileOrDir.getName());
+			}
+			copyFile(sourceFileOrDir, targetFileOrDir, visibleFilesOnly);
+		}
+	}
+
+	/**
+	 * Copies all files from one directory to another.
+	 * 
+	 * @param destDir
+	 * @param srcDir
+	 * @param visibleFilesOnly
+	 * @throws IOException
+	 */
+	private static void copyDirectory(File srcDir, File destDir, boolean visibleFilesOnly)
+			throws IOException {
+		if (visibleFilesOnly && (isHiddenOrDotFile(srcDir))) {
+			// this source directory does not fit the flag, because it is hidden
+			return;
+		}
+
+		// System.out.println("Copying from: " + srcDir.getCanonicalPath() + " to "
+		// + destDir.getCanonicalPath());
+		final File[] srcItems = srcDir.listFiles();
+		for (int i = 0; i < srcItems.length; i++) {
+			final File srcFile = srcItems[i];
+			// if we want only visible files, but this file is hidden...
+			if (visibleFilesOnly && isHiddenOrDotFile(srcFile)) {
+				continue;
+			}
+
+			// create the dest
+			final File dest = new File(destDir, srcFile.getName());
+			if (srcFile.isDirectory()) {
+				dest.mkdir();
+				copyDirectory(srcFile, dest, visibleFilesOnly);
+			} else {
+				copyFile(srcFile, dest, visibleFilesOnly);
+			}
+		}
+	}
+
+	/**
+	 * Copy a file from source to dest.
+	 * 
+	 * @param source
+	 * @param dest
+	 * @param visibleFilesOnly
+	 * @throws IOException
+	 */
+	private static void copyFile(File source, File dest, boolean visibleFilesOnly)
+			throws IOException {
+		if (visibleFilesOnly && isHiddenOrDotFile(source)) {
+			// this source file does not fit the flag
+			return;
+		}
+
+		if (dest.exists()) {
+			System.err.println("Destination File Already Exists: " + dest);
+		}
+		
+		FileChannel in = null, out = null;
+		try {
+			in = new FileInputStream(source).getChannel();
+			out = new FileOutputStream(dest).getChannel();
+			in.transferTo(0, in.size(), out);
+
+			// an alternate way...
+			// long size = in.size();
+			// final MappedByteBuffer buf = in.map(FileChannel.MapMode.READ_ONLY, 0, size);
+			// out.write(buf);
+
+		} finally {
+			if (in != null) {
+				in.close();
+				// System.out.println("Closed In");
+			}
+			if (out != null) {
+				out.close();
+				// System.out.println("Closed Out");
+			}
+		}
+	}
 
 	/**
 	 * @param extensions
@@ -145,17 +265,6 @@ public class FileUtils {
 	}
 
 	/**
-	 * Works with positive numbers... and has a corner case where value=0 and numDigits=1 will fail.
-	 * 
-	 * @param value
-	 * @param numDigits
-	 * @return
-	 */
-	private static String padToTwoDigitsWithZeroes(int value) {
-		return (value < 10) ? "0" + value : "" + value;
-	}
-
-	/**
 	 * @param possiblyHiddenFile
 	 * @return if the file is hidden (either hidden flag, or name starts with a dot)
 	 */
@@ -219,6 +328,17 @@ public class FileUtils {
 			}
 		}
 		return files;
+	}
+
+	/**
+	 * Works with positive numbers... and has a corner case where value=0 and numDigits=1 will fail.
+	 * 
+	 * @param value
+	 * @param numDigits
+	 * @return
+	 */
+	private static String padToTwoDigitsWithZeroes(int value) {
+		return (value < 10) ? "0" + value : "" + value;
 	}
 
 	/**
