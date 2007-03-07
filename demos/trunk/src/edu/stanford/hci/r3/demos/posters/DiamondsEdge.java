@@ -4,6 +4,7 @@ import java.io.File;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.filters.InkCollector;
@@ -71,7 +72,7 @@ public class DiamondsEdge extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("HCIWebsiteArea");
-				doOpenURL("http://hci.stanford.edu/");
+				Device.doOpenURL("http://hci.stanford.edu/");
 			}
 		});
 
@@ -81,8 +82,8 @@ public class DiamondsEdge extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("WebsiteArea");
-				doOpenURL("http://hci.stanford.edu/");
-				doSpeakText(INTRO_TEXT_TO_READ);
+				Device.doOpenURL("http://hci.stanford.edu/");
+				Device.doSpeakText(INTRO_TEXT_TO_READ);
 			}
 		});
 
@@ -95,7 +96,7 @@ public class DiamondsEdge extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("EmailArea");
-				doOpenURL("https://mail.google.com/mail/?view=cm&tf=0&fs=1&to=mbernst@stanford.edu%20avir@stanford.edu");
+				Device.doOpenURL("https://mail.google.com/mail/?view=cm&tf=0&fs=1&to=mbernst@stanford.edu%20avir@stanford.edu");
 			}
 		});
 
@@ -104,7 +105,7 @@ public class DiamondsEdge extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("VideoArea");
-				doOpenFile(new File("data/Posters/DiamondsEdge.mov"));
+				Device.doOpenFile(new File("data/Posters/DiamondsEdge.mov"));
 			}
 		});
 	}

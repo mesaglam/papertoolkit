@@ -13,6 +13,7 @@ import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.demos.flickrphotos.FlickrPhoto;
 import edu.stanford.hci.r3.demos.flickrphotos.PhotoDownloadr;
+import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -246,9 +247,9 @@ public class Twistr {
 			numTurns = 0;
 		}
 		if (numTurns == 1) {
-			Application.doPlaySound(new File("data/Flickr/Twistr/audio/For100points.wav"));
+			Device.doPlaySound(new File("data/Flickr/Twistr/audio/For100points.wav"));
 		} else if (numTurns == MAX_NUM_TURNS - 1) {
-			Application.doPlaySound(new File("data/Flickr/Twistr/audio/LetsGo.wav"));
+			Device.doPlaySound(new File("data/Flickr/Twistr/audio/LetsGo.wav"));
 		}
 		return numTurns;
 	}
@@ -268,7 +269,7 @@ public class Twistr {
 
 		String name = p1Sounds[(int) (Math.random() * p1Sounds.length)];
 		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
-		Application.doPlaySound(soundFile);
+		Device.doPlaySound(soundFile);
 
 		display.nextTurn();
 	}
@@ -278,7 +279,7 @@ public class Twistr {
 
 		String name = p2Sounds[(int) (Math.random() * p2Sounds.length)];
 		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
-		Application.doPlaySound(soundFile);
+		Device.doPlaySound(soundFile);
 
 		display.nextTurn();
 	}
@@ -292,7 +293,7 @@ public class Twistr {
 
 		String name = p1Sounds[(int) (Math.random() * p1Sounds.length)];
 		File soundFile = new File("data/Flickr/Twistr/audio/" + name);
-		Application.doPlaySound(soundFile);
+		Device.doPlaySound(soundFile);
 
 		display.nextTurn();
 	}

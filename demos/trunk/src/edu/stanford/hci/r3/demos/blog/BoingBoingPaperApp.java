@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
@@ -126,7 +127,7 @@ public class BoingBoingPaperApp extends Application {
 			final String title = entries[i].title;
 			sheet.getRegion("Link" + i).addEventHandler(new ClickAdapter() {
 				public void pressed(PenEvent e) {
-					Application.doOpenURL(link);
+					Device.doOpenURL(link);
 					DebugUtils.println("Clicked on link for story \"" + title + "\", opening URL: " + link);
 				}
 			});

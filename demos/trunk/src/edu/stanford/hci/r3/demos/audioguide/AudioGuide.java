@@ -4,6 +4,7 @@ import java.io.File;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
@@ -102,7 +103,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Church Photos.");
-				doPlaySound(new File("data/AudioGuide/audio/MemorialChurch.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/MemorialChurch.wav"));
 			}
 		});
 	}
@@ -115,7 +116,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Gates Building.");
-				doPlaySound(new File("data/AudioGuide/audio/Gates.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/Gates.wav"));
 			}
 		});
 	}
@@ -125,7 +126,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Generic Photos.");
-				doPlaySound(new File("data/AudioGuide/audio/SEQ.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/SEQ.wav"));
 			}
 		});
 	}
@@ -135,7 +136,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Geology.");
-				doPlaySound(new File("data/AudioGuide/audio/GeologyCorner.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/GeologyCorner.wav"));
 			}
 		});
 	}
@@ -145,7 +146,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on Gilbert and Herrin.");
-				doPlaySound(new File("data/AudioGuide/audio/Bio1.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/Bio1.wav"));
 				// doPlaySound(new File("data/AudioGuide/audio/Bio2.wav"));
 			}
 		});
@@ -156,7 +157,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the GSB.");
-				doPlaySound(new File("data/AudioGuide/audio/GSB.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/GSB.wav"));
 			}
 		});
 	}
@@ -166,7 +167,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the History.");
-				doPlaySound(new File("data/AudioGuide/audio/History.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/History.wav"));
 			}
 		});
 	}
@@ -176,7 +177,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Language.");
-				doPlaySound(new File("data/AudioGuide/audio/LanguageCorner.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/LanguageCorner.wav"));
 			}
 		});
 	}
@@ -186,7 +187,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Math.");
-				doPlaySound(new File("data/AudioGuide/audio/MathCorner.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/MathCorner.wav"));
 			}
 		});
 	}
@@ -196,7 +197,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Oval.");
-				doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
 			}
 		});
 	}
@@ -206,7 +207,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on The Oval Photos.");
-				doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
 			}
 		});
 	}
@@ -216,7 +217,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Packard Photos.");
-				doPlaySound(new File("data/AudioGuide/audio/SEQ.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/SEQ.wav"));
 			}
 		});
 	}
@@ -226,7 +227,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Quad.");
-				doPlaySound(new File("data/AudioGuide/audio/MainQuad.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/MainQuad.wav"));
 			}
 		});
 	}
@@ -236,7 +237,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Tourists.");
-				doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
 			}
 		});
 	}
@@ -246,7 +247,7 @@ public class AudioGuide extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Tressider.");
-				doPlaySound(new File("data/AudioGuide/audio/Tressider.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/Tressider.wav"));
 			}
 		});
 	}
@@ -257,7 +258,7 @@ public class AudioGuide extends Application {
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Where Am I.");
 				System.out.println(e.getPercentageLocation());
-				doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
 			}
 		});
 	}
@@ -268,7 +269,7 @@ public class AudioGuide extends Application {
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the White Plaza.");
 				System.out.println(e.getPercentageLocation());
-				doPlaySound(new File("data/AudioGuide/audio/WhitePlaza1.wav"));
+				Device.doPlaySound(new File("data/AudioGuide/audio/WhitePlaza1.wav"));
 				// doPlaySound(new File("data/AudioGuide/audio/WhitePlaza2.wav"));
 			}
 		});
