@@ -129,6 +129,9 @@ public class InkPanel extends JPanel {
 		repaint();
 	}
 
+	/**
+	 * @param theScale
+	 */
 	public void setScale(double theScale) {
 		inkScale = theScale;
 	}
