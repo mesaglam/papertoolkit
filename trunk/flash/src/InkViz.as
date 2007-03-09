@@ -1,8 +1,6 @@
 package {		
-	
 	import ink.Ink;
 	import ink.InkXMLParser;
-	
 
 	import flash.display.Sprite;
 	import flash.events.Event;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actionScriptProperties version="1" mainApplicationPath="R3Flash.mxml">
-  <compiler additionalCompilerArguments="-locale en_US" copyDependentFiles="true" generateAccessible="false" strict="true" warn="true" htmlGenerate="true" htmlPlayerVersionCheck="true" htmlPlayerVersion="9.0.0" htmlExpressInstall="true" htmlHistoryManagement="true" outputFolderPath="bin" sourceFolderPath="src">
+  <compiler additionalCompilerArguments="-locale en_US" copyDependentFiles="true" generateAccessible="false" strict="true" warn="true" htmlGenerate="true" htmlPlayerVersionCheck="true" htmlPlayerVersion="9.0.28" htmlExpressInstall="true" htmlHistoryManagement="true" outputFolderPath="bin" sourceFolderPath="src">
     <compilerSourcePath/>
     <libraryPath>
       <libraryPathEntry kind="3" path="${FRAMEWORKS}/libs/playerglobal.swc" linkType="2"/>
@@ -18,8 +18,10 @@
     </sourceAttachmentPath>
   </compiler>
   <applications>
+    <application path="InkOperationsAPIBrowser.mxml"/>
+    <application path="InkViz.as"/>
+    <application path="R3Flash.as"/>
     <application path="R3Flash.mxml"/>
-    <application path="R3FlashStartup.as"/>
   </applications>
   <buildCSSFiles/>
 </actionScriptProperties>
