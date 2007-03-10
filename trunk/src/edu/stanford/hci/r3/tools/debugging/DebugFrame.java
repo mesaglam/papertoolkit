@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.tools.development.debugging;
+package edu.stanford.hci.r3.tools.debugging;
 
 import java.awt.BorderLayout;
 
