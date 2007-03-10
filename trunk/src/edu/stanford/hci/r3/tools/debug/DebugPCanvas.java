@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.tools.debugging;
+package edu.stanford.hci.r3.tools.debug;
 
 import java.awt.Color;
 import java.awt.geom.Ellipse2D;
