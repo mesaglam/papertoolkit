@@ -66,7 +66,7 @@ import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchServer;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.streaming.PenServerTrayApp;
-import edu.stanford.hci.r3.tools.debugging.DebuggingEnvironment;
+import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
 import edu.stanford.hci.r3.tools.design.acrobat.AcrobatDesignerLauncher;
 import edu.stanford.hci.r3.tools.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.units.Centimeters;
