@@ -4,11 +4,11 @@ import java.io.File;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.development.CodeGenerator;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
+import edu.stanford.hci.r3.tools.develop.CodeGenerator;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
