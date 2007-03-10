@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.design.acrobat;
+package edu.stanford.hci.r3.tools.design.acrobat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -92,7 +92,7 @@ public class RegionConfigurationWriter extends DefaultHandler {
 	private class RegionHandler extends TagHandler {
 
 		/**
-		 * @see edu.stanford.hci.r3.design.acrobat.RegionConfigurationWriter.TagHandler#handleStart(java.lang.String,
+		 * @see edu.stanford.hci.r3.tools.design.acrobat.RegionConfigurationWriter.TagHandler#handleStart(java.lang.String,
 		 *      org.xml.sax.Attributes)
 		 */
 		public void handleStart(String qName, Attributes attributes) {

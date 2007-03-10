@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.design;
+package edu.stanford.hci.r3.tools.design;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -19,10 +19,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.design.gui.DocumentPanel;
-import edu.stanford.hci.r3.design.gui.toolbar.DebuggingTasks;
-import edu.stanford.hci.r3.design.gui.toolbar.DocumentTasks;
-import edu.stanford.hci.r3.design.gui.toolbar.UserTestTasks;
+import edu.stanford.hci.r3.tools.design.gui.DocumentPanel;
+import edu.stanford.hci.r3.tools.design.gui.toolbar.DebuggingTasks;
+import edu.stanford.hci.r3.tools.design.gui.toolbar.DocumentTasks;
+import edu.stanford.hci.r3.tools.design.gui.toolbar.UserTestTasks;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 import edu.stanford.hci.r3.util.components.ribbons.RibbonPanel;

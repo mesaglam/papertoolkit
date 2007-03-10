@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.development.debugging;
+package edu.stanford.hci.r3.tools.development.debugging;
 
 import edu.stanford.hci.r3.Application;
 

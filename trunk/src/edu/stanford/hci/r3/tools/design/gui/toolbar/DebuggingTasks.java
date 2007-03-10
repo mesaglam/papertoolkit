@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.design.gui.toolbar;
+package edu.stanford.hci.r3.tools.design.gui.toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,21 +15,27 @@ import edu.stanford.hci.r3.util.components.ribbons.RibbonPanel;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class UserTestTasks {
+public class DebuggingTasks {
 
-	private RibbonPanel recordDataPanel;
+	private RibbonPanel devicesPanel;
 
-	public List<RibbonPanel> getPanels() {
-		final List<RibbonPanel> panels = new ArrayList<RibbonPanel>();
-		panels.add(getRecordDataPanel());
-		return panels;
+	/**
+	 * @return
+	 */
+	private RibbonPanel getDevicesPanel() {
+		if (devicesPanel == null) {
+			devicesPanel = new RibbonPanel("Devices");
+		}
+		return devicesPanel;
 	}
 
-	private RibbonPanel getRecordDataPanel() {
-		if (recordDataPanel == null) {
-			recordDataPanel = new RibbonPanel("Record Data");
-		}
-		return recordDataPanel;
+	/**
+	 * @return
+	 */
+	public List<RibbonPanel> getPanels() {
+		final List<RibbonPanel> panels = new ArrayList<RibbonPanel>();
+		panels.add(getDevicesPanel());
+		return panels;
 	}
 
 }
