@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.design.gui.toolbar;
+package edu.stanford.hci.r3.tools.design.gui.toolbar;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;

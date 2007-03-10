@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.render.SheetRenderer;
+import edu.stanford.hci.r3.tools.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Size;
 import edu.stanford.hci.r3.units.Units;
@@ -357,7 +357,7 @@ public class Sheet {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Sheet { name: [" + name + "] size: [" + getWidth() + " × " + getHeight() + "] numRegions: ["
+		return "Sheet { name: [" + name + "] size: [" + getWidth() + " ï¿½ " + getHeight() + "] numRegions: ["
 				+ regions.size() + "]}";
 	}
 

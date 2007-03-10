@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.design.model;
+package edu.stanford.hci.r3.tools.design.model;
 
 /**
  * <p>

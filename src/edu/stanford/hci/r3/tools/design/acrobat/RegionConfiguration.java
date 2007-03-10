@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.design.acrobat;
+package edu.stanford.hci.r3.tools.design.acrobat;
 
 import java.util.ArrayList;
 import java.util.List;
