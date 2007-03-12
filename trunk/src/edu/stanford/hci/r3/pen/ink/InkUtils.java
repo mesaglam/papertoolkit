@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.pen.ink;
 
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.util.DebugUtils;
@@ -18,15 +20,39 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class InkUtils {
 
+	public static List<InkStroke> findAllStrokesContainedWithin(List<Ink> inkWell,
+			InkStroke container) {
 
-	public static InkStroke findStrokeWithLargestArea(List<Ink> inkWell) {
-		InkStroke biggestStroke = null;
-		double maxArea = Double.MIN_VALUE;
-		
+		// calculate the bounds of the container stroke
+		Rectangle2D bounds = container.getBounds();
+
+		// return any stroke that falls completely within these bounds
+		// do not include the original container!
+		List<InkStroke> matchingStrokes = new ArrayList<InkStroke>();
 		for (Ink ink : inkWell) {
 			List<InkStroke> strokes = ink.getStrokes();
 			for (InkStroke stroke : strokes) {
-				
+				if (bounds.contains(stroke.getBounds()) && !container.equals(stroke)) {
+					// the stroke is completely inside the containing stroke
+					matchingStrokes.add(stroke);
+				}
+			}
+		}
+		return matchingStrokes;
+	}
+
+	/**
+	 * @param inkWell
+	 * @return
+	 */
+	public static InkStroke findStrokeWithLargestArea(List<Ink> inkWell) {
+		InkStroke biggestStroke = null;
+		double maxArea = Double.MIN_VALUE;
+
+		for (Ink ink : inkWell) {
+			List<InkStroke> strokes = ink.getStrokes();
+			for (InkStroke stroke : strokes) {
+
 				double area = stroke.getArea();
 				if (area > maxArea) {
 					biggestStroke = stroke;
@@ -34,9 +60,9 @@ public class InkUtils {
 				}
 			}
 		}
-		
+
 		DebugUtils.println(biggestStroke);
 		return biggestStroke;
 	}
-	
+
 }

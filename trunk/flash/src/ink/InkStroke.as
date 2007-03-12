@@ -6,7 +6,10 @@ package ink {
 	import flash.events.MouseEvent;
 
 	public class InkStroke extends Sprite {
-	
+
+		private static var defaultColor:uint = 0xCFCFCF;
+		private static var highlightColor:uint = 0xFF99AA;
+
 		private var xSamples:Array = new Array();
 		private var ySamples:Array = new Array();
 		
@@ -18,13 +21,35 @@ package ink {
 		private var g:Graphics = graphics;
 
 		private var strokeWidth:Number = 1.5;
+		
+		private var color:uint = defaultColor;
+		
+		private var highlight:Boolean = false;
 
+		private var begin:Number;
+		private var end:Number;
+		
 		public function InkStroke(beginTS:String, endTS:String):void {			
 			//trace(beginTS + " to " + endTS);
+			begin = beginTS;
+			end = endTS;
 			buttonMode = true;
+		}		
+		
+		public function set highlighted(value):void {
+			highlight=value;
+			
+			if (highlight) {
+				color = highlightColor;
+			} else {
+				color = defaultColor;
+			}
 		}
 
-		
+		public function get beginTimestamp():Number {
+			return begin;
+		}
+
 		public function addPoint(xVal:Number, yVal:Number, f:Number):void {
 			// assume f is 0 to 128
 			// later: cap it to 0 to 128
@@ -42,7 +67,7 @@ package ink {
 			var modifiedAlpha:Number = .95;
 			modifiedAlpha -= delta * .01;
 			
-			g.lineStyle(modifiedStrokeWidth, 0xCCCCCC, modifiedAlpha);
+			g.lineStyle(modifiedStrokeWidth, color, modifiedAlpha);
 			if (xSamples.length == 0) {
 				g.moveTo(xVal, yVal);				
 			}

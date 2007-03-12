@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.pen.ink;
 
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -111,6 +112,10 @@ public class InkStroke {
 
 	public double getArea() {
 		return (maxX - minX) * (maxY - minY);
+	}
+
+	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(minX, minY, maxX-minX, maxY-minY);
 	}
 
 	/**
