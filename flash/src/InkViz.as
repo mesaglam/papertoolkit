@@ -1,6 +1,7 @@
 package {		
 	import ink.Ink;
 	import ink.InkXMLParser;
+	import ink.HighlightInkXMLParser;
 
 	import flash.display.Sprite;
 	import flash.display.LoaderInfo;
@@ -8,11 +9,15 @@ package {
 	
 	public class InkViz extends Sprite {
 		
+		// the actual file we will load
 		private var path:String;
 
+		// where to find the ink xml data files
 		private var pathParent:String = "../../penSynch/data/XML/";
-		//private var pathParent:String = "../data/";
 
+		// the list that specifies which strokes should be highlighted (through timestamps)
+		private var highlightedStrokes:HighlightInkXMLParser; 
+		
 		public function InkViz() {			
 			
 			//trace("InkViz Constructor");
@@ -36,14 +41,21 @@ package {
 			}
 
 			
-			if (path==null) {
-				trace("Path is null. Not loading any XML today!");
-				return;
-			}
 			
-			var inkXML:InkXMLParser = new InkXMLParser(path);
+			// avoid race conditions... by waiting for completion before moving on
+			highlightedStrokes= new HighlightInkXMLParser("../data/highlightTheseStrokes.xml", onComplete);			
+		}
+		
+		private function onComplete():void {
+			if (path==null) {
+				trace("Data path is null. Not loading any new XML today! We'll use old test data.");
+				path = pathParent + "2007_03_10__01_09_38_SketchedPaperUI.xml";
+			}
+			var inkXML:InkXMLParser = new InkXMLParser(path, highlightedStrokes);
 			this.addChild(inkXML.ink);
 		}
+		
+		
 		
 	}
 }

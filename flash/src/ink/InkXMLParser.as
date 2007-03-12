@@ -11,12 +11,13 @@ package ink {
 
 	public class InkXMLParser {
 	
-		private var inkWell:Ink = new Ink();;
+		private var inkWell:Ink = new Ink();
 		private var xmlPath:String;
+		private var highlightedStrokes:HighlightInkXMLParser;
 		
-		
-		public function InkXMLParser(path:String) {			
+		public function InkXMLParser(path:String, hStrokes:HighlightInkXMLParser) {			
 			xmlPath = path;
+			highlightedStrokes = hStrokes;
 			
 			// load some XML
 			var loader:URLLoader = new URLLoader();
@@ -29,6 +30,8 @@ package ink {
 			// var xml:XML = <foo>Baz</foo>;
 			// trace(xml.toXMLString());
 		}
+
+		
 		
 		private function loadXML(e:Event):void {
 			var xml:XML = new XML(e.target.data);
@@ -44,6 +47,11 @@ package ink {
 				//trace(points.toXMLString());
 
 				var inkStroke:InkStroke = new InkStroke(stroke.@begin, stroke.@end);				
+				if (highlightedStrokes.shouldHighlight(inkStroke)) {
+					trace("Highlighted!");
+					inkStroke.highlighted = true;
+				}
+				
 				for each (var point:XML in points) {
 					//trace(point.@x + " " + point.@y);
 					inkStroke.addPoint(point.@x, point.@y, point.@f);

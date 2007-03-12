@@ -29,7 +29,7 @@ package ink {
         }
 		
 		public function addStroke(stroke:InkStroke):void {
-			trace("Add Stroke");
+			//trace("Add Stroke");
 			strokes.push(stroke);			
 			addChild(stroke);
 			
