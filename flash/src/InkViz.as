@@ -6,9 +6,6 @@ package {
 	import flash.events.Event;
 	
 	public class InkViz extends Sprite {
-	
-		private var ink1:Ink = new Ink();
-		private var ink2:Ink = new Ink();
 		
 		private var path1:String = pathParent + "2007_02_28__00_26_54_SheetAndOneRegion.xml";
 		private var path2:String = pathParent + "2007_03_06__18_14_23_HelloHappyFaceB7.xml";
