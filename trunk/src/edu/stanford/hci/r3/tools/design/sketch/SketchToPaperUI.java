@@ -53,5 +53,12 @@ public class SketchToPaperUI {
 		
 		
 		// Write about this!!! =)
+		
+		
+		
+		// Part II...
+		// A second approach is more of a connected components approach?
+		// Take a look at Andy Wilson's?
+		// Close off strokes, and find buttons and such...
 	}
 }

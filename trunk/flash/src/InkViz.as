@@ -3,24 +3,46 @@ package {
 	import ink.InkXMLParser;
 
 	import flash.display.Sprite;
+	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	
 	public class InkViz extends Sprite {
 		
-		private var path1:String = pathParent + "2007_02_28__00_26_54_SheetAndOneRegion.xml";
-		private var path2:String = pathParent + "2007_03_06__18_14_23_HelloHappyFaceB7.xml";
-		private var path3:String = pathParent + "2007_03_07__11_39_19_SmallPaperUISketch.xml";
+		private var path:String;
 
 		private var pathParent:String = "../../penSynch/data/XML/";
 		//private var pathParent:String = "../data/";
 
 		public function InkViz() {			
-			trace("InkViz Constructor");
-			//trace(path1);
-						
-			var inkXML:InkXMLParser = new InkXMLParser(path3);
-			this.addChild(inkXML.ink);
 			
+			//trace("InkViz Constructor");
+			//trace(path1);
+
+			try {
+				var keyStr:String;
+				var valueStr:String;
+				var paramObj:Object = LoaderInfo(this.root.loaderInfo).parameters;
+				for (keyStr in paramObj) {
+					valueStr = String(paramObj[keyStr]);
+					//trace(keyStr + ":\t" + valueStr);
+					
+					if (keyStr == "fileName") {
+						trace("File: " + valueStr);
+						path = pathParent + valueStr;
+					}
+				}
+			} catch (error:Error) {
+				trace(error);
+			}
+
+			
+			if (path==null) {
+				trace("Path is null. Not loading any XML today!");
+				return;
+			}
+			
+			var inkXML:InkXMLParser = new InkXMLParser(path);
+			this.addChild(inkXML.ink);
 		}
 		
 	}
