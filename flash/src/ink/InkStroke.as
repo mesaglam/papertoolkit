@@ -20,7 +20,7 @@ package ink {
 		private var strokeWidth:Number = 1.5;
 
 		public function InkStroke(beginTS:String, endTS:String):void {			
-			trace(beginTS + " to " + endTS);
+			//trace(beginTS + " to " + endTS);
 			buttonMode = true;
 		}
 
@@ -59,7 +59,7 @@ package ink {
 			yMin = Math.min(yMin, yVal);
 			yMax = Math.max(yMax, yVal);
 			
-			trace(xVal + " " + yVal);
+			//trace(xVal + " " + yVal);
 		}
 		
 		public function get minX():Number {

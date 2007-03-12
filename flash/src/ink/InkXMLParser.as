@@ -3,6 +3,7 @@ package ink {
 	import flash.display.Sprite;
 	import flash.display.Graphics;
 	import flash.events.Event;
+	import flash.events.HTTPStatusEvent;
 	import flash.events.MouseEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -20,6 +21,7 @@ package ink {
 			// load some XML
 			var loader:URLLoader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, loadXML);
+			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
 			loader.load(new URLRequest(xmlPath));
 
 			// wow, xml is a native type!?
@@ -49,6 +51,10 @@ package ink {
 				inkWell.addStroke(inkStroke);
 			}			
 		}
+		
+		private function httpStatusHandler(event:HTTPStatusEvent):void {
+            trace("httpStatusHandler: " + event);
+        }
 		
 		public function get ink():Ink {
 			return inkWell;
