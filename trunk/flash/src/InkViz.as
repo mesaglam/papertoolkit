@@ -11,8 +11,8 @@ package {
 		private var path2:String = pathParent + "2007_03_06__18_14_23_HelloHappyFaceB7.xml";
 		private var path3:String = pathParent + "2007_03_07__11_39_19_SmallPaperUISketch.xml";
 
-		//private var pathParent:String = "../../penSynch/data/XML/";
-		private var pathParent:String = "data/";
+		private var pathParent:String = "../../penSynch/data/XML/";
+		//private var pathParent:String = "../data/";
 
 		public function InkViz() {			
 			trace("InkViz Constructor");
