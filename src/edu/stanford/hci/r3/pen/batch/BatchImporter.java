@@ -14,9 +14,10 @@ import edu.stanford.hci.r3.util.SystemUtils;
 /**
  * <p>
  * The batch importer will be called by the pen importer (.NET code) every time you synchronize the
- * pen. It sends the information to the BatchServer, which will notify any running applications. In
- * the future, applications do not need to be running all the time. They will be notified of new
- * data upon booting.
+ * pen. It sends the information to the BatchServer, which will notify any running applications.
+ * 
+ * TODO: In the future, applications do not need to be running all the time. They will be notified
+ * of new data upon booting.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

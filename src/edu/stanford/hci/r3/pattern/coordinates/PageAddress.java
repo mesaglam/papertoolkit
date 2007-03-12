@@ -50,7 +50,7 @@ public class PageAddress {
 			String bookStr = matcherPageAddress.group(3);
 			String pageStr = matcherPageAddress.group(4);
 
-			DebugUtils.println(segmentStr + "_" + shelfStr + "_" + bookStr + "_" + pageStr);
+			// DebugUtils.println(segmentStr + "_" + shelfStr + "_" + bookStr + "_" + pageStr);
 
 			segment = Integer.parseInt(segmentStr);
 			shelf = Integer.parseInt(shelfStr);
