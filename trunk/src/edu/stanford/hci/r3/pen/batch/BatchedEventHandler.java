@@ -69,12 +69,9 @@ public abstract class BatchedEventHandler {
 
 	private PatternDots referenceUnit = new PatternDots();
 
-	public BatchedEventHandler() {
-		this("Batched Event Handler");
-	}
 
 	/**
-	 * 
+	 * Create an Event Handler for reading in Batched Ink Files, synched over USB.
 	 */
 	public BatchedEventHandler(String theName) {
 		name = theName;

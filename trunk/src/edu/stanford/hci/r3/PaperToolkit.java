@@ -151,6 +151,8 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Loads an object from an XML File.
+	 * 
 	 * @param xmlFile
 	 * @return
 	 */

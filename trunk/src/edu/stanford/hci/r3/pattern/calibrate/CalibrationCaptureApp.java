@@ -123,7 +123,7 @@ public class CalibrationCaptureApp {
 	 */
 	private BatchedEventHandler getBatchedEventHandler() {
 		if (beh == null) {
-			beh = new BatchedEventHandler() {
+			beh = new BatchedEventHandler("Calibration") {
 				@Override
 				public void inkArrived(Ink inkOnThisPage) {
 					saveBatchedStrokes(inkOnThisPage);

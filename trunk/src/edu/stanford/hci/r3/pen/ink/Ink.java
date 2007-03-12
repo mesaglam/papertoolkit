@@ -44,6 +44,27 @@ public class Ink {
 	private Color color = DEFAULT_DARK_INK_COLOR;
 
 	/**
+	 * The bounds of this ink collection. This is the rightmost x coordinate of any sample in this
+	 * collection of strokes.
+	 */
+	private double maxX = Double.MIN_VALUE;
+
+	/**
+	 * 
+	 */
+	private double maxY = Double.MIN_VALUE;
+
+	/**
+	 * 
+	 */
+	private double minX = Double.MAX_VALUE;
+
+	/**
+	 * 
+	 */
+	private double minY = Double.MAX_VALUE;
+
+	/**
 	 * The name of this Ink cluster.
 	 */
 	private String name;
@@ -94,6 +115,12 @@ public class Ink {
 	 */
 	public void addStroke(InkStroke s) {
 		strokes.add(s);
+
+		// update maxs and mins
+		minX = Math.min(s.getMinX(), minX);
+		minY = Math.min(s.getMinY(), minY);
+		maxX = Math.max(s.getMaxX(), maxX);
+		maxY = Math.max(s.getMaxY(), maxY);
 	}
 
 	/**
@@ -136,6 +163,22 @@ public class Ink {
 	 */
 	public Color getColor() {
 		return color;
+	}
+
+	public double getMaxX() {
+		return maxX;
+	}
+
+	public double getMaxY() {
+		return maxY;
+	}
+
+	public double getMinX() {
+		return minX;
+	}
+
+	public double getMinY() {
+		return minY;
 	}
 
 	/**
@@ -250,6 +293,13 @@ public class Ink {
 	public void setSourcePageAddress(PageAddress address) {
 		setSourceType(InkSource.BATCHED);
 		pageAddress = address;
+	}
+
+	/**
+	 * @param pageAddrString
+	 */
+	public void setSourcePageAddress(String pageAddrString) {
+		setSourcePageAddress(new PageAddress(pageAddrString));
 	}
 
 	/**
