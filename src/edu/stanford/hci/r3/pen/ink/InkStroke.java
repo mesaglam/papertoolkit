@@ -257,6 +257,21 @@ public class InkStroke {
 		}
 		return yInts;
 	}
+	
+	/**
+	 * Returns the first sample in this stroke (start-point).
+	 * @return
+	 */
+	public PenSample getStart() {
+		return samples.get(0);
+	}
+	/**
+	 * Returns the last sample in this stroke (end-point).
+	 * @return
+	 */
+	public PenSample getEnd() {
+		return samples.get(samples.size()-1);
+	}
 
 	/**
 	 * @param minStrokeX
