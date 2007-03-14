@@ -50,6 +50,7 @@ public class SketchToPaperUI {
 		for (InkStroke insideStroke : insideStrokes) {
 			DebugUtils.println(insideStroke);
 		}
+		
 		// OR, use PaperToolkit.showMe(insideStroke); // this colors the stroke in an external
 		// view...
 		// it renders an XML file of the INK with some cool colors. =)
@@ -57,7 +58,13 @@ public class SketchToPaperUI {
 
 		// Find strokes that go from within the sheet to outside the sheet
 		// These are event handlers
+		
+		// xxx, at each step, remove the strokes from consideration! =)
 
+		// write about this algorithm in the paper!
+		
+
+		
 		// Find the next near the endpoints of these event handlers.
 		// Do handwriting recognition on them.
 
