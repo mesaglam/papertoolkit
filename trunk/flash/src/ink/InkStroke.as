@@ -31,8 +31,8 @@ package ink {
 		
 		public function InkStroke(beginTS:String, endTS:String):void {			
 			//trace(beginTS + " to " + endTS);
-			begin = beginTS;
-			end = endTS;
+			begin = parseInt(beginTS);
+			end = parseInt(endTS);
 			buttonMode = true;
 		}		
 		
