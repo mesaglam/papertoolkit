@@ -21,6 +21,8 @@ import edu.stanford.hci.r3.util.files.Visibility;
 public class FileExtensionFilter extends javax.swing.filechooser.FileFilter implements FileFilter,
 		FilenameFilter {
 
+	public static final String[] ACCEPT_ALL = new String[] { "" };
+
 	/**
 	 * Are Directories OK?
 	 */
@@ -29,7 +31,7 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 	/**
 	 * file extensions that are accepted. Defaults to all ("" --> ACCEPT ALL)
 	 */
-	private String[] extensions = { "" };
+	private String[] extensions = ACCEPT_ALL;
 
 	/**
 	 * if BOTH, files like .bashrc and .bash_profile will be returned
@@ -40,6 +42,10 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 	 */
 	private Visibility visibility = Visibility.BOTH;
 
+	public FileExtensionFilter() {
+		this(ACCEPT_ALL, true, Visibility.BOTH);
+	}
+
 	/**
 	 * @param exts
 	 */
@@ -48,6 +54,8 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 	}
 
 	/**
+	 * If there are dots in the beginning of the exts, we remove them, so that they will still work.
+	 * 
 	 * @param exts
 	 *            Pass in null or "" to accept all files. Otherwise, pass in an array of extensions
 	 *            without dots, such as {"jpg", "jpeg", "mpg", "mpeg"}. The matching is case
@@ -58,8 +66,6 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 	 *            BOTH --> we will include files or directories that are hidden or whose names start
 	 *            with dots (e.g., .bashrc).
 	 * 
-	 * TODO: If there are dots in the beginning of the exts, we should remove them, so that they
-	 * will still work.
 	 */
 	public FileExtensionFilter(String[] exts, boolean directories, Visibility vis) {
 		acceptDirectories = directories;
@@ -67,15 +73,19 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 
 		// pass in null to accept all files
 		if (exts == null) {
-			exts = new String[] {};
-		}
-
-		// copy the values over
-		extensions = new String[exts.length];
-
-		// lower case them all, for case insensitivity
-		for (int i = 0; i < exts.length; i++) {
-			extensions[i] = exts[i].toLowerCase();
+			extensions = ACCEPT_ALL;
+		} else {
+			// copy the values over
+			extensions = new String[exts.length];
+			for (int i = 0; i < exts.length; i++) {
+				// lower case them all, for case insensitivity
+				String extension = exts[i].toLowerCase();
+				// if it starts with a dot, remove it!
+				if (extension.startsWith(".")) {
+					extension = extension.substring(1);
+				}
+				extensions[i] = extension;
+			}
 		}
 	}
 

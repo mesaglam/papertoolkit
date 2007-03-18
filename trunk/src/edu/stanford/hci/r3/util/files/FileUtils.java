@@ -19,16 +19,21 @@ import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
 import edu.stanford.hci.r3.util.ArrayUtils;
+import edu.stanford.hci.r3.util.SystemUtils;
 import edu.stanford.hci.r3.util.files.filters.DirectoriesOnlyFilter;
 import edu.stanford.hci.r3.util.files.filters.FileExcludeHiddenFilter;
 import edu.stanford.hci.r3.util.files.filters.FileExtensionFilter;
 import edu.stanford.hci.r3.util.files.filters.FilesOnlyFilter;
+import edu.stanford.hci.r3.util.graphics.ImageUtils;
 
 /**
  * <p>
@@ -152,7 +157,7 @@ public class FileUtils {
 		if (dest.exists()) {
 			System.err.println("Destination File Already Exists: " + dest);
 		}
-		
+
 		FileChannel in = null, out = null;
 		try {
 			in = new FileInputStream(source).getChannel();
@@ -299,15 +304,46 @@ public class FileUtils {
 
 	/**
 	 * @param path
+	 * @return
+	 */
+	public static List<File> listVisibleFilesRecursively(File path) {
+		final FileFilter filter = (FileFilter) new FileExcludeHiddenFilter();
+
+		final ArrayList<File> files = new ArrayList<File>();
+		final ArrayList<File> dirsToProcess = new ArrayList<File>();
+
+		dirsToProcess.add(path);
+
+		while (dirsToProcess.size() != 0) {
+			File thisPath = dirsToProcess.remove(0);
+
+			// list it, and add all files to the files arraylist
+			// add all directories to dirsToProcess
+			File[] theseFiles = thisPath.listFiles(filter);
+			if (theseFiles != null) {
+				for (File f : theseFiles) {
+					if (f.isDirectory()) {
+						dirsToProcess.add(f);
+					} else {
+						files.add(f);
+					}
+				}
+			}
+		}
+		return files;
+	}
+
+	/**
+	 * @param path
 	 * @param extensionFilter
 	 * @return a List of Files (guaranteed to be files, because if it's a dir, it will drill down)
 	 */
 	public static List<File> listVisibleFilesRecursively(File path, String[] extensionFilter) {
 
-		FileFilter filter = (FileFilter) new FileExcludeHiddenFilter(extensionFilter);
+		final FileFilter filter = (FileFilter) new FileExcludeHiddenFilter(extensionFilter);
 
-		ArrayList<File> files = new ArrayList<File>();
-		ArrayList<File> dirsToProcess = new ArrayList<File>();
+		final ArrayList<File> files = new ArrayList<File>();
+		final ArrayList<File> dirsToProcess = new ArrayList<File>();
 
 		dirsToProcess.add(path);
 
@@ -436,6 +472,97 @@ public class FileUtils {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * @param files
+	 * @return
+	 */
+	public static void sortByLastModified(List<File> files, final SortDirection direction) {
+		// SystemUtils.tic();
+		Collections.sort(files, new Comparator<File>() {
+			public int compare(File a, File b) {
+				long aTime = a.lastModified();
+				long bTime = b.lastModified();
+				long diff = aTime - bTime;
+				if (diff == 0) {
+					return 0;
+				} else if (diff < 0) {
+					if (SortDirection.OLD_TO_NEW == direction) {
+						return -1;
+					} else {
+						return 1;
+					}
+
+				} else {
+					if (SortDirection.OLD_TO_NEW == direction) {
+						return 1;
+					} else {
+						return -1;
+					}
+				}
+			}
+		});
+		// SystemUtils.toc();
+	}
+
+	/**
+	 * For JPEGs....
+	 * 
+	 * This is a little bit slow, as it takes 4.3 seconds for about 670 files. Can we speed this up
+	 * through a cache? After implementing the cache, it takes about 875 ms to sort 670 files. This
+	 * is because we only read each file once, and save the timestamp in memory.
+	 * 
+	 * @param files
+	 * @param direction
+	 */
+	public static void sortPhotosByCaptureDate(List<File> files, final SortDirection direction) {
+		// cache of file --> timestamp mappings.
+		final HashMap<File, Long> exifTimes = new HashMap<File, Long>();
+
+		SystemUtils.tic();
+		Collections.sort(files, new Comparator<File>() {
+			public int compare(File a, File b) {
+
+				long aTime;
+				long bTime;
+
+				// begin cache
+				if (exifTimes.containsKey(a)) {
+					aTime = exifTimes.get(a);
+				} else {
+					aTime = ImageUtils.readTimeFrom(a);
+					exifTimes.put(a, aTime);
+				}
+				if (exifTimes.containsKey(b)) {
+					bTime = exifTimes.get(b);
+				} else {
+					bTime = ImageUtils.readTimeFrom(b);
+					exifTimes.put(b, bTime);
+				}
+				// end cache
+
+
+				long diff = aTime - bTime;
+				if (diff == 0) {
+					return 0;
+				} else if (diff < 0) {
+					if (SortDirection.OLD_TO_NEW == direction) {
+						return -1;
+					} else {
+						return 1;
+					}
+
+				} else {
+					if (SortDirection.OLD_TO_NEW == direction) {
+						return 1;
+					} else {
+						return -1;
+					}
+				}
+			}
+		});
+		SystemUtils.toc();
 	}
 
 	/**

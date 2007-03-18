@@ -6,15 +6,21 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 import edu.stanford.hci.r3.util.files.Visibility;
 
 /**
+ * <p>
  * A Java FileFilter that excludes hidden files and directories
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
- * @author Ron Yeh
- * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ *
  */
 public class FileExcludeHiddenFilter extends FileExtensionFilter {
 
 	public FileExcludeHiddenFilter() {
-		super(new String[] { "" }, true, Visibility.VISIBLE);
+		super(ACCEPT_ALL, true, Visibility.VISIBLE);
 	}
 
 	public FileExcludeHiddenFilter(String[] exts) {

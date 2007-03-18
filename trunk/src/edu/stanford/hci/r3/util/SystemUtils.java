@@ -36,6 +36,8 @@ public class SystemUtils {
 	 */
 	public static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
+	private static long previousTime;
+
 	/**
 	 * This doesn't work. =\
 	 * 
@@ -106,8 +108,24 @@ public class SystemUtils {
 	 * stream. I will have to instrument SystemUtils & FileUtils to handle this.
 	 * 
 	 * @param file
+	 * @deprecated
 	 */
 	public static void setWorkingDirectory(File file) {
 		System.setProperty("user.dir", file.getAbsolutePath());
 	}
+
+	/**
+	 * Save the current time, for simple profiling.
+	 */
+	public static void tic() {
+		previousTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * Prints out the difference between now and the last time we tic'ed.
+	 */
+	public static void toc() {
+		DebugUtils.println("Clock: " + (System.currentTimeMillis() - previousTime) + " ms.");
+	}
+
 }
