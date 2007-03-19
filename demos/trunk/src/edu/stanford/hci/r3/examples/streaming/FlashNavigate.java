@@ -1,6 +1,6 @@
 package edu.stanford.hci.r3.examples.streaming;
 
-import edu.stanford.hci.r3.flash.FlashControlServer;
+import edu.stanford.hci.r3.flash.timelineControl.FlashControlServer;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
