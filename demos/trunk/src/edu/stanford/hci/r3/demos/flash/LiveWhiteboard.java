@@ -1,12 +1,10 @@
 package edu.stanford.hci.r3.demos.flash;
 
-import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.flash.whiteboard.FlashInkRelayServer;
 import edu.stanford.hci.r3.flash.whiteboard.FlashWhiteboard;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
