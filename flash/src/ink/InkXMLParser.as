@@ -31,12 +31,18 @@ package ink {
 			// trace(xml.toXMLString());
 		}
 
-		
+		public function InkXMLParser(XML inkXML) {
+			processXML(inkXML);		
+		}
 		
 		private function loadXML(e:Event):void {
 			var xml:XML = new XML(e.target.data);
 			//trace(xml);
 
+			processXML(xml);
+		}
+		
+		private function processXML(xml:XML):void {
 			// get all the strokes (somewhere down the XML tree)
 			var strokes:XMLList = xml.descendants("stroke");
 			

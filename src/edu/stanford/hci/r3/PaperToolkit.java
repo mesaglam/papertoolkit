@@ -123,7 +123,7 @@ public class PaperToolkit {
 	private static PaperToolkit toolkitInstance;
 
 	/**
-	 * The version of the PaperToolkit.
+	 * The version of the PaperToolkit. Not that it really means anything. =)
 	 * 
 	 * <p>
 	 * Version 0.3 should include:
@@ -134,9 +134,13 @@ public class PaperToolkit {
 	 * <ul>
 	 * <li>Better Debugging Tools</li>
 	 * </ul>
+	 * Version 0.5 should include:
+	 * <ul>
+	 * <li>Flash Integration</li>
+	 * </ul>
 	 * </p>
 	 */
-	private static String versionString = "0.4";
+	private static String versionString = "0.5";
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.

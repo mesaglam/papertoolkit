@@ -42,6 +42,12 @@ package ink {
         private function onMouseUp(evt:Event):void {
 			this.stopDrag();
         }
+        
+        // move the ink so that we can see it!
+        public function recenter():void {
+        	x = -xMin + 30;
+        	y = -yMin + 50;
+        }
 		
 	}
 }

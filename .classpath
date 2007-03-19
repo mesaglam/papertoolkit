@@ -44,5 +44,8 @@
 	<classpathentry kind="lib" path="lib/fmj/mp3spi1.9.4.jar"/>
 	<classpathentry kind="lib" path="lib/fmj/tritonus_share.jar"/>
 	<classpathentry kind="lib" path="lib/fmj/vorbisspi1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jai/jai_codec.jar"/>
+	<classpathentry kind="lib" path="lib/jai/jai_core.jar"/>
+	<classpathentry kind="lib" path="lib/jai/mlibwrapper_jai.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
