@@ -7,7 +7,7 @@ package ink {
 
 	public class InkStroke extends Sprite {
 
-		private static var defaultColor:uint = 0xCFCFCF;
+		private static var defaultColor:uint = 0xDADADA;
 		private static var highlightColor:uint = 0xFF99AA;
 
 		private var xSamples:Array = new Array();
@@ -20,7 +20,7 @@ package ink {
 
 		private var g:Graphics = graphics;
 
-		private var strokeWidth:Number = 1.5;
+		private var strokeWidth:Number = 1.9;
 		
 		private var color:uint = defaultColor;
 		
@@ -29,14 +29,21 @@ package ink {
 		private var begin:Number;
 		private var end:Number;
 		
-		public function InkStroke(beginTS:String, endTS:String):void {			
+		private var lastXVal:Number = -1;
+		private var lastYVal:Number = -1;
+		
+		private var lastLastXVal:Number = -1;
+		private var lastLastYVal:Number = -1;
+
+		
+		public function InkStroke(beginTS:String="0", endTS:String="0"):void {			
 			//trace(beginTS + " to " + endTS);
 			begin = parseInt(beginTS);
 			end = parseInt(endTS);
 			buttonMode = true;
 		}		
-		
-		public function set highlighted(value):void {
+
+		public function set highlighted(value:Boolean):void {
 			highlight=value;
 			
 			if (highlight) {
@@ -54,25 +61,53 @@ package ink {
 			// assume f is 0 to 128
 			// later: cap it to 0 to 128
 			
+			// obsolete directions: =)
 			// vary opacity and width based on the force
 			// from about 70 to 100, treat the width the same, but vary opacity
 			// from about 0 to 70, vary width
 			// from about 100 to 128, vary width
 			
 			var modifiedStrokeWidth:Number = strokeWidth;
-			var delta:Number = 70 - f;
-			modifiedStrokeWidth -= delta * 0.01;
+			var delta:Number = 50 - f;
+			modifiedStrokeWidth -= delta * 0.02;
+			trace("New Stroke Width: " + modifiedStrokeWidth);
 			
+			// don't modify the alpha!
+			// var modifiedAlpha:Number = .95;
+			// modifiedAlpha -= delta * .01;
 			
-			var modifiedAlpha:Number = .95;
-			modifiedAlpha -= delta * .01;
-			
-			g.lineStyle(modifiedStrokeWidth, color, modifiedAlpha);
+			g.lineStyle(modifiedStrokeWidth, color);
 			if (xSamples.length == 0) {
 				g.moveTo(xVal, yVal);				
+				lastXVal = xVal;
+				lastYVal = yVal;
+				lastLastXVal = xVal;
+				lastLastYVal = yVal;
 			}
 			else {
-				g.lineTo(xVal, yVal);
+				if ((Math.abs(xVal - lastXVal) > 10) && (Math.abs(yVal - lastYVal) > 10)) {
+					trace("big hop in x and y");
+						
+					// curve to... with a control point computed from the last two points!
+					var vX:Number = xVal - lastLastXVal;
+					var vY:Number = yVal - lastLastYVal;
+					
+					var controlX:Number = lastXVal + vX/3;
+					var controlY:Number = lastYVal + vY/3;
+						
+					// g.drawCircle(controlX, controlY, 2);
+					// g.curveTo(controlX, controlY, xVal, yVal);
+					g.curveTo(controlX, controlY, xVal, yVal);
+				} else {
+					// regular
+					g.lineTo(xVal, yVal);
+				}
+				
+				// advance the last values
+				lastLastXVal = lastXVal;
+				lastLastYVal = lastYVal;
+				lastXVal = xVal;
+				lastYVal = yVal;
 			}
 			xSamples.push(xVal);
 			ySamples.push(yVal);

@@ -3,6 +3,7 @@
  */
 package edu.stanford.hci.r3.util.graphics;
 
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
@@ -15,6 +16,7 @@ import java.awt.image.SampleModel;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 
+import javax.media.jai.BorderExtender;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.TiledImage;
@@ -28,6 +30,12 @@ import javax.media.jai.TiledImage;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class JAIUtils {
+
+	/**
+	 * border extender, reflects the pixels like a mirror.
+	 */
+	private static final RenderingHints RH_BORDER_REFLECT = new RenderingHints(
+			JAI.KEY_BORDER_EXTENDER, BorderExtender.createInstance(BorderExtender.BORDER_REFLECT));
 
 	/**
 	 * Creates an alpha channel to write translucent images to.
@@ -109,4 +117,134 @@ public class JAIUtils {
 	public static PlanarImage readJPEG(final File jpegFile) {
 		return JAI.create("fileload", jpegFile.getAbsolutePath());
 	}
+
+	/**
+	 * performs a JAI scaling of the PlanarImage with appropriate scale factors
+	 * 
+	 * @param src
+	 * @param interpQuality
+	 * @param scaleFactorX
+	 * @param scaleFactorY
+	 * @return
+	 */
+	public static PlanarImage scaleImage(PlanarImage src, InterpolationQuality interpQuality,
+			float scaleFactorX, float scaleFactorY) {
+
+		// set the parameters
+		final ParameterBlock pb = new ParameterBlock();
+		pb.addSource(src);
+		pb.add(scaleFactorX);
+		pb.add(scaleFactorY);
+		pb.add(0.0f);
+		pb.add(0.0f);
+		pb.add(interpQuality.getInterpolation());
+
+		// scale!
+		return JAI.create("scale", pb, RH_BORDER_REFLECT);
+	}
+
+	public static PlanarImage scaleImageIteratively(PlanarImage src, float scaleFactorX,
+			float scaleFactorY) {
+		return scaleImageIterativelyToDimensions(src, InterpolationQuality.BILINEAR, (int) Math
+				.round(src.getWidth() * scaleFactorX), (int) Math.round(src.getHeight()
+				* scaleFactorY));
+	}
+
+	/**
+	 * Higher quality, but slower implementation...
+	 * 
+	 * @param src
+	 * @param interpQuality
+	 * @param scaleFactorX
+	 * @param scaleFactorY
+	 * @return
+	 */
+	public static PlanarImage scaleImageIteratively(PlanarImage src,
+			InterpolationQuality interpQuality, float scaleFactorX, float scaleFactorY) {
+		return scaleImageIterativelyToDimensions(src, interpQuality, (int) Math.round(src
+				.getWidth()
+				* scaleFactorX), (int) Math.round(src.getHeight() * scaleFactorY));
+	}
+
+	private static PlanarImage scaleImageIterativelyToDimensions(PlanarImage src,
+			InterpolationQuality interpQuality, int width, int height) {
+		// never scale to lower than...
+		double minScale = .5;
+		
+		// is there a possiblility that it will loop forever?
+		// we can prevent it by capping it to 10 iterations...
+		int iterations = 0;
+		final double targetWidth = (double) width;
+		final double targetHeight = (double) height;
+		while (!(src.getWidth() == width & src.getHeight() == height) && iterations < 10) {
+			float scaleFactorX = (float) Math.max(minScale, targetWidth / src.getWidth());
+			float scaleFactorY = (float) Math.max(minScale, (targetHeight / src.getHeight()));
+			// System.out.println("Scaling To: " + scaleFactorX + ", " + scaleFactorY);
+			src = scaleImage(src, interpQuality, scaleFactorX, scaleFactorY);
+			iterations++;
+		}
+		return src;
+	}
+
+	/**
+	 * scale the image to best fit into a rectangle of size width x height
+	 * 
+	 * defaults to good (but slower) scaling
+	 * 
+	 * @param src
+	 * @param width
+	 * @param height
+	 * @return
+	 * @author Ron Yeh
+	 */
+	public static PlanarImage scaleImageToFit(PlanarImage src, int width, int height) {
+		return scaleImageToSize(src, width, height, InterpolationQuality.BICUBIC, true);
+	}
+
+	/**
+	 * the targets are hints... to tell us what box the src should fit within
+	 * 
+	 * @param src
+	 * @param targetWidth
+	 * @param targetHeight
+	 * @param quality
+	 * @param maintainAspectRatio
+	 * @return
+	 */
+	public static PlanarImage scaleImageToSize(PlanarImage src, int targetWidth, int targetHeight,
+			InterpolationQuality quality, boolean maintainAspectRatio) {
+		int oldWidth = src.getWidth();
+		int oldHeight = src.getHeight();
+
+		float testScaleFactorX = (float) targetWidth / (float) oldWidth;
+		float testScaleFactorY = (float) targetHeight / (float) oldHeight;
+
+		float scaleFactorX = 0;
+		float scaleFactorY = 0;
+
+		// if maintaining aspect Ratio, use the smaller of the two scales
+		if (maintainAspectRatio) {
+			float min = Math.min(testScaleFactorX, testScaleFactorY);
+			scaleFactorX = min;
+			scaleFactorY = min;
+		} else {
+			scaleFactorX = testScaleFactorX;
+			scaleFactorY = testScaleFactorY;
+		}
+
+		return scaleImageIteratively(src, quality, scaleFactorX, scaleFactorY);
+	}
+
+	/**
+	 * Writes a PlanarImage to a file, specified by the String (absolute path)
+	 * 
+	 * @param img
+	 * @param quality
+	 *            [0 to 100]
+	 * @param path
+	 */
+	public static void writeImageToJPEG(PlanarImage img, File path) {
+		ImageUtils.writeImageToJPEG(img.getAsBufferedImage(), 100, path);
+	}
+
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Whiteboard" creationComplete="constructWhiteboard()">
+	<mx:Style source="styles/styles.css"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import whiteboard.WhiteboardInkClient;
+			
+			// more or less all the code is stored in the as file! =)			
+			private var whitebd:WhiteboardInkClient;
+			private var container:UIComponent;
+			
+			public function constructWhiteboard():void {
+				whitebd = new WhiteboardInkClient(debugText);
+
+				container = new UIComponent();
+				addChild(container);
+
+				container.addChild(whitebd);				
+				debugText.text = "this is difficult.";
+			}
+
+			public function zoomIn():void {
+				whitebd.scaleX *= 1.25;
+				whitebd.scaleY *= 1.25;
+			}
+			public function resetZoom():void {
+				whitebd.scaleX = 1;
+				whitebd.scaleY = 1;
+				whitebd.recenter();
+			}
+			public function zoomOut():void {
+				whitebd.scaleX *= .8;
+				whitebd.scaleY *= .8;
+			}
+			
+			public function toggleDebugText():void {
+				// removeAllChildren(); // don't do this! It removes all components
+				debugText.visible = !debugText.visible;
+			}
+		]]>
+	</mx:Script>
+	<mx:Button label="Save" bottom="10" left="10"/>
+	<mx:Button label="+" bottom="10" right="10" width="40" click="zoomIn()"/>
+	<mx:Button label="-" right="136" bottom="10" click="zoomOut()"/>
+	<mx:TextArea editable="false" width="276" right="10" top="10" id="debugText" color="#000000" bottom="41" visible="false"/>
+	<mx:Button label="Debug" bottom="10" left="81" click="toggleDebugText()"/>
+	<mx:Button label="Zoom" right="58" bottom="10" click="resetZoom()"/>
+</mx:Application>

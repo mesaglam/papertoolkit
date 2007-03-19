@@ -1,4 +1,4 @@
-﻿package {
+﻿package timelineControl {
 	import flash.display.MovieClip;
 
 	// We instantiate a movie clip so that it can control the timeline.

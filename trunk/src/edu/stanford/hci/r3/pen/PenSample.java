@@ -41,8 +41,7 @@ public class PenSample implements Serializable {
 	public long timestamp;
 
 	/**
-	 * x location of the point, in physical Anoto coordinates
-	 * TODO: Make these private later...
+	 * x location of the point, in physical Anoto coordinates TODO: Make these private later...
 	 */
 	public double x;
 
@@ -127,8 +126,8 @@ public class PenSample implements Serializable {
 	}
 
 	/**
-	 * Does this sample represent a Pen Up? Perhaps we should subclass PenSample, instead of storing another
-	 * field in here? It seems a little wasteful if most samples are not pen up samples. =\
+	 * Does this sample represent a Pen Up? Perhaps we should subclass PenSample, instead of storing
+	 * another field in here? It seems a little wasteful if most samples are not pen up samples. =\
 	 * 
 	 * @param b
 	 */
@@ -172,7 +171,16 @@ public class PenSample implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Sample: [" + FORMATTER.format(x) + ", " + FORMATTER.format(y) + "] F=" + force + " T="
-				+ timestamp + " P=" + (isPenUp() ? "UP" : "DOWN");
+		return "Sample: [" + FORMATTER.format(x) + ", " + FORMATTER.format(y) + "] F=" + force
+				+ " T=" + timestamp + " P=" + (isPenUp() ? "UP" : "DOWN");
+	}
+
+	/**
+	 * So far, this is used when communicating with Flash in real time.
+	 * @return
+	 */
+	public String toXMLString() {
+		return "<p x=\"" + x + "\" y=\"" + y + "\" f=\"" + force + "\" t=\"" + timestamp
+				+ "\" p=\"" + (isPenUp() ? "U" : "D") + "\"/>";
 	}
 }

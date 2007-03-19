@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.util.graphics;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.BufferedOutputStream;
@@ -180,6 +181,67 @@ public class ImageUtils {
 		} else {
 			return getTimeFromString(ts);
 		}
+	}
+
+	/**
+	 * Scaled a buffered image by the two scale parameters. The scale operation is anti-aliased.
+	 * 
+	 * @param src
+	 * @param sX
+	 * @param sY
+	 * @return A scaled BufferedImage
+	 * 
+	 * @author Ron Yeh
+	 */
+	public static BufferedImage scaleImage(BufferedImage src, float sX, float sY) {
+		System.err
+				.println("Warning: ImageUtils::scaleImage is a low quality scale. Please use ImageUtils::scaleImageIteratively.");
+
+		final int width = (int) (src.getWidth() * sX + 0.5);
+		final int height = (int) (src.getHeight() * sY + 0.5);
+		final BufferedImage scaledImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		final Graphics2D gScaledImg = scaledImg.createGraphics();
+		gScaledImg.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+		gScaledImg.drawImage(src, 0, 0, width, height, null);
+		return scaledImg;
+	}
+
+	public static BufferedImage scaleImageToFit(BufferedImage src, int width, int height) {
+		return scaleImageToSize(src, width, height, true);
+	}
+
+	public static BufferedImage scaleImageToSize(BufferedImage src, int targetWidth,
+			int targetHeight, boolean maintainAspectRatio) {
+		// old width and height
+		final int width = src.getWidth();
+		final int height = src.getHeight();
+
+		// the scaling factor
+		final float testScaleFactorX = (float) targetWidth / (float) width;
+		final float testScaleFactorY = (float) targetHeight / (float) height;
+
+		// SystemUtilities.println(testScaleFactorX + " " + testScaleFactorY);
+
+		float scaleFactorX = 0;
+		float scaleFactorY = 0;
+
+		// if maintaining Aspect Ratio, add some padding either on
+		// the top/bottom or the left/right
+		if (maintainAspectRatio) {
+			float min = Math.min(testScaleFactorX, testScaleFactorY);
+			scaleFactorX = min;
+			scaleFactorY = min;
+		} else {
+			scaleFactorX = testScaleFactorX;
+			scaleFactorY = testScaleFactorY;
+		}
+
+		// never scale up a photo, or scale it to the same size.. :)
+		if (scaleFactorX >= 1 || scaleFactorY >= 1) {
+			return src;
+		}
+
+		return scaleImage(src, scaleFactorX, scaleFactorY);
 	}
 
 	/**
