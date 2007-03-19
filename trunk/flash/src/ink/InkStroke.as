@@ -85,6 +85,8 @@ package ink {
 				lastLastYVal = yVal;
 			}
 			else {
+
+/*
 				if ((Math.abs(xVal - lastXVal) > 10) && (Math.abs(yVal - lastYVal) > 10)) {
 					trace("big hop in x and y");
 						
@@ -102,6 +104,9 @@ package ink {
 					// regular
 					g.lineTo(xVal, yVal);
 				}
+*/
+				// reverted to simple linetos..
+				g.lineTo(xVal, yVal);
 				
 				// advance the last values
 				lastLastXVal = lastXVal;
