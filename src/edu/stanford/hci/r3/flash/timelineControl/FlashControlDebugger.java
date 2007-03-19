@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.flash;
+package edu.stanford.hci.r3.flash.timelineControl;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
