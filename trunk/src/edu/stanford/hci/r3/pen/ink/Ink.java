@@ -141,6 +141,28 @@ public class Ink {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(getOpenTagXML() + separator);
+		sb.append(getInnerXML(useSeparatorLines) + separator);
+		sb.append("</ink>");
+		return sb.toString();
+	}
+
+	/**
+	 * @return
+	 */
+	public Color getColor() {
+		return color;
+	}
+
+	public String getInnerXML() {
+		return getInnerXML(false);
+	}
+
+	/**
+	 * @return the xml without the outer <ink></ink> tags.
+	 */
+	public String getInnerXML(boolean useSeparatorLines) {
+		final String separator = useSeparatorLines ? "\n" : "";
+		StringBuilder sb = new StringBuilder();
 		for (InkStroke s : strokes) {
 			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\""
 					+ s.getLastTimestamp() + "\">" + separator);
@@ -154,15 +176,7 @@ public class Ink {
 			}
 			sb.append("</stroke>" + separator);
 		}
-		sb.append("</ink>");
 		return sb.toString();
-	}
-
-	/**
-	 * @return
-	 */
-	public Color getColor() {
-		return color;
 	}
 
 	public double getMaxX() {

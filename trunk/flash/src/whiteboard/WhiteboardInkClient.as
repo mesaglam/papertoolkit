@@ -17,7 +17,7 @@
 
 		private var currInkStroke:InkStroke;
 		
-		public function WhiteboardInkClient(dbt:TextArea) {
+		public function WhiteboardInkClient(dbt:TextArea):void {
 			inkWell = new Ink();
 			addChild(inkWell);
 			

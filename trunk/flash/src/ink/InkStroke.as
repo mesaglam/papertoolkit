@@ -20,7 +20,7 @@ package ink {
 
 		private var g:Graphics = graphics;
 
-		private var strokeWidth:Number = 1.9;
+		private var strokeWidth:Number = 1.6;
 		
 		private var color:uint = defaultColor;
 		
@@ -70,7 +70,7 @@ package ink {
 			var modifiedStrokeWidth:Number = strokeWidth;
 			var delta:Number = 50 - f;
 			modifiedStrokeWidth -= delta * 0.02;
-			trace("New Stroke Width: " + modifiedStrokeWidth);
+			// trace("New Stroke Width: " + modifiedStrokeWidth);
 			
 			// don't modify the alpha!
 			// var modifiedAlpha:Number = .95;

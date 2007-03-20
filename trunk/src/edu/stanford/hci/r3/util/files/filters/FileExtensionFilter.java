@@ -71,8 +71,9 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 		acceptDirectories = directories;
 		visibility = vis;
 
-		// pass in null to accept all files
-		if (exts == null) {
+		// pass in null or an empty array to accept all files
+		// we assume all, because it'd be stupid to want to accept NONE :-)
+		if (exts == null || exts.length == 0) {
 			extensions = ACCEPT_ALL;
 		} else {
 			// copy the values over
