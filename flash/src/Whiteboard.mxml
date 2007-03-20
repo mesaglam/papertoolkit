@@ -17,7 +17,7 @@
 				addChild(container);
 
 				container.addChild(whitebd);				
-				debugText.text = "this is difficult.";
+				debugText.text = "Just Testing...";
 			}
 
 			public function zoomIn():void {

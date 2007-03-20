@@ -55,10 +55,6 @@ public class PenSynch {
 	private String penID;
 	private Date universalTime;
 
-	public List<Ink> getImportedInk() {
-		return importedInk;
-	}
-	
 	public PenSynch(File penSynchXMLFile) {
 		XMLInputFactory xmlInput = XMLInputFactory.newInstance();
 		try {
@@ -97,6 +93,26 @@ public class PenSynch {
 		}
 
 		// printOutDetails();
+	}
+	
+	public List<Ink> getImportedInk() {
+		return importedInk;
+	}
+
+	public Date getLocalTime() {
+		return localTime;
+	}
+
+	public int getNumPages() {
+		return numPages;
+	}
+
+	public String getPenID() {
+		return penID;
+	}
+
+	public Date getUniversalTime() {
+		return universalTime;
 	}
 
 	public void printOutDetails() {
