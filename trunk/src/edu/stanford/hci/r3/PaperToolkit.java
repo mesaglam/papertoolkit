@@ -214,6 +214,13 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @return the place where new XML files show up, when we synch our pen.
+	 */
+	public static File getPenSynchDataPath() {
+		return new File(getToolkitRootPath(), "penSynch/data/XML/");
+	}
+
+	/**
 	 * @return the XStream processor that parses and creates XML.
 	 */
 	private static synchronized XStream getXMLEngine() {
