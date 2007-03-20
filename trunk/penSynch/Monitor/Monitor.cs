@@ -94,8 +94,13 @@ namespace PenMonitor {
         /// <param name="data"></param>
         void saveRequestFile(string category, object data, StreamWriter log) {
 
+            // make the pen request from the PGC data
+            PenRequest req = new PenRequest();
+            req.Initialize(data);
+
+
             // put request information in an xml file (one per request)
-            requestXMLFilePath = penRequestDir + @"XML\" + nowString + ".xml";
+            requestXMLFilePath = penRequestDir + @"XML\" + nowString + "_" + req.PenId + ".xml";
 
             // xml writer
             XmlTextWriter xml = new XmlTextWriter(requestXMLFilePath, null);
@@ -133,9 +138,6 @@ namespace PenMonitor {
             // writePGCFile(data, todosPath, nowString);
 
 
-            // make the pen request from the PGC data
-            PenRequest req = new PenRequest();
-            req.Initialize(data);
             log.WriteLine("PenID: " + req.PenId);
             log.WriteLine("NumPages: " + req.Pages.Count);
 
