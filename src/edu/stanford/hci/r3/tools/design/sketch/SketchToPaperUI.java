@@ -3,6 +3,8 @@ package edu.stanford.hci.r3.tools.design.sketch;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -54,11 +56,17 @@ public class SketchToPaperUI {
 	
 
 
-	public static void main(String[] args) {
-
+	public static void main(String[] args) throws IOException {
 		String fileName = "penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml";
+		
+		translate(new File(fileName),
+				  "SketchedPaperUI",
+				  new File("output/"));
+	}
+	
 
-		PenSynch penSynch = new PenSynch(new File(fileName));
+	public static void translate(File strokeFile, String className, File outputFolder) throws IOException {
+		PenSynch penSynch = new PenSynch(strokeFile);
 		List<Ink> importedInk = penSynch.getImportedInk();
 		
 		// TODO: some kind of intelligent grouping of strokes that end near
@@ -93,14 +101,17 @@ public class SketchToPaperUI {
 		double scale = makeItFit(sheet.getWidth(), sheet.getHeight(), 8.5, 11);
 		
 		// Print out to...
-		PrintStream out = System.out;
+		PrintStream outXML = new PrintStream(
+				new FileOutputStream(new File(outputFolder,className+".xml")));
+		PrintStream outJava = new PrintStream(
+				new FileOutputStream(new File(outputFolder,className+".java")));
 		
 		
 		// Number format...
 		DecimalFormat df = new DecimalFormat("0.###");
 		
 		
-		out.println("<sheet width=\""+df.format(sheet.getWidth()*scale)+
+		outXML.println("<sheet width=\""+df.format(sheet.getWidth()*scale)+
 					"\" height=\""+df.format(sheet.getHeight()*scale)+"\">");
 		
 		// Print out regions
@@ -149,20 +160,20 @@ public class SketchToPaperUI {
 				name = "region"+(strokeId++);
 			
 			// Print it out
-			out.print("  <region name=\""+name+
+			outXML.print("  <region name=\""+name+
 									"\" x=\""+df.format((regionBounds.getX()-sheet.getX())*scale)+
 									"\" y=\""+df.format((regionBounds.getY()-sheet.getY())*scale)+
 									"\" width=\""+df.format(regionBounds.getWidth()*scale)+
 									"\" height=\""+df.format(regionBounds.getHeight()*scale)+"\"");
 			if (event != null) {
-				out.println(">");
-				out.println("   <eventHandler type=\""+eventType +"\"/>");
-				out.println("  </region>");
+				outXML.println(">");
+				outXML.println("   <eventHandler type=\""+eventType +"\"/>");
+				outXML.println("  </region>");
 			} else {
-				out.println("/>");
+				outXML.println("/>");
 			}
 		}
-		out.println("</sheet>");
+		outXML.println("</sheet>");
 
 		// Close down recognizer
 		service.exitServer();
