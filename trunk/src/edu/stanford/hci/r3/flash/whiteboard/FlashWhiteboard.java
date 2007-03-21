@@ -4,6 +4,8 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.SwingUtilities;
+
 import edu.stanford.hci.r3.PaperToolkit;
 
 /**
@@ -22,13 +24,17 @@ public class FlashWhiteboard {
 
 	public FlashWhiteboard() {
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
-		File whiteBoardHTML = new File(r3RootPath, "flash/bin/Whiteboard.html");
-		try {
-			Desktop.getDesktop().browse(whiteBoardHTML.toURI());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		final File whiteBoardHTML = new File(r3RootPath, "flash/bin/Whiteboard.html");
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Desktop.getDesktop().browse(whiteBoardHTML.toURI());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	public static void main(String[] args) {
