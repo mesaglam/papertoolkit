@@ -2,13 +2,20 @@ package edu.stanford.hci.r3.tools.design.sketch;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.batch.PenSynch;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
@@ -61,7 +68,7 @@ public class SketchToPaperUI {
 		
 		translate(new File(fileName),
 				  "SketchedPaperUI",
-				  new File("output/"));
+				  new File("."));
 	}
 	
 
@@ -77,7 +84,7 @@ public class SketchToPaperUI {
 			InkUtils.findStrokeWithLargestArea(importedInk);
 
 		// Strokes inside sheet are regions
-		List<InkStroke> regions = 
+		List<InkStroke> regionStrokes = 
 			InkUtils.findAllStrokesContainedWithin(importedInk, biggestStroke);
 		
 		// Strokes that overlap the sheet but go outside are connectors
@@ -107,21 +114,36 @@ public class SketchToPaperUI {
 				new FileOutputStream(new File(outputFolder,className+".java")));
 		
 		
+		
 		// Number format...
 		DecimalFormat df = new DecimalFormat("0.###");
 		
 		
 		outXML.println("<sheet width=\""+df.format(sheet.getWidth()*scale)+
 					"\" height=\""+df.format(sheet.getHeight()*scale)+"\">");
+
+		
+		class Region {
+			//InkStroke stroke = null;
+			Rectangle2D bounds = null;
+			String name = null;
+			String eventType = null;
+		}
+		
+		List<Region> regions = new ArrayList<Region>();
+		
 		
 		// Print out regions
 		int strokeId = 1;
-		for (InkStroke region : regions) {
-			Rectangle2D regionBounds = region.getBounds();
+		for (InkStroke region : regionStrokes) {
+			Region r = new Region();
+			regions.add(r);
+			//r.stroke = region;
+			r.bounds = region.getBounds();
 			InkStroke c = null;
 			// Find the connection that matches this region
 			for (InkStroke connection : connectors) {
-				if (connection.getBounds().intersects(regionBounds)) {
+				if (connection.getBounds().intersects(r.bounds)) {
 					c = connection;
 					break;
 				}	
@@ -129,7 +151,7 @@ public class SketchToPaperUI {
 			
 			// Find the endpoint outside of the region
 			PenSample p = c.getStart();
-			if (regionBounds.contains(p.getX(),p.getY()))
+			if (r.bounds.contains(p.getX(),p.getY()))
 				p = c.getEnd();
 			
 			// Find the event nearest that endpoint
@@ -137,8 +159,6 @@ public class SketchToPaperUI {
 					new Point2D.Double(p.getX(),p.getY()), 40.0);
 			
 			// If an event is found...
-			String name = null;
-			String eventType = null;
 			if (event != null) {
 				// Recognize the text...
 				String result = service.recognizeHandwriting(
@@ -148,32 +168,92 @@ public class SketchToPaperUI {
 				String pieces[] = result.split("[^a-zA-Z0-9]");
 				// Second piece is name
 				if (pieces.length>1)
-					name = pieces[1];
+					r.name = pieces[1];
 				// First is event type
-				eventType = pieces[0];
+				r.eventType = pieces[0].toLowerCase();
 				// TODO: there is probably a better way to split this
 			}
 			
 			// If we got no name, auto-generate one (this is problematic if you
 			// revise your sketch, since they could potentially be renumbered)
-			if (name == null)
-				name = "region"+(strokeId++);
+			if (r.name == null)
+				r.name = "region"+(strokeId++);
+			
+			r.name = Character.toUpperCase(r.name.charAt(0)) + 
+							r.name.substring(1);
 			
 			// Print it out
-			outXML.print("  <region name=\""+name+
-									"\" x=\""+df.format((regionBounds.getX()-sheet.getX())*scale)+
-									"\" y=\""+df.format((regionBounds.getY()-sheet.getY())*scale)+
-									"\" width=\""+df.format(regionBounds.getWidth()*scale)+
-									"\" height=\""+df.format(regionBounds.getHeight()*scale)+"\"");
+			outXML.print("  <region name=\""+r.name+
+									"\" x=\""+df.format((r.bounds.getX()-sheet.getX())*scale)+
+									"\" y=\""+df.format((r.bounds.getY()-sheet.getY())*scale)+
+									"\" width=\""+df.format(r.bounds.getWidth()*scale)+
+									"\" height=\""+df.format(r.bounds.getHeight()*scale)+"\"");
 			if (event != null) {
 				outXML.println(">");
-				outXML.println("   <eventHandler type=\""+eventType +"\"/>");
+				outXML.println("   <eventHandler type=\""+r.eventType +"\"/>");
 				outXML.println("  </region>");
 			} else {
 				outXML.println("/>");
 			}
 		}
 		outXML.println("</sheet>");
+		outXML.close();
+
+		String template = 
+			read(PaperToolkit.getResourceFile("/designer/template.txt"));
+		
+		template = template.replace("{CLASSNAME}", className);
+		
+		// Find patterns of type {REPEAT:REGIONS} ... {/REPEAT:REGIONS} 
+		// in the template
+		Matcher repeatMatcher = Pattern.compile(
+				"\\{REPEAT:REGIONS\\}([\\s\\S]*?)\\{/REPEAT:REGIONS\\}",
+				Pattern.MULTILINE|Pattern.CASE_INSENSITIVE).matcher(template);
+		System.out.println("Matches = "+repeatMatcher.matches());
+		
+		int lastPosition = 0;
+		
+		while (repeatMatcher.find()) {
+			// Print text before the repeat region
+			outJava.print(template.substring(lastPosition,repeatMatcher.start()));
+			
+			// Loop through regions...
+			for (Region region : regions) {
+
+				String repeatString = 
+					repeatMatcher.group(1).replace("{REGION.NAME}",region.name);
+				
+				// Find {IF:XX} ... {/IF:XX} blocks in the repeat region
+	
+				Matcher ifMatcher = Pattern.compile(
+						"\\{IF:([A-Z]+)\\}([\\s\\S]*?)\\{/IF:([A-Z]+)\\}",
+						Pattern.MULTILINE|Pattern.CASE_INSENSITIVE)
+						.matcher(repeatString);
+				
+				int lastPosition2 = 0;
+				
+				while (ifMatcher.find()) {
+					// print text before {IF}
+					outJava.print(repeatString.substring(lastPosition2,ifMatcher.start()));
+					
+					String type = ifMatcher.group(1);
+					String ifString = ifMatcher.group(2); 
+	
+					// If this event is valid for this region, print out the
+					// if block
+					if (type.toLowerCase().equals(region.eventType))
+						outJava.print(ifString);
+					lastPosition2 = ifMatcher.end();
+				}
+				// print text after {/IF}
+				outJava.print(repeatString.substring(lastPosition2));
+			}
+			lastPosition = repeatMatcher.end();
+		}
+		// print text after the region
+		outJava.print(template.substring(lastPosition));
+		
+		outJava.close();
 
 		// Close down recognizer
 		service.exitServer();
@@ -216,6 +296,16 @@ public class SketchToPaperUI {
 		// A second approach is more of a connected components approach?
 		// Take a look at Andy Wilson's?
 		// Close off strokes, and find buttons and such...
+	}
+	public static String read(File file) throws IOException {
+		FileInputStream fis = new FileInputStream(file);
+		BufferedReader read = new BufferedReader(new InputStreamReader(fis));
+		
+		StringBuffer sb = new StringBuffer();
+		String line;
+		while ((line = read.readLine())!=null)
+			sb.append(line+"\n"); 
+		return sb.toString();
 	}
 /*
 	private static void highlight(List<InkStroke> strokes) {
