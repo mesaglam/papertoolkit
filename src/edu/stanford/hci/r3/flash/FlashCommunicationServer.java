@@ -61,6 +61,9 @@ public class FlashCommunicationServer {
 	 */
 	private ServerSocket socket;
 
+	private List<FlashListener> listeners = new ArrayList<FlashListener>();
+
+	
 	/**
 	 * 
 	 */
@@ -126,6 +129,9 @@ public class FlashCommunicationServer {
 
 	public void handleCommand(int clientID, String command) {
 		DebugUtils.println("Server got command " + command + " from client " + clientID);
+		for (FlashListener listener : listeners) {
+			listener.messageReceived(command);
+		}
 	}
 
 	/**
@@ -156,8 +162,14 @@ public class FlashCommunicationServer {
 	 * @param msg
 	 */
 	public void sendMessageToAll(String msg) {
+		DebugUtils
+				.println("Sending message: " + msg + " to all " + flashClients.size() + " clients");
 		for (FlashClient client : flashClients) {
 			client.sendMessage(msg);
 		}
+	}
+
+	public void addFlashClientListener(FlashListener flashListener) {
+		listeners.add(flashListener);
 	}
 }
