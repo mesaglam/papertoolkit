@@ -1,0 +1,14 @@
+<sheet width="8.5" height="8.867">
+  <region name="Region1" x="0.69" y="0.56" width="6.994" height="5.216">
+   <eventHandler type="ink"/>
+  </region>
+  <region name="Region2" x="4.849" y="6.567" width="2.412" height="1.328">
+   <eventHandler type="click"/>
+  </region>
+  <region name="Region3" x="1.035" y="6.459" width="1.384" height="1.332">
+   <eventHandler type="click"/>
+  </region>
+  <region name="Region4" x="3.157" y="6.623" width="1.354" height="1.247">
+   <eventHandler type="click"/>
+  </region>
+</sheet>
