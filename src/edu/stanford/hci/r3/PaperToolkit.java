@@ -59,6 +59,7 @@ import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
 import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.events.replay.EventBrowser;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
@@ -781,7 +782,10 @@ public class PaperToolkit {
 		return model;
 	}
 
-	private PopupMenu getPopupMenu() {
+	/**
+	 * @return a menu for the System Tray Icon.
+	 */
+	private PopupMenu getTrayPopupMenu() {
 		if (popupMenu == null) {
 			popupMenu = new PopupMenu("Paper Toolkit Options");
 
@@ -790,7 +794,6 @@ public class PaperToolkit {
 			exitItem.addActionListener(getExitListener());
 
 			popupMenu.add(exitItem);
-			popupMenu.add(new MenuItem("-")); // separator
 		}
 
 		return popupMenu;
@@ -866,7 +869,7 @@ public class PaperToolkit {
 		if (trayIcon == null) {
 			// this is the icon that sits in our tray...
 			trayIcon = new TrayIcon(ImageCache.loadBufferedImage(PaperToolkit.class
-					.getResource("/icons/glue.png")), "Paper Toolkit", getPopupMenu());
+					.getResource("/icons/glue.png")), "Paper Toolkit", getTrayPopupMenu());
 			trayIcon.setImageAutoSize(true);
 			try {
 				if (SystemTray.isSupported()) {
@@ -910,10 +913,11 @@ public class PaperToolkit {
 			DebugUtils.println("We will use the System Tray icon instead.");
 			getSystemTrayIcon();
 
+			popupMenu.add(new MenuItem("-")); // separator
 			final MenuItem debugItem = new MenuItem("Debug [" + app.getName() + "]");
 			debugItem.addActionListener(getDebugListener(app));
 
-			getPopupMenu().add(debugItem); // separator
+			getTrayPopupMenu().add(debugItem);
 		}
 	}
 
@@ -1022,16 +1026,65 @@ public class PaperToolkit {
 		paperApp.setHostToolkit(this);
 	}
 
+	/**
+	 * Check for uninitialized regions, and then populate the menu with options to bind these
+	 * regions to pattern at runtime!
+	 * 
+	 * @param mappings
+	 */
 	private void checkPatternMapsForUninitializedRegions(
-			final Collection<PatternLocationToSheetLocationMapping> patternMappings) {
-		for (PatternLocationToSheetLocationMapping map : patternMappings) {
+			Collection<PatternLocationToSheetLocationMapping> mappings) {
+
+		if (trayIcon == null) {
+			DebugUtils
+					.println("No need to check for uninitialized pattern maps, as we're not using the system tray.");
+			return;
+		}
+
+		for (PatternLocationToSheetLocationMapping map : mappings) {
 			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map
 					.getRegionToPatternMapping();
-			for (Region r : regionToPatternMapping.keySet()) {
+			for (final Region r : regionToPatternMapping.keySet()) {
 				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping
 						.get(r);
-				DebugUtils.println("Area: " + patternCoordinateConverter.getArea());
-				
+				double area = patternCoordinateConverter.getArea();
+				DebugUtils.println("Area: " + area);
+				if (area == 0) {
+					final MenuItem bindPatternToRegionItem = new MenuItem(
+							"Add Pattern Binding For [" + r.getName() + "]");
+					bindPatternToRegionItem.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent arg0) {
+							DebugUtils.println("Binding " + r);
+
+							// adds a listener for trashed events in the Event Engine
+							eventEngine.addEventHandlerForUnmappedEvents(new ClickHandler() {
+								@Override
+								public void clicked(PenEvent e) {
+									DebugUtils.println(r.getName() + " Clicked! (Trashed Event)");
+								}
+
+								@Override
+								public void pressed(PenEvent e) {
+
+								}
+
+								@Override
+								public void released(PenEvent e) {
+
+								}
+							});
+
+							// tell the user to draw one stroke...a rectangle or an L shape (like a
+							// graph's axis)
+
+							// bind that rectangle to this region, baby!
+
+							// unregister the listener...
+						}
+					});
+					getTrayPopupMenu().add(bindPatternToRegionItem);
+				}
 			}
 		}
 	}
