@@ -59,7 +59,7 @@ import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
 import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.handlers.StrokeHandler;
 import edu.stanford.hci.r3.events.replay.EventBrowser;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
@@ -76,6 +76,7 @@ import edu.stanford.hci.r3.tools.design.acrobat.AcrobatDesignerLauncher;
 import edu.stanford.hci.r3.tools.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.DebugUtils;
@@ -517,6 +518,78 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Check for uninitialized regions, and then populate the menu with options to bind these
+	 * regions to pattern at runtime!
+	 * 
+	 * @param mappings
+	 */
+	private void checkPatternMapsForUninitializedRegions(
+			Collection<PatternLocationToSheetLocationMapping> mappings) {
+
+		if (trayIcon == null) {
+			DebugUtils
+					.println("No need to check for uninitialized pattern maps, as we're not using the system tray.");
+			return;
+		}
+
+		for (final PatternLocationToSheetLocationMapping map : mappings) {
+			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map
+					.getRegionToPatternMapping();
+			for (final Region r : regionToPatternMapping.keySet()) {
+				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping
+						.get(r);
+				double area = patternCoordinateConverter.getArea();
+				DebugUtils.println("Area: " + area);
+				if (area > 0) {
+					// this region has a real mapping! NEXT!
+					continue;
+				}
+
+				// the menu item for invoking the runtime binding
+				// We need to update the text later...
+				final MenuItem bindPatternToRegionItem = new MenuItem("Add Pattern Binding For ["
+						+ r.getName() + "]");
+
+				bindPatternToRegionItem.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						DebugUtils.println("Binding " + r);
+
+						// Runtime Pattern to Region Binding
+						// adds a listener for trashed events in the Event Engine
+						eventEngine.addEventHandlerForUnmappedEvents(new StrokeHandler() {
+							@Override
+							public void strokeArrived(PenEvent e) {
+								Rectangle2D bounds = getStroke().getBounds();
+								// determine the bounds of the region in pattern space
+								// this information was provided by the user
+								final double tlX = bounds.getX();
+								final double tlY = bounds.getY();
+								final double width = bounds.getWidth();
+								final double height = bounds.getHeight();
+
+								// tie the pattern bounds to this region object
+								map.setPatternInformationOfRegion(r, //
+										new PatternDots(tlX), new PatternDots(tlY), // 
+										new PatternDots(width), new PatternDots(height));
+
+								// unregister myself...
+								eventEngine.removeEventHandlerForUnmappedEvents(this);
+
+								DebugUtils.println("Bound the region [" + r.getName()
+										+ "] to Pattern " + bounds);
+								bindPatternToRegionItem.setLabel("Change Binding for "
+										+ r.getName() + ". Currently set to " + bounds);
+							}
+						});
+					}
+				});
+				getTrayPopupMenu().add(bindPatternToRegionItem);
+			}
+		}
+	}
+
+	/**
 	 * @return the scrollpane that shows the internals of the application.
 	 */
 	private Component getAppDetailsPane() {
@@ -783,20 +856,16 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return a menu for the System Tray Icon.
+	 * @param app
+	 * @return
 	 */
-	private PopupMenu getTrayPopupMenu() {
-		if (popupMenu == null) {
-			popupMenu = new PopupMenu("Paper Toolkit Options");
-
-			// exit the application
-			final MenuItem exitItem = new MenuItem("Exit");
-			exitItem.addActionListener(getExitListener());
-
-			popupMenu.add(exitItem);
-		}
-
-		return popupMenu;
+	private ActionListener getRenderListener(final Application app) {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				app.renderToPDF();
+			}
+		};
 	}
 
 	/**
@@ -894,6 +963,23 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @return a menu for the System Tray Icon.
+	 */
+	private PopupMenu getTrayPopupMenu() {
+		if (popupMenu == null) {
+			popupMenu = new PopupMenu("Paper Toolkit Options");
+
+			// exit the application
+			final MenuItem exitItem = new MenuItem("Exit");
+			exitItem.addActionListener(getExitListener());
+
+			popupMenu.add(exitItem);
+		}
+
+		return popupMenu;
+	}
+
+	/**
 	 * Adds an application to the loaded list, and displays the application manager.
 	 * 
 	 * @param app
@@ -923,19 +1009,6 @@ public class PaperToolkit {
 			getTrayPopupMenu().add(debugItem);
 			getTrayPopupMenu().add(renderItem);
 		}
-	}
-
-	/**
-	 * @param app
-	 * @return
-	 */
-	private ActionListener getRenderListener(final Application app) {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				app.renderToPDF();
-			}
-		};
 	}
 
 	/**
@@ -1041,69 +1114,6 @@ public class PaperToolkit {
 
 		// provides access back to the toolkit object
 		paperApp.setHostToolkit(this);
-	}
-
-	/**
-	 * Check for uninitialized regions, and then populate the menu with options to bind these
-	 * regions to pattern at runtime!
-	 * 
-	 * @param mappings
-	 */
-	private void checkPatternMapsForUninitializedRegions(
-			Collection<PatternLocationToSheetLocationMapping> mappings) {
-
-		if (trayIcon == null) {
-			DebugUtils
-					.println("No need to check for uninitialized pattern maps, as we're not using the system tray.");
-			return;
-		}
-
-		for (PatternLocationToSheetLocationMapping map : mappings) {
-			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map
-					.getRegionToPatternMapping();
-			for (final Region r : regionToPatternMapping.keySet()) {
-				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping
-						.get(r);
-				double area = patternCoordinateConverter.getArea();
-				DebugUtils.println("Area: " + area);
-				if (area == 0) {
-					final MenuItem bindPatternToRegionItem = new MenuItem(
-							"Add Pattern Binding For [" + r.getName() + "]");
-					bindPatternToRegionItem.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent arg0) {
-							DebugUtils.println("Binding " + r);
-
-							// adds a listener for trashed events in the Event Engine
-							eventEngine.addEventHandlerForUnmappedEvents(new ClickHandler() {
-								@Override
-								public void clicked(PenEvent e) {
-									DebugUtils.println(r.getName() + " Clicked! (Trashed Event)");
-								}
-
-								@Override
-								public void pressed(PenEvent e) {
-
-								}
-
-								@Override
-								public void released(PenEvent e) {
-
-								}
-							});
-
-							// tell the user to draw one stroke...a rectangle or an L shape (like a
-							// graph's axis)
-
-							// bind that rectangle to this region, baby!
-
-							// unregister the listener...
-						}
-					});
-					getTrayPopupMenu().add(bindPatternToRegionItem);
-				}
-			}
-		}
 	}
 
 	/**

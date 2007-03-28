@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.hci.r3.events.PenEvent.PenEventModifier;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.events.replay.EventReplayManager;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
@@ -42,6 +41,11 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class EventEngine {
 
 	/**
+	 * Send all unmapped events here...
+	 */
+	private List<EventHandler> catchAllHandlers = new ArrayList<EventHandler>();
+
+	/**
 	 * Set when handling regular samples, so that we can set the location of the pen up.
 	 */
 	private PercentageCoordinates lastKnownLocation;
@@ -56,6 +60,12 @@ public class EventEngine {
 	 * Used by penUp to notify event handlers.
 	 */
 	private List<EventHandler> mostRecentEventHandlers = new ArrayList<EventHandler>();
+
+	/**
+	 * We keep a count of how many events we have "trashed." These events could not be mapped to any
+	 * active region.
+	 */
+	private int numTrashedPenEvents = 0;
 
 	/**
 	 * Lets us figure out which sheets and regions should handle which events. Interacting with this
@@ -86,23 +96,21 @@ public class EventEngine {
 	private EventReplayManager replayManager;
 
 	/**
-	 * We keep a count of how many events we have "trashed." These events could not be mapped to any
-	 * active region.
-	 */
-	private int numTrashedPenEvents = 0;
-
-	/**
-	 * Send all unmapped events here...
-	 */
-	private List<EventHandler> catchAllHandlers = new ArrayList<EventHandler>();
-
-	/**
 	 * This object handles event dispatch by hooking up pen listeners to local and remote pen
 	 * servers. It will figure out where to dispatch incoming pen samples... and will activate the
 	 * correct event handlers.
 	 */
 	public EventEngine() {
 		replayManager = new EventReplayManager(this);
+	}
+
+	/**
+	 * This can detect and process events when it's outside of any other region...
+	 * 
+	 * @param handler
+	 */
+	public void addEventHandlerForUnmappedEvents(EventHandler handler) {
+		catchAllHandlers.add(handler);
 	}
 
 	/**
@@ -227,6 +235,9 @@ public class EventEngine {
 		mostRecentContentFilters.clear();
 
 		synchronized (patternToSheetMaps) {
+
+			boolean eventHandledAtLeastOnce = false;
+
 			// for each sample, we first have to convert it to a location on the sheet.
 			// THEN, we will be able to make more interesting events...
 			for (final PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
@@ -264,6 +275,7 @@ public class EventEngine {
 				// so long as the event is not consumed
 				for (EventHandler eh : eventHandlers) {
 					eh.handleEvent(penEvent);
+					eventHandledAtLeastOnce = true;
 					mostRecentEventHandlers.add(eh);
 					if (penEvent.isConsumed()) {
 						// we are done handling this event
@@ -280,6 +292,7 @@ public class EventEngine {
 				final List<ContentFilter> eventFilters = region.getEventFilters();
 				for (ContentFilter ef : eventFilters) {
 					ef.filterEvent(penEvent);
+					eventHandledAtLeastOnce = true;
 					mostRecentContentFilters.add(ef);
 					// filters do not consume events
 					// but they are lower priority than event handlers
@@ -288,34 +301,33 @@ public class EventEngine {
 
 			} // check the next pattern map
 
-			// there is no pattern map that matches the incoming pen event!
-			// we dump it in a trash bin, and notify the user of this situation
-			// perhaps the developer would like to register a pattern mapping at run time?
-			if (numTrashedPenEvents % 29 == 0) {
-				// print out this warning once in a while...
-				System.err
-						.println("The event engine cannot map these pen events to any active region. "
-								+ "We'll trash these events for now, but perhaps you should investigate "
-								+ "attaching a pattern mapping (even at runtime) to your regions.");
-			}
-			numTrashedPenEvents++;
-			DebugUtils.println("Cannot Map " + penEvent);
+			if (!eventHandledAtLeastOnce) {
 
-			// send the event to our "catch-all" event handlers...
-			for (EventHandler eh : catchAllHandlers) {
-				eh.handleEvent(penEvent);
-				mostRecentEventHandlers.add(eh);
-				if (penEvent.isConsumed()) {
-					// we are done handling this event
-					// look at no more event handlers
-					// look at no more pattern maps
-					// DebugUtils.println("Event Consumed");
-					return;
+				// send the event to our "catch-all" event handlers...
+				for (EventHandler eh : catchAllHandlers) {
+					eventHandledAtLeastOnce = true;
+					eh.handleEvent(penEvent);
+					mostRecentEventHandlers.add(eh);
+				} // check the next event handler
+
+				if (!eventHandledAtLeastOnce) {
+					// if still, no one has had a chance to deal with this event
+					// it becomes TRASH!
+
+					// there is no pattern map that matches the incoming pen event!
+					// we dump it in a trash bin, and notify the user of this situation
+					// perhaps the developer would like to register a mapping at run time?
+					if (numTrashedPenEvents % 29 == 0) {
+						// print out this warning once in a while...
+						System.err
+								.println("The event engine cannot map these pen events to any active region. "
+										+ "We'll trash these events for now, but perhaps you should investigate "
+										+ "attaching a pattern mapping (even at runtime) to your regions.");
+					}
+					numTrashedPenEvents++;
+					DebugUtils.println("Cannot Map " + penEvent);
 				}
-			} // check the next event handler
-
-			// TODO add support for runtime pattern mapping here
-
+			}
 		}
 	}
 
@@ -369,11 +381,16 @@ public class EventEngine {
 	}
 
 	/**
+	 * Really, this is the only method we need to do runtime binding. Who cares if the sheet doesn't
+	 * have the right mapping, anyways?
 	 * 
 	 * @param mapping
 	 */
 	public void registerPatternMapForEventHandling(PatternLocationToSheetLocationMapping mapping) {
 		DebugUtils.println("Registering A Pattern Location to Sheet Location Map");
+		if (patternToSheetMaps.contains(mapping)) {
+			DebugUtils.println("EventEngine is already aware of this pattern map.");
+		}
 		patternToSheetMaps.add(mapping);
 	}
 
@@ -388,6 +405,13 @@ public class EventEngine {
 				+ patternMaps + "]");
 		patternToSheetMaps.addAll(patternMaps);
 		DebugUtils.println("Registered " + patternMaps.size() + " New Maps");
+	}
+
+	/**
+	 * @param strokeHandler
+	 */
+	public void removeEventHandlerForUnmappedEvents(EventHandler handler) {
+		catchAllHandlers.remove(handler);
 	}
 
 	/**
@@ -436,14 +460,5 @@ public class EventEngine {
 			PenListener listener = penToListener.get(pen);
 			removePenFromInternalLists(pen, listener);
 		}
-	}
-
-	/**
-	 * This can detect and process events when it's outside of any other region...
-	 * 
-	 * @param handler
-	 */
-	public void addEventHandlerForUnmappedEvents(EventHandler handler) {
-		catchAllHandlers.add(handler);
 	}
 }
