@@ -8,6 +8,7 @@
 	import ink.Ink;
 	import ink.InkStroke;
 	import flash.display.Shape;
+	import flash.utils.Timer;
 
 	
 	public class EventVizClient extends Sprite {
@@ -87,7 +88,6 @@
             if (event.text.indexOf("sheet")>-1) {
 				var sheets:XMLList = message.descendants("sheet");
 				
-				
 				for each (var sheet:XML in sheets) {
 					g.lineStyle(1, 0xDADADA);
 					g.drawRect(0, 0, parseFloat(sheet.@w)*pixelsPerInch, parseFloat(sheet.@h)*pixelsPerInch);
@@ -98,12 +98,47 @@
 						var regionBox:Shape = new Shape();
 						regionBox.graphics.beginFill(0xDADADA, 0.25);
 						regionBox.graphics.lineStyle(1, 0xDADADA);
-						regionBox.graphics.drawRect(toInches(region.@x), toInches(region.@y), toInches(region.@w), toInches(region.@h))
+						regionBox.graphics.drawRect(toInches(region.@x), toInches(region.@y), toInches(region.@w), toInches(region.@h));
 						app.addChild(regionBox);
+						
+						lastRegionAdded = regionBox;
+						lastRegionX = toInches(region.@x); 
+						lastRegionY = toInches(region.@y);
+						lastRegionW = toInches(region.@w);
+						lastRegionH = toInches(region.@h);
 					}
 				}			
+            } else if (event.text.indexOf("showMe")>-1) {
+            	if (lastRegionAdded != null) {
+            		lastRegionAddedTimer = new Timer(1000);
+					lastRegionAddedTimer.addEventListener(TimerEvent.TIMER, timerHandler);
+            		
+					lastRegionAdded.graphics.clear();
+					lastRegionAdded.graphics.beginFill(0xBBBBFF, 0.45);
+					lastRegionAdded.graphics.lineStyle(1, 0xDADADA);
+					lastRegionAdded.graphics.drawRect(lastRegionX, lastRegionY, lastRegionH, lastRegionW);
+					
+					lastRegionAddedTimer.start();
+            	}
             }
         }
+
+		private function timerHandler(event:TimerEvent):void {
+			lastRegionAdded.graphics.clear();
+			lastRegionAdded.graphics.beginFill(0xDADADA, 0.25);
+			lastRegionAdded.graphics.lineStyle(1, 0xDADADA);
+			lastRegionAdded.graphics.drawRect(lastRegionX, lastRegionY, lastRegionH, lastRegionW);
+			lastRegionAddedTimer.stop();
+		}
+
+		// just a hack to test animation for now
+		private var lastRegionAdded:Shape;
+		private var lastRegionAddedTimer:Timer;
+		private var lastRegionX:Number;		
+		private var lastRegionY:Number;		
+		private var lastRegionW:Number;		
+		private var lastRegionH:Number;		
+
 
         private function ioErrorHandler(event:IOErrorEvent):void {
             trace("ioErrorHandler: " + event);

@@ -26,10 +26,21 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class DebuggingEnvironment {
 
+	public static void showMe(Application hostApp, String string) {
+		DebugUtils.printlnWithStackOffset(string, 1);
+
+		// send to the debug UI, if it exists!
+		DebuggingEnvironment debuggingEnvironment = hostApp.getDebuggingEnvironment();
+		if (debuggingEnvironment != null) {
+			debuggingEnvironment.visualize(string);
+		}
+	}
+
 	private Application app;
-	private DebugFrame frame;
 	private DebugPCanvas canvas;
 	private FlashCommunicationServer flash;
+
+	private DebugFrame frame;
 
 	/**
 	 * @param paperApp
@@ -46,11 +57,6 @@ public class DebuggingEnvironment {
 
 		// now, we'll use Flash as our GUI
 		startFlashDebugView();
-	}
-
-	private void sendApplicationLayout() {
-		flash.sendMessage("<loadingapplication/>");
-		sendAppLayout();
 	}
 
 	private void sendAppLayout() {
@@ -89,6 +95,11 @@ public class DebuggingEnvironment {
 		flash.sendMessage(msg.toString());
 	}
 
+	private void sendApplicationLayout() {
+		flash.sendMessage("<loadingapplication/>");
+		sendAppLayout();
+	}
+
 	private void startFlashDebugView() {
 		// Start the local messaging server
 		flash = new FlashCommunicationServer();
@@ -118,6 +129,10 @@ public class DebuggingEnvironment {
 
 		// add visual components to GUI
 		canvas.addVisualComponents(paperApp);
+	}
+
+	private void visualize(String string) {
+		flash.sendMessage("<showMe/>");
 	}
 
 }

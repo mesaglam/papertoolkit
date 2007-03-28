@@ -136,4 +136,5 @@ public class DebugUtils {
 	public static void setDebugTraceVisible(boolean debugTrace) {
 		debugTraceOn = debugTrace;
 	}
+
 }
