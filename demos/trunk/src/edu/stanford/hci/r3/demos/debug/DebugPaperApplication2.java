@@ -65,15 +65,14 @@ public class DebugPaperApplication2 {
 		sheet.addRegion(buttonRegion);
 
 		Application app = new Application("A Simple Application");
-		app.addPen(new Pen("Single Pen"));
+		// app.addPen(new Pen("Single Pen"));
 		app.addPen(new Pen("Single Pen", "solaria.stanford.edu"));
 
 		// no pattern info xml file loaded...
 		// should allow runtime binding of pattern info
 		// or auto binding?
 		// or bind w/ previously saved event streams! =)
-		app.addSheet(sheet); 
-		
+		app.addSheet(sheet);
 
 		PaperToolkit p = new PaperToolkit(true, false, false);
 		p.startApplication(app);
