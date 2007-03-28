@@ -78,6 +78,9 @@ public class PenServer implements PenListener {
 		}
 	}
 
+	/**
+	 * The default port to which pen clients can connect...
+	 */
 	public static final int DEFAULT_JAVA_PORT = 11025;
 
 	public static final int DEFAULT_PLAINTEXT_PORT = 11026;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Ink API Browser">
+	<mx:Style source="styles/styles.css"/>
+
+	<mx:Script>
+		<![CDATA[
+			import flash.events.MouseEvent;
+			import flash.display.StageDisplayState;
+			import eventViz.EventVizClient;
+
+			// more or less all the code! =)			
+			var viz:EventVizClient = new EventVizClient();
+			
+		]]>
+	</mx:Script>
+</mx:Application>

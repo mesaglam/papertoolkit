@@ -364,7 +364,7 @@ public class EventEngine {
 	 */
 	public void registerPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
-		DebugUtils.println("Registering Pattern Location to Sheet Location Maps");
+		DebugUtils.println("Registering the (Pattern Location --> Sheet Location) Maps [" + patternMaps + "]");
 		patternToSheetMaps.addAll(patternMaps);
 		DebugUtils.println("Registered " + patternMaps.size() + " New Maps");
 	}

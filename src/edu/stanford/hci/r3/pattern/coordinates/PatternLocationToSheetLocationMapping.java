@@ -304,9 +304,10 @@ public class PatternLocationToSheetLocationMapping {
 		for (final Region r : regionToPatternBounds.keySet()) {
 			sb.append(r.getName() + " --> ");
 			final PatternCoordinateConverter bounds = regionToPatternBounds.get(r);
-			sb.append(bounds);
+			sb.append(bounds + ", ");
 		}
-		return sb.toString();
+		String string = sb.toString();
+		return string.substring(0, string.length() - 2); // chop off the last ", "
 	}
 
 	/**
