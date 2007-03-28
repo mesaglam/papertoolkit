@@ -13,6 +13,7 @@ import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMap
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.render.SheetRenderer;
+import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -40,6 +41,8 @@ public class Application {
 	 * In the future, these event handlers will work exactly the same as real-time event handlers.
 	 */
 	private List<BatchedEventHandler> batchEventHandlers = new ArrayList<BatchedEventHandler>();
+
+	private DebuggingEnvironment debuggingEnvironment;
 
 	/**
 	 * An application can also coordinate multiple devices. A remote collaboration application might
@@ -186,6 +189,10 @@ public class Application {
 	 */
 	public List<BatchedEventHandler> getBatchEventHandlers() {
 		return batchEventHandlers;
+	}
+
+	public DebuggingEnvironment getDebuggingEnvironment() {
+		return debuggingEnvironment;
 	}
 
 	/**
@@ -341,6 +348,10 @@ public class Application {
 			}
 		}
 
+	}
+
+	public void setDebuggingEnvironment(DebuggingEnvironment debugEnvironment) {
+		debuggingEnvironment = debugEnvironment;
 	}
 
 	/**
