@@ -357,7 +357,7 @@ public class Sheet {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Sheet { name: [" + name + "] size: [" + getWidth() + " � " + getHeight() + "] numRegions: ["
+		return "Sheet { name: [" + name + "] size: [" + getWidth() + " x " + getHeight() + "] numRegions: ["
 				+ regions.size() + "]}";
 	}
 
