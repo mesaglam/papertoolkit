@@ -226,7 +226,7 @@ public class EventEngine {
 			for (final PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
 
 				// this is a key step!
-				// the event engine figues out which pattern region contains
+				// the event engine figures out which pattern region contains
 				// this sample. This determines the set of event handlers the event
 				// should be sent to
 				final PatternCoordinateConverter coordinateConverter = pmap
@@ -270,6 +270,7 @@ public class EventEngine {
 
 				// also, send this event to all the filters, if the event is not yet consumed by one
 				// of the above handlers
+				// TODO: Fold in the filters to the event handlers... for a simpler architecture!
 				final List<ContentFilter> eventFilters = region.getEventFilters();
 				for (ContentFilter ef : eventFilters) {
 					ef.filterEvent(penEvent);

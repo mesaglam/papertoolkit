@@ -16,7 +16,7 @@ import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class LocationHandler implements EventHandler {
+public abstract class LocationHandler extends EventHandler {
 
 	/**
 	 * @see edu.stanford.hci.r3.events.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)

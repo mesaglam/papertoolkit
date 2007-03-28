@@ -16,7 +16,7 @@ import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class GestureHandler implements EventHandler {
+public abstract class GestureHandler extends EventHandler {
 
 	/**
 	 * <p>

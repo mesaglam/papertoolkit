@@ -15,7 +15,7 @@ import edu.stanford.hci.r3.events.PenEvent;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class ClickHandler implements EventHandler {
+public abstract class ClickHandler extends EventHandler {
 
 	/**
 	 * <p>

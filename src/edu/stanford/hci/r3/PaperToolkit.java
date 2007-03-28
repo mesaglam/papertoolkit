@@ -22,7 +22,9 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.AbstractListModel;
@@ -60,7 +62,9 @@ import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.replay.EventBrowser;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pattern.coordinates.RegionID;
+import edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter;
 import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchServer;
@@ -896,6 +900,7 @@ public class PaperToolkit {
 		loadedApplications.add(app);
 		// show the app manager
 		if (useAppManager) {
+			DebugUtils.println("Using the Application Manager. We will hide the System Tray Icon.");
 			getApplicationManager();
 			updateListOfApps();
 		} else {
@@ -994,8 +999,13 @@ public class PaperToolkit {
 		}
 
 		// keep track of the pattern assigned to different sheets and regions
-		eventEngine.registerPatternMapsForEventHandling(paperApp.getPatternMaps());
+		final Collection<PatternLocationToSheetLocationMapping> patternMappings = paperApp
+				.getPatternMaps();
+		eventEngine.registerPatternMapsForEventHandling(patternMappings);
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
+
+		// will populate the system tray with a feature for runtime binding of regions... =)
+		checkPatternMapsForUninitializedRegions(patternMappings);
 
 		// XXX
 		// Here, we should pass the event engine over...
@@ -1008,7 +1018,22 @@ public class PaperToolkit {
 		runningApplications.add(paperApp);
 		getListOfApps().repaint();
 
+		// provides access back to the toolkit object
 		paperApp.setHostToolkit(this);
+	}
+
+	private void checkPatternMapsForUninitializedRegions(
+			final Collection<PatternLocationToSheetLocationMapping> patternMappings) {
+		for (PatternLocationToSheetLocationMapping map : patternMappings) {
+			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map
+					.getRegionToPatternMapping();
+			for (Region r : regionToPatternMapping.keySet()) {
+				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping
+						.get(r);
+				DebugUtils.println("Area: " + patternCoordinateConverter.getArea());
+				
+			}
+		}
 	}
 
 	/**

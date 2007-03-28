@@ -85,7 +85,7 @@
             debugTextArea.text = message.toXMLString() + "\n\n" + debugTextArea.text;
 
             // if it is a new sheet, then draw it!
-            if (event.text.indexOf("sheet")>-1) {
+            if (event.text.indexOf("<sheet")>-1) {
 				var sheets:XMLList = message.descendants("sheet");
 				
 				for each (var sheet:XML in sheets) {
@@ -108,7 +108,7 @@
 						lastRegionH = toInches(region.@h);
 					}
 				}			
-            } else if (event.text.indexOf("showMe")>-1) {
+            } else if (event.text.indexOf("<showMe")>-1) {
             	if (lastRegionAdded != null) {
             		lastRegionAddedTimer = new Timer(1000);
 					lastRegionAddedTimer.addEventListener(TimerEvent.TIMER, timerHandler);

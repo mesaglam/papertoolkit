@@ -206,6 +206,11 @@ public class Region {
 	 */
 	public void addEventHandler(EventHandler handler) {
 		eventHandlers.add(handler);
+		
+		// tell the event handler that we are one of its parent regions
+		// this allows code in event handling to determine which regions it might affect, at runtime! :)
+		handler.addParentRegion(this);
+		
 		active = true;
 	}
 
