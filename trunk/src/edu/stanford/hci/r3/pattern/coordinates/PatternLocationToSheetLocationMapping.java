@@ -138,6 +138,16 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
+	 * An advanced method, to allow us to inspect the region <--> pattern mapping. We can tell if
+	 * the pattern map has an area of 0, which probably means it is uninitialized!
+	 * 
+	 * @return
+	 */
+	public Map<Region, PatternCoordinateConverter> getRegionToPatternMapping() {
+		return regionToPatternBounds;
+	}
+
+	/**
 	 * @return
 	 */
 	public Sheet getSheet() {

@@ -77,6 +77,16 @@ public class FlexiblePatternCoordinateConverter implements PatternCoordinateConv
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter#getArea()
+	 */
+	@Override
+	public double getArea() {
+		return widthInDots * heightInDots;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter#getRegionName()
 	 */
 	public String getRegionName() {

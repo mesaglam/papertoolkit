@@ -12,6 +12,6 @@ import edu.stanford.hci.r3.events.EventHandler;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class DragHandler implements EventHandler {
+public abstract class DragHandler extends EventHandler {
 
 }
