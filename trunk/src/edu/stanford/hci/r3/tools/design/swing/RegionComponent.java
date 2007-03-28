@@ -7,6 +7,16 @@ import javax.swing.JComponent;
 
 import edu.stanford.hci.r3.paper.Region;
 
+/**
+ * 
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author Marcello
+ *
+ */
 public class RegionComponent extends JComponent {
 	
 	/**

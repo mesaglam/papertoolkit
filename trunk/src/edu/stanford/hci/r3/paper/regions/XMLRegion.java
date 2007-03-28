@@ -4,6 +4,11 @@ import edu.stanford.hci.r3.paper.Region;
 /**
  * XML regions are Region objects augmented with extra meta data from an XMLSheet.
  * 
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
  * @author Marcello
  */
 

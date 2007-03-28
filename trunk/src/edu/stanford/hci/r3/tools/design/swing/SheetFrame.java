@@ -18,6 +18,12 @@ import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.tools.design.util.Regions;
 
 /**
+ * A JFrame based on a Sheet object.  This allows you to quickly generate a
+ * Swing interface from an existing paper interface.  
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
  * @author Marcello
  */
@@ -43,7 +49,10 @@ public class SheetFrame extends JFrame {
 
 		setSize((int)(sheet.getWidth().getValue()  * scale),
 				(int)(sheet.getHeight().getValue() * scale));
+		
 		setLayout(null);
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Loop through regions
 		for (Region r : sheet.getRegions()) {
@@ -70,6 +79,11 @@ public class SheetFrame extends JFrame {
 						c = button;
 					} else if (type.equals("handwriting")) {
 						JTextField tf = new JTextField();
+						tf.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								// TODO: Gotta figure out what happens here
+							}
+						});
 						c = tf;
 					}
 				}
