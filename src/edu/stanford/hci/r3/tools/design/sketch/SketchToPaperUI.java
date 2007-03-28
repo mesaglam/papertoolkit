@@ -64,7 +64,7 @@ public class SketchToPaperUI {
 
 
 	public static void main(String[] args) throws IOException {
-		String fileName = "penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml";
+		String fileName = "penSynch/data/XML/2007_03_24__19_51_50_AJ3-AAA-ZU3-7X.xml";//2007_03_10__01_09_38_SketchedPaperUI.xml";
 		
 		translate(new File(fileName),
 				  "SketchedPaperUI",
@@ -148,32 +148,36 @@ public class SketchToPaperUI {
 					break;
 				}	
 			}
+			Ink event = null;
 			
-			// Find the endpoint outside of the region
-			PenSample p = c.getStart();
-			if (r.bounds.contains(p.getX(),p.getY()))
-				p = c.getEnd();
-			
-			// Find the event nearest that endpoint
-			Ink event = InkUtils.findInkNearPoint(events, 
-					new Point2D.Double(p.getX(),p.getY()), 40.0);
-			
-			// If an event is found...
-			if (event != null) {
-				// Recognize the text...
-				String result = service.recognizeHandwriting(
-						event.getAsXML(false /* no separator lines */));
+			if (c != null) {
 				
-				// Split it on non-alpha numeric characters
-				String pieces[] = result.split("[^a-zA-Z0-9]");
-				// Second piece is name
-				if (pieces.length>1)
-					r.name = pieces[1];
-				// First is event type
-				r.eventType = pieces[0].toLowerCase();
-				// TODO: there is probably a better way to split this
+				// Find the endpoint outside of the region
+				PenSample p = c.getStart();
+				if (r.bounds.contains(p.getX(),p.getY()))
+					p = c.getEnd();
+				
+				// Find the event nearest that endpoint
+				event = InkUtils.findInkNearPoint(events, 
+						new Point2D.Double(p.getX(),p.getY()), 40.0);
+				
+				// If an event is found...
+				if (event != null) {
+					// Recognize the text...
+					String result = service.recognizeHandwriting(
+							event.getAsXML(false /* no separator lines */));
+					
+					// Split it on non-alpha numeric characters
+					String pieces[] = result.split("[^a-zA-Z0-9]");
+					// Second piece is name
+					if (pieces.length>1)
+						r.name = pieces[1];
+					// First is event type
+					r.eventType = pieces[0].toLowerCase();
+					// TODO: there is probably a better way to split this
+				}
 			}
-			
+				
 			// If we got no name, auto-generate one (this is problematic if you
 			// revise your sketch, since they could potentially be renumbered)
 			if (r.name == null)
