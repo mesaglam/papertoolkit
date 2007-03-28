@@ -3,15 +3,11 @@ package edu.stanford.hci.r3.demos.debug;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ButtonRegion;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.PenSample;
-import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
-import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -38,12 +34,12 @@ public class DebugPaperApplication2 {
 
 		Sheet sheet = new Sheet(8.5, 11);
 
-		Region r = new Region("Ink", 1, 1, 6, 4);
+		Region r = new Region("Ink", 1, 1, 6.5, 4);
 		r.addEventHandler(new ClickHandler() {
 
 			@Override
 			public void clicked(PenEvent e) {
-				DebugUtils.println("Ink Region Clicked");
+				DebugUtils.println("Ink Region Clicked at " + e.getPercentageLocation());
 				// test the showMe functionality...
 				// DebuggingEnvironment.showMe(app, "Pen Listener Clicked");
 			}
@@ -59,10 +55,10 @@ public class DebugPaperApplication2 {
 			}
 		});
 
-		ButtonRegion buttonRegion = new ButtonRegion("Send", 6, 9, 2, 1.3) {
+		ButtonRegion buttonRegion = new ButtonRegion("Send", 5.5, 8.5, 2, 1.5) {
 			@Override
 			protected void onClick(PenEvent e) {
-				DebugUtils.println("Send Region clicked");
+				DebugUtils.println("Send Region clicked at " + e.getPercentageLocation());
 			}
 		};
 
@@ -74,28 +70,9 @@ public class DebugPaperApplication2 {
 		// Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
 		app.addPen(pen);
 
-		// pen.addLivePenListener(new PenListener() {
-		// @Override
-		// public void penDown(PenSample sample) {
-		//
-		// }
-		//
-		// @Override
-		// public void penUp(PenSample sample) {
-		// // DebugUtils.println("Pen Listener Clicked");
-		//
-		// }
-		//
-		// @Override
-		// public void sample(PenSample sample) {
-		//
-		// }
-		// });
-
 		// no pattern info xml file loaded...
-		// should allow runtime binding of pattern info
-		// or auto binding?
-		// or bind w/ previously saved event streams! =)
+		// we are going to use the runtime binding of pattern info
+		// TODO: Alternatively, auto binding? or bind w/ previously saved event streams?! =)
 		app.addSheet(sheet);
 
 		PaperToolkit p = new PaperToolkit(true, false, false);
