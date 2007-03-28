@@ -13,8 +13,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.paper.regions.XMLRegion;
 import edu.stanford.hci.r3.units.Points;
 
 /**
@@ -58,14 +58,15 @@ public class XMLSheet extends Sheet {
 					double height = Double.parseDouble(attributes.getNamedItem("height").getTextContent());
 					System.out.println("region: "+name+"[x="+x+",y="+y+" width="+width+" x height="+height+"]");
 					
-					addRegion(new Region(name,x,y,width,height));
+					String eventType = null;
 					
 					for (Node eventHandler : new Iterate(region)) {
 						if (eventHandler.getNodeName().equals("eventHandler")) {
-							String eventType = eventHandler.getAttributes().getNamedItem("type").getTextContent();
+							eventType = eventHandler.getAttributes().getNamedItem("type").getTextContent();
 							System.out.println("event: "+ eventType);
 						}
 					}
+					addRegion(new XMLRegion(name,x,y,width,height,eventType));
 					
 				}
 			}
