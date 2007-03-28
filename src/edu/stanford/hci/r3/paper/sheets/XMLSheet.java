@@ -19,6 +19,12 @@ import edu.stanford.hci.r3.units.Points;
 
 /**
  * A Sheet object based on xml regions as defined by SketchToPaperUI
+ * 
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
  * @author Marcello
  */
 public class XMLSheet extends Sheet {
