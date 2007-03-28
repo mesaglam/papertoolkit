@@ -3,11 +3,15 @@ package edu.stanford.hci.r3.demos.debug;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ButtonRegion;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.PenSample;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
+import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -51,7 +55,6 @@ public class DebugPaperApplication2 {
 			public void released(PenEvent e) {
 
 			}
-
 		});
 
 		ButtonRegion buttonRegion = new ButtonRegion("Send", 6, 9, 2, 1.3) {
@@ -61,12 +64,41 @@ public class DebugPaperApplication2 {
 			}
 		};
 
+		Region c = new Region("PaperToolkitCatchAll", 1, 5.5, 1, 1);
+		c.addEventHandler(new ClickAdapter() {
+			public void clicked(PenEvent e) {
+				DebugUtils.println("Clicked CatchAll");
+			}
+		});
+
 		sheet.addRegion(r);
 		sheet.addRegion(buttonRegion);
+		sheet.addRegion(c);
 
-		Application app = new Application("A Simple Application");
+		final Application app = new Application("A Simple Application");
 		// app.addPen(new Pen("Single Pen"));
-		app.addPen(new Pen("Single Pen", "solaria.stanford.edu"));
+		Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
+		app.addPen(pen);
+
+		pen.addLivePenListener(new PenListener() {
+			@Override
+			public void penDown(PenSample sample) {
+
+			}
+
+			@Override
+			public void penUp(PenSample sample) {
+				// DebugUtils.println("Pen Listener Clicked");
+
+				// test the showMe functionality...
+				DebuggingEnvironment.showMe(app, "Pen Listener Clicked");
+			}
+
+			@Override
+			public void sample(PenSample sample) {
+
+			}
+		});
 
 		// no pattern info xml file loaded...
 		// should allow runtime binding of pattern info
