@@ -917,8 +917,25 @@ public class PaperToolkit {
 			final MenuItem debugItem = new MenuItem("Debug [" + app.getName() + "]");
 			debugItem.addActionListener(getDebugListener(app));
 
+			final MenuItem renderItem = new MenuItem("Render Sheets for [" + app.getName() + "]");
+			renderItem.addActionListener(getRenderListener(app));
+
 			getTrayPopupMenu().add(debugItem);
+			getTrayPopupMenu().add(renderItem);
 		}
+	}
+
+	/**
+	 * @param app
+	 * @return
+	 */
+	private ActionListener getRenderListener(final Application app) {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				app.renderToPDF();
+			}
+		};
 	}
 
 	/**

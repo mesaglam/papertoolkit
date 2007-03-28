@@ -34,8 +34,9 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
  */
 public class InkRenderer {
 
-	private static final Stroke INK_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-	
+	private static final Stroke INK_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
+			BasicStroke.JOIN_ROUND);
+
 	private Ink ink;
 
 	private RenderingTechnique renderingTechnique = new RenderingTechniqueCatmullRom();
@@ -64,9 +65,32 @@ public class InkRenderer {
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 		g2d.setColor(ink.getColor());
 		g2d.setStroke(INK_STROKE);
-		
+
 		final List<InkStroke> strokes = ink.getStrokes();
 		renderingTechnique.render(g2d, strokes);
+	}
+
+	/**
+	 * @param destJPEGFile
+	 */
+	public void renderToJPEG(File destJPEGFile) {
+		double maxX = ink.getMaxX();
+		double maxY = ink.getMaxY();
+
+		final int w = MathUtils.rint(maxX);
+		final int h = MathUtils.rint(maxY);
+		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(w, h);
+		final Graphics2D graphics2D = image.createGraphics();
+		graphics2D.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+
+		// render a white canvas
+		graphics2D.setColor(Color.WHITE);
+		graphics2D.fillRect(0, 0, w, h);
+
+		renderToG2D(graphics2D);
+		graphics2D.dispose();
+		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destJPEGFile);
+		DebugUtils.println("Wrote the File");
 	}
 
 	/**

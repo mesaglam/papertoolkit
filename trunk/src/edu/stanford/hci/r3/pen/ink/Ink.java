@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.filechooser.FileSystemView;
+
 import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.util.files.FileUtils;
@@ -263,6 +265,14 @@ public class Ink {
 	 */
 	public void removeStroke(InkStroke s) {
 		strokes.remove(s);
+	}
+
+	/**
+	 * 
+	 */
+	public void renderToJPEGFile() {
+		new InkRenderer(this).renderToJPEG(new File(FileSystemView.getFileSystemView()
+				.getHomeDirectory(), getName()));
 	}
 
 	/**

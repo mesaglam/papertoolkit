@@ -317,7 +317,11 @@ public class PatternLocationToSheetLocationMapping {
 			sb.append(bounds + ", ");
 		}
 		String string = sb.toString();
-		return string.substring(0, string.length() - 2); // chop off the last ", "
+		if (string.length() > 2) {
+			return string.substring(0, string.length() - 2); // chop off the last ", "
+		} else {
+			return string;
+		}
 	}
 
 	/**

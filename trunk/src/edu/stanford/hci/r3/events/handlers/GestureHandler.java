@@ -130,4 +130,13 @@ public abstract class GestureHandler extends EventHandler {
 	 * @param dir
 	 */
 	public abstract void handleMark(PenEvent e, GestureDirection dir);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.stanford.hci.r3.events.EventHandler#toString()
+	 */
+	public String toString() {
+		return "GestureHandler";
+	}
 }
