@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.hci.r3.events.PenEvent.PenEventModifier;
+import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.events.replay.EventReplayManager;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
@@ -89,6 +90,11 @@ public class EventEngine {
 	 * active region.
 	 */
 	private int numTrashedPenEvents = 0;
+
+	/**
+	 * Send all unmapped events here...
+	 */
+	private List<EventHandler> catchAllHandlers = new ArrayList<EventHandler>();
 
 	/**
 	 * This object handles event dispatch by hooking up pen listeners to local and remote pen
@@ -295,6 +301,19 @@ public class EventEngine {
 			numTrashedPenEvents++;
 			DebugUtils.println("Cannot Map " + penEvent);
 
+			// send the event to our "catch-all" event handlers...
+			for (EventHandler eh : catchAllHandlers) {
+				eh.handleEvent(penEvent);
+				mostRecentEventHandlers.add(eh);
+				if (penEvent.isConsumed()) {
+					// we are done handling this event
+					// look at no more event handlers
+					// look at no more pattern maps
+					// DebugUtils.println("Event Consumed");
+					return;
+				}
+			} // check the next event handler
+
 			// TODO add support for runtime pattern mapping here
 
 		}
@@ -365,7 +384,8 @@ public class EventEngine {
 	 */
 	public void registerPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
-		DebugUtils.println("Registering the (Pattern Location --> Sheet Location) Maps [" + patternMaps + "]");
+		DebugUtils.println("Registering the (Pattern Location --> Sheet Location) Maps ["
+				+ patternMaps + "]");
 		patternToSheetMaps.addAll(patternMaps);
 		DebugUtils.println("Registered " + patternMaps.size() + " New Maps");
 	}
@@ -416,5 +436,14 @@ public class EventEngine {
 			PenListener listener = penToListener.get(pen);
 			removePenFromInternalLists(pen, listener);
 		}
+	}
+
+	/**
+	 * This can detect and process events when it's outside of any other region...
+	 * 
+	 * @param handler
+	 */
+	public void addEventHandlerForUnmappedEvents(EventHandler handler) {
+		catchAllHandlers.add(handler);
 	}
 }
