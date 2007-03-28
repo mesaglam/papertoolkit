@@ -5,18 +5,24 @@
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
+			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 			import flash.display.StageDisplayState;
 			import eventViz.EventVizClient;
 
-			var viz:EventVizClient;
+			private var container:UIComponent;
+			private var viz:EventVizClient;
 
 			public function startEventViz():void {
 				trace("Starting Event Viz...");
 				// more or less all the code! =)			
+				container = new UIComponent();
 				viz = new EventVizClient();
 				viz.setDebugTextArea(debugText);
+				container.addChild(viz);
+				addChild(container);
 			}			
 		]]>
 	</mx:Script>
+	<mx:Label x="10" y="10" text="Paper UI Event Visualization" fontFamily="Trebuchet MS" fontWeight="bold" fontSize="28" color="#97cbff"/>
 </mx:Application>

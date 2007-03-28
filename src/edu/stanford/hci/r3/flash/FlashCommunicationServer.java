@@ -128,7 +128,7 @@ public class FlashCommunicationServer {
 	}
 
 	public void handleCommand(int clientID, String command) {
-		DebugUtils.println("Server got command " + command + " from client " + clientID);
+		DebugUtils.println("Server got command [" + command + "] from client " + clientID);
 		for (FlashListener listener : listeners) {
 			listener.messageReceived(command);
 		}

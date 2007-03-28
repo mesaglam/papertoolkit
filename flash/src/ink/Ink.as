@@ -27,6 +27,9 @@ package ink {
         private function onMouseDown(evt:Event):void {
             this.startDrag();
         }
+        private function onMouseUp(evt:Event):void {
+			this.stopDrag();
+        }
 		
 		public function addStroke(stroke:InkStroke):void {
 			//trace("Add Stroke");
@@ -39,9 +42,6 @@ package ink {
 			yMax = Math.max(yMax, stroke.maxY);			
 		}
 		
-        private function onMouseUp(evt:Event):void {
-			this.stopDrag();
-        }
         
         // move the ink so that we can see it!
         public function recenter():void {
