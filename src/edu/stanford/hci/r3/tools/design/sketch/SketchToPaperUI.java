@@ -22,6 +22,7 @@ import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.pen.ink.InkUtils;
+import edu.stanford.hci.r3.tools.design.util.Regions;
 
 /**
  * <p>
@@ -38,24 +39,6 @@ import edu.stanford.hci.r3.pen.ink.InkUtils;
 public class SketchToPaperUI {
 
 	/**
-	 * Returns the scale necessary to make width/height fit inside 
-	 * maxWidth/maxHeight.
-	 * @param width
-	 * @param height
-	 * @param maxWidth
-	 * @param maxHeight
-	 * @return
-	 */
-	public static double makeItFit(double width, double height, 
-			double maxWidth, double maxHeight) {
-		double xprop, yprop;
-		if ((xprop = width / maxWidth) < (yprop = height / maxHeight))
-			return 1/yprop;
-		return 1/xprop;
-	}
-
-	
-	/**
 	 * Loads the most recent pen XML and generates a paper UI XML file.
 	 * 
 	 * @param args
@@ -64,7 +47,8 @@ public class SketchToPaperUI {
 
 
 	public static void main(String[] args) throws IOException {
-		String fileName = "penSynch/data/XML/2007_03_24__19_51_50_AJ3-AAA-ZU3-7X.xml";//2007_03_10__01_09_38_SketchedPaperUI.xml";
+		String fileName = //"penSynch/data/XML/2007_03_24__19_51_50_AJ3-AAA-ZU3-7X.xml";
+			"penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml";
 		
 		translate(new File(fileName),
 				  "SketchedPaperUI",
@@ -105,7 +89,7 @@ public class SketchToPaperUI {
 
 		// Calculate the size of the sheet in inches (make it fit in 8.5x11)
 		Rectangle2D sheet = biggestStroke.getBounds();
-		double scale = makeItFit(sheet.getWidth(), sheet.getHeight(), 8.5, 11);
+		double scale = Regions.makeItFit(sheet.getWidth(), sheet.getHeight(), 8.5, 11);
 		
 		// Print out to...
 		PrintStream outXML = new PrintStream(
