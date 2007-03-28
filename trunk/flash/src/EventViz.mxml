@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Ink API Browser">
-	<mx:Style source="styles/styles.css"/>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="startEventViz();">
+	<mx:TextArea width="20%" editable="true" enabled="true" fontFamily="Lucida Console" fontSize="11" color="#4f4f4f" paddingLeft="10" paddingRight="10" right="10" top="10" bottom="10" id="debugText"/>
 
+	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
 			import flash.events.MouseEvent;
 			import flash.display.StageDisplayState;
 			import eventViz.EventVizClient;
 
-			// more or less all the code! =)			
-			var viz:EventVizClient = new EventVizClient();
-			
+			var viz:EventVizClient;
+
+			public function startEventViz():void {
+				trace("Starting Event Viz...");
+				// more or less all the code! =)			
+				viz = new EventVizClient();
+				viz.setDebugTextArea(debugText);
+			}			
 		]]>
 	</mx:Script>
 </mx:Application>

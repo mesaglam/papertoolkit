@@ -11,10 +11,15 @@
 	public class EventVizClient extends Sprite {
 		
 		private var sock:XMLSocket;
+		private var debugTextArea:TextArea;
 		
 		public function EventVizClient():void {
 			trace("Event Viz Client Started.");
 			startListening();
+		}
+		
+		public function setDebugTextArea(debugText:TextArea):void {
+			debugTextArea = debugText;
 		}
 		
  		public function startListening():void {
@@ -24,6 +29,8 @@
 			// this should be gotten from the query parameter...
 			// for now, we'll hard code it...
 			sock.connect("localhost", 8545);
+			
+			sock.send("connected\n");
 		}
 
         private function configureListeners(dispatcher:IEventDispatcher):void {
@@ -45,6 +52,7 @@
 
         private function dataHandler(event:DataEvent):void {
             trace("dataHandler: " + event);
+            debugTextArea.text = "dataHandler: " + event;
         }
 
         private function ioErrorHandler(event:IOErrorEvent):void {
