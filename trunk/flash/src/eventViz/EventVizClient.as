@@ -3,20 +3,45 @@
 	import flash.events.*;
 	import flash.net.*;
 	import flash.display.Sprite;
+	import flash.display.Graphics;
 	import mx.controls.TextArea;
 	import ink.Ink;
 	import ink.InkStroke;
+	import flash.display.Shape;
 
 	
 	public class EventVizClient extends Sprite {
 		
 		private var sock:XMLSocket;
 		private var debugTextArea:TextArea;
-		
+		private var g:Graphics;
+		private var app:Sprite = new Sprite();
+
+		private var pixelsPerInch:Number = 50; // 72 is normal
+
 		public function EventVizClient():void {
 			trace("Event Viz Client Started.");
 			startListening();
+			g = app.graphics;
+
+			// add drag support
+			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			app.buttonMode = true; // hand cursor
+
+			app.x = 25;
+			app.y = 75;
+			addChild(app);
 		}
+		
+        private function onMouseDown(evt:Event):void {
+            app.startDrag();
+        }
+        
+        private function onMouseUp(evt:Event):void {
+			app.stopDrag();
+        }
+
 		
 		public function setDebugTextArea(debugText:TextArea):void {
 			debugTextArea = debugText;
@@ -29,8 +54,7 @@
 			// this should be gotten from the query parameter...
 			// for now, we'll hard code it...
 			sock.connect("localhost", 8545);
-			
-			sock.send("connected\n");
+			sock.send("EventVizClient connected\n");
 		}
 
         private function configureListeners(dispatcher:IEventDispatcher):void {
@@ -50,9 +74,35 @@
             trace("connectHandler: " + event);
         }
 
+		private function toInches(inchString:String):Number {
+			return parseFloat(inchString)*pixelsPerInch;
+		}
+
         private function dataHandler(event:DataEvent):void {
-            trace("dataHandler: " + event);
-            debugTextArea.text = "dataHandler: " + event;
+            //trace("dataHandler: " + event);
+            var message:XML = new XML(event.text);
+            debugTextArea.text = message.toXMLString() + "\n\n" + debugTextArea.text;
+
+            // if it is a new sheet, then draw it!
+            if (event.text.indexOf("sheet")>-1) {
+				var sheets:XMLList = message.descendants("sheet");
+				
+				
+				for each (var sheet:XML in sheets) {
+					g.lineStyle(1, 0xDADADA);
+					g.drawRect(0, 0, parseFloat(sheet.@w)*pixelsPerInch, parseFloat(sheet.@h)*pixelsPerInch);
+
+					// for each region... draw a box
+					var regions:XMLList = sheet..region;
+					for each (var region:XML in regions) {
+						var regionBox:Shape = new Shape();
+						regionBox.graphics.beginFill(0xDADADA, 0.25);
+						regionBox.graphics.lineStyle(1, 0xDADADA);
+						regionBox.graphics.drawRect(toInches(region.@x), toInches(region.@y), toInches(region.@w), toInches(region.@h))
+						app.addChild(regionBox);
+					}
+				}			
+            }
         }
 
         private function ioErrorHandler(event:IOErrorEvent):void {

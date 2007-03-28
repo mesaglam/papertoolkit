@@ -169,4 +169,8 @@ public abstract class ClickHandler implements EventHandler {
 	 * @param e
 	 */
 	public abstract void released(PenEvent e);
+
+	public String toString() {
+		return "ClickHandler";
+	}
 }

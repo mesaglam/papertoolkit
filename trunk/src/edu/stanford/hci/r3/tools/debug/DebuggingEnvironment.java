@@ -1,8 +1,5 @@
 package edu.stanford.hci.r3.tools.debug;
 
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.List;
 
@@ -14,8 +11,6 @@ import edu.stanford.hci.r3.flash.FlashListener;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.util.DebugUtils;
-import edu.umd.cs.piccolo.nodes.PPath;
-import edu.umd.cs.piccolo.nodes.PText;
 
 /**
  * <p>
@@ -51,14 +46,10 @@ public class DebuggingEnvironment {
 
 		// now, we'll use Flash as our GUI
 		startFlashDebugView();
-
-		// we have to wait until it is constructed!
-		// start sending over messages...
-		sendApplicationLayout();
 	}
 
 	private void sendApplicationLayout() {
-		flash.sendMessage("<Loading Application/>");
+		flash.sendMessage("<loadingapplication/>");
 		sendAppLayout();
 	}
 
@@ -66,9 +57,36 @@ public class DebuggingEnvironment {
 		List<Sheet> sheets = app.getSheets();
 		DebugUtils.println("Number of Sheets: " + sheets.size());
 		// assume one sheet for now...
+		StringBuilder msg = new StringBuilder();
+		msg.append("<app>");
 		for (Sheet s : sheets) {
-			flash.sendMessage(s.toXML());
+			msg.append("<sheet w=\"" + s.getWidth().getValueInInches() + "\" h=\""
+					+ s.getHeight().getValueInInches() + "\">");
+			for (Region r : s.getRegions()) {
+				double rX = r.getOriginX().getValueInInches();
+				double rY = r.getOriginY().getValueInInches();
+				double rWidth = r.getWidth().getValueInInches();
+				double rHeight = r.getHeight().getValueInInches();
+				msg.append("<region name='" + r.getName() + "'x=\"" + rX + "\" y=\"" + rY
+						+ "\" w=\"" + rWidth + "\" h=\"" + rHeight + "\">");
+
+				List<EventHandler> eventHandlers = r.getEventHandlers();
+				for (EventHandler eh : eventHandlers) {
+					// DebugUtils.println(eh.toString());
+
+					String eventType = eh.getClass().getSuperclass().getSimpleName();
+					String container = eh.getClass().toString();
+					container = container.substring(0, container.indexOf("$"));
+
+					msg.append("<eventhandler name='" + eventType + "' location='" + container
+							+ "'/>");
+				}
+				msg.append("</region>");
+			}
+			msg.append("</sheet>");
 		}
+		msg.append("</app>");
+		flash.sendMessage(msg.toString());
 	}
 
 	private void startFlashDebugView() {
@@ -82,7 +100,7 @@ public class DebuggingEnvironment {
 		flash.addFlashClientListener(new FlashListener() {
 			@Override
 			public void messageReceived(String command) {
-				if (command.equals("connected")) {
+				if (command.equals("eventvizclient connected")) {
 					DebugUtils.println("Flash Client Connected!");
 					sendApplicationLayout();
 				}
