@@ -70,8 +70,8 @@ public class DebugPaperApplication2 {
 		sheet.addRegion(buttonRegion);
 
 		final Application app = new Application("A Simple Application");
-		// app.addPen(new Pen("Single Pen"));
-		Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
+		Pen pen = new Pen("Local Pen");
+		// Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
 		app.addPen(pen);
 
 		// pen.addLivePenListener(new PenListener() {
