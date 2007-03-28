@@ -1,12 +1,21 @@
 package edu.stanford.hci.r3.tools.debug;
 
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.util.List;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
+import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.umd.cs.piccolo.nodes.PPath;
+import edu.umd.cs.piccolo.nodes.PText;
 
 /**
  * <p>
@@ -49,7 +58,17 @@ public class DebuggingEnvironment {
 	}
 
 	private void sendApplicationLayout() {
-		flash.sendMessageToAll("Loading Application");
+		flash.sendMessage("<Loading Application/>");
+		sendAppLayout();
+	}
+
+	private void sendAppLayout() {
+		List<Sheet> sheets = app.getSheets();
+		DebugUtils.println("Number of Sheets: " + sheets.size());
+		// assume one sheet for now...
+		for (Sheet s : sheets) {
+			flash.sendMessage(s.toXML());
+		}
 	}
 
 	private void startFlashDebugView() {

@@ -161,7 +161,7 @@ public class FlashCommunicationServer {
 	/**
 	 * @param msg
 	 */
-	public void sendMessageToAll(String msg) {
+	public void sendMessage(String msg) {
 		DebugUtils
 				.println("Sending message: " + msg + " to all " + flashClients.size() + " clients");
 		for (FlashClient client : flashClients) {
