@@ -74,6 +74,7 @@ import edu.stanford.hci.r3.pen.streaming.PenServerTrayApp;
 import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
 import edu.stanford.hci.r3.tools.design.acrobat.AcrobatDesignerLauncher;
 import edu.stanford.hci.r3.tools.design.acrobat.RegionConfiguration;
+import edu.stanford.hci.r3.tools.design.swing.SheetFrame;
 import edu.stanford.hci.r3.units.Centimeters;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.PatternDots;
@@ -1005,9 +1006,21 @@ public class PaperToolkit {
 
 			final MenuItem renderItem = new MenuItem("Render Sheets for [" + app.getName() + "]");
 			renderItem.addActionListener(getRenderListener(app));
+			
 
 			getTrayPopupMenu().add(debugItem);
 			getTrayPopupMenu().add(renderItem);
+			
+			for (final Sheet s : app.getSheets()) {
+				MenuItem item = new MenuItem("Open JFrame for sheet ["+ s.getName() +"]");
+				item.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						SheetFrame sf = new SheetFrame(s,640,480);
+						sf.setVisible(true);
+					}
+				});
+				getTrayPopupMenu().add(item);
+			}
 		}
 	}
 
