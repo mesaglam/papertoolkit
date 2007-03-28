@@ -1,16 +1,20 @@
 package edu.stanford.hci.r3.flash;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.hci.r3.pen.ink.Ink;
+import javax.swing.SwingUtilities;
+
 import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -35,9 +39,22 @@ public class FlashCommunicationServer {
 	public static final int DEFAULT_PORT = 8545;
 
 	/**
+	 * Only counts up.
+	 */
+	private int clientID = 0;
+
+	/**
+	 * All the clients that have connected to us! You can test this by telnetting in to this server
+	 * and port.
+	 */
+	private List<FlashClient> flashClients = new ArrayList<FlashClient>();
+
+	/**
 	 * 
 	 */
 	private int serverPort;
+
+	private Thread serverThread;
 
 	/**
 	 * 
@@ -45,30 +62,38 @@ public class FlashCommunicationServer {
 	private ServerSocket socket;
 
 	/**
+	 * 
+	 */
+	public FlashCommunicationServer() {
+		this(DEFAULT_PORT);
+	}
+
+	/**
 	 * @param port
 	 */
 	public FlashCommunicationServer(int port) {
 		serverPort = port;
-		new Thread(getServer()).start();
+		serverThread = new Thread(getServer());
+		serverThread.start();
 	}
 
-	/**
-	 * @param flashGUIFile
-	 *            Or perhaps this should be a URL in the future, as the GUI can live online?
-	 */
-	public void addFlashGUIClient(File flashGUIFile) {
-		// browse to the flash GUI file, and pass over our port as a query parameter
-		// TODO
+	public void exitServer() {
+		for (FlashClient client : flashClients) {
+			client.exitClient();
+		}
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		DebugUtils.println("Exiting Flash Communications Server...");
 	}
-
-	private List<FlashClient> flashClients;
 
 	/**
 	 * @return
 	 */
 	private Runnable getServer() {
 		return new Runnable() {
-
 
 			public void run() {
 				System.out
@@ -77,116 +102,62 @@ public class FlashCommunicationServer {
 					socket = new ServerSocket(serverPort);
 
 					while (true) {
-
 						System.out.println(">> Waiting for a Client...");
 						Socket incoming = socket.accept();
 						System.out.println(">> Flash Client connected.");
 						BufferedReader readerIn = new BufferedReader(new InputStreamReader(incoming
 								.getInputStream()));
 						PrintStream writerOut = new PrintStream(incoming.getOutputStream());
-						
+
 						// pass this to a handler thread that will service this client!
-						flashClients.add(new FlashClient());
-						
-						boolean done = false;
-						while (!done) {
-							String command = readerIn.readLine();
-							if (command == null) {
-								done = true;
-								incoming.close();
-							} else {
-								command = command.trim().toLowerCase();
-								System.out.println(">> Reading a line from the client: [" + command
-										+ "]");
-								if (command.equals("exit")) {
-									done = true;
-									incoming.close();
-								} else if (command.contains("next")) {
-									handleNext();
-								} else if (command.contains("prev")) {
-									handlePrev();
-								} else if (command.contains("policy-file-request")) {
-									// waiting = true;
-									String msg = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">"
-											+ "<!-- Policy file for xmlsocket://socks.mysite.com --><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\" /></cross-domain-policy>";
-									sendMessage(msg);
-									incoming.close();
-									writerOut.close();
-									readerIn.close();
-									done = true;
-								} else {
-									DebugUtils.println("Unhandled command: " + command);
-								}
-							}
-						}
+						flashClients.add(new FlashClient(FlashCommunicationServer.this, clientID++,
+								incoming, readerIn, writerOut));
 					}
-				} catch (Exception e) {
+				} catch (SocketException e) {
+					System.out.println(">> Socket was Closed");
+					// e.printStackTrace();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				System.out.println(">> Closing PageNavServer");
+				System.out.println(">> Closing Flash Communications Server");
 			}
 		};
 	}
 
-	private void handleNext() {
-		File nextPageDir = notesDB.getNextPageDir();
-		// figure out which files are there... and send them in XML back to the Flash GUI...
-		List<File> pageFiles = FileUtils.listVisibleFiles(nextPageDir);
-		DebugUtils.println("Sending these page files back: " + pageFiles);
-		sendMessage(makeInkXMLMessageOfPageFiles(pageFiles));
-	}
-
-	private void handlePrev() {
-		File prevPageDir = notesDB.getPrevPageDir();
-		// figure out which files are there... and send them in XML back to the Flash GUI...
-		List<File> pageFiles = FileUtils.listVisibleFiles(prevPageDir);
-		DebugUtils.println("Sending these page files back: " + pageFiles);
-		sendMessage(makeInkXMLMessageOfPageFiles(pageFiles));
+	public void handleCommand(int clientID, String command) {
+		DebugUtils.println("Server got command " + command + " from client " + clientID);
 	}
 
 	/**
-	 * Turn the files into ink that I will send to the flash client! Crazyyy....
+	 * Currently, we assume the next client connection is for THIS flash GUI. =) We'll hopefully be
+	 * able to use this information later.
 	 * 
-	 * @param pageFiles
-	 * @return
+	 * @param flashGUIFile
+	 *            Or perhaps this should be a URL in the future, as the GUI can live online?
+	 *            Launches the flash GUI in a browser.
+	 * 
 	 */
-	private String makeInkXMLMessageOfPageFiles(List<File> pageFiles) {
-		StringBuilder xml = new StringBuilder();
-		xml.append("<ink>");
-		for (File f : pageFiles) {
-			xml.append(new Ink(f).getInnerXML());
+	public void openFlashGUI(File flashGUIFile) {
+		// browse to the flash GUI file, and pass over our port as a query parameter
+		// TODO: pass the port
+		// SwingUtilities.invokeLater(new Runnable() {
+		// @Override
+		// public void run() {
+		try {
+			Desktop.getDesktop().browse(flashGUIFile.toURI());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		xml.append("</ink>");
-		return xml.toString();
-	}
-
-	private String makeXMLMessageOfPageFiles(List<File> pageFiles) {
-		StringBuilder xml = new StringBuilder();
-		xml.append("<pageFiles>");
-		{
-			for (File f : pageFiles) {
-				xml.append("<file path=\"" + f.getAbsolutePath() + "\"/>");
-			}
-		}
-		xml.append("</pageFiles>");
-		return xml.toString();
+		// }
+		// });
 	}
 
 	/**
-	 * Prints to both the console and to the client.
-	 * 
-	 * @param message
-	 *            the string to print.
+	 * @param msg
 	 */
-	public void sendMessage(String message) {
-		if (writerOut != null) {
-			writerOut.print(message + "\0");
-			writerOut.flush();
-		} else {
-			System.out.println("There is no client to send the message to.");
+	public void sendMessageToAll(String msg) {
+		for (FlashClient client : flashClients) {
+			client.sendMessage(msg);
 		}
-		System.out.println("Sent " + message.length() + " bytes.");
-		System.out.flush();
 	}
-
 }

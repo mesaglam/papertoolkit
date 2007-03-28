@@ -92,6 +92,10 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
+ * <p>
+ * TODOS:
+ * <li>Move all PORTs into a Communications class, so we can configure them!
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
