@@ -43,7 +43,9 @@ public class DebugPaperApplication2 {
 
 			@Override
 			public void clicked(PenEvent e) {
-				DebugUtils.println("Clicked");
+				DebugUtils.println("Ink Region Clicked");
+				// test the showMe functionality...
+				// DebuggingEnvironment.showMe(app, "Pen Listener Clicked");
 			}
 
 			@Override
@@ -60,45 +62,35 @@ public class DebugPaperApplication2 {
 		ButtonRegion buttonRegion = new ButtonRegion("Send", 6, 9, 2, 1.3) {
 			@Override
 			protected void onClick(PenEvent e) {
-				DebugUtils.println("I got clicked");
+				DebugUtils.println("Send Region clicked");
 			}
 		};
 
-		Region c = new Region("PaperToolkitCatchAll", 1, 5.5, 1, 1);
-		c.addEventHandler(new ClickAdapter() {
-			public void clicked(PenEvent e) {
-				DebugUtils.println("Clicked CatchAll");
-			}
-		});
-
 		sheet.addRegion(r);
 		sheet.addRegion(buttonRegion);
-		sheet.addRegion(c);
 
 		final Application app = new Application("A Simple Application");
 		// app.addPen(new Pen("Single Pen"));
 		Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
 		app.addPen(pen);
 
-		pen.addLivePenListener(new PenListener() {
-			@Override
-			public void penDown(PenSample sample) {
-
-			}
-
-			@Override
-			public void penUp(PenSample sample) {
-				// DebugUtils.println("Pen Listener Clicked");
-
-				// test the showMe functionality...
-				DebuggingEnvironment.showMe(app, "Pen Listener Clicked");
-			}
-
-			@Override
-			public void sample(PenSample sample) {
-
-			}
-		});
+		// pen.addLivePenListener(new PenListener() {
+		// @Override
+		// public void penDown(PenSample sample) {
+		//
+		// }
+		//
+		// @Override
+		// public void penUp(PenSample sample) {
+		// // DebugUtils.println("Pen Listener Clicked");
+		//
+		// }
+		//
+		// @Override
+		// public void sample(PenSample sample) {
+		//
+		// }
+		// });
 
 		// no pattern info xml file loaded...
 		// should allow runtime binding of pattern info
