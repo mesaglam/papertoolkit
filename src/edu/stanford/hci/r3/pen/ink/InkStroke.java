@@ -110,12 +110,37 @@ public class InkStroke {
 		maxY = Math.max(y, maxY);
 	}
 
+	/**
+	 * @param penSample
+	 */
+	public void addSample(PenSample penSample) {
+		samples.add(penSample);
+
+		// update maxs and mins
+		minX = Math.min(penSample.x, minX);
+		minY = Math.min(penSample.y, minY);
+		maxX = Math.max(penSample.x, maxX);
+		maxY = Math.max(penSample.y, maxY);
+	}
+
 	public double getArea() {
 		return (maxX - minX) * (maxY - minY);
 	}
 
+	/**
+	 * @return
+	 */
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(minX, minY, maxX-minX, maxY-minY);
+		return new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
+	}
+
+	/**
+	 * Returns the last sample in this stroke (end-point).
+	 * 
+	 * @return
+	 */
+	public PenSample getEnd() {
+		return samples.get(samples.size() - 1);
 	}
 
 	/**
@@ -199,6 +224,15 @@ public class InkStroke {
 	}
 
 	/**
+	 * Returns the first sample in this stroke (start-point).
+	 * 
+	 * @return
+	 */
+	public PenSample getStart() {
+		return samples.get(0);
+	}
+
+	/**
 	 * @return
 	 */
 	public long[] getTimeSamples() {
@@ -256,21 +290,6 @@ public class InkStroke {
 			yInts[i] = MathUtils.rint(samples.get(i).y);
 		}
 		return yInts;
-	}
-	
-	/**
-	 * Returns the first sample in this stroke (start-point).
-	 * @return
-	 */
-	public PenSample getStart() {
-		return samples.get(0);
-	}
-	/**
-	 * Returns the last sample in this stroke (end-point).
-	 * @return
-	 */
-	public PenSample getEnd() {
-		return samples.get(samples.size()-1);
 	}
 
 	/**

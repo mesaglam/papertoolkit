@@ -23,10 +23,10 @@ public class InkAPIBrowser {
 	public InkAPIBrowser() {
 		
 		// start server
-		xxx
+		// xxx
 		
 		// start Flash GUI
-		xxx
+		// xxx
 	}
 	
 	public static void main(String[] args) {
