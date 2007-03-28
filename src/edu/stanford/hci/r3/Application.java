@@ -250,7 +250,8 @@ public class Application {
 	}
 
 	/**
-	 * Only if this app is currently running, we will ask the
+	 * Only if this app is currently running, we will ask the event engine to register the pattern
+	 * mapping so that we can handle real-time input events.
 	 * 
 	 * @param mapping
 	 */

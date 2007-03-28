@@ -85,6 +85,12 @@ public class EventEngine {
 	private EventReplayManager replayManager;
 
 	/**
+	 * We keep a count of how many events we have "trashed." These events could not be mapped to any
+	 * active region.
+	 */
+	private int numTrashedPenEvents = 0;
+
+	/**
 	 * This object handles event dispatch by hooking up pen listeners to local and remote pen
 	 * servers. It will figure out where to dispatch incoming pen samples... and will activate the
 	 * correct event handlers.
@@ -274,6 +280,22 @@ public class EventEngine {
 				}
 
 			} // check the next pattern map
+
+			// there is no pattern map that matches the incoming pen event!
+			// we dump it in a trash bin, and notify the user of this situation
+			// perhaps the developer would like to register a pattern mapping at run time?
+			if (numTrashedPenEvents % 29 == 0) {
+				// print out this warning once in a while...
+				System.err
+						.println("The event engine cannot map these pen events to any active region. "
+								+ "We'll trash these events for now, but perhaps you should investigate "
+								+ "attaching a pattern mapping (even at runtime) to your regions.");
+			}
+			numTrashedPenEvents++;
+			DebugUtils.println("Cannot Map " + penEvent);
+
+			// TODO add support for runtime pattern mapping here
+
 		}
 	}
 

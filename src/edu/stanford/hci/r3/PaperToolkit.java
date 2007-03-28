@@ -178,6 +178,13 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @return the place where new XML files show up, when we synch our pen.
+	 */
+	public static File getPenSynchDataPath() {
+		return new File(getToolkitRootPath(), "penSynch/data/XML/");
+	}
+
+	/**
 	 * @param resourcePath
 	 * @return
 	 */
@@ -211,13 +218,6 @@ public class PaperToolkit {
 		} else {
 			return file.getParentFile();
 		}
-	}
-
-	/**
-	 * @return the place where new XML files show up, when we synch our pen.
-	 */
-	public static File getPenSynchDataPath() {
-		return new File(getToolkitRootPath(), "penSynch/data/XML/");
 	}
 
 	/**
@@ -424,6 +424,8 @@ public class PaperToolkit {
 	 */
 	private JLabel mainMessage;
 
+	private PopupMenu popupMenu;
+
 	/**
 	 * 
 	 */
@@ -461,8 +463,6 @@ public class PaperToolkit {
 	 * 
 	 */
 	private boolean useHandwriting;
-
-	private PopupMenu popupMenu;
 
 	/**
 	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
@@ -581,6 +581,23 @@ public class PaperToolkit {
 			controls.add(getStopApplicationButton(), "TopWide");
 		}
 		return controls;
+	}
+
+	/**
+	 * Attaches to the popup menu. Allows us to drop into the Debug mode of a paper application,
+	 * with event visualizations and stuff. =)
+	 * 
+	 * @param app
+	 * @return
+	 */
+	private ActionListener getDebugListener(final Application app) {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				DebugUtils.println("Starting Debugging...");
+				new DebuggingEnvironment(app);
+			}
+		};
 	}
 
 	/**
@@ -770,16 +787,6 @@ public class PaperToolkit {
 		return popupMenu;
 	}
 
-	private ActionListener getDebugListener(final Application app) {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				DebugUtils.println("Starting Debugging...");
-				new DebuggingEnvironment(app);
-			}
-		};
-	}
-
 	/**
 	 * @return turn sheets into PDF files.
 	 */
@@ -843,6 +850,9 @@ public class PaperToolkit {
 		return stopAppButton;
 	}
 
+	/**
+	 * For debugging running applications. =)
+	 */
 	private void getSystemTrayIcon() {
 		if (trayIcon == null) {
 			// this is the icon that sits in our tray...
@@ -856,9 +866,12 @@ public class PaperToolkit {
 					Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 						@Override
 						public void run() {
-							if (trayIcon != null) {
-								SystemTray.getSystemTray().remove(trayIcon);
-							}
+							DebugUtils.println("Running Shutdown Services...");
+							// Buggy for some reason... Can stop the shutdown =\
+							// if (trayIcon != null) {
+							// SystemTray.getSystemTray().remove(trayIcon);
+							// }
+							DebugUtils.println("Done with Shutdown!");
 						}
 					}));
 				}

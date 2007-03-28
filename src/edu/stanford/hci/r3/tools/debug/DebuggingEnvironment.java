@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.tools.debug;
 
 import edu.stanford.hci.r3.Application;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -20,13 +21,30 @@ public class DebuggingEnvironment {
 	private DebugFrame frame;
 	private DebugPCanvas canvas;
 
+	/**
+	 * @param paperApp
+	 */
 	public DebuggingEnvironment(Application paperApp) {
 		app = paperApp;
 
+		DebugUtils.println("Starting to debug " + app);
+		
+		// the first try used Piccolo
+		// startPiccoloDebugView(paperApp);
+		
+		// now, we'll use Flash as our GUI
+		// Start the local messaging server
+		
+		// start the Flash GUI
+		
+		// start sending over messages...
+	}
+
+	private void startPiccoloDebugView(Application paperApp) {
 		// set up a GUI
 		frame = new DebugFrame(paperApp.getName());
 		canvas = frame.getCanvas();
-		
+
 		// add visual components to GUI
 		canvas.addVisualComponents(paperApp);
 	}

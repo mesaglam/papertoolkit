@@ -117,7 +117,7 @@ public class CaptureApplication extends Application {
 	}
 
 	/**
-	 * Add a sheet and a region at RUNTIME.
+	 * Add a sheet and a region at RUNTIME. 
 	 */
 	private void addOneSheetAndOneRegionForHandwritingCapture() {
 		// ask the event engine to remove our sheet and our mappings, if they exist
