@@ -53,6 +53,7 @@ public class SheetFrame extends JFrame {
 		setLayout(null);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 		
 		// Loop through regions
 		for (Region r : sheet.getRegions()) {
