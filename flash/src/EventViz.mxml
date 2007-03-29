@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="startEventViz();">
-	<mx:TextArea width="20%" editable="true" enabled="true" fontFamily="Lucida Console" fontSize="11" color="#4f4f4f" paddingLeft="10" paddingRight="10" right="10" top="10" bottom="10" id="debugText"/>
 
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
@@ -25,4 +24,9 @@
 		]]>
 	</mx:Script>
 	<mx:Label x="10" y="10" text="Paper UI Event Visualization" fontFamily="Trebuchet MS" fontWeight="bold" fontSize="28" color="#97cbff"/>
+	<mx:Button label="Exit" click="viz.exit(event);" bottom="10" left="10"/>
+	<mx:VDividedBox top="10" bottom="10" right="10" width="256">
+		<mx:TextArea width="100%"/>
+		<mx:TextArea editable="false" enabled="true" fontFamily="Lucida Console" fontSize="10" color="#4f4f4f" id="debugText" wordWrap="false" width="100%"/>
+	</mx:VDividedBox>
 </mx:Application>

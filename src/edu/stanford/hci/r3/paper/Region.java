@@ -133,6 +133,8 @@ public class Region {
 	 */
 	private boolean visible = true;
 
+	private Sheet parentSheet;
+
 	/**
 	 * For our American friends.
 	 * 
@@ -529,6 +531,17 @@ public class Region {
 		sb.append("} in " + referenceUnits.getUnitName());
 		sb.append(getIsActiveString());
 		return sb.toString();
+	}
+
+	/**
+	 * For traversing up the UI hierarchy, in Event Visualizations.
+	 * @param sheet
+	 */
+	public void setParentSheet(Sheet sheet) {
+		parentSheet = sheet;
+	}
+	public Sheet getParentSheet() {
+		return parentSheet;
 	}
 
 }

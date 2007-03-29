@@ -20,6 +20,9 @@
 
 		private var pixelsPerInch:Number = 50; // 72 is normal
 
+		// a "hashtable" for having access to the regions by name...
+		private var regionsByName:Object = new Object();
+
 		public function EventVizClient():void {
 			trace("Event Viz Client Started.");
 			startListening();
@@ -79,10 +82,14 @@
 			return parseFloat(inchString)*pixelsPerInch;
 		}
 
+		private function debugOut(msg:String):void {
+            debugTextArea.text = msg + "\n" + debugTextArea.text;
+		}
+
         private function dataHandler(event:DataEvent):void {
             //trace("dataHandler: " + event);
             var message:XML = new XML(event.text);
-            debugTextArea.text = message.toXMLString() + "\n\n" + debugTextArea.text;
+            debugOut(message.toXMLString());
 
             // if it is a new sheet, then draw it!
             if (event.text.indexOf("<sheet")>-1) {
@@ -95,49 +102,32 @@
 					// for each region... draw a box
 					var regions:XMLList = sheet..region;
 					for each (var region:XML in regions) {
-						var regionBox:Shape = new Shape();
-						regionBox.graphics.beginFill(0xDADADA, 0.25);
-						regionBox.graphics.lineStyle(1, 0xDADADA);
-						regionBox.graphics.drawRect(toInches(region.@x), toInches(region.@y), toInches(region.@w), toInches(region.@h));
+						var regionBox:Region = new Region(region.@name, toInches(region.@x), toInches(region.@y), toInches(region.@w), toInches(region.@h));
 						app.addChild(regionBox);
 						
-						lastRegionAdded = regionBox;
-						lastRegionX = toInches(region.@x); 
-						lastRegionY = toInches(region.@y);
-						lastRegionW = toInches(region.@w);
-						lastRegionH = toInches(region.@h);
+						// associate it by name
+						regionsByName[region.@name] = regionBox;
+		            	// trace(regionsByName[region.@name]);
 					}
 				}			
             } else if (event.text.indexOf("<showMe")>-1) {
-            	if (lastRegionAdded != null) {
-            		lastRegionAddedTimer = new Timer(1000);
-					lastRegionAddedTimer.addEventListener(TimerEvent.TIMER, timerHandler);
-            		
-					lastRegionAdded.graphics.clear();
-					lastRegionAdded.graphics.beginFill(0xBBBBFF, 0.45);
-					lastRegionAdded.graphics.lineStyle(1, 0xDADADA);
-					lastRegionAdded.graphics.drawRect(lastRegionX, lastRegionY, lastRegionH, lastRegionW);
-					
-					lastRegionAddedTimer.start();
+            	
+            	// get the string, and the location!
+            	// position the event text at the right place!
+            	
+            	var regionName:String = message.@regionName;
+            	var regionToAnimate:Region = regionsByName[regionName];
+            	if (regionToAnimate != null) {
+					regionToAnimate.animate();            		
             	}
             }
         }
 
-		private function timerHandler(event:TimerEvent):void {
-			lastRegionAdded.graphics.clear();
-			lastRegionAdded.graphics.beginFill(0xDADADA, 0.25);
-			lastRegionAdded.graphics.lineStyle(1, 0xDADADA);
-			lastRegionAdded.graphics.drawRect(lastRegionX, lastRegionY, lastRegionH, lastRegionW);
-			lastRegionAddedTimer.stop();
-		}
 
-		// just a hack to test animation for now
-		private var lastRegionAdded:Shape;
-		private var lastRegionAddedTimer:Timer;
-		private var lastRegionX:Number;		
-		private var lastRegionY:Number;		
-		private var lastRegionW:Number;		
-		private var lastRegionH:Number;		
+		public function exit(event:MouseEvent):void {
+			trace("exit called");
+			sock.send("exitserver\n");
+		}
 
 
         private function ioErrorHandler(event:IOErrorEvent):void {
