@@ -21,7 +21,11 @@ import edu.stanford.hci.r3.paper.Region;
  */
 public abstract class EventHandler {
 
-	private List<Region> parentRegions = new ArrayList<Region>();
+	/**
+	 * This is used in debugging visualizations, for traversing up the list to figure out where the
+	 * event handler should be positioned.
+	 */
+	protected List<Region> parentRegions = new ArrayList<Region>();
 
 	public void addParentRegion(Region r) {
 		parentRegions.add(r);

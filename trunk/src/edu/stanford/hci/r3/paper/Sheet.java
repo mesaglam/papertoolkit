@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.render.SheetRenderer;
@@ -89,6 +90,8 @@ public class Sheet {
 	 */
 	private Size size = new Size();
 
+	private Application parentApp;
+
 	/**
 	 * Defaults to US Letter.
 	 */
@@ -134,6 +137,7 @@ public class Sheet {
 	public void addRegion(Region r) {
 		regions.add(r);
 		regionNameToRegionObject.put(r.getName(), r);
+		r.setParentSheet(this);
 	}
 
 	/**
@@ -366,5 +370,12 @@ public class Sheet {
 	 */
 	public String toXML() {
 		return PaperToolkit.toXML(this);
+	}
+
+	public void setParentApplication(Application application) {
+		parentApp = application;
+	}
+	public Application getParentApplication() {
+		return parentApp;
 	}
 }

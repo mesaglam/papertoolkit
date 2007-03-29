@@ -12,8 +12,6 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.SwingUtilities;
-
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -49,6 +47,8 @@ public class FlashCommunicationServer {
 	 */
 	private List<FlashClient> flashClients = new ArrayList<FlashClient>();
 
+	private List<FlashListener> listeners = new ArrayList<FlashListener>();
+
 	/**
 	 * 
 	 */
@@ -61,9 +61,6 @@ public class FlashCommunicationServer {
 	 */
 	private ServerSocket socket;
 
-	private List<FlashListener> listeners = new ArrayList<FlashListener>();
-
-	
 	/**
 	 * 
 	 */
@@ -80,6 +77,13 @@ public class FlashCommunicationServer {
 		serverThread.start();
 	}
 
+	public void addFlashClientListener(FlashListener flashListener) {
+		listeners.add(flashListener);
+	}
+
+	/**
+	 * 
+	 */
 	public void exitServer() {
 		for (FlashClient client : flashClients) {
 			client.exitClient();
@@ -90,6 +94,8 @@ public class FlashCommunicationServer {
 			e.printStackTrace();
 		}
 		DebugUtils.println("Exiting Flash Communications Server...");
+		DebugUtils.println("Exiting Everything!");
+		System.exit(0);
 	}
 
 	/**
@@ -158,18 +164,18 @@ public class FlashCommunicationServer {
 		// });
 	}
 
+	public void removeAllFlashClientListeners() {
+		listeners.clear();
+	}
+
 	/**
 	 * @param msg
 	 */
 	public void sendMessage(String msg) {
-		DebugUtils
-				.println("Sending message: " + msg + " to all " + flashClients.size() + " clients");
+		DebugUtils.println("Sending message: " + msg + " to all " + flashClients.size()
+				+ " clients");
 		for (FlashClient client : flashClients) {
 			client.sendMessage(msg);
 		}
-	}
-
-	public void addFlashClientListener(FlashListener flashListener) {
-		listeners.add(flashListener);
 	}
 }

@@ -26,20 +26,9 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class DebuggingEnvironment {
 
-	public static void showMe(Application hostApp, String string) {
-		DebugUtils.printlnWithStackOffset(string, 1);
-
-		// send to the debug UI, if it exists!
-		DebuggingEnvironment debuggingEnvironment = hostApp.getDebuggingEnvironment();
-		if (debuggingEnvironment != null) {
-			debuggingEnvironment.visualize(string);
-		}
-	}
-
 	private Application app;
 	private DebugPCanvas canvas;
 	private FlashCommunicationServer flash;
-
 	private DebugFrame frame;
 
 	/**
@@ -56,9 +45,12 @@ public class DebuggingEnvironment {
 		// ---------------------------------
 
 		// now, we'll use Flash as our GUI
-		startFlashDebugView();
+		startFlashDebuger();
 	}
 
+	/**
+	 * 
+	 */
 	private void sendAppLayout() {
 		List<Sheet> sheets = app.getSheets();
 		DebugUtils.println("Number of Sheets: " + sheets.size());
@@ -95,19 +87,20 @@ public class DebuggingEnvironment {
 		flash.sendMessage(msg.toString());
 	}
 
+	/**
+	 * 
+	 */
 	private void sendApplicationLayout() {
 		flash.sendMessage("<loadingapplication/>");
 		sendAppLayout();
 	}
 
-	private void startFlashDebugView() {
-		// Start the local messaging server
-		flash = new FlashCommunicationServer();
-
+	public void showFlashView() {
 		// start the Flash GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File eventVizHTML = new File(r3RootPath, "flash/bin/EventViz.html");
 		flash.openFlashGUI(eventVizHTML);
+		flash.removeAllFlashClientListeners(); // HACK: for now...
 		flash.addFlashClientListener(new FlashListener() {
 			@Override
 			public void messageReceived(String command) {
@@ -117,6 +110,15 @@ public class DebuggingEnvironment {
 				}
 			}
 		});
+	}
+
+	/**
+	 * 
+	 */
+	private void startFlashDebuger() {
+		// Start the local messaging server
+		flash = new FlashCommunicationServer();
+		showFlashView();
 	}
 
 	/**
@@ -131,8 +133,12 @@ public class DebuggingEnvironment {
 		canvas.addVisualComponents(paperApp);
 	}
 
-	private void visualize(String string) {
-		flash.sendMessage("<showMe/>");
+	/**
+	 * @param msg
+	 * @param r
+	 */
+	public void visualize(String msg, Region r) {
+		flash.sendMessage("<showMe msg='" + msg + "' regionName='" + r.getName() + "'/>");
 	}
 
 }

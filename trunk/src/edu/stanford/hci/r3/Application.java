@@ -133,6 +133,8 @@ public class Application {
 				.getPatternLocationToSheetLocationMapping();
 		addSheetObjectToInternalList(sheet);
 		registerMappingWithEventEngineDuringRuntime(mapping);
+		
+		sheet.setParentApplication(this);
 	}
 
 	/**

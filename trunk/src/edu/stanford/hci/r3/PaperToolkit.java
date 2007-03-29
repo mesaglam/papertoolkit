@@ -696,9 +696,15 @@ public class PaperToolkit {
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				DebugUtils.println("Starting Debugging...");
-				DebuggingEnvironment debuggingEnvironment = new DebuggingEnvironment(app);
-				app.setDebuggingEnvironment(debuggingEnvironment);
+				DebuggingEnvironment debuggingEnvironment = app.getDebuggingEnvironment();
+				if (debuggingEnvironment == null) {
+					DebugUtils.println("Starting Debugging...");
+					debuggingEnvironment = new DebuggingEnvironment(app);
+					app.setDebuggingEnvironment(debuggingEnvironment);
+				}
+				else {
+					debuggingEnvironment.showFlashView();
+				}
 			}
 		};
 	}
