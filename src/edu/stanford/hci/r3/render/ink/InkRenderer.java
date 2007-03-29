@@ -71,21 +71,21 @@ public class InkRenderer {
 	}
 
 	/**
+	 * Usually, the width and height of the region...
+	 * 
+	 * TODO: Merge with next method.
+	 * 
 	 * @param destJPEGFile
 	 */
-	public void renderToJPEG(File destJPEGFile) {
-		double maxX = ink.getMaxX();
-		double maxY = ink.getMaxY();
-
-		final int w = MathUtils.rint(maxX);
-		final int h = MathUtils.rint(maxY);
-		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(w, h);
+	public void renderToJPEG(File destJPEGFile, int widthPixels, int heightPixels) {
+		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(widthPixels,
+				heightPixels);
 		final Graphics2D graphics2D = image.createGraphics();
 		graphics2D.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 
 		// render a white canvas
 		graphics2D.setColor(Color.WHITE);
-		graphics2D.fillRect(0, 0, w, h);
+		graphics2D.fillRect(0, 0, widthPixels, heightPixels);
 
 		renderToG2D(graphics2D);
 		graphics2D.dispose();
