@@ -47,6 +47,5 @@
 	<classpathentry kind="lib" path="lib/jai/jai_codec.jar"/>
 	<classpathentry kind="lib" path="lib/jai/jai_core.jar"/>
 	<classpathentry kind="lib" path="lib/jai/mlibwrapper_jai.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.6.0/lib/tools.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
