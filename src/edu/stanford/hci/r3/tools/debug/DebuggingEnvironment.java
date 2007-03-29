@@ -134,13 +134,22 @@ public class DebuggingEnvironment {
 		// add visual components to GUI
 		canvas.addVisualComponents(paperApp);
 	}
+	
+	public static String escapeLiteral(String s) {
+		return s.replace("&","&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	}
 
 	/**
 	 * @param msg
 	 * @param r
 	 */
-	public void visualize(String msg, Region r) {
-		flash.sendMessage("<showMe msg='" + msg + "' regionName='" + r.getName() + "'/>");
+	public void visualize(String msg, Region r, String code) {
+		String message = "<showMe msg='" + msg + "' regionName='" + r.getName() + "'";
+		if (code!=null)
+			message += "><code>"+escapeLiteral(code)+"</code></showMe>";
+		else
+			message += "/>";
+		flash.sendMessage(message);
 	}
 
 }

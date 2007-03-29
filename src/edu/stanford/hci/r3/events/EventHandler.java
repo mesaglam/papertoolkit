@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.events;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
+import edu.stanford.hci.r3.tools.debug.Utils;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -46,14 +49,45 @@ public abstract class EventHandler {
 	public abstract void handleEvent(PenEvent event);
 
 	public void showMe(String message) {
+		
 		for (Region r : parentRegions) {
 			// DebugUtils.println(r);
+			
 			Sheet s = r.getParentSheet();
 			Application a = s.getParentApplication();
 			DebugUtils.println("Hosted in: " + a.getName());
+			
+			Thread currThread = Thread.currentThread();
+			StackTraceElement[] trace = currThread.getStackTrace();
+			String code = null;
+			for (StackTraceElement ste : trace) {
+				String method = ste.getMethodName();
+				String className = ste.getClassName(); 
+				if (method.equals("showMe") || className.startsWith("java."))
+					continue;
+				String filename = "src/"+className.replace('.', '/');
+				int innerclass = filename.indexOf('$');
+				if (innerclass>=0)
+					filename = filename.substring(0,innerclass);
+				filename += ".java";
+				try {
+					int line = ste.getLineNumber()-1;
+					List<String> lines = Utils.getLines(new File(filename));
+					code = filename+":"+ste.getLineNumber()+"\n";
+					for (int i=Math.max(0, line-3); 
+							 i<Math.min(line+4, lines.size()-1); 
+							 i++)
+						code += (i+1)+": "+lines.get(i)+"\n";
+					
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+				break;
+			}
+			
 			DebuggingEnvironment d = a.getDebuggingEnvironment();
 			if (d != null) {
-				d.visualize(message, r);
+				d.visualize(message, r, code);
 			}
 		}
 	}

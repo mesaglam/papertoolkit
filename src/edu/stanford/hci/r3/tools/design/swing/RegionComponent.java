@@ -3,6 +3,7 @@ package edu.stanford.hci.r3.tools.design.swing;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
@@ -114,9 +115,9 @@ public class RegionComponent extends JComponent implements MouseMotionListener, 
 		synchronized (inks) {
 			inks.add(s);
 		}
-		//Rectangle r = s.getBounds();
-		//repaint(r.x-1,r.y-1,r.width+2,r.height+2,20);
-		repaint();
+		Rectangle r = s.getBounds();
+		repaint(r.x-1,r.y-1,r.width+4,r.height+4);
+		//repaint();
 	}
 	
 	/**
