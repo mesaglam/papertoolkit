@@ -45,6 +45,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileSystemView;
 
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
@@ -534,8 +535,21 @@ public class PaperToolkit {
 		}
 
 		for (final PatternLocationToSheetLocationMapping map : mappings) {
+
+			final MenuItem loadMappingItem = new MenuItem("Load the most recent pattern mapping...");
+			loadMappingItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					// eventEngine.registerPatternMapForEventHandling(new
+					// PatternLocationToSheetLocationMapping());
+					map.loadConfigurationFromXML(getLastRunPatternInfoFile());
+				}
+			});
+			getTrayPopupMenu().add(loadMappingItem);
+
 			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map
 					.getRegionToPatternMapping();
+
 			for (final Region r : regionToPatternMapping.keySet()) {
 				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping
 						.get(r);
@@ -581,7 +595,12 @@ public class PaperToolkit {
 										+ "] to Pattern " + bounds);
 								bindPatternToRegionItem.setLabel("Change Binding for "
 										+ r.getName() + ". Currently set to " + bounds);
+
+								// additionally... write this out to a file on the desktop
+								File destFile = getLastRunPatternInfoFile();
+								map.saveConfigurationToXML(destFile);
 							}
+
 						});
 					}
 				});
@@ -769,6 +788,15 @@ public class PaperToolkit {
 	 */
 	private File getFolderToSavePDFs() {
 		return FileUtils.showDirectoryChooser(appManager, "Choose a Directory for your PDFs");
+	}
+
+	/**
+	 * @return
+	 */
+	private File getLastRunPatternInfoFile() {
+		File homeDir = FileSystemView.getFileSystemView().getHomeDirectory();
+		File destFile = new File(homeDir, "PaperToolkitLastRun.patternInfo.xml");
+		return destFile;
 	}
 
 	/**
@@ -1006,16 +1034,15 @@ public class PaperToolkit {
 
 			final MenuItem renderItem = new MenuItem("Render Sheets for [" + app.getName() + "]");
 			renderItem.addActionListener(getRenderListener(app));
-			
 
 			getTrayPopupMenu().add(debugItem);
 			getTrayPopupMenu().add(renderItem);
-			
+
 			for (final Sheet s : app.getSheets()) {
-				MenuItem item = new MenuItem("Open JFrame for sheet ["+ s.getName() +"]");
+				MenuItem item = new MenuItem("Open JFrame for sheet [" + s.getName() + "]");
 				item.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						SheetFrame sf = new SheetFrame(s,640,480);
+						SheetFrame sf = new SheetFrame(s, 640, 480);
 						sf.setVisible(true);
 					}
 				});

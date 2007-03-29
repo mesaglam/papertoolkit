@@ -13,6 +13,7 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -94,10 +95,15 @@ public class HandwritingRecognizer extends ContentFilter {
 	 * @return the top-ranked ASCII translation for the ink strokes.
 	 */
 	public String recognizeHandwriting() {
-		final Ink ink = new Ink(strokes);
-		final String xml = ink.getAsXML(false /* no separator lines */);
-		final String result = recognizerService.recognizeHandwriting(xml);
-		return result;
+		if (strokes.size() == 0) {
+			// DebugUtils.println("Num Strokes to Recognize: " + strokes.size());
+			return "";
+		} else {
+			final Ink ink = new Ink(strokes);
+			final String xml = ink.getAsXML(false /* no separator lines */);
+			final String result = recognizerService.recognizeHandwriting(xml);
+			return result;
+		}
 	}
 
 	/**

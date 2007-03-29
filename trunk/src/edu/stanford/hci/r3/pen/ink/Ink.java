@@ -9,6 +9,8 @@ import javax.swing.filechooser.FileSystemView;
 
 import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
+import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -69,7 +71,7 @@ public class Ink {
 	/**
 	 * The name of this Ink cluster.
 	 */
-	private String name;
+	private String name = "Ink";
 
 	/**
 	 * For ink that has sourceType set to BATCHED, this field is meaningful. It tells us which
@@ -109,6 +111,10 @@ public class Ink {
 	 */
 	public Ink(List<InkStroke> theStrokes) {
 		strokes = theStrokes;
+
+		for (InkStroke s : theStrokes) {
+			updateMinAndMax(s);
+		}
 	}
 
 	/**
@@ -117,12 +123,7 @@ public class Ink {
 	 */
 	public void addStroke(InkStroke s) {
 		strokes.add(s);
-
-		// update maxs and mins
-		minX = Math.min(s.getMinX(), minX);
-		minY = Math.min(s.getMinY(), minY);
-		maxX = Math.max(s.getMaxX(), maxX);
-		maxY = Math.max(s.getMaxY(), maxY);
+		updateMinAndMax(s);
 	}
 
 	/**
@@ -268,11 +269,15 @@ public class Ink {
 	}
 
 	/**
-	 * 
+	 * @param w
+	 * @param h
 	 */
-	public void renderToJPEGFile() {
-		new InkRenderer(this).renderToJPEG(new File(FileSystemView.getFileSystemView()
-				.getHomeDirectory(), getName()));
+	public void renderToJPEGFile(double w, double h) {
+		File homeDir = FileSystemView.getFileSystemView().getHomeDirectory();
+		// DebugUtils.println(homeDir);
+		File destFile = new File(homeDir, getName() + ".jpg");
+		// DebugUtils.println(destFile);
+		new InkRenderer(this).renderToJPEG(destFile, MathUtils.rint(w), MathUtils.rint(h));
 	}
 
 	/**
@@ -331,5 +336,16 @@ public class Ink {
 	 */
 	public void setSourceType(InkSource src) {
 		sourceType = src;
+	}
+
+	/**
+	 * @param s
+	 */
+	private void updateMinAndMax(InkStroke s) {
+		// update maxs and mins
+		minX = Math.min(s.getMinX(), minX);
+		minY = Math.min(s.getMinY(), minY);
+		maxX = Math.max(s.getMaxX(), maxX);
+		maxY = Math.max(s.getMaxY(), maxY);
 	}
 }
