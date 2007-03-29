@@ -18,9 +18,11 @@ import edu.stanford.hci.r3.paper.Region;
  */
 public class ButtonRegion extends Region {
 
+	private ClickHandler clickHandler;
+
 	public ButtonRegion(String name, double x, double y, double w, double h) {
 		super(name, x, y, w, h);
-		addEventHandler(new ClickHandler() {
+		clickHandler = new ClickHandler() {
 			@Override
 			public void clicked(PenEvent e) {
 				onClick(e);
@@ -35,7 +37,8 @@ public class ButtonRegion extends Region {
 			public void released(PenEvent e) {
 
 			}
-		});
+		};
+		addEventHandler(clickHandler);
 	}
 
 	/**
@@ -63,6 +66,10 @@ public class ButtonRegion extends Region {
 	 */
 	protected void onRelease(PenEvent e) {
 		// DebugUtils.println("Released");
+	}
+
+	protected void showMe(String string) {
+		clickHandler.showMe(string);
 	}
 
 }

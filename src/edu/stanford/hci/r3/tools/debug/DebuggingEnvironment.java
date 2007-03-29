@@ -107,6 +107,8 @@ public class DebuggingEnvironment {
 				if (command.equals("eventvizclient connected")) {
 					DebugUtils.println("Flash Client Connected!");
 					sendApplicationLayout();
+				} else if (command.equals("load most recent pattern mappings")) {
+					app.getHostToolkit().loadMostRecentPatternMappings();
 				}
 			}
 		});
