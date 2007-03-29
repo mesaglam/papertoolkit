@@ -421,6 +421,8 @@ public class PaperToolkit {
 	 */
 	private JButton exitAppManagerButton;
 
+	private List<ActionListener> listenersToLoadRecentPatternMappings = new ArrayList<ActionListener>();
+
 	/**
 	 * Visual list of loaded (and possibly running) apps.
 	 */
@@ -536,15 +538,8 @@ public class PaperToolkit {
 
 		for (final PatternLocationToSheetLocationMapping map : mappings) {
 
-			final MenuItem loadMappingItem = new MenuItem("Load the most recent pattern mapping...");
-			loadMappingItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					// eventEngine.registerPatternMapForEventHandling(new
-					// PatternLocationToSheetLocationMapping());
-					map.loadConfigurationFromXML(getLastRunPatternInfoFile());
-				}
-			});
+			final MenuItem loadMappingItem = new MenuItem("Load most recent Pattern Mappings");
+			loadMappingItem.addActionListener(getLoadRecentPatternMappingsActionListener(map));
 			getTrayPopupMenu().add(loadMappingItem);
 
 			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map
@@ -701,8 +696,7 @@ public class PaperToolkit {
 					DebugUtils.println("Starting Debugging...");
 					debuggingEnvironment = new DebuggingEnvironment(app);
 					app.setDebuggingEnvironment(debuggingEnvironment);
-				}
-				else {
+				} else {
 					debuggingEnvironment.showFlashView();
 				}
 			}
@@ -862,6 +856,24 @@ public class PaperToolkit {
 			updateListOfApps();
 		}
 		return listOfApps;
+	}
+
+	/**
+	 * @param map
+	 * @return
+	 */
+	private ActionListener getLoadRecentPatternMappingsActionListener(
+			final PatternLocationToSheetLocationMapping map) {
+		// add it to the list, so we can invoke them later!
+		ActionListener actionListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent nullActionEvent) {
+				map.loadConfigurationFromXML(getLastRunPatternInfoFile());
+			}
+		};
+		listenersToLoadRecentPatternMappings.add(actionListener);
+
+		return actionListener;
 	}
 
 	/**
@@ -1054,6 +1066,13 @@ public class PaperToolkit {
 				});
 				getTrayPopupMenu().add(item);
 			}
+		}
+	}
+
+	public void loadMostRecentPatternMappings() {
+		DebugUtils.println("Loading most recent Pattern Mappings...");
+		for (ActionListener l : listenersToLoadRecentPatternMappings) {
+			l.actionPerformed(null);
 		}
 	}
 

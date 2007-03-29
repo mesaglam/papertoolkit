@@ -118,14 +118,17 @@
             	var regionName:String = message.@regionName;
             	var regionToAnimate:Region = regionsByName[regionName];
             	if (regionToAnimate != null) {
+            		regionToAnimate.setMessage(message.@msg);
 					regionToAnimate.animate();            		
             	}
             }
         }
 
+		public function loadMappings(event:MouseEvent):void {
+			sock.send("load most recent pattern mappings\n");		
+		}
 
 		public function exit(event:MouseEvent):void {
-			trace("exit called");
 			sock.send("exitserver\n");
 		}
 

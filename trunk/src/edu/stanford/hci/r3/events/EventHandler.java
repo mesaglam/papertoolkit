@@ -3,7 +3,11 @@ package edu.stanford.hci.r3.events;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -41,8 +45,22 @@ public abstract class EventHandler {
 	 */
 	public abstract void handleEvent(PenEvent event);
 
+	public void showMe(String message) {
+		for (Region r : parentRegions) {
+			// DebugUtils.println(r);
+			Sheet s = r.getParentSheet();
+			Application a = s.getParentApplication();
+			DebugUtils.println("Hosted in: " + a.getName());
+			DebuggingEnvironment d = a.getDebuggingEnvironment();
+			if (d != null) {
+				d.visualize(message, r);
+			}
+		}
+	}
+
 	/**
 	 * @return the Event Handler's Name
 	 */
 	public abstract String toString();
+
 }
