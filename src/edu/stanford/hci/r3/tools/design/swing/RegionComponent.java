@@ -3,7 +3,6 @@ package edu.stanford.hci.r3.tools.design.swing;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
@@ -112,9 +111,12 @@ public class RegionComponent extends JComponent implements MouseMotionListener, 
 	}
 	
 	protected void add(Shape s) {
-		inks.add(s);
-		Rectangle r = s.getBounds();
-		repaint(r.x-1,r.y-1,r.width+2,r.height+2,20);
+		synchronized (inks) {
+			inks.add(s);
+		}
+		//Rectangle r = s.getBounds();
+		//repaint(r.x-1,r.y-1,r.width+2,r.height+2,20);
+		repaint();
 	}
 	
 	/**
@@ -126,8 +128,10 @@ public class RegionComponent extends JComponent implements MouseMotionListener, 
 		g2d.setColor(Color.WHITE);
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		for (Shape s : inks)
-			g2d.draw(s);
+		synchronized (inks) {
+			for (Shape s : inks)
+				g2d.draw(s);
+		}
 	}
 
 	public void mouseMoved(MouseEvent e) {}
