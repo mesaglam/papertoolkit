@@ -6,7 +6,8 @@
 		<![CDATA[
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
-			import flash.display.StageDisplayState;
+
+//			import flash.display.StageDisplayState;
 			import eventViz.EventVizClient;
 
 			private var container:UIComponent;
@@ -18,6 +19,7 @@
 				container = new UIComponent();
 				viz = new EventVizClient();
 				viz.setDebugTextArea(debugText);
+				viz.setCodeTextArea(code);
 				container.addChild(viz);
 				addChild(container);
 			}			
@@ -25,12 +27,17 @@
 	</mx:Script>
 	<mx:Label x="10" y="10" text="Paper UI Event Visualization" fontFamily="Trebuchet MS" fontWeight="bold" fontSize="28" color="#b4c1d8"/>
 	<mx:VDividedBox top="10" bottom="10" right="10" width="256">
-		<mx:Panel width="100%" title="Information" layout="absolute" height="67%">
+		<mx:Panel width="100%" title="Information" layout="absolute" height="30%">
 			<mx:Label text="Number of Events Fired:" color="#000000" top="10" left="10"/>
 			<mx:Label text="Most Recent Event:" color="#000000" top="76" left="10"/>
-			<mx:Label text="Number of Regions:" color="#000000" top="140" left="10"/>
+			<mx:Label text="Number of Regions:" color="#000000" top="140" left="10" />
 		</mx:Panel>
-		<mx:TextArea editable="false" enabled="true" fontFamily="Lucida Console" fontSize="10" color="#4f4f4f" id="debugText" wordWrap="false" width="100%" height="33%"/>
+		<mx:VDividedBox top="10" bottom="10" right="10" width="256" height="50%">
+			<mx:Panel width="100%" title="Code" layout="absolute" height="50%">
+				<mx:TextArea editable="false" enabled="true" fontFamily="Lucida Console" fontSize="10" color="#4f4f4f" id="code" wordWrap="false" borderStyle="solid" left="0" top="0" bottom="0" right="0"/>
+			</mx:Panel>
+			<mx:TextArea editable="false" enabled="true" fontFamily="Lucida Console" fontSize="10" color="#4f4f4f" id="debugText" wordWrap="false" width="100%" height="33%"/>
+		</mx:VDividedBox>
 	</mx:VDividedBox>
 	<mx:HBox left="10" bottom="10">
 		<mx:Button label="Exit" click="viz.exit(event);"/>

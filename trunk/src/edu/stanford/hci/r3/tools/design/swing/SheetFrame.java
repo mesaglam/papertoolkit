@@ -1,11 +1,13 @@
 package edu.stanford.hci.r3.tools.design.swing;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.stanford.hci.r3.events.EventHandler;
@@ -47,8 +49,11 @@ public class SheetFrame extends JFrame {
 										 width, 
 										 height);
 
-		setSize((int)(sheet.getWidth().getValue()  * scale),
-				(int)(sheet.getHeight().getValue() * scale));
+		JPanel panel = new JPanel(null);
+		panel.setPreferredSize(new Dimension((int)(sheet.getWidth().getValue()  * scale),
+								 (int)(sheet.getHeight().getValue() * scale)));
+		getContentPane().add(panel);
+		pack();
 		
 		setLayout(null);
 		
@@ -94,7 +99,7 @@ public class SheetFrame extends JFrame {
 				c = new RegionComponent(r);
 			
 			// Add it
-			add(c);
+			panel.add(c);
 			// Set the bounds
 			c.setBounds((int)(r.getOriginX().getValue() * scale), 
 						(int)(r.getOriginY().getValue() * scale),

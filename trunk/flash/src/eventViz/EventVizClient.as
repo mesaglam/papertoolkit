@@ -15,6 +15,7 @@
 		
 		private var sock:XMLSocket;
 		private var debugTextArea:TextArea;
+		private var codeTextArea:TextArea;
 		private var g:Graphics;
 		private var app:Sprite = new Sprite();
 
@@ -50,6 +51,10 @@
 		public function setDebugTextArea(debugText:TextArea):void {
 			debugTextArea = debugText;
 		}
+		public function setCodeTextArea(codeText:TextArea):void {
+			codeTextArea = codeText;
+		}
+		
 		
  		public function startListening():void {
 			sock = new XMLSocket();
@@ -120,6 +125,9 @@
             	if (regionToAnimate != null) {
             		regionToAnimate.setMessage(message.@msg);
 					regionToAnimate.animate();            		
+            	}
+            	if (message.code) {
+            		codeTextArea.text = message.code.text();
             	}
             }
         }
