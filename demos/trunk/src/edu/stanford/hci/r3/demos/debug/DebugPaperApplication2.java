@@ -3,11 +3,13 @@ package edu.stanford.hci.r3.demos.debug;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ButtonRegion;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
+import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -34,40 +36,34 @@ public class DebugPaperApplication2 {
 
 		Sheet sheet = new Sheet(8.5, 11);
 
-		Region r = new Region("Ink", 1, 1, 6.5, 4);
-		r.addEventHandler(new ClickHandler() {
-
+		Region inkRegion = new Region("Ink for ToDos", 1, 1, 6.5, 4);
+		inkRegion.addEventHandler(new ClickAdapter() {
 			@Override
 			public void clicked(PenEvent e) {
-				DebugUtils.println("Ink Region Clicked at " + e.getPercentageLocation());
+				// DebugUtils.println("Ink Region Clicked at " + e.getPercentageLocation());
+
+				PercentageCoordinates pctLoc = e.getPercentageLocation();
+				showMe("Ink Region Clicked at [" + pctLoc.getPercentageInXDirection() + ", "
+						+ pctLoc.getPercentageInYDirection() + "]");
+
 				// test the showMe functionality...
 				// DebuggingEnvironment.showMe(app, "Pen Listener Clicked");
 			}
-
-			@Override
-			public void pressed(PenEvent e) {
-
-			}
-
-			@Override
-			public void released(PenEvent e) {
-
-			}
 		});
 
-		ButtonRegion buttonRegion = new ButtonRegion("Send", 5.5, 8.5, 2, 1.5) {
+		ButtonRegion buttonRegion = new ButtonRegion("Upload to Calendar", 5.5, 8.5, 2, 1.5) {
 			@Override
 			protected void onClick(PenEvent e) {
-				DebugUtils.println("Send Region clicked at " + e.getPercentageLocation());
+				showMe("Send Clicked: Uploading your Ink!");
 			}
 		};
 
-		sheet.addRegion(r);
+		sheet.addRegion(inkRegion);
 		sheet.addRegion(buttonRegion);
 
 		final Application app = new Application("A Simple Application");
-		Pen pen = new Pen("Local Pen");
-		// Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
+		// Pen pen = new Pen("Local Pen");
+		Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
 		app.addPen(pen);
 
 		// no pattern info xml file loaded...
