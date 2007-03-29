@@ -13,6 +13,7 @@ import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.TextRegion;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -38,6 +39,7 @@ public class PostThis extends Application {
 
 	private HandwritingRecognizer handwritingRecognizer;
 	private InkCollector inkWell;
+	private Region inkingRegion;
 
 	public PostThis() {
 		super("PostThis");
@@ -79,20 +81,29 @@ public class PostThis extends Application {
 	/**
 	 * @param uploadRegion
 	 */
-	private void addUploadHandler(Region uploadRegion) {
+	private void addUploadHandler(final Region uploadRegion) {
 		uploadRegion.addEventHandler(new ClickAdapter() {
 			@Override
 			public void clicked(PenEvent e) {
 				String handwriting = handwritingRecognizer.recognizeHandwriting();
-				Ink ink = inkWell.getInk();
+				DebugUtils.println("You tagged the ink with: [" + handwriting + "]");
 
 				// get new ink from ink collector
+				Ink ink = inkWell.getInk();
+				if (ink.getNumStrokes() == 0) {
+					DebugUtils.println("No Ink!");
+				} else {
+					// save the ink to a file
+					DebugUtils.println("Rendering the Ink to file.");
+					Units widthInches = inkingRegion.getWidth();
+					Units heightInches = inkingRegion.getHeight();
+					double widthDots = widthInches.getValueInPatternDots();
+					double heightDots = heightInches.getValueInPatternDots();
+					
+					ink.renderToJPEGFile(widthDots, heightDots);
+				}
+
 				DebugUtils.println("Uploading ink to your web calendar!");
-
-				// save the ink to a file
-				ink.renderToJPEGFile();
-
-				DebugUtils.println("You tagged the ink with: " + handwriting);
 			}
 		});
 	}
@@ -105,7 +116,12 @@ public class PostThis extends Application {
 
 		Region titleRegion = new TextRegion("Title", "PostThis!", new Font("Trebuchet MS",
 				Font.PLAIN, 22), new Inches(1), new Inches(0.5));
-		Region inkingRegion = new Region("InkArea", 1, 1.25, 6.5, 6.5);
+
+		// Region inkingRegion = new Region("InkArea", 1, 1.25, 1, 1);
+		// Region uploadRegion = new Region("Submit", 5.5, 8.25, 1, 1);
+		// Region tagRegion = new Region("Tags", 1, 8.25, 1, 1);
+
+		inkingRegion = new Region("InkArea", 1, 1.25, 6.5, 6.5);
 		Region uploadRegion = new Region("Submit", 5.5, 8.25, 2, 2);
 		Region tagRegion = new Region("Tags", 1, 8.25, 4, 2);
 

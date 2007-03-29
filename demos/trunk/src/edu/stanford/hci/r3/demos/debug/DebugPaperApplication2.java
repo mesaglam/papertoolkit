@@ -72,7 +72,8 @@ public class DebugPaperApplication2 {
 
 		// no pattern info xml file loaded...
 		// we are going to use the runtime binding of pattern info
-		// TODO: Alternatively, auto binding? or bind w/ previously saved event streams?! =)
+		// TODO: Alternatively, auto binding? or bind w/ previously saved event streams?! Bind a
+		// whole sheet at a time, and do the regions automatically? =)
 		app.addSheet(sheet);
 
 		PaperToolkit p = new PaperToolkit(true, false, false);
