@@ -45,7 +45,7 @@ public class DebuggingEnvironment {
 		// ---------------------------------
 
 		// now, we'll use Flash as our GUI
-		startFlashDebuger();
+		startFlashDebugger();
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class DebuggingEnvironment {
 	/**
 	 * 
 	 */
-	private void startFlashDebuger() {
+	private void startFlashDebugger() {
 		// Start the local messaging server
 		flash = new FlashCommunicationServer();
 		showFlashView();
