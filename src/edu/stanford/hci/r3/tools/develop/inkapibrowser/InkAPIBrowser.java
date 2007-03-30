@@ -3,11 +3,15 @@ package edu.stanford.hci.r3.tools.develop.inkapibrowser;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.filechooser.FileSystemView;
+
+import org.jfree.util.ArrayUtilities;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
@@ -16,6 +20,7 @@ import edu.stanford.hci.r3.pen.batch.PenSynch;
 import edu.stanford.hci.r3.pen.batch.PenSynchManager;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkUtils;
+import edu.stanford.hci.r3.util.ArrayUtils;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -47,6 +52,9 @@ public class InkAPIBrowser {
 	private int currentSynchedFileIndex = -1;
 	private FlashCommunicationServer flash;
 	private List<File> synchedFiles;
+	private List<Method> exposedMethods;
+	private HashMap<String, Method> methodsHashMap = new HashMap<String, Method>();
+	private Ink mostRecentInkObject;
 
 	/**
 	 * @param paperApp
@@ -139,6 +147,8 @@ public class InkAPIBrowser {
 		for (Ink ink : importedInk) {
 			DebugUtils.println("Sending ink from: " + ink.getSourcePageAddress());
 			flash.sendMessage(ink.getAsXML(false));
+
+			mostRecentInkObject = ink;
 		}
 	}
 
@@ -149,10 +159,16 @@ public class InkAPIBrowser {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<methods>");
 
+		// add methods to a hashtable from name --> method object
+
 		// enumerate InkUtils
-		List<Method> exposedMethods = InkUtils.getExposedMethods();
+		exposedMethods = InkUtils.getExposedMethods();
 		for (Method m : exposedMethods) {
-			sb.append("<method name='" + m.getName() + "'/>");
+			sb.append("<method name='" + m.getName() + "' className='"
+					+ m.getDeclaringClass().getSimpleName() + "'/>");
+
+			// TODO: Will have to fix the lowercase problem =)
+			methodsHashMap.put(m.getName().toLowerCase(), m);
 		}
 		sb.append("</methods>");
 		flash.sendMessage(sb.toString());
@@ -179,11 +195,49 @@ public class InkAPIBrowser {
 					sendInkFromCurrentFile();
 				} else if (command.equals("saveimage")) {
 					saveInkFromCurrentFileToDiskAndDisplayIt();
+				} else if (command.startsWith("callmethods")) {
+					String listOfCommands = command.substring(command.indexOf("[") + 1, command
+							.indexOf("]"));
+					String[] commands = listOfCommands.split(",");
+					callTheseMethods(commands);
 				} else {
 					DebugUtils.println("Unhandled command: " + command);
 				}
 			}
+
 		});
+	}
+
+	/**
+	 * @param commands
+	 */
+	private void callTheseMethods(String[] commands) {
+		ArrayUtils.printArray(commands);
+
+		Ink ink = mostRecentInkObject;
+		if (ink == null) {
+			return;
+		}
+
+		Ink inkResult = new Ink();
+		for (String methodName : commands) {
+			Method method = methodsHashMap.get(methodName);
+			try {
+				inkResult = (Ink) method.invoke(null, ink);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+
+		DebugUtils.println("Original Ink: " + ink.getNumStrokes());
+		DebugUtils.println("New Ink: " + inkResult.getNumStrokes());
+		
+		// send this ink back to the Flash GUI, to highlight in red!
+		flash.sendMessage("<highlight>" + inkResult.getAsXML(false) + "</highlight>");
 	}
 
 	/**

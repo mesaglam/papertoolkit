@@ -6,6 +6,7 @@ package ink {
 	import flash.events.MouseEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import mx.core.UIComponent;
 	
 
 	// a local URL may look like this:
@@ -15,7 +16,10 @@ package ink {
 	
 		private var inkWell:Ink = new Ink();
 		
-		public function InkRawXMLParser(xmlData:XML):void {			
+		private var inkColor:uint;
+		
+		public function InkRawXMLParser(xmlData:XML, inkColorVal:uint=0xDADADA):void {			
+			inkColor = inkColorVal;
 			processXML(xmlData);
 		}
 
@@ -30,6 +34,9 @@ package ink {
 				//trace(points.toXMLString());
 
 				var inkStroke:InkStroke = new InkStroke(stroke.@begin, stroke.@end);				
+				
+
+				inkStroke.inkColor = inkColor;
 				
 				for each (var point:XML in points) {
 					//trace(point.@x + " " + point.@y);

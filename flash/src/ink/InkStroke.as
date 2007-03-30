@@ -139,5 +139,9 @@ package ink {
 		public function get maxY():Number {
 			return yMax;
 		}
+		
+		public function set inkColor(c:uint):void {
+			color = c;
+		}
 	}
 }

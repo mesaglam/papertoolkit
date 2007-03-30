@@ -21,7 +21,7 @@
 					</mx:HBox>
 					<mx:Button label="Full Screen" click="browser.toggleFullScreen(event);" right="10" top="40" width="111" height="22"/>
 				</mx:Canvas>
-				<mx:TextArea width="100%" height="33%" editable="true" enabled="true" fontFamily="Courier New" fontSize="12" color="#4f4f4f" paddingLeft="10" paddingRight="10" id="codeArea"/>
+				<mx:TextArea width="100%" height="33%" editable="true" enabled="true" fontFamily="Courier New" fontSize="12" color="#4f4f4f" paddingLeft="10" paddingRight="10" id="codeArea" text="Ink ink = &lt;InsertCodeHere&gt;;"/>
 			</mx:VDividedBox>
         </mx:Canvas>
         <mx:Canvas label="Canvas 2" width="25%" height="100%" backgroundColor="#555555">
@@ -39,12 +39,19 @@
 			        </mx:Array>
 			    </mx:dataProvider>
     		</mx:ComboBox>
-        	<mx:ComboBox top="154" left="10" right="10" id="methodCallDropdown"></mx:ComboBox>
-        	<mx:Panel layout="absolute" right="10" left="10" bottom="40" top="219" title="Options" id="optionsPanel">
+        	<mx:ComboBox top="154" left="10" right="10" id="methodCallDropdown" color="#000000"></mx:ComboBox>
+        	<mx:Panel layout="absolute" right="10" left="10" bottom="40" top="427" title="Metrics" id="optionsPanel">
+        		<mx:Label text="Number of Strokes Displayed:" color="#000000" top="10" left="10"/>
+        		<mx:Label text="Number of Methods Added:" color="#000000" top="72" left="10"/>
+        		<mx:Label text="0" color="#000000" top="41" left="30" id="numStrokesDisplayed"/>
+        		<mx:Label text="0" color="#000000" top="103" left="30" id="numMethodsAdded"/>
         	</mx:Panel>
         	<mx:Label text="Category of Operation" top="57" left="10"/>
         	<mx:Label text="Method Call" top="123" left="10"/>
         	<mx:Button label="Add Method Call" left="10" right="10" top="189" click="browser.addMethodCall(event);"/>
+        	<mx:Panel height="200" layout="absolute" left="10" right="10" top="219" title="Information">
+        		<mx:TextArea left="0" right="0" top="0" bottom="0" id="infoTextArea" color="#808080" fontFamily="Courier New" fontSize="10"/>
+        	</mx:Panel>
         </mx:Canvas>
 	</mx:HDividedBox>
 	<mx:Script>
@@ -63,6 +70,10 @@
 				browser = new APIBrowserBackend(stage);
 				browser.setWelcomeText(welcomeText);
 				browser.setMethodCallDropdown(methodCallDropdown);
+				browser.setCodeArea(codeArea);
+				browser.setMetricsTextFields(numMethodsAdded, numStrokesDisplayed);
+				browser.setDebugOutTextArea(infoTextArea);
+
 
 				container = new UIComponent();
 				container.addChild(browser);
