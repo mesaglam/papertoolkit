@@ -25,13 +25,16 @@
 		]]>
 	</mx:Script>
 	<mx:Label x="10" y="10" text="Paper UI Event Visualization" fontFamily="Trebuchet MS" fontWeight="bold" fontSize="28" color="#b4c1d8"/>
-	<mx:VDividedBox top="10" bottom="10" right="10" width="256">
-		<mx:Panel width="100%" title="Information" layout="absolute" height="30%">
-			<mx:Label text="Number of Events Fired:" color="#000000" top="10" left="10"/>
-			<mx:Label text="Most Recent Event:" color="#000000" top="76" left="10"/>
-			<mx:Label text="Number of Regions:" color="#000000" top="140" left="10" />
+	<mx:VDividedBox top="10" bottom="10" right="10" width="384">
+		<mx:Panel width="100%" title="Information" layout="absolute">
+			<mx:Label text="Number of Events Fired:" color="#000000" top="10" left="10" textAlign="right"/>
+			<mx:Label text="Most Recent Event:" color="#000000" top="41" left="44" textAlign="right"/>
+			<mx:Label text="Number of Regions:" color="#000000" top="72" left="41" textAlign="right" bottom="20"/>
+			<mx:Label x="195" y="10" text="4" color="#000000" fontWeight="bold"/>
+			<mx:Label x="195" y="41" text="click" color="#000000" fontWeight="bold"/>
+			<mx:Label x="195" y="72" text="2" color="#000000" fontWeight="bold"/>
 		</mx:Panel>
-		<mx:VDividedBox top="10" bottom="10" right="10" width="256" height="50%">
+		<mx:VDividedBox top="10" bottom="10" right="10" height="50%" width="100%">
 			<mx:Panel width="100%" title="Code" layout="absolute" height="50%">
 				<mx:TextArea editable="false" enabled="true" fontFamily="Lucida Console" fontSize="10" color="#4f4f4f" id="code" wordWrap="false" borderStyle="solid" left="0" top="0" bottom="0" right="0"/>
 			</mx:Panel>

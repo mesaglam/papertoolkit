@@ -54,7 +54,8 @@ package eventViz
 			// smaller monospaced text for showMe
 			tfShowMe = new TextFormat();
 			tfShowMe.font = "Lucida Console";
-			tfShowMe.size = 14;
+			tfShowMe.bold = true;
+			tfShowMe.size = 18; // for UIST Figure // 14;
 			
 			rMessage = new TextField();
 			rMessage.x = 7;
