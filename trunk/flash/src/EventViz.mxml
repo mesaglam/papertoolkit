@@ -7,7 +7,6 @@
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 
-//			import flash.display.StageDisplayState;
 			import eventViz.EventVizClient;
 
 			private var container:UIComponent;
