@@ -272,12 +272,13 @@ public class Ink {
 	 * @param w
 	 * @param h
 	 */
-	public void renderToJPEGFile(double w, double h) {
+	public File renderToJPEGFile() {
 		File homeDir = FileSystemView.getFileSystemView().getHomeDirectory();
 		// DebugUtils.println(homeDir);
 		File destFile = new File(homeDir, getName() + ".jpg");
 		// DebugUtils.println(destFile);
-		new InkRenderer(this).renderToJPEG(destFile, MathUtils.rint(w), MathUtils.rint(h));
+		new InkRenderer(this).renderToJPEGRecentered(destFile);
+		return destFile;
 	}
 
 	/**

@@ -121,6 +121,28 @@ public class InkRenderer {
 		DebugUtils.println("Wrote the File");
 	}
 
+	public void renderToJPEGRecentered(File destFile) {
+		double minX = ink.getMinX();
+		double minY = ink.getMinY();
+		double maxX = ink.getMaxX();
+		double maxY = ink.getMaxY();
+		int w = (int) (maxX - minX) + 20;
+		int h = (int) (maxY - minY) + 20;
+		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(w, h);
+		final Graphics2D graphics2D = image.createGraphics();
+		graphics2D.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+
+		// render a white canvas
+		graphics2D.setColor(Color.WHITE);
+		graphics2D.fillRect(0, 0, w, h);
+		graphics2D.translate(-(minX - 10), -(minY - 10));
+		
+		renderToG2D(graphics2D);
+		graphics2D.dispose();
+		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destFile);
+		DebugUtils.println("Wrote the File");
+	}
+
 	/**
 	 * @param theInk
 	 */

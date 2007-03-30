@@ -5,21 +5,21 @@
 		<mx:Canvas label="Canvas 1" width="75%" height="100%" backgroundColor="#555555">
 			<mx:VDividedBox x="0" y="0" width="100%" height="100%">
 				<mx:Canvas width="100%" height="100%" backgroundColor="#444444" id="mainCanvas">
-					<mx:Label text="Start Drawing to see some Ink!" horizontalCenter="0" verticalCenter="0" id="welcomeText"/>
-					<mx:HBox left="10" bottom="40">
-						<mx:Button label="Prev" id="prevButton" click="browser.nextHandler(event);"/>
-						<mx:Button label="Next" id="nextButton" click="browser.prevHandler(event);"/>
-					</mx:HBox>
+					<mx:Label text="Start Drawing to see some Ink!" horizontalCenter="0" verticalCenter="0" id="welcomeText" fontSize="22" fontFamily="Trebuchet MS" alpha="0.9"/>
 					<mx:HBox left="10" bottom="10">
+						<mx:Button label="Prev" id="prevButton" click="browser.prevHandler(event);"/>
+						<mx:Button label="Next" id="nextButton" click="browser.nextHandler(event);"/>
+					</mx:HBox>
+					<mx:HBox right="10" top="10">
 						<mx:Button label="-" id="zoomOutButton" click="browser.zoomOut(event);"/>
 						<mx:Button label="100%" id="zoomResetButton" fontFamily="Verdana" click="browser.zoomReset(event);"/>
 						<mx:Button label="+" id="zoomInButton" click="browser.zoomIn(event);"/>
 					</mx:HBox>
 					<mx:HBox right="10" bottom="10">
-						<mx:Button label="Save Image..." id="saveImageButton" click="browser.saveImage(event);"/>
+						<mx:Button label="Preview Image" id="saveImageButton" click="browser.saveImage(event);"/>
 						<mx:Button label="Exit" id="exitButton" click="browser.exit(event);"/>
 					</mx:HBox>
-					<mx:Button label="Full Screen" click="browser.toggleFullScreen(event);" bottom="70" left="10"/>
+					<mx:Button label="Full Screen" click="browser.toggleFullScreen(event);" right="10" top="40" width="111" height="22"/>
 				</mx:Canvas>
 				<mx:TextArea width="100%" height="33%" editable="true" enabled="true" fontFamily="Courier New" fontSize="12" color="#4f4f4f" paddingLeft="10" paddingRight="10" id="codeArea"/>
 			</mx:VDividedBox>
@@ -27,12 +27,24 @@
         <mx:Canvas label="Canvas 2" width="25%" height="100%" backgroundColor="#555555">
         	<mx:Button label="→ Copy Code" right="10" left="10" bottom="10" click="browser.copyCodeHandler(event);" height="22" textAlign="center" fontWeight="bold" id="copyCodeButton"/>
         	<mx:Label text="Ink API Browser" top="10" fontSize="26" color="#8aa5e1" fontFamily="Trebuchet MS" left="10" fontWeight="bold"/>
+        	<mx:ComboBox top="88" left="10" right="10" id="CategoryDropDown" color="#000000">
+			    <mx:dataProvider>
+			        <mx:Array>
+			            <mx:Object label="Utilities" data="Utilities"/>
+			            <mx:Object label="Select" data="Select"/>
+			            <mx:Object label="Decorate" data="Decorate"/>
+			            <mx:Object label="Manipulate" data="Manipulate"/>
+			            <mx:Object label="Associate" data="Associate"/>
+			            <mx:Object label="Transport" data="Transport"/>
+			        </mx:Array>
+			    </mx:dataProvider>
+    		</mx:ComboBox>
         	<mx:ComboBox top="154" left="10" right="10" id="methodCallDropdown"></mx:ComboBox>
-        	<mx:ComboBox top="88" left="10" right="10" id="CategoryDropDown"></mx:ComboBox>
-        	<mx:Panel layout="absolute" right="10" left="10" bottom="40" top="189" title="Options" id="optionsPanel">
+        	<mx:Panel layout="absolute" right="10" left="10" bottom="40" top="219" title="Options" id="optionsPanel">
         	</mx:Panel>
         	<mx:Label text="Category of Operation" top="57" left="10"/>
         	<mx:Label text="Method Call" top="123" left="10"/>
+        	<mx:Button label="Add Method Call" left="10" right="10" top="189" click="browser.addMethodCall(event);"/>
         </mx:Canvas>
 	</mx:HDividedBox>
 	<mx:Script>
@@ -49,6 +61,9 @@
 			// more or less all the code! =)			
 			public function startBrowser():void {
 				browser = new APIBrowserBackend(stage);
+				browser.setWelcomeText(welcomeText);
+				browser.setMethodCallDropdown(methodCallDropdown);
+
 				container = new UIComponent();
 				container.addChild(browser);
 				mainCanvas.addChild(container);
