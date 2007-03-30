@@ -101,7 +101,7 @@
 				var sheets:XMLList = message.descendants("sheet");
 				
 				for each (var sheet:XML in sheets) {
-					g.lineStyle(1, 0xDADADA);
+					g.lineStyle(3, 0xDADADA);
 					g.drawRect(0, 0, parseFloat(sheet.@w)*pixelsPerInch, parseFloat(sheet.@h)*pixelsPerInch);
 
 					// for each region... draw a box

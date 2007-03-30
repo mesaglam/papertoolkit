@@ -17,9 +17,11 @@ package ink {
 		private var inkWell:Ink = new Ink();
 		
 		private var inkColor:uint;
+		private var inkWidth:Number;
 		
-		public function InkRawXMLParser(xmlData:XML, inkColorVal:uint=0xDADADA):void {			
+		public function InkRawXMLParser(xmlData:XML, inkColorVal:uint=0xDADADA, inkWidthVal:Number=1.6):void {			
 			inkColor = inkColorVal;
+			inkWidth = inkWidthVal;
 			processXML(xmlData);
 		}
 
@@ -35,7 +37,7 @@ package ink {
 
 				var inkStroke:InkStroke = new InkStroke(stroke.@begin, stroke.@end);				
 				
-
+				inkStroke.inkWidth = inkWidth;
 				inkStroke.inkColor = inkColor;
 				
 				for each (var point:XML in points) {
