@@ -77,7 +77,8 @@ package eventViz
 		}
 		public function drawHighlighted():void {
 			graphics.clear();
-			graphics.beginFill(0xCBCBDD, 0.35);
+			graphics.beginFill(0xFBCBCB, 0.45); // for UIST figure
+//			graphics.beginFill(0xCBCBDD, 0.35);
 			graphics.lineStyle(1, 0xBBBBDD);
 			graphics.drawRect(0, 0, rw, rh);
 		}

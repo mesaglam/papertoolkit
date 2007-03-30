@@ -15,7 +15,10 @@ package apiBrowser {
 	import ink.InkRawXMLParser;
 	import ink.Ink;
 	import mx.controls.Label;
-	import mx.controls.ComboBox;	
+	import mx.controls.ComboBox;
+	import mx.controls.TextArea;
+	import flash.system.System;
+	import flash.text.TextField;	
 	
 	public class APIBrowserBackend extends Sprite {
 
@@ -51,7 +54,7 @@ package apiBrowser {
 		}
 
 		public function copyCodeHandler(event:MouseEvent):void {
-			trace("copyCode Click Handler");
+			System.setClipboard(codeTextArea.text);
 		}
 
 		public function nextHandler(event:MouseEvent):void {
@@ -140,40 +143,69 @@ package apiBrowser {
 			// trace(event.text);
 	        var message:XML = new XML(event.text);
 
+			infoTextArea.text = event.text + "\n" + infoTextArea.text;
+			
+
 			// make xml out of it, no doubt
+			var parser:InkRawXMLParser;
 	
-            if (event.text.indexOf("<ink")>-1) {
+			if (event.text.indexOf("<highlight")>-1) {
+				
+				var inkXMLData:XMLList = message..ink;
+				for each (var inkXML:XML in inkXMLData) {
+		        	parser = new InkRawXMLParser(inkXML, 0xFF99AA);
+					// add these strokes on TOP of the previous strokes, with a better highlight. =)
+					inkContainer.addChild(parser.ink);					
+				}
+				trace(inkXML.toXMLString());
+			} else if (event.text.indexOf("<ink")>-1) {
 				// var inkData:XMLList = message.descendants("ink");
 				// trace(inkData.toXMLString());
-	        	var parser:InkRawXMLParser = new InkRawXMLParser(new XML(event.text));
+	        	parser = new InkRawXMLParser(message);
 	        	if (inkWell != null) {
 		        	inkContainer.removeChild(inkWell);
 	        	}
 	        	inkWell = parser.ink;
 				inkContainer.addChild(inkWell);
+				
+				
+				numStrokesDisplayedLabel.text = inkWell.getNumStrokes() + "";
+				
             } else if (event.text.indexOf("<methods")>-1) {
 				var methodsData:XMLList = message.descendants("method");
 				trace(methodsData.toXMLString());
 
-				var methods:Array = new Array();
-				var method1:Object = new Object();				
-				var method2:Object = new Object();
-				methods.push(method1, method2);
-				method1.label = "hello";
-				method2.label = "wee";
-				method1.data = "daaah";
-				method2.data = "daaaaah";
-				methodCallDropDown.dataProvider = methods;
-				
+				// get all the methods (somewhere down the XML tree)
 				// populate the combo box
-				
+				var methods:Array = new Array();
+				for each (var method:XML in methodsData) {
+					//trace(stroke);
+					var methodItem:Object = new Object();				
+					methodItem.label = method.@name;
+					methodItem.data = method.@className + "." + method.@name;
+					
+					methods.push(methodItem);
+				}			
+				methodCallDropDown.dataProvider = methods;
             }
-		
-			
         }
         
+        private var methodsToCallInJava:Array = new Array(); // of Strings
+        //
         public function addMethodCall(event:MouseEvent):void {
+        	// get current value in combo box
         	
+        	var methodCallString:String = "ink = " + methodCallDropDown.selectedItem.data + "(ink);"; // or list of inkstrokes!
+
+			methodsToCallInJava.push(methodCallDropDown.selectedItem.label);
+        	
+        	// add it to the end of the text area
+        	codeTextArea.text = codeTextArea.text + "\n" + methodCallString;
+        	
+        	// call this method in java!
+			sendToJava("callMethods: ["+methodsToCallInJava.toString()+"]");
+			
+			numMethodsAddedLabel.text = methodsToCallInJava.length + "";			
         }
         
         private function ioErrorHandler(event:IOErrorEvent):void {
@@ -191,6 +223,23 @@ package apiBrowser {
 		//
 		public function setMethodCallDropdown(methodCalls:ComboBox):void {
 			methodCallDropDown = methodCalls;
+		}
+
+		private var codeTextArea:TextArea;		
+		public function setCodeArea(cArea:TextArea):void {
+			codeTextArea = cArea;
+		}
+
+
+		private var numMethodsAddedLabel:Label;
+		private var numStrokesDisplayedLabel:Label;
+		public function setMetricsTextFields(nMethodsAdded:Label, nStrokesDisplayed:Label):void {
+			numMethodsAddedLabel = nMethodsAdded;
+			numStrokesDisplayedLabel = nStrokesDisplayed;
+		}
+		private var infoTextArea:TextArea;
+		public function setDebugOutTextArea(infoArea:TextArea):void {
+			infoTextArea = infoArea;
 		}
 
 	}

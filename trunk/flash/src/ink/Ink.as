@@ -16,6 +16,15 @@ package ink {
 		private var xMax:Number = Number.MIN_VALUE;
 		private var yMax:Number = Number.MIN_VALUE;
 
+		public function setColor():void {
+			// for each stroke, set the color!
+			
+		}
+
+		public function getNumStrokes():Number {
+			return strokes.length;
+		}
+
 		public function Ink() {			
 			buttonMode = true;			
 

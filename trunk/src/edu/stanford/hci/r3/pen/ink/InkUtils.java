@@ -247,10 +247,12 @@ public class InkUtils {
 	}
 
 	/**
+	 * Use this in the example!
+	 * 
 	 * @param ink
 	 * @return
 	 */
-	public static List<InkStroke> getStrokeWithMostSamples(Ink ink) {
+	public static Ink getStrokeWithMostSamples(Ink ink) {
 		List<InkStroke> matchingStrokes = new ArrayList<InkStroke>();
 		List<InkStroke> strokes = ink.getStrokes();
 
@@ -263,12 +265,13 @@ public class InkUtils {
 			if (numSamples > maxNumSamples) {
 				DebugUtils.println("Longest");
 				longestStroke = stroke;
+				maxNumSamples = numSamples;
 			}
 		}
 		if (longestStroke != null) {
 			matchingStrokes.add(longestStroke);
 		}
-		return matchingStrokes;
+		return new Ink(matchingStrokes);
 	}
 
 	/**
