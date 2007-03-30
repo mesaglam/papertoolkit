@@ -153,7 +153,7 @@ package apiBrowser {
 				
 				var inkXMLData:XMLList = message..ink;
 				for each (var inkXML:XML in inkXMLData) {
-		        	parser = new InkRawXMLParser(inkXML, 0xFF99AA);
+		        	parser = new InkRawXMLParser(inkXML, 0xFF99AA, 3.4);
 					// add these strokes on TOP of the previous strokes, with a better highlight. =)
 					inkContainer.addChild(parser.ink);					
 				}

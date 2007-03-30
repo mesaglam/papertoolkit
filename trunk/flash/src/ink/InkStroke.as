@@ -143,5 +143,9 @@ package ink {
 		public function set inkColor(c:uint):void {
 			color = c;
 		}
+		public function set inkWidth(w:Number):void {
+			strokeWidth = w;
+		}
+
 	}
 }
