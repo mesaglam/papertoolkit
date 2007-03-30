@@ -99,8 +99,9 @@ public class PostThis extends Application {
 					Units heightInches = inkingRegion.getHeight();
 					double widthDots = widthInches.getValueInPatternDots();
 					double heightDots = heightInches.getValueInPatternDots();
-					
-					ink.renderToJPEGFile(widthDots, heightDots);
+
+					// ink.renderToJPEGFile(widthDots, heightDots);
+					ink.renderToJPEGFile();
 				}
 
 				DebugUtils.println("Uploading ink to your web calendar!");
