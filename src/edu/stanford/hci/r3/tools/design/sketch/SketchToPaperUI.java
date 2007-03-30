@@ -65,19 +65,19 @@ public class SketchToPaperUI {
 
 		// Biggest stroke becomes the sheet
 		InkStroke biggestStroke = 
-			InkUtils.findStrokeWithLargestArea(importedInk);
+			InkUtils.getStrokeWithLargestArea(importedInk);
 
 		// Strokes inside sheet are regions
 		List<InkStroke> regionStrokes = 
-			InkUtils.findAllStrokesContainedWithin(importedInk, biggestStroke);
+			InkUtils.getAllStrokesContainedWithin(importedInk, biggestStroke);
 		
 		// Strokes that overlap the sheet but go outside are connectors
 		List<InkStroke> connectors = 
-			InkUtils.findAllStrokesPartlyOutside(importedInk, biggestStroke);
+			InkUtils.getStrokesPartlyOutside(importedInk, biggestStroke);
 
 		// Strokes outside the sheet are events
 		List<InkStroke> outsideStrokes = 
-			InkUtils.findAllStrokesOutside(importedInk, biggestStroke);
+			InkUtils.getAllStrokesOutside(importedInk, biggestStroke);
 		// Cluster events (since they're words)
 		List<Ink> events = InkUtils.clusterStrokes(outsideStrokes, 2);
 		
@@ -142,7 +142,7 @@ public class SketchToPaperUI {
 					p = c.getEnd();
 				
 				// Find the event nearest that endpoint
-				event = InkUtils.findInkNearPoint(events, 
+				event = InkUtils.getInkNearPoint(events, 
 						new Point2D.Double(p.getX(),p.getY()), 40.0);
 				
 				// If an event is found...

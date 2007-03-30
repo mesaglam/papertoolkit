@@ -11,7 +11,11 @@ package apiBrowser {
 	import flash.events.SecurityErrorEvent;
 	import flash.events.DataEvent;
 	import flash.events.IEventDispatcher;
-	import flash.net.XMLSocket;	
+	import flash.net.XMLSocket;
+	import ink.InkRawXMLParser;
+	import ink.Ink;
+	import mx.controls.Label;
+	import mx.controls.ComboBox;	
 	
 	public class APIBrowserBackend extends Sprite {
 
@@ -28,10 +32,22 @@ package apiBrowser {
 		private var inkContainer:Sprite = new Sprite();
 		private var g:Graphics;
 
+		private var inkWell:Ink = null;
+
+		private var welcomeTextLabel:Label;
+		private var methodCallDropDown:ComboBox;		
+
+
+
 		public function APIBrowserBackend(stg:Stage):void {
 			stageObj = stg;
 			startListening();
 			g = inkContainer.graphics;
+			addChild(inkContainer);
+		}
+
+		public function setWelcomeText(welcomeText:Label):void {
+			welcomeTextLabel = welcomeText;
 		}
 
 		public function copyCodeHandler(event:MouseEvent):void {
@@ -39,12 +55,12 @@ package apiBrowser {
 		}
 
 		public function nextHandler(event:MouseEvent):void {
-			trace("next Click Handler");
+			welcomeTextLabel.setVisible(false);
 			sendToJava("next");
 		}
 
 		public function prevHandler(event:MouseEvent):void {
-			trace("prev Click Handler");
+			welcomeTextLabel.setVisible(false);
 			sendToJava("prev");
 		}
 		
@@ -67,11 +83,22 @@ package apiBrowser {
 
 		// flash only functions
  		public function zoomIn(event:MouseEvent):void {
+ 			inkContainer.scaleX *= 1.25;
+ 			inkContainer.scaleY *= 1.25;
  		}
  		public function zoomOut(event:MouseEvent):void {
+ 			inkContainer.scaleX *= .8;
+ 			inkContainer.scaleY *= .8;
  		}
  		public function zoomReset(event:MouseEvent):void {
+ 			inkContainer.scaleX = 1;
+ 			inkContainer.scaleY = 1;
+ 			
+ 			if (inkWell != null) {
+	 			inkWell.recenter();
+ 			}
  		}
+ 		
 
 		private function sendToJava(msg:String):void {
 			sock.send(msg + "\n");
@@ -110,9 +137,43 @@ package apiBrowser {
 		}
 
         private function dataHandler(event:DataEvent):void {
-			trace(event.text);
-			
+			// trace(event.text);
+	        var message:XML = new XML(event.text);
+
 			// make xml out of it, no doubt
+	
+            if (event.text.indexOf("<ink")>-1) {
+				// var inkData:XMLList = message.descendants("ink");
+				// trace(inkData.toXMLString());
+	        	var parser:InkRawXMLParser = new InkRawXMLParser(new XML(event.text));
+	        	if (inkWell != null) {
+		        	inkContainer.removeChild(inkWell);
+	        	}
+	        	inkWell = parser.ink;
+				inkContainer.addChild(inkWell);
+            } else if (event.text.indexOf("<methods")>-1) {
+				var methodsData:XMLList = message.descendants("method");
+				trace(methodsData.toXMLString());
+
+				var methods:Array = new Array();
+				var method1:Object = new Object();				
+				var method2:Object = new Object();
+				methods.push(method1, method2);
+				method1.label = "hello";
+				method2.label = "wee";
+				method1.data = "daaah";
+				method2.data = "daaaaah";
+				methodCallDropDown.dataProvider = methods;
+				
+				// populate the combo box
+				
+            }
+		
+			
+        }
+        
+        public function addMethodCall(event:MouseEvent):void {
+        	
         }
         
         private function ioErrorHandler(event:IOErrorEvent):void {
@@ -126,6 +187,11 @@ package apiBrowser {
         private function securityErrorHandler(event:SecurityErrorEvent):void {
             trace("securityErrorHandler: " + event);
         }
+
+		//
+		public function setMethodCallDropdown(methodCalls:ComboBox):void {
+			methodCallDropDown = methodCalls;
+		}
 
 	}
 }

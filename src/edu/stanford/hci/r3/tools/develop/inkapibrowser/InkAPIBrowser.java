@@ -1,13 +1,23 @@
 package edu.stanford.hci.r3.tools.develop.inkapibrowser;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.filechooser.FileSystemView;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
+import edu.stanford.hci.r3.pen.batch.PenSynch;
 import edu.stanford.hci.r3.pen.batch.PenSynchManager;
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkUtils;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -34,9 +44,9 @@ public class InkAPIBrowser {
 		new InkAPIBrowser();
 	}
 
+	private int currentSynchedFileIndex = -1;
 	private FlashCommunicationServer flash;
 	private List<File> synchedFiles;
-	private int currentSynchedFileIndex = 0;
 
 	/**
 	 * @param paperApp
@@ -51,6 +61,17 @@ public class InkAPIBrowser {
 	}
 
 	/**
+	 * @return
+	 */
+	private File getCurrentFile() {
+		if (currentSynchedFileIndex < 0) {
+			// if we never advanced...
+			currentSynchedFileIndex = 0;
+		}
+		return synchedFiles.get(currentSynchedFileIndex);
+	}
+
+	/**
 	 * 
 	 */
 	private void nextFile() {
@@ -58,7 +79,7 @@ public class InkAPIBrowser {
 		if (currentSynchedFileIndex == synchedFiles.size()) {
 			currentSynchedFileIndex = 0;
 		}
-		DebugUtils.println(synchedFiles.get(currentSynchedFileIndex).getName());
+		DebugUtils.println(getCurrentFile().getName());
 	}
 
 	/**
@@ -66,17 +87,75 @@ public class InkAPIBrowser {
 	 */
 	private void prevFile() {
 		currentSynchedFileIndex--;
-		if (currentSynchedFileIndex == -1) {
+		if (currentSynchedFileIndex < 0) {
 			currentSynchedFileIndex = synchedFiles.size() - 1;
 		}
-		DebugUtils.println(synchedFiles.get(currentSynchedFileIndex).getName());
+		DebugUtils.println(getCurrentFile().getName());
 	}
 
 	/**
 	 * 
 	 */
-	private void sendLocationOfLastSynchedInk() {
-		flash.sendMessage("<lastPenSynch fileName='TESTESTBlah'/>");
+	protected void saveInkFromCurrentFileToDiskAndDisplayIt() {
+		PenSynch penSynch = new PenSynch(getCurrentFile());
+		List<Ink> importedInk = penSynch.getImportedInk();
+		int countOfInk = 0;
+		List<File> renderedImages = new ArrayList<File>();
+		for (Ink ink : importedInk) {
+			DebugUtils.println(ink.getName());
+			ink.setName(ink.getName() + countOfInk);
+			File file = ink.renderToJPEGFile();
+			renderedImages.add(file);
+			// DebugUtils.println("Sending ink from: " + ink.getSourcePageAddress());
+			flash.sendMessage("Rendered to file: " + file.getAbsolutePath());
+			countOfInk++;
+		}
+
+		String html = FileUtils.readFileIntoStringBuffer(
+				PaperToolkit.getResourceFile("/templates/Preview.html")).toString();
+		StringBuilder sb = new StringBuilder();
+		for (File f : renderedImages) {
+			sb.append("<img src=\"file:///C|/Documents and Settings/Ron Yeh/Desktop/" + f.getName()
+					+ "\"/>");
+		}
+		html = html.replace("__IMAGES__", sb.toString());
+
+		File homeDir = FileSystemView.getFileSystemView().getHomeDirectory();
+		File destFile = new File(homeDir, "Preview.html");
+		FileUtils.writeStringToFile(html, destFile);
+		try {
+			Desktop.getDesktop().browse(destFile.toURI());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void sendInkFromCurrentFile() {
+		PenSynch penSynch = new PenSynch(getCurrentFile());
+		List<Ink> importedInk = penSynch.getImportedInk();
+		for (Ink ink : importedInk) {
+			DebugUtils.println("Sending ink from: " + ink.getSourcePageAddress());
+			flash.sendMessage(ink.getAsXML(false));
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void sendListOfExposedMethods() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<methods>");
+
+		// enumerate InkUtils
+		List<Method> exposedMethods = InkUtils.getExposedMethods();
+		for (Method m : exposedMethods) {
+			sb.append("<method name='" + m.getName() + "'/>");
+		}
+		sb.append("</methods>");
+		flash.sendMessage(sb.toString());
 	}
 
 	public void showFlashView() {
@@ -91,16 +170,19 @@ public class InkAPIBrowser {
 			public void messageReceived(String command) {
 				if (command.equals("apibrowserclient connected")) {
 					DebugUtils.println("Flash Client Connected!");
-					sendLocationOfLastSynchedInk();
+					sendListOfExposedMethods();
 				} else if (command.equals("next")) {
 					nextFile();
+					sendInkFromCurrentFile();
 				} else if (command.equals("prev")) {
 					prevFile();
+					sendInkFromCurrentFile();
+				} else if (command.equals("saveimage")) {
+					saveInkFromCurrentFileToDiskAndDisplayIt();
 				} else {
-					// DebugUtils.println("Unhandled command: " + command);
+					DebugUtils.println("Unhandled command: " + command);
 				}
 			}
-
 		});
 	}
 
