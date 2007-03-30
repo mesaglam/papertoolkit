@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 import edu.stanford.hci.r3.util.files.SortDirection;
 
@@ -38,6 +37,16 @@ public class PenSynchManager {
 		// DebugUtils.println(xmlFiles);
 	}
 
+	public List<File> getFiles() {
+		SortDirection sortDir = SortDirection.NEW_TO_OLD;
+		List<File> files = new ArrayList<File>();
+		for (File f : xmlFiles) {
+			files.add(f);
+		}
+		FileUtils.sortByLastModified(files, sortDir);
+		return files;
+	}
+
 	/**
 	 * Return this in a sorted list, from oldest to newest.
 	 * 
@@ -50,9 +59,9 @@ public class PenSynchManager {
 			if (f.lastModified() > lastModifiedTimestamp) {
 				// DebugUtils.println(f.lastModified());
 				newFiles.add(f);
-				FileUtils.sortByLastModified(newFiles, SortDirection.OLD_TO_NEW);
 			}
 		}
+		FileUtils.sortByLastModified(newFiles, SortDirection.OLD_TO_NEW);
 		return newFiles;
 	}
 }

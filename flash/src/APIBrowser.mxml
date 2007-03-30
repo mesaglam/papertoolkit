@@ -1,30 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Ink API Browser">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Ink API Browser" creationComplete="startBrowser();">
 	<mx:Style source="styles/styles.css"/>
 	<mx:HDividedBox x="0" y="0" width="100%" height="100%" liveDragging="true">
 		<mx:Canvas label="Canvas 1" width="75%" height="100%" backgroundColor="#555555">
 			<mx:VDividedBox x="0" y="0" width="100%" height="100%">
-				<mx:Canvas width="100%" height="100%" backgroundColor="#444444">
-					<mx:Label text="Start Drawing to see some Ink!" horizontalCenter="0" verticalCenter="0"/>
+				<mx:Canvas width="100%" height="100%" backgroundColor="#444444" id="mainCanvas">
+					<mx:Label text="Start Drawing to see some Ink!" horizontalCenter="0" verticalCenter="0" id="welcomeText"/>
+					<mx:HBox left="10" bottom="40">
+						<mx:Button label="Prev" id="prevButton" click="browser.nextHandler(event);"/>
+						<mx:Button label="Next" id="nextButton" click="browser.prevHandler(event);"/>
+					</mx:HBox>
+					<mx:HBox left="10" bottom="10">
+						<mx:Button label="-" id="zoomOutButton" click="browser.zoomOut(event);"/>
+						<mx:Button label="100%" id="zoomResetButton" fontFamily="Verdana" click="browser.zoomReset(event);"/>
+						<mx:Button label="+" id="zoomInButton" click="browser.zoomIn(event);"/>
+					</mx:HBox>
+					<mx:HBox right="10" bottom="10">
+						<mx:Button label="Save Image..." id="saveImageButton" click="browser.saveImage(event);"/>
+						<mx:Button label="Exit" id="exitButton" click="browser.exit(event);"/>
+					</mx:HBox>
+					<mx:Button label="Full Screen" click="browser.toggleFullScreen(event);" bottom="70" left="10"/>
 				</mx:Canvas>
-				<mx:TextArea width="100%" height="33%" editable="true" enabled="true" fontFamily="Courier New" fontSize="12" color="#4f4f4f" paddingLeft="10" paddingRight="10"/>
+				<mx:TextArea width="100%" height="33%" editable="true" enabled="true" fontFamily="Courier New" fontSize="12" color="#4f4f4f" paddingLeft="10" paddingRight="10" id="codeArea"/>
 			</mx:VDividedBox>
         </mx:Canvas>
         <mx:Canvas label="Canvas 2" width="25%" height="100%" backgroundColor="#555555">
-        	<mx:Button label="Copy Code" right="10" left="10" bottom="10" click="browser.copyCodeHandler(event);"/>
-        	<mx:Label text="Ink API Browser" horizontalCenter="0" top="10" fontSize="22" color="#8aa5e1" fontWeight="bold" fontFamily="Trebuchet MS"/>
-        	<mx:ComboBox top="50" left="10" right="10"></mx:ComboBox>
+        	<mx:Button label="→ Copy Code" right="10" left="10" bottom="10" click="browser.copyCodeHandler(event);" height="22" textAlign="center" fontWeight="bold" id="copyCodeButton"/>
+        	<mx:Label text="Ink API Browser" top="10" fontSize="26" color="#8aa5e1" fontFamily="Trebuchet MS" left="10" fontWeight="bold"/>
+        	<mx:ComboBox top="154" left="10" right="10" id="methodCallDropdown"></mx:ComboBox>
+        	<mx:ComboBox top="88" left="10" right="10" id="CategoryDropDown"></mx:ComboBox>
+        	<mx:Panel layout="absolute" right="10" left="10" bottom="40" top="189" title="Options" id="optionsPanel">
+        	</mx:Panel>
+        	<mx:Label text="Category of Operation" top="57" left="10"/>
+        	<mx:Label text="Method Call" top="123" left="10"/>
         </mx:Canvas>
 	</mx:HDividedBox>
 	<mx:Script>
 		<![CDATA[
+			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 			import flash.display.StageDisplayState;
 			import apiBrowser.APIBrowserBackend;
 
-			// more or less all the code! =)			
-			private var browser:APIBrowserBackend = new APIBrowserBackend(stage);
+			private var browser:APIBrowserBackend;
+			private var container:UIComponent;
 
+	
+			// more or less all the code! =)			
+			public function startBrowser():void {
+				browser = new APIBrowserBackend(stage);
+				container = new UIComponent();
+				container.addChild(browser);
+				mainCanvas.addChild(container);
+			}
+			
 		]]>
 	</mx:Script>
 </mx:Application>
