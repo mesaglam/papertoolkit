@@ -43,7 +43,7 @@ public class DebugPaperApplication2 {
 				// DebugUtils.println("Ink Region Clicked at " + e.getPercentageLocation());
 
 				PercentageCoordinates pctLoc = e.getPercentageLocation();
-				showMe("Ink Region Clicked at [" + pctLoc.getPercentageInXDirection() + ", "
+				showMe("Writing on Ink Region at \n [" + pctLoc.getPercentageInXDirection() + ", "
 						+ pctLoc.getPercentageInYDirection() + "]");
 
 				// test the showMe functionality...
@@ -62,8 +62,8 @@ public class DebugPaperApplication2 {
 		sheet.addRegion(buttonRegion);
 
 		final Application app = new Application("A Simple Application");
-		// Pen pen = new Pen("Local Pen");
-		Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
+		Pen pen = new Pen("Local Pen");
+		// Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
 		app.addPen(pen);
 
 		// no pattern info xml file loaded...
