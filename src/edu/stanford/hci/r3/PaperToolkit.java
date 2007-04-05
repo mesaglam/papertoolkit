@@ -138,21 +138,17 @@ public class PaperToolkit {
 	 * The version of the PaperToolkit. Not that it really means anything. =)
 	 * 
 	 * <p>
-	 * Version 0.3 should include:
+	 * Version 0.4 was tagged on April 5, 2007. Version 0.5 will include the major refactoring based
+	 * on our findings for UIST. <br>
+	 * Future Versions should include:
 	 * <ul>
 	 * <li>Better Batched Event Support</li>
-	 * </ul>
-	 * Version 0.4 should include:
-	 * <ul>
 	 * <li>Better Debugging Tools</li>
-	 * </ul>
-	 * Version 0.5 should include:
-	 * <ul>
 	 * <li>Flash Integration</li>
 	 * </ul>
 	 * </p>
 	 */
-	private static String versionString = "0.5";
+	private static String versionString = "0.4";
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
