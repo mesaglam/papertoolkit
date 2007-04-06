@@ -9,7 +9,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.hci.r3.events.ContentFilter;
 import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Inches;
@@ -60,12 +59,6 @@ public class Region {
 	private boolean active = false;
 
 	/**
-	 * Filters events and passes them to other event handlers (which are usually customized to the
-	 * event filter)...
-	 */
-	private List<ContentFilter> contentFilters = new ArrayList<ContentFilter>();
-
-	/**
 	 * All Regions can have event handlers that listen for pen events. If the event handler list is
 	 * non empty, the region should also be set to active. We can do this automatically. If the
 	 * region is not set to active, no pattern will be rendered when a renderer processes this
@@ -94,6 +87,8 @@ public class Region {
 	 * layer pattern on top of it.
 	 */
 	private double opacity = 0;
+
+	private Sheet parentSheet;
 
 	/**
 	 * This is used only to interpret the shape's true physical size. The value of the units object
@@ -132,8 +127,6 @@ public class Region {
 	 * like to create an invisible region, go ahead. We're not gonna stop you.=)
 	 */
 	private boolean visible = true;
-
-	private Sheet parentSheet;
 
 	/**
 	 * For our American friends.
@@ -189,38 +182,24 @@ public class Region {
 	}
 
 	/**
-	 * A Content Filter will grab input and "change" the meaning of the input in some way. The
-	 * canonical example is the HandwritingRecognizer, as it will collect ink and then change it
-	 * into ASCII text.
-	 * 
-	 * @param filter
-	 */
-	public void addContentFilter(ContentFilter filter) {
-		contentFilters.add(filter);
-		active = true;
-	}
-
-	/**
 	 * Keeps track of this event handler. The PaperToolkit will dispatch events to these, whenever
 	 * the event deals with this region.
+	 * 
+	 * A particular kind of event handler can be thought of as a "content filter," which will grab
+	 * input and "change" the meaning of the input in some way. The canonical example is the
+	 * HandwritingRecognizer, as it will collect ink and then change it into ASCII text.
 	 * 
 	 * @param handler
 	 */
 	public void addEventHandler(EventHandler handler) {
 		eventHandlers.add(handler);
-		
-		// tell the event handler that we are one of its parent regions
-		// this allows code in event handling to determine which regions it might affect, at runtime! :)
-		handler.addParentRegion(this);
-		
-		active = true;
-	}
 
-	/**
-	 * @return
-	 */
-	public List<ContentFilter> getEventFilters() {
-		return contentFilters;
+		// tell the event handler that we are one of its parent regions
+		// this allows code in event handling to determine which regions it might affect, at
+		// runtime! :)
+		handler.addParentRegion(this);
+
+		active = true;
 	}
 
 	/**
@@ -279,6 +258,10 @@ public class Region {
 	 */
 	public Units getOriginY() {
 		return referenceUnits.getUnitsObjectOfSameTypeWithValue(shape.getBounds2D().getY());
+	}
+
+	public Sheet getParentSheet() {
+		return parentSheet;
 	}
 
 	/**
@@ -401,14 +384,6 @@ public class Region {
 					+ "reserialize your Regions?");
 			eventHandlers = new ArrayList<EventHandler>();
 		}
-		if (contentFilters == null) {
-			System.err.println("Region.java:: [" + getName()
-					+ "]'s eventFilters list was unexpectedly null upon "
-					+ "deserialization with XStream. Perhaps you need to "
-					+ "reserialize your Regions?");
-			contentFilters = new ArrayList<ContentFilter>();
-		}
-
 		return this;
 	}
 
@@ -479,6 +454,15 @@ public class Region {
 	}
 
 	/**
+	 * For traversing up the UI hierarchy, in Event Visualizations.
+	 * 
+	 * @param sheet
+	 */
+	public void setParentSheet(Sheet sheet) {
+		parentSheet = sheet;
+	}
+
+	/**
 	 * Replaces the scaling factors.
 	 * 
 	 * @param newScaleX
@@ -531,17 +515,6 @@ public class Region {
 		sb.append("} in " + referenceUnits.getUnitName());
 		sb.append(getIsActiveString());
 		return sb.toString();
-	}
-
-	/**
-	 * For traversing up the UI hierarchy, in Event Visualizations.
-	 * @param sheet
-	 */
-	public void setParentSheet(Sheet sheet) {
-		parentSheet = sheet;
-	}
-	public Sheet getParentSheet() {
-		return parentSheet;
 	}
 
 }
