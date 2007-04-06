@@ -1,0 +1,125 @@
+import java.io.File;
+import java.io.IOException;
+
+import edu.stanford.hci.r3.Application;
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.events.ContentFilterListener;
+import edu.stanford.hci.r3.events.PenEvent;
+import edu.stanford.hci.r3.events.filters.InkCollector;
+import edu.stanford.hci.r3.events.filters.HandwritingRecognizer;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
+import edu.stanford.hci.r3.events.handlers.GestureHandler;
+import edu.stanford.hci.r3.paper.Region;
+import edu.stanford.hci.r3.paper.sheets.XMLSheet;
+import edu.stanford.hci.r3.util.DebugUtils;
+
+
+/**
+ * Generated code
+ * 
+ * @author R3 Paper Toolkit
+ */
+public class {CLASSNAME} extends Application {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+		PaperToolkit p = new PaperToolkit(true /* use app manager */);
+		p.loadApplication(new {CLASSNAME}());
+	}
+
+	/**
+	 * 
+	 */
+	private XMLSheet sheet;
+
+	/**
+	 * 
+	 */
+	public {CLASSNAME}() {
+		super("{CLASSNAME}");
+		try {
+			sheet = new XMLSheet(new File("{CLASSNAME}.xml"));
+			
+			addSheet(sheet);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		initializePaperUI();
+	}
+	
+	/**
+	 * 
+	 */
+	private void initializePaperUI() {
+		{REPEAT:REGIONS}
+		Region region{REGION.NAME} = sheet.getRegion("{REGION.NAME}");
+		setup{REGION.NAME}(region{REGION.NAME});
+		{/REPEAT:REGIONS}
+	}
+
+	{REPEAT:REGIONS}
+	private void setup{REGION.NAME}(Region region) {
+		{IF:CLICK}region.addEventHandler(new ClickAdapter() {
+			public void clicked(PenEvent e) {
+				DebugUtils.println("You clicked on {REGION.NAME}.");
+			}
+		});
+		{/IF:CLICK}{IF:INK}final InkCollector inkCollector = new InkCollector();
+		inkCollector.addListener(new ContentFilterListener() {
+			public void contentArrived() {
+				DebugUtils.println("Content arrived in {REGION.NAME}.");
+			}
+		});
+		region.addContentFilter(inkCollector);
+		{/IF:INK}
+		{IF:GESTURE}region.addEventHandler(new GestureHandler() {
+			@Override
+			public void handleMark(PenEvent e, GestureDirection dir) {
+				switch (dir) {
+					case N:
+						DebugUtils.println("North gesture in {REGION.NAME}.");
+						break;
+					case NE:
+						DebugUtils.println("Northeast gesture in {REGION.NAME}.");
+						break;
+					case E:
+						DebugUtils.println("East gesture in {REGION.NAME}.");
+						break;
+					case SE:
+						DebugUtils.println("Southeast gesture in {REGION.NAME}.");
+						break;
+					case S:
+						DebugUtils.println("South gesture in {REGION.NAME}.");
+						break;
+					case SW:
+						DebugUtils.println("Southwest gesture in {REGION.NAME}.");
+						break;
+					case W:
+						DebugUtils.println("West gesture in {REGION.NAME}.");
+						break;
+					case NW:
+						DebugUtils.println("Northwest gesture in {REGION.NAME}.");
+						break;
+				}
+			}
+
+		});
+		{/IF:GESTURE}
+		{IF:HANDWRITING}HandwritingRecognizer handwritingRecognizer 
+		= new HandwritingRecognizer() {
+			public void contentArrived() {
+				String text = recognizeHandwriting();
+				DebugUtils.println("Handwritten Content in {REGION.NAME}: \"" 
+						+ text + "\"");
+			}
+		};
+		region.addContentFilter(handwritingRecognizer);
+		{/IF:HANDWRITING}
+	}
+	{/REPEAT:REGIONS}
+
+}

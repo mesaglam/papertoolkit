@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>Streaming Live Data</title>
+<link href="../../resources/styles.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<script language="javascript" type="text/javascript" 
+  src="../../resources/header.js"></script>
+<p class="Heading">Sketch! A Drawing Application  </p>
+<p>Try out the demo.  </p>
+<ol>
+  <li>First, make sure you have a printer that's at least 600 dpi. Most modern laser printers can do the job. </li>
+  <li>WARNING: This next step may slow down your machine. Using Adobe Reader (it's faster than Acrobat Pro), open <span class="Code">data/Sketch/SketchUI_Patterned.pdf</span>.  Sometimes, Acrobat may hang, because it takes too long to render all the pattern. One trick I use is to zoom in a lot (or zoom out a lot) so that Acrobat renders more quickly. GSView tends to be more responsive when opening these complicated PDFs. </li>
+  <li>If you zoom in, you will see the overlaid pattern.<br>
+    <br>
+  <img src="Pattern.png" alt="Pattern" width="768" height="530"></li>
+  <li>Print this PDF. If you can print the PDF without opening Acrobat, that'd be ideal, since Acrobat tries really hard to draw the pattern at interactive rates. <br>
+    <br>
+    Printing might take a while. A long while... do some situps while you wait. The reason it takes so long is that the pattern dots are PDF postscript circles... and there are LOTS of them. Your printer has to rasterize the PostScript code. Eww... Good thing you don't have to rasterize the PostScript. </li>
+  <li>Pair your Nokia Pen with your PC, as described in the <a href="../../tutorials/Streaming/Streaming.html">Streaming Tutorial</a>.   Your pen's streaming light should be blinking. </li>
+  <li>Start the Sketch! application by Running the Java Application through Eclipse. </li>
+  <li>On your printed page, you can draw on the main drawing area. The display on your monitor should say (in the status bar) that you have drawn N strokes on the page. When you are ready, draw a marking gesture UP in the marking menu area. This sends the drawing to the display.</li>
+  <li>You can change colors by tapping the palette.</li>
+  <li>You can undo by marking LEFT, and clear the screen by marking DOWN. </li>
+</ol>
+<p>&nbsp;</p>
+<p>Let's walk through the design and coding of Sketch!  All the files are already created, but here, we walk through the steps. </p>
+<ol>
+  <li>We will walk through a demo of using the toolkit to create a simple paper-centric application, Sketch!. </li>
+  <li><span class="Code">SketchUI.doc</span> contains the user interface. I created it with Microsoft Word, and exported <span class="Code">SketchUI.pdf</span> using Word's Acrobat plugin. </li>
+  <li>Check the main(...) function of Sketch.java. It has three lines, two of which are commented out. To start adding regions to the PDF, make sure 		<span class="Code">new Sketch(MODE_DESIGN_PDF);</span> is the only line that is NOT commented out. Run the Sketch app.</li>
+  <li>You should see the Acrobat Designer Launcher. It starts out gray, but if you drag a PDF to the gray area, it launches the Acrobat designer. To launch the designer, you must have Acrobat Pro installed on your system, along with our Acrobat plugin. <br> 
+    <br>
+    <img src="Launcher.png" alt="Launcher" width="637" height="476">    <br>
+  </li>
+  <li>Use the R3 Designer (Acrobat plugin) to add regions. Make sure you give each region a different name, so you can access and modify them later. We choose the name by right-clicking a region and setting the Author property to <span class="Code">&lt;TheRegion'sName&gt;</span>. Click the images below to see larger versions.<br>
+    <br>
+    <a href="AddRegions.png"><img src="AddRegions.png" alt="Adding" height="400"> </a>&nbsp;
+    <a href="Designer.png"><img src="Designer.png" alt="Designer" height="400" border="0"></a> <img src="NameRegions.png" alt="Name" width="394" height="351"></li>
+  <li>As you can see, currently the Designer only supports Rectangular regions. If you are interested in polygonal regions, file a feature request! =) </li>
+  <li>When you are done designing the regions, click the purple Save Region Information button.<br>
+    <br>
+  <img src="SaveRegions.png" alt="Save" width="731" height="385"><br>
+  </li>
+  <li>Acrobat communicates the region information to our server, which saves the information to an XML file. You should see SketchUI.regions.xml once you are done.<br>
+    <br>
+      <img src="Dialog.png" alt="Dialog" width="400" height="388"><br>
+    <br>
+  <img src="Response.png" alt="Response" width="661" height="678"></li>
+  <li>Now, save the PDF with your region annotations as a NEW file (<em>e.g.</em>, SketchUI_WithRegions.pdf). If you overwrite the old file, your final patterned PDF will include all of your region annotations, making it look less cool. </li>
+  <li>Go back to the main function and make sure 		<span class="Code">new Sketch(MODE_RENDER_PDF);</span> is the only line that is NOT commented out.
+  Running the app will now render a new PDF file along with a new XML file, defining the pattern and pattern to sheet mapping.</li>
+  <li>Finally, run the last line, 		<span class="Code">new Sketch(MODE_RUN_APP);</span>. Now, the Sketch! UI will pop up, and you will be able to interact with it using your printout. </li>
+  <li>Clearly, you should not need to comment out lines of code every time you need to do something different with your app. In the next demo, I'll show you how to ask the PaperToolkit class to launch your app in an interactive fashion, so that you can decide between printing the PDF or running the real app at runtime. </li>
+  <li>Let's take a look at the code in detail...</li>
+  <li>&lt;More to Come&gt;  </li>
+  <li>...</li>
+  <li>We are done!  </li>
+</ol>
+<hr noshade size=1/>
+<p class="Author">Ron B. Yeh<br>
+Stanford University </p>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-522093-7";
+urchinTracker();
+</script>
+</body>
+</html>
