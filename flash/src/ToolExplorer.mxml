@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:ApolloApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();">
-
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
+			import toolExplorer.ToolExplorerBackend;
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 
+			private var explorer:ToolExplorerBackend;
+			
 			public function init():void {
-				trace("yo intelligentsia");
+				explorer = new ToolExplorerBackend(this.window);
 			}			
 		]]>
 	</mx:Script>
+	<mx:Label text="PaperToolkit Tool Explorer" fontSize="31" left="10" top="10"/>
+	<mx:Button label="Exit" left="10" bottom="10" click="explorer.exit();"/>
+	<mx:Button x="245" y="335" label="Button"/>
+	<mx:Button x="565" y="337" label="Button"/>
+	<mx:Button x="906" y="339" label="Button"/>
 
 </mx:ApolloApplication>
