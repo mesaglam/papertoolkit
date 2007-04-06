@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import edu.stanford.hci.r3.events.ContentFilter;
+import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.ink.Ink;
@@ -18,28 +18,26 @@ import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
- * Captures ink strokes, and allows access to them on demand. Notifies listeners
- * every time a stroke is written. We can set a flag that tells it to notify the
- * listeners every time the pen moves a sufficient distance...
+ * Captures ink strokes, and allows access to them on demand. Notifies listeners every time a stroke
+ * is written. We can set a flag that tells it to notify the listeners every time the pen moves a
+ * sufficient distance...
  * </p>
  * <p>
- * TODO: This class contains some filtering code to eliminate false Pen Ups, due
- * to the fault of the streaming digital pen. Should this filtering be done
- * earlier? Should it be an option? Clearly, an implementer of a ContentFilter
- * should not need to manually filter events... =\
+ * TODO: This class contains some filtering code to eliminate false Pen Ups, due to the fault of the
+ * streaming digital pen. Should this filtering be done earlier? Should it be an option? Clearly, an
+ * implementer of a ContentFilter should not need to manually filter events... =\
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
- * TODO: Add a scale factor here??? Or maybe a scale factor somewhere in the
- * event pipeline? Or should we do it later on?
+ * TODO: Add a scale factor here??? Or maybe a scale factor somewhere in the event pipeline? Or
+ * should we do it later on?
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a>
- *         (ronyeh(AT)cs.stanford.edu)
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class InkCollector extends ContentFilter {
+public abstract class InkCollector extends EventHandler {
 
 	/**
 	 * <p>
@@ -54,8 +52,7 @@ public class InkCollector extends ContentFilter {
 
 		private List<PenSample> strokeSamples;
 
-		public InkNotifier(List<PenSample> currentStrokeSamples,
-				InkStroke tempStroke) {
+		public InkNotifier(List<PenSample> currentStrokeSamples, InkStroke tempStroke) {
 			strokeSamples = currentStrokeSamples;
 			lastTempStroke = tempStroke;
 		}
@@ -102,9 +99,8 @@ public class InkCollector extends ContentFilter {
 	private static final int MAX_MILLIS_FOR_PEN_ERROR = 20;
 
 	/**
-	 * The notifier will wait for this many milliseconds before it notifies all
-	 * listeners of the new ink content. Ideally, this number should be a little
-	 * longer than MAX_MILLIS_FOR_PEN_ERROR.
+	 * The notifier will wait for this many milliseconds before it notifies all listeners of the new
+	 * ink content. Ideally, this number should be a little longer than MAX_MILLIS_FOR_PEN_ERROR.
 	 */
 	private static final int MILLIS_TO_DELAY = 21;
 
@@ -143,17 +139,15 @@ public class InkCollector extends ContentFilter {
 	private int newInkMarker = 0;
 
 	/**
-	 * If true, we will notify our listeners on EVERY SINGLE SAMPLE. An
-	 * alternate approach would be to notify after the pen has moved
-	 * sufficiently far...
+	 * If true, we will notify our listeners on EVERY SINGLE SAMPLE. An alternate approach would be
+	 * to notify after the pen has moved sufficiently far...
 	 */
 	private boolean notifyAfterEnoughDistance = false;
 
 	/**
 	 * This should be synchronized, as multiple threads are working on it.
 	 */
-	private List<InkStroke> strokes = Collections
-			.synchronizedList(new ArrayList<InkStroke>());
+	private List<InkStroke> strokes = Collections.synchronizedList(new ArrayList<InkStroke>());
 
 	private long timeDiffBetweenPenUpAndPenDown;
 
@@ -164,24 +158,22 @@ public class InkCollector extends ContentFilter {
 	/**
 	 * @param strokeSamples
 	 */
-	private synchronized void addStrokeAndNotifyListeners(
-			List<PenSample> strokeSamples) {
+	private synchronized void addStrokeAndNotifyListeners(List<PenSample> strokeSamples) {
 		mostRecentlyAddedStroke = new InkStroke(strokeSamples, DOTS);
 		strokes.add(mostRecentlyAddedStroke);
-		notifyAllListenersOfNewContent();
+		contentArrived();
 	}
 
 	/**
 	 * @param strokeSamples
 	 */
-	private synchronized void addStrokeTemporarilyAndNotifyListeners(
-			List<PenSample> strokeSamples) {
+	private synchronized void addStrokeTemporarilyAndNotifyListeners(List<PenSample> strokeSamples) {
 		if (mostRecentlyAddedTemporaryStroke != null) {
 			strokes.remove(mostRecentlyAddedTemporaryStroke);
 		}
 		mostRecentlyAddedTemporaryStroke = new InkStroke(strokeSamples, DOTS);
 		strokes.add(mostRecentlyAddedTemporaryStroke);
-		notifyAllListenersOfNewContent();
+		contentArrived();
 	}
 
 	/**
@@ -193,14 +185,60 @@ public class InkCollector extends ContentFilter {
 		newInkMarker = 0;
 	}
 
+	public abstract void contentArrived();
+
 	/**
+	 * @return list of ALL the pen strokes.
+	 */
+	public Ink getInk() {
+		return new Ink(new ArrayList<InkStroke>(strokes));
+	}
+
+	/**
+	 * @return
+	 */
+	public Ink getNewInkOnly() {
+		Ink newInk = new Ink(
+				new ArrayList<InkStroke>(strokes.subList(newInkMarker, strokes.size())));
+		newInkMarker = strokes.size();
+		return newInk;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getNumStrokesCollected() {
+		return strokes.size();
+	}
+
+	/**
+	 * @return timestamp that last stroke was completed, in milliseconds, or -1 if there are no
+	 *         strokes.
+	 */
+	public long getTimestampOfMostRecentInkStroke() {
+		if (strokes != null && strokes.size() >= 1) {
+			return strokes.get(strokes.size() - 1).getLastTimestamp();
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public Date getTimestampOfMostRecentPenUp() {
+		return new Date(lastPenUpTime);
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @see edu.stanford.hci.r3.events.ContentFilter#filterEvent(edu.stanford.hci.r3.events.PenEvent)
+	 * @see edu.stanford.hci.r3.events.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
 	@Override
-	public void filterEvent(PenEvent event) {
-		final PercentageCoordinates percentageLocation = event
-				.getPercentageLocation();
+	public void handleEvent(PenEvent event) {
+
+		final PercentageCoordinates percentageLocation = event.getPercentageLocation();
 		final Units xPct = percentageLocation.getX();
 		final Units yPct = percentageLocation.getY();
 		final long timestamp = event.getTimestamp();
@@ -232,8 +270,7 @@ public class InkCollector extends ContentFilter {
 
 				// We should start a new stroke!
 				currentStrokeSamples = new ArrayList<PenSample>();
-				currentStrokeSamples.add(new PenSample(xDots, yDots, 128,
-						timestamp));
+				currentStrokeSamples.add(new PenSample(xDots, yDots, 128, timestamp));
 			} else {
 				// we'll assume this is a pen manufacturing error (jitter)!
 
@@ -242,8 +279,7 @@ public class InkCollector extends ContentFilter {
 				lastInkNotifier = null;
 
 				// add this sample back to the current stroke
-				currentStrokeSamples.add(new PenSample(xDots, yDots, 128,
-						timestamp));
+				currentStrokeSamples.add(new PenSample(xDots, yDots, 128, timestamp));
 			}
 		} else if (event.isPenUp()) {
 			// the pen is lifted from the page
@@ -262,16 +298,13 @@ public class InkCollector extends ContentFilter {
 			// System.out.println("Collected " + strokes.size() + " strokes so
 			// far.");
 		} else { // regular sample
-			currentStrokeSamples
-					.add(new PenSample(xDots, yDots, 128, timestamp));
+			currentStrokeSamples.add(new PenSample(xDots, yDots, 128, timestamp));
 
 			// are we supposed to notify after enough distance?
 			if (notifyAfterEnoughDistance) {
 				// assume zero distance for now...
-				distanceTraveled += MathUtils.distance(xDots,
-						yDots, //
-						lastXForDistanceMeasurements,
-						lastYForDistanceMeasurements);
+				distanceTraveled += MathUtils.distance(xDots, yDots, //
+						lastXForDistanceMeasurements, lastYForDistanceMeasurements);
 				lastXForDistanceMeasurements = xDots;
 				lastYForDistanceMeasurements = yDots;
 
@@ -280,49 +313,6 @@ public class InkCollector extends ContentFilter {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @return list of ALL the pen strokes.
-	 */
-	public Ink getInk() {
-		return new Ink(new ArrayList<InkStroke>(strokes));
-	}
-
-	/**
-	 * @return
-	 */
-	public Ink getNewInkOnly() {
-		Ink newInk = new Ink(new ArrayList<InkStroke>(strokes.subList(
-				newInkMarker, strokes.size())));
-		newInkMarker = strokes.size();
-		return newInk;
-	}
-
-	/**
-	 * @return
-	 */
-	public int getNumStrokesCollected() {
-		return strokes.size();
-	}
-
-	/**
-	 * @return timestamp that last stroke was completed, in milliseconds, or -1
-	 *         if there are no strokes.
-	 */
-	public long getTimestampOfMostRecentInkStroke() {
-		if (strokes != null && strokes.size() >= 1) {
-			return strokes.get(strokes.size() - 1).getLastTimestamp();
-		} else {
-			return -1;
-		}
-	}
-
-	/**
-	 * @return
-	 */
-	public Date getTimestampOfMostRecentPenUp() {
-		return new Date(lastPenUpTime);
 	}
 
 	/**
@@ -341,8 +331,7 @@ public class InkCollector extends ContentFilter {
 			distanceThreshold = 0;
 			notifyAfterEnoughDistance = false;
 		} else {
-			distanceThreshold = notifyAfterThisMuchPenMovement
-					.getValueInPatternDots();
+			distanceThreshold = notifyAfterThisMuchPenMovement.getValueInPatternDots();
 			notifyAfterEnoughDistance = true;
 		}
 	}

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.stanford.hci.r3.events.ContentFilter;
+import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
@@ -13,7 +13,6 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -26,7 +25,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class HandwritingRecognizer extends ContentFilter {
+public abstract class HandwritingRecognizer extends EventHandler {
 
 	/**
 	 * For interpreting the samples.
@@ -63,13 +62,12 @@ public class HandwritingRecognizer extends ContentFilter {
 		strokes.clear();
 	}
 
+	public abstract void contentArrived();
+
 	/**
 	 * Capture Ink Strokes and notify listeners on every Pen Up.
-	 * 
-	 * @see edu.stanford.hci.r3.events.ContentFilter#filterEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
-	@Override
-	public void filterEvent(PenEvent event) {
+	public void handleEvent(PenEvent event) {
 		final PercentageCoordinates percentageLocation = event.getPercentageLocation();
 		final Units x = percentageLocation.getX();
 		final Units y = percentageLocation.getY();
@@ -83,7 +81,7 @@ public class HandwritingRecognizer extends ContentFilter {
 					timestamp));
 		} else if (event.isPenUp()) {
 			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
-			notifyAllListenersOfNewContent();
+			contentArrived();
 			// System.out.println("Collected " + strokes.size() + " strokes so far.");
 		} else { // regular sample
 			currentStrokeSamples.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128,

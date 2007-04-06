@@ -51,13 +51,8 @@ public class EventEngine {
 	private PercentageCoordinates lastKnownLocation;
 
 	/**
-	 * Used by penUp to notify content filters. This is because a pen up event has no coordinates,
-	 * so we cannot figure out what region it belongs to.
-	 */
-	private List<ContentFilter> mostRecentContentFilters = new ArrayList<ContentFilter>();
-
-	/**
-	 * Used by penUp to notify event handlers.
+	 * Used by penUp to notify event handlers. This is because a pen up event has no coordinates, so
+	 * we cannot figure out what region it belongs to.
 	 */
 	private List<EventHandler> mostRecentEventHandlers = new ArrayList<EventHandler>();
 
@@ -232,7 +227,6 @@ public class EventEngine {
 	public void handlePenEvent(PenEvent penEvent) {
 		// System.out.println("Dispatching Event for pen #" + penID + " " + sample);
 		mostRecentEventHandlers.clear();
-		mostRecentContentFilters.clear();
 
 		synchronized (patternToSheetMaps) {
 
@@ -286,19 +280,6 @@ public class EventEngine {
 					}
 				} // check the next event handler
 
-				// also, send this event to all the filters, if the event is not yet consumed by one
-				// of the above handlers
-				// TODO: Fold in the filters to the event handlers... for a simpler architecture!
-				final List<ContentFilter> eventFilters = region.getEventFilters();
-				for (ContentFilter ef : eventFilters) {
-					ef.filterEvent(penEvent);
-					eventHandledAtLeastOnce = true;
-					mostRecentContentFilters.add(ef);
-					// filters do not consume events
-					// but they are lower priority than event handlers
-					// should they be HIGHER priority???
-				}
-
 			} // check the next pattern map
 
 			if (!eventHandledAtLeastOnce) {
@@ -332,15 +313,14 @@ public class EventEngine {
 	}
 
 	/**
+	 * Send the penUp to the event handlers...
+	 * 
 	 * @param event
 	 */
 	public void handlePenUpEvent(PenEvent event) {
 		event.setPercentageLocation(lastKnownLocation);
 		for (EventHandler h : mostRecentEventHandlers) {
 			h.handleEvent(event);
-		}
-		for (ContentFilter f : mostRecentContentFilters) {
-			f.filterEvent(event);
 		}
 	}
 

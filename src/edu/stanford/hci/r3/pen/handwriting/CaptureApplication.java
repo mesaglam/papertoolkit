@@ -58,6 +58,8 @@ public class CaptureApplication extends Application {
 	 */
 	private InkCollector inkCollector;
 
+	private long lastTimeNewInkArrived = 0;
+
 	/**
 	 * We will use one sheet at a time to test handwriting recognition.
 	 */
@@ -67,6 +69,19 @@ public class CaptureApplication extends Application {
 	 * We will only allow one pen in this testing environment.
 	 */
 	private Pen pen;
+
+	private Thread recognizeThread = new Thread(new Runnable() {
+		public void run() {
+			while (true) {
+				try {
+					wait();
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	});
 
 	/**
 	 * Start the App with Zero Sheets. Add them interactively.
@@ -95,7 +110,8 @@ public class CaptureApplication extends Application {
 					gui.showTopLeftPointConfirmation();
 				} else if (anchorPointBottomRight == null) {
 					anchorPointBottomRight = sample;
-					DebugUtils.println("Bottom Right Point is now set to " + anchorPointBottomRight);
+					DebugUtils
+							.println("Bottom Right Point is now set to " + anchorPointBottomRight);
 					gui.showBottomRightPointConfirmation();
 					scaleInkPanelToFit();
 					addOneSheetAndOneRegionForHandwritingCapture();
@@ -117,7 +133,7 @@ public class CaptureApplication extends Application {
 	}
 
 	/**
-	 * Add a sheet and a region at RUNTIME. 
+	 * Add a sheet and a region at RUNTIME.
 	 */
 	private void addOneSheetAndOneRegionForHandwritingCapture() {
 		// ask the event engine to remove our sheet and our mappings, if they exist
@@ -144,7 +160,8 @@ public class CaptureApplication extends Application {
 		final double height = brY - tlY;
 
 		// create this custom mapping object
-		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(sheet);
+		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
+				sheet);
 
 		// tie the pattern bounds to this region object
 		mapping.setPatternInformationOfRegion(region, //
@@ -186,6 +203,12 @@ public class CaptureApplication extends Application {
 		return pen;
 	}
 
+	public void retrieveAlternatives() {
+		// top ten list
+		final List<String> topTen = handwritingRecognizer.recognizeHandwritingWithAlternatives();
+		gui.setAlternatives(topTen);
+	}
+
 	/**
 	 * 
 	 */
@@ -196,7 +219,8 @@ public class CaptureApplication extends Application {
 	}
 
 	/**
-	 * Fit to WIDTH or HEIGHT, whichever is larger. The defined region should fit "perfectly" in our panel.
+	 * Fit to WIDTH or HEIGHT, whichever is larger. The defined region should fit "perfectly" in our
+	 * panel.
 	 */
 	private void scaleInkPanelToFit() {
 		final double width = anchorPointBottomRight.x - anchorPointTopLeft.x;
@@ -219,21 +243,6 @@ public class CaptureApplication extends Application {
 		gui.getInkPanel().setScale(newScale);
 	}
 
-	private long lastTimeNewInkArrived = 0;
-
-	private Thread recognizeThread = new Thread(new Runnable() {
-		public void run() {
-			while (true) {
-				try {
-					wait();
-					
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	});
-	
 	/**
 	 * Add an inkcollector to display ink, and a handwriting recognizer to do the recognition.
 	 * 
@@ -252,34 +261,22 @@ public class CaptureApplication extends Application {
 			}
 		};
 
-
 		// for recognizing the strokes
 		handwritingRecognizer = new HandwritingRecognizer() {
 
 			@Override
 			public void contentArrived() {
-				
 				lastTimeNewInkArrived = System.currentTimeMillis();
-				
-				
-				
+
 				String text = recognizeHandwriting();
 				DebugUtils.println("Handwritten Content: " + text);
 				gui.setInfoText(text);
 				// gui.setAlternatives(topTen);
-				
-				
 			}
 		};
 
-		region.addContentFilter(inkCollector);
-		region.addContentFilter(handwritingRecognizer);
+		region.addEventHandler(inkCollector);
+		region.addEventHandler(handwritingRecognizer);
 		return region;
-	}
-	
-	public void retrieveAlternatives() {
-		// top ten list
-		 final List<String> topTen = handwritingRecognizer.recognizeHandwritingWithAlternatives();
-		 gui.setAlternatives(topTen);
 	}
 }
