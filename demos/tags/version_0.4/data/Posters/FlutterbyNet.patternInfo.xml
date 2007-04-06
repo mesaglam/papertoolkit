@@ -1,0 +1,146 @@
+<map>
+  <entry>
+    <RegionID>
+      <height class="Points">
+        <unitName>Points</unitName>
+        <value>49.026900999999995</value>
+      </height>
+      <name>WebsiteArea</name>
+      <originX class="Points">
+        <unitName>Points</unitName>
+        <value>1900.069946</value>
+      </originX>
+      <originY class="Points">
+        <unitName>Points</unitName>
+        <value>1947.520843828125</value>
+      </originY>
+      <width class="Points">
+        <unitName>Points</unitName>
+        <value>139.160034</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84023895E8</maxX>
+      <maxY>8119.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>164.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>164.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>58.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>58.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84022565E8</originX>
+      <originY>7187.0</originY>
+      <regionName>WebsiteArea</regionName>
+      <startingTile>0</startingTile>
+      <tileHeightIncludingPadding>932.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>1330.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Points">
+        <unitName>Points</unitName>
+        <value>116.13000499999998</value>
+      </height>
+      <name>EmailArea</name>
+      <originX class="Points">
+        <unitName>Points</unitName>
+        <value>2725.149902</value>
+      </originX>
+      <originY class="Points">
+        <unitName>Points</unitName>
+        <value>192.92004382812502</value>
+      </originY>
+      <width class="Points">
+        <unitName>Points</unitName>
+        <value>99.69018599999981</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84023748E8</maxX>
+      <maxY>8119.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>117.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>117.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>137.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>137.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84022418E8</originX>
+      <originY>7187.0</originY>
+      <regionName>EmailArea</regionName>
+      <startingTile>0</startingTile>
+      <tileHeightIncludingPadding>932.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>1330.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+  <entry>
+    <RegionID>
+      <height class="Points">
+        <unitName>Points</unitName>
+        <value>60.61709599999999</value>
+      </height>
+      <name>DownloadPDF</name>
+      <originX class="Points">
+        <unitName>Points</unitName>
+        <value>2764.939941</value>
+      </originX>
+      <originY class="Points">
+        <unitName>Points</unitName>
+        <value>1871.715041828125</value>
+      </originY>
+      <width class="Points">
+        <unitName>Points</unitName>
+        <value>70.22998099999995</value>
+      </width>
+    </RegionID>
+    <TiledPatternCoordinateConverter>
+      <dotsPerTileHorizontal>721</dotsPerTileHorizontal>
+      <dotsPerTileVertical>932</dotsPerTileVertical>
+      <maxX>1.84024089E8</maxX>
+      <maxY>8119.0</maxY>
+      <numDotsHorizontalBetweenTiles>1330.0</numDotsHorizontalBetweenTiles>
+      <numDotsVerticalBetweenTiles>0.0</numDotsVerticalBetweenTiles>
+      <numTiles>1</numTiles>
+      <numTilesAcross>1</numTilesAcross>
+      <numTilesDown>1</numTilesDown>
+      <numTotalDotsAcross>83.0</numTotalDotsAcross>
+      <numTotalDotsAcrossObj>
+        <unitName>PatternDots</unitName>
+        <value>83.0</value>
+      </numTotalDotsAcrossObj>
+      <numTotalDotsDown>71.0</numTotalDotsDown>
+      <numTotalDotsDownObj>
+        <unitName>PatternDots</unitName>
+        <value>71.0</value>
+      </numTotalDotsDownObj>
+      <originX>1.84022759E8</originX>
+      <originY>7187.0</originY>
+      <regionName>DownloadPDF</regionName>
+      <startingTile>0</startingTile>
+      <tileHeightIncludingPadding>932.0</tileHeightIncludingPadding>
+      <tileWidthIncludingPadding>1330.0</tileWidthIncludingPadding>
+    </TiledPatternCoordinateConverter>
+  </entry>
+</map>

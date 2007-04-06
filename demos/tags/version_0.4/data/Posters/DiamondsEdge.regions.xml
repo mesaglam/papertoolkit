@@ -1,0 +1,117 @@
+<RegionConfiguration>
+  <heightInPoints>
+    <unitName>Points</unitName>
+    <value>2217.0</value>
+  </heightInPoints>
+  <regions>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>HCIWebsiteArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2537.598389</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2537.598389</x>
+        <y>2135.748367</y>
+        <width>189.5739739999999</width>
+        <height>55.288619999999995</height>
+      </shape>
+      <strokeColor>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </strokeColor>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>EmailArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1888.085205</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1888.085205</x>
+        <y>287.388428</y>
+        <width>114.5751949999999</width>
+        <height>53.14587400000005</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>CaptureArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>49.219543</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>49.219543</x>
+        <y>1924.055267</y>
+        <width>970.257386</width>
+        <height>197.345826</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>ShowVideoArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1658.520508</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1658.520508</x>
+        <y>1019.280518</y>
+        <width>119.05017099999986</width>
+        <height>90.07849099999999</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <contentFilters/>
+      <eventHandlers/>
+      <name>WebsiteArea</name>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2699.725098</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2699.725098</x>
+        <y>55.94457999999986</y>
+        <width>123.39892499999996</width>
+        <height>108.29419000000007</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+  </regions>
+  <widthInPoints>
+    <unitName>Points</unitName>
+    <value>3132.0</value>
+  </widthInPoints>
+</RegionConfiguration>
