@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.events.filters;
+package edu.stanford.hci.r3.events.handlers;
 
 import java.io.File;
 import java.util.ArrayList;
