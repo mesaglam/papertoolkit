@@ -4,7 +4,7 @@ import java.io.File;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.events.filters.InkCollector;
+import edu.stanford.hci.r3.events.handlers.InkCollector;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
@@ -53,7 +53,7 @@ public class Document extends Application {
 				DebugUtils.println(getNumStrokesCollected());
 			}
 		};
-		region.addContentFilter(inkCollector);
+		region.addEventHandler(inkCollector);
 		return region;
 	}
 

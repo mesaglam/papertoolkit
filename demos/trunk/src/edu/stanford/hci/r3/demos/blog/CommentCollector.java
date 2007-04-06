@@ -17,7 +17,7 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
-import edu.stanford.hci.r3.events.filters.InkCollector;
+import edu.stanford.hci.r3.events.handlers.InkCollector;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
@@ -35,7 +35,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * @author Joel Brandt
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class CommentCollector extends InkCollector {
+public abstract class CommentCollector extends InkCollector {
 
 	private static final String COMMENT_DIR = "C:/www/bbcomments/";
 

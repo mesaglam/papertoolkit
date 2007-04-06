@@ -8,10 +8,9 @@ import java.io.IOException;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.handlers.InkCollector;
 import edu.stanford.hci.r3.paper.Bundle;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
@@ -88,32 +87,29 @@ public class BioMap extends Application {
 		sheet.addRegions(new File("data/BioMap/SurveyLocationsLighterGaussianBlur1_0.regions.xml"));
 
 		Region llRegion = sheet.getRegion("LowerLeft");
-		inkWellLowerLeft = new InkCollector();
-		inkWellLowerLeft.addListener(new ContentFilterListener() {
+		inkWellLowerLeft = new InkCollector() {
 			public void contentArrived() {
 				DebugUtils.println("lower left");
 			}
-		});
-		llRegion.addContentFilter(inkWellLowerLeft);
+		};
+		llRegion.addEventHandler(inkWellLowerLeft);
 
 		Region lrRegion = sheet.getRegion("LowerRight");
-		inkWellLowerRight = new InkCollector();
-		inkWellLowerRight.addListener(new ContentFilterListener() {
+		inkWellLowerRight = new InkCollector() {
 			public void contentArrived() {
 				DebugUtils.println("lower right");
 			}
-		});
-		lrRegion.addContentFilter(inkWellLowerRight);
+		};
+		lrRegion.addEventHandler(inkWellLowerRight);
 
 		Region urRegion = sheet.getRegion("UpperRight");
-		inkWellUpperRight = new InkCollector();
-		inkWellUpperRight.addListener(new ContentFilterListener() {
+		inkWellUpperRight = new InkCollector() {
 			public void contentArrived() {
 				DebugUtils.println("upper right");
 				audioFeedback.speak("Notes Saved for Site" + lastSite);
 			}
-		});
-		urRegion.addContentFilter(inkWellUpperRight);
+		};
+		urRegion.addEventHandler(inkWellUpperRight);
 		urRegion.addEventHandler(new ClickHandler() {
 
 			@Override

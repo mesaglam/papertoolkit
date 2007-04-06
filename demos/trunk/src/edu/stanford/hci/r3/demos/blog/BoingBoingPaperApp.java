@@ -8,7 +8,6 @@ import java.util.List;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.devices.Device;
-import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
@@ -103,7 +102,8 @@ public class BoingBoingPaperApp extends Application {
 			// output the stories as XML
 			PaperToolkit.toXML(entries, new File("data/Blog/bb_stories.xml"));
 		} else { // re-launching, so read entries from XML
-			entries = (BoingBoingEntry[]) PaperToolkit.fromXML(new File("data/Blog/bb_stories.xml"));
+			entries = (BoingBoingEntry[]) PaperToolkit
+					.fromXML(new File("data/Blog/bb_stories.xml"));
 		}
 
 		// Layout the entries themselves
@@ -128,17 +128,17 @@ public class BoingBoingPaperApp extends Application {
 			sheet.getRegion("Link" + i).addEventHandler(new ClickAdapter() {
 				public void pressed(PenEvent e) {
 					Device.doOpenURL(link);
-					DebugUtils.println("Clicked on link for story \"" + title + "\", opening URL: " + link);
+					DebugUtils.println("Clicked on link for story \"" + title + "\", opening URL: "
+							+ link);
 				}
 			});
 
-			CommentCollector cc = new CommentCollector(entries[i], i);
-			sheet.getRegion("Comment" + i).addContentFilter(cc);
-			cc.addListener(new ContentFilterListener() {
+			CommentCollector cc = new CommentCollector(entries[i], i) {
 				public void contentArrived() {
 					DebugUtils.println("Comments are being made on story \"" + title + "\"");
 				}
-			});
+			};
+			sheet.getRegion("Comment" + i).addEventHandler(cc);
 
 		}
 
@@ -156,8 +156,9 @@ public class BoingBoingPaperApp extends Application {
 			yOffset = (i < 5 ? 6 : 22);
 
 			// Title
-			tr = new TextRegion("title" + i, entries[i].title, FONT_TITLE, new Inches(.3 + xOffset),
-					new Inches(.2 + yOffset), new Inches(8.5), new Inches(2.0));
+			tr = new TextRegion("title" + i, entries[i].title, FONT_TITLE,
+					new Inches(.3 + xOffset), new Inches(.2 + yOffset), new Inches(8.5),
+					new Inches(2.0));
 			tr.setColor(BB_RED);
 			tr.setLineWrapped(true);
 			tr.setMaxLines(2);
@@ -172,8 +173,8 @@ public class BoingBoingPaperApp extends Application {
 			sheet.addRegion(tr);
 
 			// Byline
-			tr = new TextRegion("title" + i, entries[i].author + "\n" + entries[i].date, FONT_BYLINE,
-					new Inches(.3 + xOffset), new Inches(4 + yOffset));
+			tr = new TextRegion("title" + i, entries[i].author + "\n" + entries[i].date,
+					FONT_BYLINE, new Inches(.3 + xOffset), new Inches(4 + yOffset));
 			tr.setColor(BB_RED);
 			tr.setLineWrapped(false);
 			tr.setMaxLines(0);
@@ -185,11 +186,12 @@ public class BoingBoingPaperApp extends Application {
 				String filename = entries[i].image.substring(entries[i].image.lastIndexOf("/") + 1);
 				File file = new File("data/Blog/images/" + filename);
 				if (file.exists()) {
-					ir = new ImageRegion("Picture" + i, file, new Inches(.25 + xOffset), new Inches(
-							1.75 + yOffset));
+					ir = new ImageRegion("Picture" + i, file, new Inches(.25 + xOffset),
+							new Inches(1.75 + yOffset));
 					xImageScale = 3.0 / ir.getWidthVal();
 					yImageScale = 2.25 / ir.getHeightVal();
-					ir.setScale(Math.min(xImageScale, yImageScale), Math.min(xImageScale, yImageScale));
+					ir.setScale(Math.min(xImageScale, yImageScale), Math.min(xImageScale,
+							yImageScale));
 					sheet.addRegion(ir);
 				}
 

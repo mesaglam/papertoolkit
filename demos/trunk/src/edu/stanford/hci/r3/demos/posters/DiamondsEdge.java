@@ -5,10 +5,9 @@ import java.io.File;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.devices.Device;
-import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
+import edu.stanford.hci.r3.events.handlers.InkCollector;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.pen.Pen;
@@ -57,14 +56,13 @@ public class DiamondsEdge extends Application {
 	protected void initializeEventHandlers() {
 		// lower left side of the poster
 		final Region captureArea = poster.getRegion("CaptureArea");
-		final InkCollector inkCollector = new InkCollector();
-		captureArea.addContentFilter(inkCollector);
-		inkCollector.addListener(new ContentFilterListener() {
+		final InkCollector inkCollector = new InkCollector() {
 			public void contentArrived() {
 				System.out.println("CaptureArea");
 				System.out.println("Got Ink in the Capture Area...");
 			}
-		});
+		};
+		captureArea.addEventHandler(inkCollector);
 
 		// next to the stanford logo...
 		Region websiteLink = poster.getRegion("HCIWebsiteArea");
@@ -96,7 +94,8 @@ public class DiamondsEdge extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("EmailArea");
-				Device.doOpenURL("https://mail.google.com/mail/?view=cm&tf=0&fs=1&to=mbernst@stanford.edu%20avir@stanford.edu");
+				Device
+						.doOpenURL("https://mail.google.com/mail/?view=cm&tf=0&fs=1&to=mbernst@stanford.edu%20avir@stanford.edu");
 			}
 		});
 

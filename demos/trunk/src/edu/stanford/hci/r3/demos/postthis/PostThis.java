@@ -5,9 +5,9 @@ import java.awt.Font;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.filters.HandwritingRecognizer;
-import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
+import edu.stanford.hci.r3.events.handlers.HandwritingRecognizer;
+import edu.stanford.hci.r3.events.handlers.InkCollector;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.TextRegion;
@@ -52,8 +52,13 @@ public class PostThis extends Application {
 	 * @param inkingRegion
 	 */
 	private void addInkingHandler(Region inkingRegion) {
-		inkWell = new InkCollector();
-		inkingRegion.addContentFilter(inkWell);
+		inkWell = new InkCollector() {
+			@Override
+			public void contentArrived() {
+
+			}
+		};
+		inkingRegion.addEventHandler(inkWell);
 	}
 
 	/**
@@ -74,8 +79,13 @@ public class PostThis extends Application {
 	 * @param tagRegion
 	 */
 	private void addTagInkHandler(Region tagRegion) {
-		handwritingRecognizer = new HandwritingRecognizer();
-		tagRegion.addContentFilter(handwritingRecognizer);
+		handwritingRecognizer = new HandwritingRecognizer() {
+			@Override
+			public void contentArrived() {
+				
+			}
+		};
+		tagRegion.addEventHandler(handwritingRecognizer);
 	}
 
 	/**

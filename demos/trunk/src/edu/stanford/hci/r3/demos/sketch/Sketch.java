@@ -15,11 +15,10 @@ import javax.swing.WindowConstants;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.events.handlers.GestureHandler;
+import edu.stanford.hci.r3.events.handlers.InkCollector;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.pen.Pen;
@@ -69,9 +68,9 @@ public class Sketch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		new Sketch(MODE_DESIGN_PDF);
+		// new Sketch(MODE_DESIGN_PDF);
 		// new Sketch(MODE_RENDER_PDF);
-		 new Sketch(MODE_RUN_APP);
+		new Sketch(MODE_RUN_APP);
 	}
 
 	private JPanel colorPanel;
@@ -136,8 +135,7 @@ public class Sketch {
 		// address regions by name (stored in the xml file)
 		// add some event handlers to the regions...
 		Region regionMain = sheet.getRegion("MainDrawingArea");
-		inkWell = new InkCollector();
-		inkWell.addListener(new ContentFilterListener() {
+		inkWell = new InkCollector() {
 			public void contentArrived() {
 				statusText.setText("Writing... " + inkWell.getNumStrokesCollected()
 						+ " strokes have been collected");
@@ -146,8 +144,8 @@ public class Sketch {
 				// TASK: Modify this method so that ink is updated immediately....
 
 			}
-		});
-		regionMain.addContentFilter(inkWell);
+		};
+		regionMain.addEventHandler(inkWell);
 
 		Region regionBlack = sheet.getRegion("BlackPalette");
 		regionBlack.addEventHandler(new ClickAdapter() {
@@ -221,8 +219,8 @@ public class Sketch {
 			inkDisplay = new JFrame("Sketch! Display");
 			inkDisplay.setContentPane(getMainPanel());
 			inkDisplay.setSize(690, 740);
-			inkDisplay
-					.setLocation(WindowUtils.getWindowOrigin(inkDisplay, WindowUtils.DESKTOP_CENTER));
+			inkDisplay.setLocation(WindowUtils.getWindowOrigin(inkDisplay,
+					WindowUtils.DESKTOP_CENTER));
 			inkDisplay.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			inkDisplay.setVisible(true);
 		}

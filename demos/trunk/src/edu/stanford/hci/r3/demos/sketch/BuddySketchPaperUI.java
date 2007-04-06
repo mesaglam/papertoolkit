@@ -4,10 +4,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.stanford.hci.r3.events.ContentFilterListener;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.filters.InkCollector;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
+import edu.stanford.hci.r3.events.handlers.InkCollector;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.regions.ImageRegion;
@@ -50,8 +49,7 @@ public class BuddySketchPaperUI extends Sheet {
 	 */
 	private void addDrawingRegion() {
 		Region drawingRegion = new Region("Drawing Region", 0.5, 0.5, 39.5, 23);
-		inkWell = new InkCollector();
-		inkWell.addListener(new ContentFilterListener() {
+		inkWell = new InkCollector() {
 			public void contentArrived() {
 				DebugUtils.println("Content Arrived");
 				DebugUtils.println("Num Strokes Total: " + inkWell.getNumStrokesCollected());
@@ -59,8 +57,8 @@ public class BuddySketchPaperUI extends Sheet {
 				// display this ink in our local GUI...
 				sketchApp.sendInkToGUI(inkWell.getNewInkOnly());
 			}
-		});
-		drawingRegion.addContentFilter(inkWell);
+		};
+		drawingRegion.addEventHandler(inkWell);
 
 		drawingRegion.addEventHandler(new ClickAdapter() {
 			@Override
