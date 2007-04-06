@@ -43,86 +43,107 @@ public class SketchToPaperUI {
 	 * 
 	 * @param args
 	 */
-	
-
-
 	public static void main(String[] args) throws IOException {
-		String fileName = //"penSynch/data/XML/2007_03_24__19_51_50_AJ3-AAA-ZU3-7X.xml";
-			"penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml";
+		// open up an Apollo GUI that listens for live sketching
+		TODO
 		
-		translate(new File(fileName),
-				  "SketchedPaperUI",
-				  new File("."));
+		// have a button that exports to XML and Java
+		
+		// done!
 	}
-	
 
-	public static void translate(File strokeFile, String className, File outputFolder) throws IOException {
+	private static void oldMain() throws IOException {
+		String fileName = // "penSynch/data/XML/2007_03_24__19_51_50_AJ3-AAA-ZU3-7X.xml";
+		"penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml";
+		translate(new File(fileName), "SketchedPaperUI", new File("."));
+	}
+
+	public static String read(File file) throws IOException {
+		FileInputStream fis = new FileInputStream(file);
+		BufferedReader read = new BufferedReader(new InputStreamReader(fis));
+
+		StringBuffer sb = new StringBuffer();
+		String line;
+		while ((line = read.readLine()) != null)
+			sb.append(line + "\n");
+		return sb.toString();
+	}
+
+	// private static void highlight(List<InkStroke> strokes) {
+	//
+	// StringBuilder sb = new StringBuilder();
+	// sb.append("<highlight>");
+	// for (InkStroke s : strokes) {
+	// sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\"/>\n");
+	// }
+	// sb.append("</highlight>");
+	// FileUtils
+	// .writeStringToFile(sb.toString(), new File("flash/data/highlightTheseStrokes.xml"));
+	// }
+
+	/**
+	 * @param strokeFile
+	 * @param className
+	 * @param outputFolder
+	 * @throws IOException
+	 */
+	public static void translate(File strokeFile, String className, File outputFolder)
+			throws IOException {
 		PenSynch penSynch = new PenSynch(strokeFile);
 		List<Ink> importedInk = penSynch.getImportedInk();
-		
+
 		// TODO: some kind of intelligent grouping of strokes that end near
 		// each other
 
 		// Biggest stroke becomes the sheet
-		InkStroke biggestStroke = 
-			InkUtils.getStrokeWithLargestArea(importedInk);
+		InkStroke biggestStroke = InkUtils.getStrokeWithLargestArea(importedInk);
 
 		// Strokes inside sheet are regions
-		List<InkStroke> regionStrokes = 
-			InkUtils.getAllStrokesContainedWithin(importedInk, biggestStroke);
-		
+		List<InkStroke> regionStrokes = InkUtils.getAllStrokesContainedWithin(importedInk,
+				biggestStroke);
+
 		// Strokes that overlap the sheet but go outside are connectors
-		List<InkStroke> connectors = 
-			InkUtils.getStrokesPartlyOutside(importedInk, biggestStroke);
+		List<InkStroke> connectors = InkUtils.getStrokesPartlyOutside(importedInk, biggestStroke);
 
 		// Strokes outside the sheet are events
-		List<InkStroke> outsideStrokes = 
-			InkUtils.getAllStrokesOutside(importedInk, biggestStroke);
+		List<InkStroke> outsideStrokes = InkUtils.getAllStrokesOutside(importedInk, biggestStroke);
 		// Cluster events (since they're words)
 		List<Ink> events = InkUtils.clusterStrokes(outsideStrokes, 2);
-		
-		// Start the recognizer
-		HandwritingRecognitionService service = 
-			HandwritingRecognitionService.getInstance();
 
-		
+		// Start the recognizer
+		HandwritingRecognitionService service = HandwritingRecognitionService.getInstance();
 
 		// Calculate the size of the sheet in inches (make it fit in 8.5x11)
 		Rectangle2D sheet = biggestStroke.getBounds();
 		double scale = Regions.makeItFit(sheet.getWidth(), sheet.getHeight(), 8.5, 11);
-		
+
 		// Print out to...
-		PrintStream outXML = new PrintStream(
-				new FileOutputStream(new File(outputFolder,className+".xml")));
-		PrintStream outJava = new PrintStream(
-				new FileOutputStream(new File(outputFolder,className+".java")));
-		
-		
-		
+		PrintStream outXML = new PrintStream(new FileOutputStream(new File(outputFolder, className
+				+ ".xml")));
+		PrintStream outJava = new PrintStream(new FileOutputStream(new File(outputFolder, className
+				+ ".java")));
+
 		// Number format...
 		DecimalFormat df = new DecimalFormat("0.###");
-		
-		
-		outXML.println("<sheet width=\""+df.format(sheet.getWidth()*scale)+
-					"\" height=\""+df.format(sheet.getHeight()*scale)+"\">");
 
-		
+		outXML.println("<sheet width=\"" + df.format(sheet.getWidth() * scale) + "\" height=\""
+				+ df.format(sheet.getHeight() * scale) + "\">");
+
 		class Region {
-			//InkStroke stroke = null;
+			// InkStroke stroke = null;
 			Rectangle2D bounds = null;
-			String name = null;
 			String eventType = null;
+			String name = null;
 		}
-		
+
 		List<Region> regions = new ArrayList<Region>();
-		
-		
+
 		// Print out regions
 		int strokeId = 1;
 		for (InkStroke region : regionStrokes) {
 			Region r = new Region();
 			regions.add(r);
-			//r.stroke = region;
+			// r.stroke = region;
 			r.bounds = region.getBounds();
 			InkStroke c = null;
 			// Find the connection that matches this region
@@ -130,55 +151,54 @@ public class SketchToPaperUI {
 				if (connection.getBounds().intersects(r.bounds)) {
 					c = connection;
 					break;
-				}	
+				}
 			}
 			Ink event = null;
-			
+
 			if (c != null) {
-				
+
 				// Find the endpoint outside of the region
 				PenSample p = c.getStart();
-				if (r.bounds.contains(p.getX(),p.getY()))
+				if (r.bounds.contains(p.getX(), p.getY()))
 					p = c.getEnd();
-				
+
 				// Find the event nearest that endpoint
-				event = InkUtils.getInkNearPoint(events, 
-						new Point2D.Double(p.getX(),p.getY()), 40.0);
-				
+				event = InkUtils.getInkNearPoint(events, new Point2D.Double(p.getX(), p.getY()),
+						40.0);
+
 				// If an event is found...
 				if (event != null) {
 					// Recognize the text...
-					String result = service.recognizeHandwriting(
-							event.getAsXML(false /* no separator lines */));
-					
+					String result = service.recognizeHandwriting(event
+							.getAsXML(false /* no separator lines */));
+
 					// Split it on non-alpha numeric characters
 					String pieces[] = result.split("[^a-zA-Z0-9]");
 					// Second piece is name
-					if (pieces.length>1)
+					if (pieces.length > 1)
 						r.name = pieces[1];
 					// First is event type
 					r.eventType = pieces[0].toLowerCase();
 					// TODO: there is probably a better way to split this
 				}
 			}
-				
+
 			// If we got no name, auto-generate one (this is problematic if you
 			// revise your sketch, since they could potentially be renumbered)
 			if (r.name == null)
-				r.name = "region"+(strokeId++);
-			
-			r.name = Character.toUpperCase(r.name.charAt(0)) + 
-							r.name.substring(1);
-			
+				r.name = "region" + (strokeId++);
+
+			r.name = Character.toUpperCase(r.name.charAt(0)) + r.name.substring(1);
+
 			// Print it out
-			outXML.print("  <region name=\""+r.name+
-									"\" x=\""+df.format((r.bounds.getX()-sheet.getX())*scale)+
-									"\" y=\""+df.format((r.bounds.getY()-sheet.getY())*scale)+
-									"\" width=\""+df.format(r.bounds.getWidth()*scale)+
-									"\" height=\""+df.format(r.bounds.getHeight()*scale)+"\"");
+			outXML.print("  <region name=\"" + r.name + "\" x=\""
+					+ df.format((r.bounds.getX() - sheet.getX()) * scale) + "\" y=\""
+					+ df.format((r.bounds.getY() - sheet.getY()) * scale) + "\" width=\""
+					+ df.format(r.bounds.getWidth() * scale) + "\" height=\""
+					+ df.format(r.bounds.getHeight() * scale) + "\"");
 			if (event != null) {
 				outXML.println(">");
-				outXML.println("   <eventHandler type=\""+r.eventType +"\"/>");
+				outXML.println("   <eventHandler type=\"" + r.eventType + "\"/>");
 				outXML.println("  </region>");
 			} else {
 				outXML.println("/>");
@@ -187,46 +207,43 @@ public class SketchToPaperUI {
 		outXML.println("</sheet>");
 		outXML.close();
 
-		String template = 
-			read(PaperToolkit.getResourceFile("/designer/template.txt"));
-		
+		String template = read(PaperToolkit.getResourceFile("/designer/template.txt"));
+
 		template = template.replace("{CLASSNAME}", className);
-		
-		// Find patterns of type {REPEAT:REGIONS} ... {/REPEAT:REGIONS} 
+
+		// Find patterns of type {REPEAT:REGIONS} ... {/REPEAT:REGIONS}
 		// in the template
 		Matcher repeatMatcher = Pattern.compile(
 				"\\{REPEAT:REGIONS\\}([\\s\\S]*?)\\{/REPEAT:REGIONS\\}",
-				Pattern.MULTILINE|Pattern.CASE_INSENSITIVE).matcher(template);
-		System.out.println("Matches = "+repeatMatcher.matches());
-		
+				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE).matcher(template);
+		System.out.println("Matches = " + repeatMatcher.matches());
+
 		int lastPosition = 0;
-		
+
 		while (repeatMatcher.find()) {
 			// Print text before the repeat region
-			outJava.print(template.substring(lastPosition,repeatMatcher.start()));
-			
+			outJava.print(template.substring(lastPosition, repeatMatcher.start()));
+
 			// Loop through regions...
 			for (Region region : regions) {
 
-				String repeatString = 
-					repeatMatcher.group(1).replace("{REGION.NAME}",region.name);
-				
+				String repeatString = repeatMatcher.group(1).replace("{REGION.NAME}", region.name);
+
 				// Find {IF:XX} ... {/IF:XX} blocks in the repeat region
-	
+
 				Matcher ifMatcher = Pattern.compile(
 						"\\{IF:([A-Z]+)\\}([\\s\\S]*?)\\{/IF:([A-Z]+)\\}",
-						Pattern.MULTILINE|Pattern.CASE_INSENSITIVE)
-						.matcher(repeatString);
-				
+						Pattern.MULTILINE | Pattern.CASE_INSENSITIVE).matcher(repeatString);
+
 				int lastPosition2 = 0;
-				
+
 				while (ifMatcher.find()) {
 					// print text before {IF}
-					outJava.print(repeatString.substring(lastPosition2,ifMatcher.start()));
-					
+					outJava.print(repeatString.substring(lastPosition2, ifMatcher.start()));
+
 					String type = ifMatcher.group(1);
-					String ifString = ifMatcher.group(2); 
-	
+					String ifString = ifMatcher.group(2);
+
 					// If this event is valid for this region, print out the
 					// if block
 					if (type.toLowerCase().equals(region.eventType))
@@ -240,72 +257,38 @@ public class SketchToPaperUI {
 		}
 		// print text after the region
 		outJava.print(template.substring(lastPosition));
-		
+
 		outJava.close();
 
 		// Close down recognizer
 		service.exitServer();
-		
-		/*
-		 * Ron's notes...
-		 * 
-		 * <sheet width="8.5" height="11">
-		 *   <region name="submit" type="button" x="6.5" y="9" w="1.5" h="1">
-		 *     <eventHandler type="click" name="onSubmit"/>
-		 *   </region>
-		 *   <region name="logo" type="image" src="files/logo.png"/>
-		 *   <region name="inkCapture" type="capture">
-		 *     <eventHandler type="inkWell" name="onInkArrived"/>
-		 *   </region>
-		 * </sheet>
-		 */
+
+		// Ron's notes...
+		// <sheet width="8.5" height="11">
+		// <region name="submit" type="button" x="6.5" y="9" w="1.5" h="1">
+		// <eventHandler type="click" name="onSubmit"/>
+		// </region>
+		// <region name="logo" type="image" src="files/logo.png"/>
+		// <region name="inkCapture" type="capture">
+		// <eventHandler type="inkWell" name="onInkArrived"/>
+		// </region>
+		// </sheet>
+		//
 		// OR, use PaperToolkit.showMe(insideStroke); // this colors the stroke in an external
 		// view...
 		// it renders an XML file of the INK with some cool colors. =)
 		// then it opens the browser to the right HTML page with the right query string. =)
-
 		// Find strokes that go from within the sheet to outside the sheet
 		// These are event handlers
-		
 		// xxx, at each step, remove the strokes from consideration! =)
-
 		// write about this algorithm in the paper!
-		
-
-		
 		// Find the next near the endpoints of these event handlers.
 		// Do handwriting recognition on them.
-
 		// Create Event Handlers!
-
 		// Write about this!!! =)
-
 		// Part II...
 		// A second approach is more of a connected components approach?
 		// Take a look at Andy Wilson's?
 		// Close off strokes, and find buttons and such...
 	}
-	public static String read(File file) throws IOException {
-		FileInputStream fis = new FileInputStream(file);
-		BufferedReader read = new BufferedReader(new InputStreamReader(fis));
-		
-		StringBuffer sb = new StringBuffer();
-		String line;
-		while ((line = read.readLine())!=null)
-			sb.append(line+"\n"); 
-		return sb.toString();
-	}
-/*
-	private static void highlight(List<InkStroke> strokes) {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("<highlight>");
-		for (InkStroke s : strokes) {
-			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\"/>\n");
-		}
-		sb.append("</highlight>");
-		FileUtils
-				.writeStringToFile(sb.toString(), new File("flash/data/highlightTheseStrokes.xml"));
-	}
-	*/
 }
