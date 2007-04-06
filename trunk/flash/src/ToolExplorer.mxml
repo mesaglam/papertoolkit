@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ApolloApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();">
+
+	<mx:Style source="styles/styles.css"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import flash.events.MouseEvent;
+
+			public function init():void {
+				trace("yo intelligentsia");
+			}			
+		]]>
+	</mx:Script>
+
+</mx:ApolloApplication>
