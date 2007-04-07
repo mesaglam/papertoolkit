@@ -45,7 +45,7 @@ public class SketchToPaperUI {
 	 */
 	public static void main(String[] args) throws IOException {
 		// open up an Apollo GUI that listens for live sketching
-		TODO
+		// TODO
 		
 		// have a button that exports to XML and Java
 		

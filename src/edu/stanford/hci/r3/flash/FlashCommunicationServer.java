@@ -62,7 +62,7 @@ public class FlashCommunicationServer {
 	private ServerSocket socket;
 
 	/**
-	 * 
+	 * Allows us to send messages to the Flash GUI.
 	 */
 	public FlashCommunicationServer() {
 		this(DEFAULT_PORT);
