@@ -148,7 +148,7 @@ public class PaperToolkit {
 	 * </ul>
 	 * </p>
 	 */
-	private static String versionString = "0.4";
+	private static String versionString = "0.5";
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
@@ -318,6 +318,7 @@ public class PaperToolkit {
 				.println("Without any arguments, we run the PaperToolkit Explorer. You can also run Papertoolkit with one argument: ");
 		System.out.println("	-actions	// runs the action receiver");
 		System.out.println("	-pen		// runs the pen server");
+		System.out.println("Thank you for using R3! Feel free to send feedback (good & bad) to ronyeh@cs.stanford.edu.");
 	}
 
 	/**

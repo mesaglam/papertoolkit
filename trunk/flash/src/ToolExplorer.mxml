@@ -14,10 +14,33 @@
 			}			
 		]]>
 	</mx:Script>
-	<mx:Label text="PaperToolkit Tool Explorer" fontSize="31" left="10" top="10"/>
-	<mx:Button label="Exit" left="10" bottom="10" click="explorer.exit();"/>
-	<mx:Button x="245" y="335" label="Button"/>
-	<mx:Button x="565" y="337" label="Button"/>
-	<mx:Button x="906" y="339" label="Button"/>
+	<mx:Label text="PaperToolkit Tool Explorer" fontSize="40" left="10" top="10"/>
+	<mx:Button label="Exit" left="10" bottom="10" click="explorer.exit();" paddingBottom="10" paddingLeft="25" paddingTop="10" paddingRight="25"/>
+	<mx:HBox horizontalCenter="0" verticalCenter="0">
+		<mx:Button label="Design" labelPlacement="bottom" paddingBottom="5">
+			<mx:icon>@Embed('../icons/Design.png')</mx:icon>
+		</mx:Button>
+		<mx:Spacer width="20"/>
+		<mx:Button label="Code" labelPlacement="bottom" paddingBottom="5">
+			<mx:icon>@Embed('../icons/YinYang.png')</mx:icon>
+		</mx:Button>
+		<mx:Spacer width="20"/>
+		<mx:Button label="Paper UIs" labelPlacement="bottom" paddingBottom="5">
+			<mx:icon>@Embed('../icons/Stickies.png')</mx:icon>
+		</mx:Button>
+		<mx:Spacer width="20"/>
+		<mx:Button label="Toolbox" labelPlacement="bottom" paddingBottom="5">
+			<mx:icon>@Embed('../icons/Toolbox.png')</mx:icon>
+		</mx:Button>
+		<mx:Spacer width="20"/>
+		<mx:Button label="API Explorer" labelPlacement="bottom" paddingBottom="5">
+			<mx:icon>@Embed('../icons/Directions.png')</mx:icon>
+		</mx:Button>
+	</mx:HBox>
+	<mx:VBox right="10" bottom="10">
+		<mx:Label text="Copyright 2007"/>
+		<mx:Label text="Stanford University"/>
+		<mx:LinkButton label="ronyeh@cs.stanford.edu" click="explorer.mail();"/>
+	</mx:VBox>
 
 </mx:ApolloApplication>

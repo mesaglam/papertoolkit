@@ -4,6 +4,10 @@ package toolExplorer {
 	import flash.display.StageDisplayState;
 	import flash.display.NativeWindow;
 	import flash.system.Shell;
+	import flash.events.InvokeEvent;
+	import flash.filesystem.File;
+	import flash.net.navigateToURL;
+	import flash.net.URLRequest;
 	
 	
 	public class ToolExplorerBackend extends Sprite {
@@ -19,7 +23,7 @@ package toolExplorer {
 			window.width = 1280;
 			window.height = 720;
 
-			toggleFullScreen();
+			addListenerForCommandLineArguments();
 		}			
 
 		// Switches between full screen and restored window state.
@@ -35,6 +39,41 @@ package toolExplorer {
 		// Exits the Application...		
 		public function exit():void {
 			Shell.shell.exit();
+		}
+		
+		public function addListenerForCommandLineArguments():void {
+			Shell.shell.addEventListener(InvokeEvent.INVOKE, onInvokeEvent);
+		}
+
+		public function onInvokeEvent(invocation:InvokeEvent):void{
+			var arguments:Array;
+			var currentDir:File;
+			
+			arguments = invocation.arguments;
+		    currentDir = invocation.currentDirectory;
+		    
+			trace("Current Directory: " + currentDir.nativePath);
+		    if (arguments.length > 0) {
+		    	// trace(arguments);
+		    	for each (var arg:String in arguments) {
+		    		trace(arg);
+		    		
+		    		if (arg.indexOf("port:") > -1) {
+		    			var portNum:int = parseInt(arg.substr(arg.indexOf("port:")+5));
+		    			trace("Port: " + portNum);
+		    		}
+		    	}
+		    }
+		    
+		    start();
+		}
+
+		public function mail():void {
+			navigateToURL(new URLRequest("http://www.yahoo.com/"));			
+		}
+		
+		private function start():void {
+			// toggleFullScreen();
 		}
 	}
 }
