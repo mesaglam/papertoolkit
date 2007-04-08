@@ -14,7 +14,7 @@ package toolExplorer {
 		
 		private var stageObj:Stage;
 		private var window:NativeWindow;
-
+		private var app:ToolExplorer;
 
 		public function ToolExplorerBackend(win:NativeWindow):void {
 			window = win;		
@@ -25,6 +25,10 @@ package toolExplorer {
 
 			addListenerForCommandLineArguments();
 		}			
+
+		public function setApp(appObj:ToolExplorer):void{
+			app = appObj;
+		}
 
 		// Switches between full screen and restored window state.
 		public function toggleFullScreen():void {
@@ -64,16 +68,34 @@ package toolExplorer {
 		    		}
 		    	}
 		    }
-		    
 		    start();
 		}
 
-		public function mail():void {
-			navigateToURL(new URLRequest("http://www.yahoo.com/"));			
+		public function browseToAuthorWebsite():void {
+			navigateToURL(new URLRequest("http://graphics.stanford.edu/~ronyeh"));			
+		}
+		public function browseToHCIWebsite():void {
+			navigateToURL(new URLRequest("http://hci.stanford.edu/"));			
 		}
 		
 		private function start():void {
 			// toggleFullScreen();
+		}
+		
+		public function designClicked():void {
+			app.currentState = "DesignClicked";
+		}
+		public function directionsClicked():void {
+			app.currentState = "DirectionsClicked";
+		}
+		public function stickiesClicked():void {
+			app.currentState = "StickiesClicked";
+		}
+		public function toolboxClicked():void {
+			app.currentState = "ToolboxClicked";
+		}
+		public function yinyangClicked():void {
+			app.currentState = "YinYangClicked";
 		}
 	}
 }
