@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:ApolloApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();" xmlns:custom="design.*">
+	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();" xmlns:custom="design.*"
+	>
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
@@ -65,7 +66,7 @@
 				</custom:DesignTools>
 			</mx:AddChild>
 		</mx:State>
-		<mx:State name="DirectionsClicked">
+		<mx:State name="CompassClicked">
 			<mx:SetProperty target="{topRightImageDirections}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
@@ -124,8 +125,8 @@
 	</mx:Image>
 	
 	<mx:VBox left="10" bottom="10">
-		<mx:Button id="backButton" label="Back" visible="false" click="currentState=''"  width="100%" hideEffect="{fadeOut}" showEffect="{fadeIn}"/>
+		<mx:Button id="backButton" label="Back" visible="false" click="explorer.backButtonClicked();"  width="100%" hideEffect="{fadeOut}" showEffect="{fadeIn}"/>
 		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="10" paddingLeft="25" paddingTop="10" paddingRight="25"/>
 	</mx:VBox>
-
+	<mx:LinkButton label="?" click="explorer.browseToDocumentationWebsite();" fontWeight="bold" fontSize="23" color="#666668" left="117" bottom="10" height="41"/>
 </mx:ApolloApplication>

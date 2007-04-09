@@ -13,5 +13,5 @@ package edu.stanford.hci.r3.flash;
  * 
  */
 public interface FlashListener {
-	void messageReceived(String command);
+	public void messageReceived(String command);
 }

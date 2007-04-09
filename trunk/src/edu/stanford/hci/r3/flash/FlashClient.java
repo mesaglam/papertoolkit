@@ -9,7 +9,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * 
+ * Handles one Flash GUI client, that will communicate with our local Java server.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -26,6 +26,7 @@ public class FlashClient {
 	private BufferedReader fromClient;
 	private FlashCommunicationServer server;
 	private PrintStream toClient;
+	private Thread clientThread ;
 
 	public FlashClient(FlashCommunicationServer flashCommServer, int id, Socket clientSock,
 			BufferedReader readerIn, PrintStream writerOut) {
@@ -35,7 +36,7 @@ public class FlashClient {
 		toClient = writerOut;
 		fromClient = readerIn;
 
-		new Thread(new Runnable() {
+		clientThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				DebugUtils.println("New Flash Client: " + clientID);
@@ -43,6 +44,7 @@ public class FlashClient {
 				boolean done = false;
 				while (!done) {
 					String command = null;
+					String commandLowerCase = null;
 					try {
 						command = fromClient.readLine();
 					} catch (IOException e) {
@@ -53,17 +55,20 @@ public class FlashClient {
 							done = true;
 							clientSocket.close();
 						} else {
-							command = command.trim().toLowerCase();
-							System.out.println(">> Reading a line from the client: [" + command
-									+ "]");
-							if (command.equals("exit")) {
+							command = command.trim();
+							commandLowerCase = command.toLowerCase();
+							// System.out.println(">> Reading a line from the client: [" + command + "]");
+							if (commandLowerCase.equals("exit")) {
 								done = true;
 								exitClient();
-							} else if (command.equals("exitserver")) {
+							} else if (commandLowerCase.equals("exitserver")) {
 								done = true;
 								clientSocket.close();
 								server.exitServer();
 							} else if (command.contains("policy-file-request")) {
+								// TODO: Make this work for Flash GUIs on systems that have NOT installed
+								// Flex.
+
 								DebugUtils.println("Got a policy file request.");
 								// waiting = true;
 								String msg = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">"
@@ -85,8 +90,8 @@ public class FlashClient {
 				}
 			}
 
-		}).start();
-
+		});
+		clientThread.start();
 	}
 
 	/**
@@ -112,9 +117,9 @@ public class FlashClient {
 			toClient.print(message + "\0");
 			toClient.flush();
 		} else {
-			System.out.println("There is no client to send the message to.");
+			DebugUtils.println("There is no client to send the message to.");
 		}
-		System.out.println("Sent " + message.length() + " bytes.");
+		DebugUtils.println("Sent " + message.length() + " bytes.");
 		System.out.flush();
 	}
 

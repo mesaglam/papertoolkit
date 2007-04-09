@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application appId="r3.ToolExplorer" version=".4" xmlns="http://ns.adobe.com/apollo/application/1.0.M3">
+<application appId="r3.ToolExplorer" version="0.5" xmlns="http://ns.adobe.com/apollo/application/1.0.M3">
 
 
 
@@ -41,7 +41,7 @@
             Windows and Mac OS X folder naming restrictions.
             -->
 
-            <name>PaperToolkit Tool Explorer</name>
+            <name>PaperToolkit Explorer</name>
 
             <!--
             The description displayed in the Apollo application installer.
@@ -110,7 +110,12 @@
       icon by the operating system.
       (Optional)
       -->
+      <icon>
+          <image16x16>icons/Toolbox.16.png</image16x16>
+          <image32x32>icons/Toolbox.32.png</image32x32>
+          <image48x48>icons/Toolbox.48.png</image48x48>
+          <image128x128>icons/Toolbox.png</image128x128> 
+      </icon>
 
-      <icon/>
 
 </application>
