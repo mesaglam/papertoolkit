@@ -9,6 +9,9 @@ package toolExplorer {
 	import flash.net.navigateToURL;
 	import flash.net.URLRequest;
 	
+	import java.JavaIntegration;
+	import flash.events.DataEvent;
+	
 	
 	public class ToolExplorerBackend extends Sprite {
 		
@@ -16,6 +19,11 @@ package toolExplorer {
 		private var window:NativeWindow;
 		private var app:ToolExplorer;
 
+		// the port that the Java back end is listening on
+		private var portNum:int;
+		
+		private var javaBackend:JavaIntegration;
+		
 		public function ToolExplorerBackend(win:NativeWindow):void {
 			window = win;		
 			stageObj = win.stage;
@@ -25,6 +33,20 @@ package toolExplorer {
 
 			addListenerForCommandLineArguments();
 		}			
+
+
+		// this is called after the command line arguments are processed
+		private function start():void {
+			// toggleFullScreen();
+			
+			javaBackend = new JavaIntegration(portNum);	
+			javaBackend.addMessageListener(msgListener);
+		}
+
+        private function msgListener(event:DataEvent):void {
+	        var message:XML = new XML(event.text);
+	        trace(message.toXMLString());
+        }
 
 		public function setApp(appObj:ToolExplorer):void{
 			app = appObj;
@@ -42,14 +64,16 @@ package toolExplorer {
 
 		// Exits the Application...		
 		public function exit():void {
+			javaBackend.send("exitServer");
 			Shell.shell.exit();
 		}
 		
 		public function addListenerForCommandLineArguments():void {
-			Shell.shell.addEventListener(InvokeEvent.INVOKE, onInvokeEvent);
+			Shell.shell.addEventListener(InvokeEvent.INVOKE, processCommandLineArguments);
 		}
 
-		public function onInvokeEvent(invocation:InvokeEvent):void{
+		// process the command line arguments
+		public function processCommandLineArguments(invocation:InvokeEvent):void{
 			var arguments:Array;
 			var currentDir:File;
 			
@@ -63,7 +87,7 @@ package toolExplorer {
 		    		trace(arg);
 		    		
 		    		if (arg.indexOf("port:") > -1) {
-		    			var portNum:int = parseInt(arg.substr(arg.indexOf("port:")+5));
+		    			portNum = parseInt(arg.substr(arg.indexOf("port:")+5));
 		    			trace("Port: " + portNum);
 		    		}
 		    	}
@@ -71,31 +95,45 @@ package toolExplorer {
 		    start();
 		}
 
+
 		public function browseToAuthorWebsite():void {
 			navigateToURL(new URLRequest("http://graphics.stanford.edu/~ronyeh"));			
 		}
 		public function browseToHCIWebsite():void {
 			navigateToURL(new URLRequest("http://hci.stanford.edu/"));			
 		}
-		
-		private function start():void {
-			// toggleFullScreen();
+		public function browseToDocumentationWebsite():void {
+			navigateToURL(new URLRequest("http://hci.stanford.edu/paper/documentation/"));			
 		}
 		
+
+		
+		/**
+		 * A bunch of handlers for GUI buttons that invoke something in Java-land.
+		 */		
 		public function designClicked():void {
 			app.currentState = "DesignClicked";
+			javaBackend.send("Design Clicked");
 		}
 		public function directionsClicked():void {
-			app.currentState = "DirectionsClicked";
+			app.currentState = "CompassClicked";
+			javaBackend.send("Compass Clicked");
 		}
 		public function stickiesClicked():void {
 			app.currentState = "StickiesClicked";
+			javaBackend.send("Stickies Clicked");
 		}
 		public function toolboxClicked():void {
 			app.currentState = "ToolboxClicked";
+			javaBackend.send("Toolbox Clicked");
 		}
 		public function yinyangClicked():void {
 			app.currentState = "YinYangClicked";
+			javaBackend.send("YinYang Clicked");
+		}
+		public function backButtonClicked():void{
+			app.currentState='';
+			javaBackend.send("Back Clicked");
 		}
 	}
 }

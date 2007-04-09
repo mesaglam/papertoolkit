@@ -1,9 +1,11 @@
 package edu.stanford.hci.r3.tools;
 
 import java.io.File;
-import java.io.IOException;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.flash.FlashCommunicationServer;
+import edu.stanford.hci.r3.flash.FlashListener;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -18,7 +20,9 @@ import edu.stanford.hci.r3.PaperToolkit;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
  */
-public class ToolExplorer {
+public class ToolExplorer implements FlashListener {
+
+	private FlashCommunicationServer flash;
 
 	public ToolExplorer() {
 		// start the Flash Relay Server, and register our listeners...
@@ -26,33 +30,16 @@ public class ToolExplorer {
 		// Start the Apollo GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File toolExplorerApollo = new File(r3RootPath, "flash/bin/ToolExplorer.exe");
-
-		try {
-			ProcessBuilder processBuilder = new ProcessBuilder(toolExplorerApollo.getAbsolutePath(),
-					"port:" + 8989);
-			processBuilder.start();
-			// Process proc = processBuilder.start();
-			// InputStream inputStream = proc.getInputStream();
-			// BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-			// InputStream errorStream = proc.getErrorStream();
-			// BufferedReader err = new BufferedReader(new InputStreamReader(errorStream));
-			//
-			// String line;
-			// DebugUtils.println("Output: ");
-			// while ((line = in.readLine()) != null) {
-			// DebugUtils.println(line);
-			// }
-			//
-			// DebugUtils.println("----------------------------");
-			// DebugUtils.println("Errors: ");
-			// while ((line = err.readLine()) != null) {
-			// DebugUtils.println(line);
-			// }
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		flash = new FlashCommunicationServer(8989);
+		flash.addFlashClientListener(this);
+		flash.openFlashApolloGUI(toolExplorerApollo);
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.stanford.hci.r3.flash.FlashListener#messageReceived(java.lang.String)
+	 */
+	@Override
+	public void messageReceived(String command) {
+		DebugUtils.println(command);
+	}
 }

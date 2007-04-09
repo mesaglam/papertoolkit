@@ -5,12 +5,14 @@ package apiBrowser {
 	import flash.display.Stage;
 	import flash.display.Sprite;
 	import flash.display.Graphics;
+
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.DataEvent;
 	import flash.events.IEventDispatcher;
+
 	import flash.net.XMLSocket;
 	import ink.InkRawXMLParser;
 	import ink.Ink;
@@ -106,6 +108,7 @@ package apiBrowser {
 		private function sendToJava(msg:String):void {
 			sock.send(msg + "\n");
 		}
+
 		//
  		public function startListening():void {
 			sock = new XMLSocket();

@@ -14,8 +14,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * To help you visualize the event handlers and otherwise debug the paper UI and application. This
- * class contains the bulk of the debugging support, whereas the other classes represent the GUI.
+ * To help you visualize the event handlers and otherwise debug the paper UI and application. This class
+ * contains the bulk of the debugging support, whereas the other classes represent the GUI.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -26,9 +26,14 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class DebuggingEnvironment {
 
+	public static String escapeLiteral(String s) {
+		return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	}
+
 	private Application app;
 	private DebugPCanvas canvas;
 	private FlashCommunicationServer flash;
+
 	private DebugFrame frame;
 
 	/**
@@ -38,11 +43,6 @@ public class DebuggingEnvironment {
 		app = paperApp;
 
 		DebugUtils.println("Starting to debug " + app);
-
-		// ---------------------------------
-		// out first try used Piccolo
-		// startPiccoloDebugView(paperApp);
-		// ---------------------------------
 
 		// now, we'll use Flash as our GUI
 		startFlashDebugger();
@@ -65,8 +65,8 @@ public class DebuggingEnvironment {
 				double rY = r.getOriginY().getValueInInches();
 				double rWidth = r.getWidth().getValueInInches();
 				double rHeight = r.getHeight().getValueInInches();
-				msg.append("<region name='" + r.getName() + "'x=\"" + rX + "\" y=\"" + rY
-						+ "\" w=\"" + rWidth + "\" h=\"" + rHeight + "\">");
+				msg.append("<region name='" + r.getName() + "'x=\"" + rX + "\" y=\"" + rY + "\" w=\""
+						+ rWidth + "\" h=\"" + rHeight + "\">");
 
 				List<EventHandler> eventHandlers = r.getEventHandlers();
 				for (EventHandler eh : eventHandlers) {
@@ -76,8 +76,7 @@ public class DebuggingEnvironment {
 					String container = eh.getClass().toString();
 					container = container.substring(0, container.indexOf("$"));
 
-					msg.append("<eventhandler name='" + eventType + "' location='" + container
-							+ "'/>");
+					msg.append("<eventhandler name='" + eventType + "' location='" + container + "'/>");
 				}
 				msg.append("</region>");
 			}
@@ -124,8 +123,11 @@ public class DebuggingEnvironment {
 	}
 
 	/**
+	 * This is old code that used Piccolo to debug the running paper application.
+	 * 
 	 * @param paperApp
 	 */
+	@Deprecated
 	private void startPiccoloDebugView(Application paperApp) {
 		// set up a GUI
 		frame = new DebugFrame(paperApp.getName());
@@ -134,10 +136,6 @@ public class DebuggingEnvironment {
 		// add visual components to GUI
 		canvas.addVisualComponents(paperApp);
 	}
-	
-	public static String escapeLiteral(String s) {
-		return s.replace("&","&amp;").replace("<", "&lt;").replace(">", "&gt;");
-	}
 
 	/**
 	 * @param msg
@@ -145,8 +143,8 @@ public class DebuggingEnvironment {
 	 */
 	public void visualize(String msg, Region r, String code) {
 		String message = "<showMe msg='" + msg + "' regionName='" + r.getName() + "'";
-		if (code!=null)
-			message += "><code>"+escapeLiteral(code)+"</code></showMe>";
+		if (code != null)
+			message += "><code>" + escapeLiteral(code) + "</code></showMe>";
 		else
 			message += "/>";
 		flash.sendMessage(message);
