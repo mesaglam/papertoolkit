@@ -11,6 +11,7 @@ package toolExplorer {
 	
 	import java.JavaIntegration;
 	import flash.events.DataEvent;
+	import design.DesignTools;
 	
 	
 	public class ToolExplorerBackend extends Sprite {
@@ -18,6 +19,7 @@ package toolExplorer {
 		private var stageObj:Stage;
 		private var window:NativeWindow;
 		private var app:ToolExplorer;
+		private var designTool:DesignTools;
 
 		// the port that the Java back end is listening on
 		private var portNum:int;
@@ -48,9 +50,6 @@ package toolExplorer {
 	        trace(message.toXMLString());
         }
 
-		public function setApp(appObj:ToolExplorer):void{
-			app = appObj;
-		}
 
 		// Switches between full screen and restored window state.
 		public function toggleFullScreen():void {
@@ -135,5 +134,17 @@ package toolExplorer {
 			app.currentState='';
 			javaBackend.send("Back Clicked");
 		}
+		
+		
+		/**
+		 * Setters for components that we can access from our MXML.
+		 */ 
+		public function setApp(appObj:ToolExplorer):void{
+			app = appObj;
+		}
+		public function setDesignToolPanel(designToolPanel:DesignTools):void{
+			designTool = designToolPanel;
+		}
+
 	}
 }

@@ -14,7 +14,12 @@
 			public function init():void {
 				explorer = new ToolExplorerBackend(this.window);
 				explorer.setApp(this);
+				explorer.setDesignToolPanel(designToolPanel);
 			}			
+			
+			public function doSomething():void {
+				trace(designToolPanel);
+			}
 		]]>
 	</mx:Script>
 
@@ -29,7 +34,7 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Design"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<custom:DesignTools left="10" right="10" top="80" bottom="90">
+				<custom:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
 				</custom:DesignTools>
 			</mx:AddChild>
 		</mx:State>
@@ -129,4 +134,5 @@
 		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="10" paddingLeft="25" paddingTop="10" paddingRight="25"/>
 	</mx:VBox>
 	<mx:LinkButton label="?" click="explorer.browseToDocumentationWebsite();" fontWeight="bold" fontSize="23" color="#666668" left="117" bottom="10" height="41"/>
+	<mx:Button label="Do Something" horizontalCenter="0" bottom="10" click="doSomething();"/>
 </mx:ApolloApplication>
