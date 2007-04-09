@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:ApolloApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();" xmlns:custom="design.*"
-	>
+	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();" xmlns:tools="tools.*">
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
-			import toolExplorer.ToolExplorerBackend;
+			import tools.ToolExplorerBackend;
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 
@@ -34,8 +33,8 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Design"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<custom:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
-				</custom:DesignTools>
+				<tools:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
+				</tools:DesignTools>
 			</mx:AddChild>
 		</mx:State>
 		<mx:State name="YinYangClicked">
@@ -45,8 +44,8 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Code"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<custom:DesignTools left="10" right="10" top="80" bottom="90">
-				</custom:DesignTools>
+				<tools:DesignTools left="10" right="10" top="80" bottom="90">
+				</tools:DesignTools>
 			</mx:AddChild>
 		</mx:State>
 		<mx:State name="StickiesClicked">
@@ -56,8 +55,8 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Paper UIs"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<custom:DesignTools left="10" right="10" top="80" bottom="90">
-				</custom:DesignTools>
+				<tools:DesignTools left="10" right="10" top="80" bottom="90">
+				</tools:DesignTools>
 			</mx:AddChild>
 		</mx:State>
 		<mx:State name="ToolboxClicked">
@@ -67,8 +66,8 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Toolbox"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<custom:DesignTools left="10" right="10" top="80" bottom="90">
-				</custom:DesignTools>
+				<tools:DesignTools left="10" right="10" top="80" bottom="90">
+				</tools:DesignTools>
 			</mx:AddChild>
 		</mx:State>
 		<mx:State name="CompassClicked">
@@ -78,8 +77,8 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="API Explorer"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<custom:DesignTools left="10" right="10" top="80" bottom="90">
-				</custom:DesignTools>
+				<tools:DesignTools left="10" right="10" top="80" bottom="90">
+				</tools:DesignTools>
 			</mx:AddChild>
 		</mx:State>
 	</mx:states>

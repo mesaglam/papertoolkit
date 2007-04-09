@@ -4,19 +4,18 @@
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
+			import tools.EventVizBackend;
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 
-			import eventViz.EventVizClient;
-
 			private var container:UIComponent;
-			private var viz:EventVizClient;
+			private var viz:EventVizBackend;
 
 			public function startEventViz():void {
 				trace("Starting Event Viz...");
 				// more or less all the code! =)			
 				container = new UIComponent();
-				viz = new EventVizClient();
+				viz = new EventVizBackend();
 				viz.setDebugTextArea(debugText);
 				viz.setCodeTextArea(code);
 				container.addChild(viz);

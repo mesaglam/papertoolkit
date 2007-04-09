@@ -1,4 +1,5 @@
-package toolExplorer {
+package tools {
+	
 	import flash.display.Stage;
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
@@ -11,7 +12,7 @@ package toolExplorer {
 	
 	import java.JavaIntegration;
 	import flash.events.DataEvent;
-	import design.DesignTools;
+	import tools.DesignTools;
 	
 	
 	public class ToolExplorerBackend extends Sprite {

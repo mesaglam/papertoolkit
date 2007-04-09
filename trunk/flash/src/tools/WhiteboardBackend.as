@@ -1,4 +1,4 @@
-﻿package whiteboard {	
+﻿package tools {	
 
 	import flash.events.*;
 	import flash.net.*;
@@ -8,7 +8,7 @@
 	import ink.InkStroke;
 
 	
-	public class WhiteboardInkClient extends Sprite {
+	public class WhiteboardBackend extends Sprite {
 		
 		private var inkWell:Ink;
 		
@@ -17,7 +17,7 @@
 
 		private var currInkStroke:InkStroke;
 		
-		public function WhiteboardInkClient(dbt:TextArea):void {
+		public function WhiteboardBackend(dbt:TextArea):void {
 			inkWell = new Ink();
 			addChild(inkWell);
 			

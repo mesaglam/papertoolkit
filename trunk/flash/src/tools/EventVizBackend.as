@@ -1,17 +1,20 @@
-﻿package eventViz {	
+﻿package tools {	
 
 	import flash.events.*;
 	import flash.net.*;
 	import flash.display.Sprite;
 	import flash.display.Graphics;
-	import mx.controls.TextArea;
-	import ink.Ink;
-	import ink.InkStroke;
 	import flash.display.Shape;
 	import flash.utils.Timer;
 
+	import mx.controls.TextArea;
+
+	import ink.Ink;
+	import ink.InkStroke;
+
+
 	
-	public class EventVizClient extends Sprite {
+	public class EventVizBackend extends Sprite {
 		
 		private var sock:XMLSocket;
 		private var debugTextArea:TextArea;
@@ -24,7 +27,7 @@
 		// a "hashtable" for having access to the regions by name...
 		private var regionsByName:Object = new Object();
 
-		public function EventVizClient():void {
+		public function EventVizBackend():void {
 			trace("Event Viz Client Started.");
 			startListening();
 			g = app.graphics;

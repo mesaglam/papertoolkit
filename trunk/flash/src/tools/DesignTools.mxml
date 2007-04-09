@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="90%" height="90%" borderStyle="solid" borderColor="#646464" cornerRadius="25" borderThickness="3" alpha="0.5" backgroundColor="#515151" backgroundAlpha="5">
 	<mx:Label x="10" y="10" text="Design a Paper UI by sketching on patterned paper." fontSize="15"/>
-	
 </mx:Canvas>
