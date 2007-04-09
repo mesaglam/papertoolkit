@@ -3,15 +3,15 @@
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
+			import tools.WhiteboardBackend;
 			import mx.core.UIComponent;
-			import whiteboard.WhiteboardInkClient;
 			
 			// more or less all the code is stored in the as file! =)			
-			private var whitebd:WhiteboardInkClient;
+			private var whitebd:WhiteboardBackend;
 			private var container:UIComponent;
 			
 			public function constructWhiteboard():void {
-				whitebd = new WhiteboardInkClient(debugText);
+				whitebd = new WhiteboardBackend(debugText);
 
 				container = new UIComponent();
 				addChild(container);

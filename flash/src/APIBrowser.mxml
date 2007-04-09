@@ -59,7 +59,8 @@
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 			import flash.display.StageDisplayState;
-			import apiBrowser.APIBrowserBackend;
+
+			import tools.APIBrowserBackend;
 
 			private var browser:APIBrowserBackend;
 			private var container:UIComponent;

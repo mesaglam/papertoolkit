@@ -1,4 +1,4 @@
-package apiBrowser {
+package tools {
 	
 	import flash.events.MouseEvent;
 	import flash.display.StageDisplayState;

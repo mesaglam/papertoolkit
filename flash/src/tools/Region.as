@@ -1,5 +1,5 @@
-package eventViz
-{
+package tools {
+	
 	import flash.display.Sprite;
 	import flash.text.TextField;
 	import mx.controls.Label;
