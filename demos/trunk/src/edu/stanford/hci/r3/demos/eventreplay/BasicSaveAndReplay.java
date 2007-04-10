@@ -48,7 +48,7 @@ public class BasicSaveAndReplay extends Application {
 	public BasicSaveAndReplay() {
 		super("Basic Save and Replay");
 		addSheet(getSheet(), getPatternMap());
-		addPen(getPen());
+		addPenInput(getPen());
 	}
 
 	/**

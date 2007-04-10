@@ -58,7 +58,7 @@ public class DebugPaperApplication {
 		sheet.addRegion(buttonRegion);
 
 		Application app = new Application("A Simple Debug Application");
-		app.addPen(new Pen("Single Pen"));
+		app.addPenInput(new Pen("Single Pen"));
 		app.addSheet(sheet); // no pattern info xml file loaded...
 
 		PaperToolkit p = new PaperToolkit(true, false, false);

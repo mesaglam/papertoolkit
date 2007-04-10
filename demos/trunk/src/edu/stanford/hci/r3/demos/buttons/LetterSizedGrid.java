@@ -108,7 +108,7 @@ public class LetterSizedGrid extends Application {
 		// If the other pens aren't alive, keep on going with the local pen...
 		final Pen pen1 = new Pen("Brown Pen (local)");
 		final Pen pen2 = new Pen("Green Pen", "171.66.32.119"); // VeracruzX
-		addPen(pen1);
-		addPen(pen2);
+		addPenInput(pen1);
+		addPenInput(pen2);
 	}
 }

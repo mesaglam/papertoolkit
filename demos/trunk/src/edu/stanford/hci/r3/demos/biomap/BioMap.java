@@ -229,7 +229,7 @@ public class BioMap extends Application {
 		// the application has to know about this pen
 		// warn if there are no pens
 		Pen pen = new Pen("Main Pen");
-		addPen(pen);
+		addPenInput(pen);
 	}
 
 	/**

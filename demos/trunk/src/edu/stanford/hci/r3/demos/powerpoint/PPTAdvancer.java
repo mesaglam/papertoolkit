@@ -50,7 +50,7 @@ public class PPTAdvancer extends Application {
 		r.addEventHandler(getClickHandler());
 		s.addRegion(r);
 		final Pen pen = new Pen("Primary Pen");
-		addPen(pen);
+		addPenInput(pen);
 
 		if (configureApp) {
 			// get two points from the pen...

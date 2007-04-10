@@ -38,7 +38,7 @@ public class Simple {
 		r.addEventHandler(getClickHandler());
 		s.addRegion(r);
 		app.addSheet(s);
-		app.addPen(new Pen("Primary Pen"));
+		app.addPenInput(new Pen("Primary Pen"));
 		PaperToolkit toolkit = new PaperToolkit(true /* app manager */);
 		toolkit.loadApplication(app);
 	}

@@ -64,7 +64,7 @@ public class DebugPaperApplication2 {
 		final Application app = new Application("A Simple Application");
 		Pen pen = new Pen("Local Pen");
 		// Pen pen = new Pen("Single Pen", "solaria.stanford.edu");
-		app.addPen(pen);
+		app.addPenInput(pen);
 
 		// no pattern info xml file loaded...
 		// we are going to use the runtime binding of pattern info

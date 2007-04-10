@@ -42,7 +42,7 @@ public class Buttons extends Application {
 	public Buttons() {
 		super("Buttons");
 		addSheet(getSheet(), new File("data/Batched/Buttons.patternInfo.xml"));
-		addPen(getPen());
+		addPenInput(getPen());
 	}
 
 	/**

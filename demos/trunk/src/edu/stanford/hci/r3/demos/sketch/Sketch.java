@@ -302,7 +302,7 @@ public class Sketch {
 
 		// the application has to know about this pen
 		Pen pen = new Pen("Main Pen");
-		app.addPen(pen);
+		app.addPenInput(pen);
 
 		// we need to add code that actually does stuff to each region
 		addEventHandlersToRegions();

@@ -132,7 +132,7 @@ public class SimpleBatched {
 	 */
 	public SimpleBatched() {
 		app = new Application("Simple Batched Test");
-		app.addPen(getPen());
+		app.addPenInput(getPen());
 		toolkit = new PaperToolkit();
 		toolkit.startApplication(app);
 		setupGUI();

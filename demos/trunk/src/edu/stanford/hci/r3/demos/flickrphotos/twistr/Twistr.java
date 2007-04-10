@@ -412,10 +412,10 @@ public class Twistr {
 		Pen pen1R = new Pen(P1_RIGHT, p1rightIPAddr);
 		Pen pen2R = new Pen(P2_RIGHT, p2rightIPAddr);
 
-		application.addPen(pen2R);
-		application.addPen(pen1R);
-		application.addPen(pen1L);
-		application.addPen(pen2L);
+		application.addPenInput(pen2R);
+		application.addPenInput(pen1R);
+		application.addPenInput(pen1L);
+		application.addPenInput(pen2L);
 
 		// load it
 		PaperToolkit p = new PaperToolkit(true);

@@ -124,7 +124,7 @@ public class BuddySketch extends Application {
 	 */
 	private void addLocalPen() {
 		myPen = new Pen("Local Pen");
-		addPen(myPen);
+		addPenInput(myPen);
 	}
 
 	/**

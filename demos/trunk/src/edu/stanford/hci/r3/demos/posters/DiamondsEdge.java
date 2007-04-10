@@ -121,7 +121,7 @@ public class DiamondsEdge extends Application {
 		// DebugUtils.println(poster.getRegionNames());
 
 		Pen pen = new Pen("Main Pen");
-		addPen(pen);
+		addPenInput(pen);
 
 		// WARNING
 		// Adding the sheet HAS to go after event handlers are added to the regions
