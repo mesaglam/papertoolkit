@@ -27,7 +27,7 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class Pen implements PenInput {
+public class Pen extends PenInput {
 
 	/**
 	 * PenStreamingConnection uses this to determine which COM port to connect to when looking for pen data.

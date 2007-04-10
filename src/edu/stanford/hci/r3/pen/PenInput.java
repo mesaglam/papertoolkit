@@ -15,18 +15,18 @@ import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
  */
-public interface PenInput {
+public abstract class PenInput {
 
-	public void addLivePenListener(PenListener listener);
+	public abstract void addLivePenListener(PenListener listener);
 
-	public String getName();
+	public abstract String getName();
 
-	public boolean isLive();
+	public abstract boolean isLive();
 
-	public void removeLivePenListener(PenListener listener);
+	public abstract void removeLivePenListener(PenListener listener);
 
-	public void startLiveMode();
+	public abstract void startLiveMode();
 
-	public void stopLiveMode();
+	public abstract void stopLiveMode();
 
 }
