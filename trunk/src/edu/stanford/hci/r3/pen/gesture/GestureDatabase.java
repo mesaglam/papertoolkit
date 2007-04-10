@@ -29,9 +29,9 @@ import javax.swing.WindowConstants;
 
 import com.thoughtworks.xstream.XStream;
 
+import edu.stanford.hci.r3.components.InkPanel;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkPanel;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Pixels;
