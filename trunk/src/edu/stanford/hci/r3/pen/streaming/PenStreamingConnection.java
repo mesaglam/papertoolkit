@@ -17,14 +17,15 @@ import javax.comm.UnsupportedCommOperationException;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.communications.COMPort;
 
 /**
  * <p>
- * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the
- * Nokia SU-1B pen and converts it according to the Nokia Document.
+ * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the Nokia
+ * SU-1B pen and converts it according to the Nokia Document.
  * 
- * The idea for this class is that it reports low-level pen events. It does not do any bit of
- * gesture recognition.
+ * The idea for this class is that it reports low-level pen events. It does not do any bit of gesture
+ * recognition.
  * </p>
  * <p>
  * Example code is taken from: http://java.sun.com/products/javacomm/javadocs/API_users_guide.html
@@ -44,7 +45,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 	private static final boolean DEBUG = false;
 
-	public static final String DEFAULT_PORT = "COM5";
+	public static final COMPort DEFAULT_PORT = COMPort.COM5;
 
 	// PenUP Identifier
 	private static final byte ID_PEN_UP = 0x01;
@@ -52,6 +53,9 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	// SimpleCoord Identifier
 	private static final byte ID_SIMPLE_COORD = 0x00;
 
+	/**
+	 * The singleton instance, that connects to the local pen hardware drivers over a COM port.
+	 */
 	private static PenStreamingConnection instance = null;
 
 	// length of the PenUP Packet
@@ -75,36 +79,43 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	 * @param port
 	 *            if port is null, use the default port (COM5)
 	 */
-	public static PenStreamingConnection getInstance(String port) {
+	public static PenStreamingConnection getInstance(COMPort port) {
 		if (instance != null) {
 			return instance;
 		}
 
-		// set up a connection to the COM port
-		// read from it, and display to console
+		// set up a connection to the COM port read from it, and display to console
 		// boolean portFound = false;
-		if (port == null || port.length() == 0) {
+		if (port == null) {
 			port = DEFAULT_PORT;
 		}
 
-		DebugUtils.print("PenStreamingConnection: Looking for " + port + ". Found {");
+		StringBuilder msg = new StringBuilder();
+		msg.append("PenStreamingConnection: Looking for " + port + ". Found {");
 
 		portList = CommPortIdentifier.getPortIdentifiers();
 		while (portList.hasMoreElements()) {
 			portID = (CommPortIdentifier) portList.nextElement();
 			if (portID.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-				if (portID.getName().equals(port)) {
-					System.out.println(port + "}");
+				String nameOfDiscoveredPort = portID.getName();
+				if (nameOfDiscoveredPort.equals(port.toString())) {
+					msg.append(" " + nameOfDiscoveredPort + " }");
 					instance = new PenStreamingConnection();
+					DebugUtils.println(msg.toString());
 					System.out.flush();
 					return instance;
+				} else {
+					msg.append(" " + nameOfDiscoveredPort);
 				}
 			}
 		}
-		System.out.println("}");
-		System.out.println("Port " + port + " not found.");
+		msg.append(" }\n");
+		msg.append("Port " + port + " not found.");
+		DebugUtils.println(msg.toString());
 		System.out.flush();
 		System.err.println("Is JavaCOMM not installed?");
+		System.err.println("Is your Bluetooth Dongle unplugged?");
+		System.err.println("Are connecting to the correct COM port, named ANOTO STREAMING?");
 		return null;
 	}
 
@@ -142,7 +153,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	private int yFraction = 0;
 
 	/**
-	 * @see
+	 * 
 	 */
 	private PenStreamingConnection() {
 		try {
@@ -175,8 +186,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	}
 
 	/**
-	 * Add a Pen Listener to the internal list. Pen Listeners' callbacks will be called when pen
-	 * events are detected.
+	 * Add a Pen Listener to the internal list. Pen Listeners' callbacks will be called when pen events are
+	 * detected.
 	 * 
 	 * @param pl
 	 */
@@ -185,6 +196,22 @@ public class PenStreamingConnection implements SerialPortEventListener {
 			System.out.println("Adding a listener...");
 		}
 		listeners.add(pl);
+	}
+
+	/**
+	 * Stops reading from the COM port.
+	 */
+	public void exit() {
+		// is it sufficient to close the Input Stream?
+		try {
+			DebugUtils.println("Closing the connection to the Streaming Pen.");
+			inputStream.close();
+			serialPort.close();
+			instance = null;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -279,13 +306,13 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 			// done with the whole streaming sample, so output it!
 			if (DEBUG) {
-				System.out.println("(" + (x + xFraction * 0.125) + ", " + (y + yFraction * 0.125)
-						+ ")" + " f: " + force + " t: " + timestamp);
+				System.out.println("(" + (x + xFraction * 0.125) + ", " + (y + yFraction * 0.125) + ")"
+						+ " f: " + force + " t: " + timestamp);
 				System.out.flush();
 			}
 
-			final PenSample penSample = new PenSample(x + (xFraction * 0.125), y
-					+ (yFraction * 0.125), force, timestamp, false);
+			final PenSample penSample = new PenSample(x + (xFraction * 0.125), y + (yFraction * 0.125),
+					force, timestamp, false);
 
 			if (penIsUp) {
 				penIsUp = false;

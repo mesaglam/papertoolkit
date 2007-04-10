@@ -155,8 +155,6 @@ public class PaperToolkit {
 	 */
 	private static XStream xmlEngine;
 
-	private static ToolExplorer toolExplorer;
-
 	/**
 	 * Print an Intro Message.
 	 */
@@ -292,7 +290,7 @@ public class PaperToolkit {
 			// the 0 args branch will run the Paper Toolkit GUI, which helps designers learn what you
 			// can do with this toolkit. It integrates with the documentation and stuff too!
 			printUsage();
-			toolExplorer = new ToolExplorer();
+			new ToolExplorer();
 		} else if (args[0].startsWith("-actions")) {
 			ActionReceiverTrayApp.main(new String[] {});
 		} else if (args[0].startsWith("-pen")) {

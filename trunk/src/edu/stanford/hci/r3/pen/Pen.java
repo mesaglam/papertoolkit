@@ -12,13 +12,13 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>
- * This class represents a single, physical pen. A pen has an identity, so you should be able to
- * distinguish them. Pens can batch data for later upload. Alternatively, they can stream live data
- * when connected in a streaming mode.
+ * This class represents a single, physical pen. A pen has an identity, so you should be able to distinguish
+ * them. Pens can batch data for later upload. Alternatively, they can stream live data when connected in a
+ * streaming mode.
  * </p>
  * <p>
- * The Pen object abstracts the lower level connections with the streaming server/client, and
- * dealing with batched ink input. It also interfaces with event handling in the system.
+ * The Pen object abstracts the lower level connections with the streaming server/client, and dealing with
+ * batched ink input. It also interfaces with event handling in the system.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -30,9 +30,7 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
 public class Pen {
 
 	/**
-	 * Do something with this.
-	 * 
-	 * TODO: Make PenStreamingConnection use this instead of a String.
+	 * PenStreamingConnection uses this to determine which COM port to connect to when looking for pen data.
 	 */
 	public static final COMPort DEFAULT_COM_PORT = COMPort.COM5;
 
@@ -52,11 +50,15 @@ public class Pen {
 	private boolean liveMode = false;
 
 	/**
-	 * A client listens to the Pen Server, which is the physical pen attached to SOME computer
-	 * SOMEWHERE in the world. The Pen Server can be in a remote location, as long as it is DNS
-	 * addressable.
+	 * A client listens to the Pen Server, which is the physical pen attached to SOME computer SOMEWHERE in
+	 * the world. The Pen Server can be in a remote location, as long as it is DNS addressable.
 	 */
 	private PenClient livePenClient;
+
+	/**
+	 * Defaults to COM5. This can be customized, as long as you do it before the pen server is started.
+	 */
+	private COMPort localPenComPort = DEFAULT_COM_PORT;
 
 	/**
 	 * A simple default name.
@@ -64,15 +66,15 @@ public class Pen {
 	private String name;
 
 	/**
-	 * Cached pen listeners, so we can add them when/if you go live. TODO: How will we handle
-	 * batched events later on?
+	 * Cached pen listeners, so we can add them when/if you go live. TODO: How will we handle batched events
+	 * later on?
 	 */
 	private List<PenListener> penListenersToAdd = new ArrayList<PenListener>();
 
 	/**
-	 * Can't use this constructor too many times, because you can only have ONE physical pen
-	 * connected to the localhost's pen server. However, you can have two pen objects listen to the
-	 * same localhost server if you wish. They will just get the same data.
+	 * Can't use this constructor too many times, because you can only have ONE physical pen connected to the
+	 * localhost's pen server. However, you can have two pen objects listen to the same localhost server if
+	 * you wish. They will just get the same data.
 	 */
 	public Pen() {
 		this("A Pen");
@@ -97,9 +99,9 @@ public class Pen {
 	}
 
 	/**
-	 * Adds a low-level pen data listener to the live pen. You SHOULD call this after starting live
-	 * mode.... However, we can cache the listener for you, if you really want. This is to eliminate
-	 * annoying ordering constraints.
+	 * Adds a low-level pen data listener to the live pen. You SHOULD call this after starting live mode....
+	 * However, we can cache the listener for you, if you really want. This is to eliminate annoying ordering
+	 * constraints.
 	 * 
 	 * @param penListener
 	 */
@@ -147,6 +149,13 @@ public class Pen {
 	}
 
 	/**
+	 * @param port
+	 */
+	public void setLocalComPort(COMPort port) {
+		localPenComPort = port;
+	}
+
+	/**
 	 * @param nomDePlume
 	 *            Optional, for differentiating pens during debugging.
 	 */
@@ -155,18 +164,18 @@ public class Pen {
 	}
 
 	/**
-	 * Connects to the pen connection on the local machine, with the default com port. This will
-	 * ensure the PenServer on the local machine is running. This will be called by the PaperToolkit
-	 * when you start an application.
+	 * Connects to the pen connection on the local machine, with the default com port. This will ensure the
+	 * PenServer on the local machine is running. This will be called by the PaperToolkit when you start an
+	 * application.
 	 */
 	public void startLiveMode() {
 		startLiveMode(defaultPenServer);
 	}
 
 	/**
-	 * Set up connection to the pen server. The pen server is mapped to a physical pen attached to a
-	 * some computer somewhere in the world. Starting livemode on a pen object just "attaches" it to
-	 * an external server.
+	 * Set up connection to the pen server. The pen server is mapped to a physical pen attached to a some
+	 * computer somewhere in the world. Starting livemode on a pen object just "attaches" it to an external
+	 * server.
 	 * 
 	 * @param hostDomainNameOrIPAddr
 	 */
@@ -175,7 +184,7 @@ public class Pen {
 		// ensure that a java server has been started on this machine
 		if (hostDomainNameOrIPAddr.equals(LOCALHOST)) {
 			if (!PenServer.javaServerStarted()) {
-				PenServer.startJavaServer();
+				PenServer.startJavaServer(localPenComPort);
 			}
 		}
 
@@ -192,8 +201,7 @@ public class Pen {
 				livePenClient.addPenListener(pl);
 			}
 		} else {
-			DebugUtils.println("Pen [" + getName() + "] is already live. "
-					+ "We cannot connect again.");
+			DebugUtils.println("Pen [" + getName() + "] is already live. " + "We cannot connect again.");
 		}
 	}
 
@@ -204,5 +212,10 @@ public class Pen {
 		livePenClient.disconnect();
 		livePenClient = null;
 		liveMode = false;
+		
+		// if the server was started on the localhost, kill it too!
+		if (PenServer.javaServerStarted()) {
+			PenServer.stopServers();
+		}
 	}
 }
