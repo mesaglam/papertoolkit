@@ -1,8 +1,5 @@
 package edu.stanford.hci.r3.pen;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.stanford.hci.r3.pen.streaming.PenClient;
 import edu.stanford.hci.r3.pen.streaming.PenServer;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
@@ -45,11 +42,6 @@ public class Pen extends PenInput {
 	private String defaultPenServer;
 
 	/**
-	 * TRUE if the Pen object is currently connected to the physical pen in streaming mode.
-	 */
-	private boolean liveMode = false;
-
-	/**
 	 * A client listens to the Pen Server, which is the physical pen attached to SOME computer SOMEWHERE in
 	 * the world. The Pen Server can be in a remote location, as long as it is DNS addressable.
 	 */
@@ -61,18 +53,7 @@ public class Pen extends PenInput {
 	private COMPort localPenComPort = DEFAULT_COM_PORT;
 
 	/**
-	 * A simple default name.
-	 */
-	private String name;
-
-	/**
-	 * Cached pen listeners, so we can add them when/if you go live. TODO: How will we handle batched events
-	 * later on?
-	 */
-	private List<PenListener> penListenersToAdd = new ArrayList<PenListener>();
-
-	/**
-	 * Can't use this constructor too many times, because you can only have ONE physical pen connected to the
+	 * Can't use this constructor more than once, because you can only have ONE physical pen connected to the
 	 * localhost's pen server. However, you can have two pen objects listen to the same localhost server if
 	 * you wish. They will just get the same data.
 	 */
@@ -82,7 +63,7 @@ public class Pen extends PenInput {
 
 	/**
 	 * @param name
-	 *            for debugging purposes
+	 *            for debugging purposes, so you can identify pens by name
 	 */
 	public Pen(String name) {
 		this(name, LOCALHOST);
@@ -98,54 +79,30 @@ public class Pen extends PenInput {
 		defaultPenServer = penServerHostName;
 	}
 
-	/**
-	 * Adds a low-level pen data listener to the live pen. You SHOULD call this after starting live mode....
-	 * However, we can cache the listener for you, if you really want. This is to eliminate annoying ordering
-	 * constraints.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param penListener
+	 * @see edu.stanford.hci.r3.pen.PenInput#addLivePenListener(edu.stanford.hci.r3.pen.streaming.listeners.PenListener)
 	 */
 	public void addLivePenListener(PenListener penListener) {
-		if (livePenClient == null) {
-			DebugUtils.println("We cannot register this listener [" + penListener.toString()
-					+ "] at the moment. " + "The Pen is not in Live Mode.");
-			DebugUtils.println("We will keep this listener around until you startLiveMode().");
-			penListenersToAdd.add(penListener);
-			return;
-		} else {
+		// cache if necessary
+		super.addLivePenListener(penListener);
+		if (isLive()) {
+			// if we're live, then listen to the PenClient
 			livePenClient.addPenListener(penListener);
 		}
 	}
 
-	/**
-	 * @return the name of this pen
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return if this pen in live mode.
-	 */
-	public boolean isLive() {
-		return liveMode;
-	}
-
-	/**
-	 * Removes the pen listener from the live pen.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param penListener
+	 * @see edu.stanford.hci.r3.pen.PenInput#removeLivePenListener(edu.stanford.hci.r3.pen.streaming.listeners.PenListener)
 	 */
 	public void removeLivePenListener(PenListener penListener) {
-		if (penListenersToAdd.contains(penListener)) {
-			penListenersToAdd.remove(penListener);
-			DebugUtils.println("Removed " + penListener);
+		super.removeLivePenListener(penListener);
+		if (isLive()) {
+			livePenClient.removePenListener(penListener);
 		}
-		if (livePenClient == null) {
-			DebugUtils.println("Cannot Remove the Listener. The Pen is not in Live Mode.");
-			return;
-		}
-		livePenClient.removePenListener(penListener);
 	}
 
 	/**
@@ -155,13 +112,6 @@ public class Pen extends PenInput {
 		localPenComPort = port;
 	}
 
-	/**
-	 * @param nomDePlume
-	 *            Optional, for differentiating pens during debugging.
-	 */
-	private void setName(String nomDePlume) {
-		name = nomDePlume;
-	}
 
 	/**
 	 * Connects to the pen connection on the local machine, with the default com port. This will ensure the
