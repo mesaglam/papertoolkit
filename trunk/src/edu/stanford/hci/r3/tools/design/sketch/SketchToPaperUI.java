@@ -24,7 +24,6 @@ import edu.stanford.hci.r3.pen.ink.InkUtils;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.tools.design.util.Regions;
 import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.communications.COMPort;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -59,8 +58,8 @@ public class SketchToPaperUI {
 
 		// set up a pen, and a pen listener...
 		pen = new Pen();
+		pen.startLiveMode();
 		pen.addLivePenListener(new PenListener() {
-
 			@Override
 			public void penDown(PenSample sample) {
 				
@@ -73,11 +72,9 @@ public class SketchToPaperUI {
 
 			@Override
 			public void sample(PenSample sample) {
-				DebugUtils.println(sample);
+				
 			}
 		});
-		pen.startLiveMode();
-		
 	}
 
 	// private static void highlight(List<InkStroke> strokes) {
@@ -92,8 +89,20 @@ public class SketchToPaperUI {
 	// .writeStringToFile(sb.toString(), new File("flash/data/highlightTheseStrokes.xml"));
 	// }
 
+	/**
+	 * Other modules, like a Flash GUI, can listen in on the pen samples.
+	 * 
+	 * @param penListener
+	 */
+	public void addPenListener(PenListener penListener) {
+		pen.addLivePenListener(penListener);
+	}
+
+	/**
+	 * 
+	 */
 	public void exit() {
-		DebugUtils.println("Exiting Sketch 2 Paper UI");
+		DebugUtils.println("Exiting Sketch To Paper UI");
 		pen.stopLiveMode();
 	}
 

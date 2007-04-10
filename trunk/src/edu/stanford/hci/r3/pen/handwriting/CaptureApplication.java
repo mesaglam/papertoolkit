@@ -90,7 +90,7 @@ public class CaptureApplication extends Application {
 	 */
 	public CaptureApplication(HandwritingCaptureDebugger debugger) {
 		super("Handwriting Capture");
-		addPen(getPen());
+		addPenInput(getPen());
 		gui = debugger;
 	}
 

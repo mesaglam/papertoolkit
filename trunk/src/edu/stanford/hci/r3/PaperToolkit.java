@@ -69,6 +69,7 @@ import edu.stanford.hci.r3.pattern.coordinates.RegionID;
 import edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter;
 import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.PenInput;
 import edu.stanford.hci.r3.pen.batch.BatchServer;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.streaming.PenServerTrayApp;
@@ -1133,16 +1134,16 @@ public class PaperToolkit {
 		// get all the pens and start them in live mode...
 		// we assume we have decided where each pen server will run
 		// start live mode will connect to that pen server.
-		if (paperApp.getPens().size() == 0) {
+		if (paperApp.getPenInputDevices().size() == 0) {
 			DebugUtils.println(paperApp.getName()
 					+ " does not have any pens! We will add a single streaming pen for you.");
 			final Pen aPen = new Pen();
-			paperApp.addPen(aPen);
+			paperApp.addPenInput(aPen);
 		}
 
-		final List<Pen> pens = paperApp.getPens();
+		final List<PenInput> pens = paperApp.getPenInputDevices();
 		// add all the live pens to the eventEngine
-		for (Pen pen : pens) {
+		for (PenInput pen : pens) {
 			pen.startLiveMode(); // starts live mode at the pen's default place
 			if (pen.isLive()) {
 				eventEngine.register(pen);
@@ -1178,8 +1179,8 @@ public class PaperToolkit {
 	 * @param paperApp
 	 */
 	public void stopApplication(Application paperApp) {
-		final List<Pen> pens = paperApp.getPens();
-		for (Pen pen : pens) {
+		final List<PenInput> pens = paperApp.getPenInputDevices();
+		for (PenInput pen : pens) {
 			if (pen.isLive()) {
 				eventEngine.unregisterPen(pen);
 				// stop the pen from listening!

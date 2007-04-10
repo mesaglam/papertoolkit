@@ -66,8 +66,6 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 	private static CommPortIdentifier portID;
 
-	private static Enumeration portList;
-
 	/**
 	 * @return use COM5
 	 */
@@ -79,6 +77,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	 * @param port
 	 *            if port is null, use the default port (COM5)
 	 */
+	@SuppressWarnings("unchecked")
 	public static PenStreamingConnection getInstance(COMPort port) {
 		if (instance != null) {
 			return instance;
@@ -93,7 +92,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 		StringBuilder msg = new StringBuilder();
 		msg.append("PenStreamingConnection: Looking for " + port + ". Found {");
 
-		portList = CommPortIdentifier.getPortIdentifiers();
+		final Enumeration<CommPortIdentifier> portList = CommPortIdentifier.getPortIdentifiers();
 		while (portList.hasMoreElements()) {
 			portID = (CommPortIdentifier) portList.nextElement();
 			if (portID.getPortType() == CommPortIdentifier.PORT_SERIAL) {

@@ -13,7 +13,7 @@ import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter;
-import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.PenInput;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
@@ -21,15 +21,12 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * When you ask the PaperToolkit to run a paper Application, there will be exactly one EventEngine
- * handling all pen events for that Application. This EventEngine will process batched pen data, and
- * also handle streaming data. We will tackle streaming first.
+ * When you ask the PaperToolkit to run a paper Application, there will be exactly one EventEngine handling
+ * all pen events for that Application. This EventEngine will process batched pen data, and also handle
+ * streaming data. We will tackle streaming first.
  * </p>
  * <p>
- * 
- * </p>
- * <p>
- * This class is responsible for creating clicks, drags, etc.
+ * This class is responsible for sending data to the event handlers, which will create clicks, drags, etc.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -51,39 +48,39 @@ public class EventEngine {
 	private PercentageCoordinates lastKnownLocation;
 
 	/**
-	 * Used by penUp to notify event handlers. This is because a pen up event has no coordinates, so
-	 * we cannot figure out what region it belongs to.
+	 * Used by penUp to notify event handlers. This is because a pen up event has no coordinates, so we cannot
+	 * figure out what region it belongs to.
 	 */
 	private List<EventHandler> mostRecentEventHandlers = new ArrayList<EventHandler>();
 
 	/**
-	 * We keep a count of how many events we have "trashed." These events could not be mapped to any
-	 * active region.
+	 * We keep a count of how many events we have "trashed." These events could not be mapped to any active
+	 * region.
 	 */
 	private int numTrashedPenEvents = 0;
 
 	/**
-	 * Lets us figure out which sheets and regions should handle which events. Interacting with this
-	 * list should be as efficient as possible, because many "events" may be thrown per second!
+	 * Lets us figure out which sheets and regions should handle which events. Interacting with this list
+	 * should be as efficient as possible, because many "events" may be thrown per second!
 	 */
 	private List<PatternLocationToSheetLocationMapping> patternToSheetMaps = Collections
 			.synchronizedList(new ArrayList<PatternLocationToSheetLocationMapping>());
 
 	/**
-	 * Keeps track of how many times a pen has been registered. If during an unregister, this count
-	 * drops to zero, we remove the pen altogether.
+	 * Keeps track of how many times a pen has been registered. If during an unregister, this count drops to
+	 * zero, we remove the pen altogether.
 	 */
-	private Map<Pen, Integer> penRegistrationCount = new HashMap<Pen, Integer>();
+	private Map<PenInput, Integer> penRegistrationCount = new HashMap<PenInput, Integer>();
 
 	/**
 	 * Allows us to identify a pen by ID (the position of the pen in this list).
 	 */
-	private List<Pen> pensCurrentlyMonitoring = new ArrayList<Pen>();
+	private List<PenInput> pensCurrentlyMonitoring = new ArrayList<PenInput>();
 
 	/**
 	 * Each pen gets one and only one event engine listener...
 	 */
-	private Map<Pen, PenListener> penToListener = new HashMap<Pen, PenListener>();
+	private Map<PenInput, PenListener> penToListener = new HashMap<PenInput, PenListener>();
 
 	/**
 	 * For saving and replaying sets of PenEvents.
@@ -91,9 +88,8 @@ public class EventEngine {
 	private EventReplayManager replayManager;
 
 	/**
-	 * This object handles event dispatch by hooking up pen listeners to local and remote pen
-	 * servers. It will figure out where to dispatch incoming pen samples... and will activate the
-	 * correct event handlers.
+	 * This object handles event dispatch by hooking up pen listeners to local and remote pen servers. It will
+	 * figure out where to dispatch incoming pen samples... and will activate the correct event handlers.
 	 */
 	public EventEngine() {
 		replayManager = new EventReplayManager(this);
@@ -112,7 +108,7 @@ public class EventEngine {
 	 * @param pen
 	 * @param listener
 	 */
-	private void addPenToInternalLists(Pen pen, PenListener listener) {
+	private void addPenToInternalLists(PenInput pen, PenListener listener) {
 		penToListener.put(pen, listener);
 		pen.addLivePenListener(listener);
 	}
@@ -133,7 +129,7 @@ public class EventEngine {
 	 * @param pen
 	 * @return the registration count AFTER the decrement.
 	 */
-	private int decrementPenRegistrationCount(Pen pen) {
+	private int decrementPenRegistrationCount(PenInput pen) {
 		Integer count = penRegistrationCount.get(pen);
 		if (count == null) {
 			// huh? We don't have a record for this pen...
@@ -157,17 +153,16 @@ public class EventEngine {
 	}
 
 	/**
-	 * @param pen
-	 * @return a pen listener that will report data to this event engine. The engine will then
-	 *         package the data and report it to all event handlers (read: interactors) that are
-	 *         interested in this data.
+	 * @param penInputDevice
+	 * @return a pen listener that will report data to this event engine. The engine will then package the
+	 *         data and report it to all event handlers (read: interactors) that are interested in this data.
 	 */
-	private PenListener getNewPenListener(final Pen pen) {
-		pensCurrentlyMonitoring.add(pen);
+	private PenListener getNewPenListener(final PenInput penInputDevice) {
+		pensCurrentlyMonitoring.add(penInputDevice);
 
 		// properties of the pen
-		final int penID = pensCurrentlyMonitoring.indexOf(pen);
-		final String penName = pen.getName();
+		final int penID = pensCurrentlyMonitoring.indexOf(penInputDevice);
+		final String penName = penInputDevice.getName();
 
 		return new PenListener() {
 
@@ -185,8 +180,8 @@ public class EventEngine {
 			}
 
 			/**
-			 * A penup sample has 0,0 coordinates, so we need to tell the LAST region handlers to
-			 * handle the penUp.
+			 * A penup sample has 0,0 coordinates, so we need to tell the LAST region handlers to handle the
+			 * penUp.
 			 * 
 			 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penUp(edu.stanford.hci.r3.pen.PenSample)
 			 */
@@ -213,9 +208,9 @@ public class EventEngine {
 	}
 
 	/**
-	 * All pen events go through here. We dispatch it to the right handlers in this method. Will
-	 * this have a ConcurrentModification problem, because we are iterating through the actual
-	 * patternToSheetMaps list that can be updated at runtime?
+	 * All pen events go through here. We dispatch it to the right handlers in this method. Will this have a
+	 * ConcurrentModification problem, because we are iterating through the actual patternToSheetMaps list
+	 * that can be updated at runtime?
 	 * 
 	 * <p>
 	 * TODO: Should this be multithreaded, for performance reasons?
@@ -325,27 +320,31 @@ public class EventEngine {
 	}
 
 	/**
+	 * 
 	 * @param pen
+	 *            the input device that provides pen-like data.
 	 */
-	private void incrementPenRegistrationCount(Pen pen) {
+	private void incrementPenRegistrationCount(PenInput pen) {
 		Integer count = penRegistrationCount.get(pen);
 		if (count == null) {
 			penRegistrationCount.put(pen, 1); // incremented from zero to one
 		} else {
 			penRegistrationCount.put(pen, count + 1);
 		}
-		DebugUtils.println("We have registered " + penRegistrationCount.get(pen)
-				+ " pens in total.");
+		DebugUtils.println("We have registered " + penRegistrationCount.get(pen) + " pens in total.");
 	}
 
 	/**
-	 * If you register a pen multiple times, a different pen listener will be attached to the pen.
-	 * Only ONE EventEngine listener will be attached to a pen at one time. Otherwise, multiple
-	 * events would get fired by the same pen.
+	 * If you register a pen multiple times, a different pen listener will be attached to the pen. Only ONE
+	 * EventEngine listener will be attached to a pen at one time. Otherwise, multiple events would get fired
+	 * by the same pen.
+	 * 
+	 * Why would you want to register a single pen multiple times? I dunnno. For some reason I added support
+	 * for it... but perhaps I'll remove it in the future. :)
 	 * 
 	 * @param pen
 	 */
-	public void register(Pen pen) {
+	public void register(PenInput pen) {
 		// get the old listener, if it exists
 		PenListener listener = penToListener.get(pen);
 		if (listener != null) {
@@ -361,8 +360,8 @@ public class EventEngine {
 	}
 
 	/**
-	 * Really, this is the only method we need to do runtime binding. Who cares if the sheet doesn't
-	 * have the right mapping, anyways?
+	 * Really, this is the only method we need to do runtime binding. Who cares if the sheet doesn't have the
+	 * right mapping, anyways?
 	 * 
 	 * @param mapping
 	 */
@@ -381,8 +380,8 @@ public class EventEngine {
 	 */
 	public void registerPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
-		DebugUtils.println("Registering the (Pattern Location --> Sheet Location) Maps ["
-				+ patternMaps + "]");
+		DebugUtils
+				.println("Registering the (Pattern Location --> Sheet Location) Maps [" + patternMaps + "]");
 		patternToSheetMaps.addAll(patternMaps);
 		DebugUtils.println("Registered " + patternMaps.size() + " New Maps");
 	}
@@ -399,7 +398,7 @@ public class EventEngine {
 	 *            removes this pen from our internal lists without updating the registration count.
 	 * @param listener
 	 */
-	private void removePenFromInternalLists(Pen pen, PenListener listener) {
+	private void removePenFromInternalLists(PenInput pen, PenListener listener) {
 		penToListener.remove(pen);
 		pen.removeLivePenListener(listener);
 		pensCurrentlyMonitoring.remove(pen);
@@ -415,8 +414,7 @@ public class EventEngine {
 	/**
 	 * @param patternMap
 	 */
-	public void unregisterPatternMapForEventHandling(
-			PatternLocationToSheetLocationMapping patternMap) {
+	public void unregisterPatternMapForEventHandling(PatternLocationToSheetLocationMapping patternMap) {
 		patternToSheetMaps.remove(patternMap);
 	}
 
@@ -431,9 +429,11 @@ public class EventEngine {
 	}
 
 	/**
+	 * Stop watching this pen input device.
+	 * 
 	 * @param pen
 	 */
-	public void unregisterPen(Pen pen) {
+	public void unregisterPen(PenInput pen) {
 		int newCount = decrementPenRegistrationCount(pen);
 		if (newCount == 0) {
 			DebugUtils.println("Count is at Zero. Let's remove the pen and its listener...");
