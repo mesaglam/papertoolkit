@@ -15,6 +15,7 @@ import javax.swing.WindowConstants;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.components.InkPanel;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.events.handlers.GestureHandler;
@@ -23,7 +24,6 @@ import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.ink.InkPanel;
 import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
 import edu.stanford.hci.r3.util.WindowUtils;
 
