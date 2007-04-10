@@ -5,6 +5,7 @@ import java.awt.Container;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import edu.stanford.hci.r3.components.InkPanel;
 import edu.stanford.hci.r3.util.WindowUtils;
 
 /**

@@ -17,7 +17,6 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  */
 public abstract class PenInput {
 
@@ -40,6 +39,13 @@ public abstract class PenInput {
 	protected List<PenListener> penListenersToAdd = new ArrayList<PenListener>();
 
 	/**
+	 * @param penName
+	 */
+	public PenInput(String penName) {
+		setName(penName);
+	}
+
+	/**
 	 * Adds a low-level pen data listener to the live pen. You SHOULD call this after starting live mode....
 	 * However, we can cache the listener for you, if you really want. This is to eliminate annoying ordering
 	 * constraints.
@@ -51,8 +57,8 @@ public abstract class PenInput {
 	 */
 	public void addLivePenListener(PenListener penListener) {
 		if (!isLive()) {
-			DebugUtils.println("We cannot register this listener [" + penListener.toString()
-					+ "] at the moment. " + "The Pen is not in Live Mode.");
+			DebugUtils.println("We are not registering this listener [" + penListener.toString()
+					+ "] with the event dispatcher at the moment. The Pen is not in Live Mode.");
 			DebugUtils.println("We will keep this listener around until you startLiveMode().");
 			penListenersToAdd.add(penListener);
 		}
@@ -66,14 +72,6 @@ public abstract class PenInput {
 	}
 
 	/**
-	 * @param nomDePlume
-	 *            For differentiating pens during debugging.
-	 */
-	public void setName(String nomDePlume) {
-		name = nomDePlume;
-	}
-
-	/**
 	 * @return if this pen in live mode.
 	 */
 	public boolean isLive() {
@@ -81,8 +79,8 @@ public abstract class PenInput {
 	}
 
 	/**
-	 * Removes the pen listener from the live pen. Subclasses *should* override this, and call the super, to
-	 * actually make use of PenListeners.
+	 * Removes the pen listener from the live pen. Subclasses *should* override this, and call the super's
+	 * implementation if necessary, to actually make use of PenListeners.
 	 * 
 	 * @param penListener
 	 */
@@ -91,6 +89,14 @@ public abstract class PenInput {
 			penListenersToAdd.remove(penListener);
 			DebugUtils.println("Removed " + penListener + " from the cache of listeners.");
 		}
+	}
+
+	/**
+	 * @param nomDePlume
+	 *            For differentiating pens during debugging.
+	 */
+	public void setName(String nomDePlume) {
+		name = nomDePlume;
 	}
 
 	public abstract void startLiveMode();

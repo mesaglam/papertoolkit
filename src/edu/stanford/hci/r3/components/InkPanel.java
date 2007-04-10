@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pen.ink;
+package edu.stanford.hci.r3.components;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,13 +10,15 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 /**
  * <p>
- * Renders Ink in a JPanel using catmull-rom splines. You may swap in simpler renderers if this
- * becomes slow.
+ * Renders Ink in a JPanel using catmull-rom splines. You may swap in simpler renderers if this becomes slow.
+ * Also, this provides some customization that allows you to zoom in and out, pan, and align the ink with
+ * imagery. =)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -33,8 +35,8 @@ public class InkPanel extends JPanel {
 	private double inkScale = 1.0;
 
 	/**
-	 * A collection of ink objects that have been added to this JPanel. Feel free to access it, if
-	 * you are a subclass. Make sure to call repaint though!
+	 * A collection of ink objects that have been added to this JPanel. Feel free to access it, if you are a
+	 * subclass. Make sure to call repaint though!
 	 */
 	protected List<Ink> inkWell = Collections.synchronizedList(new LinkedList<Ink>());
 
@@ -124,9 +126,19 @@ public class InkPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * @param theInk
+	 */
 	public void setAllInk(List<Ink> theInk) {
 		inkWell = theInk;
 		repaint();
+	}
+
+	/**
+	 * @param r
+	 */
+	public void setRenderer(InkRenderer r) {
+		renderer = r;
 	}
 
 	/**

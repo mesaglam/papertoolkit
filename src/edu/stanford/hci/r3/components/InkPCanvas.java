@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pen.ink;
+package edu.stanford.hci.r3.components;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -7,6 +7,8 @@ import java.awt.geom.AffineTransform;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.util.geometry.CatmullRomSpline;
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.PNode;
@@ -114,8 +116,7 @@ public class InkPCanvas extends PCanvas {
 
 				if (Math.abs(diffFromLastX) > 500 || Math.abs(diffFromLastY) > 500) {
 					// too much error; eliminate totally random data...
-					strokePath.lineTo((float) (lastGoodX + pageOffsetX),
-							(float) (lastGoodY + pageOffsetY));
+					strokePath.lineTo((float) (lastGoodX + pageOffsetX), (float) (lastGoodY + pageOffsetY));
 				} else {
 
 					if (numPointsCollected == 2) {
@@ -135,8 +136,7 @@ public class InkPCanvas extends PCanvas {
 
 			// if there's any points left, just render them
 			if (numPointsCollected == 1) {
-				strokePath.lineTo((float) (lastGoodX + pageOffsetX),
-						(float) (lastGoodY + pageOffsetY));
+				strokePath.lineTo((float) (lastGoodX + pageOffsetX), (float) (lastGoodY + pageOffsetY));
 			}
 
 		}
@@ -158,7 +158,7 @@ public class InkPCanvas extends PCanvas {
 			crspline.setPoints(x, y);
 
 			final PPath strokePath = new PPath(crspline.getShape());
-			
+
 			// ink stroke style
 			strokePath.setStroke(DEFAULT_STROKE);
 

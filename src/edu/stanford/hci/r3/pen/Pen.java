@@ -75,7 +75,7 @@ public class Pen extends PenInput {
 	 * @param penServerHostName
 	 */
 	public Pen(String name, String penServerHostName) {
-		setName(name);
+		super(name);
 		defaultPenServer = penServerHostName;
 	}
 
