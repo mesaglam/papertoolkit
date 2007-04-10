@@ -12,9 +12,9 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>
- * This class represents a single, physical pen. A pen has an identity, so you should be able to distinguish
- * them. Pens can batch data for later upload. Alternatively, they can stream live data when connected in a
- * streaming mode.
+ * This class represents a single, physical digital pen. A pen has an identity, so you should be able to
+ * distinguish them. Pens can batch data for later upload. Alternatively, they can stream live data when
+ * connected in a streaming mode.
  * </p>
  * <p>
  * The Pen object abstracts the lower level connections with the streaming server/client, and dealing with
@@ -27,7 +27,7 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class Pen {
+public class Pen implements PenInput {
 
 	/**
 	 * PenStreamingConnection uses this to determine which COM port to connect to when looking for pen data.
@@ -212,7 +212,7 @@ public class Pen {
 		livePenClient.disconnect();
 		livePenClient = null;
 		liveMode = false;
-		
+
 		// if the server was started on the localhost, kill it too!
 		if (PenServer.javaServerStarted()) {
 			PenServer.stopServers();

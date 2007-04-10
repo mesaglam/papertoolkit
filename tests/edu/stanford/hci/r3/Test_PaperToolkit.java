@@ -25,7 +25,7 @@ public class Test_PaperToolkit {
 		paperApp.addSheet(constructSheet());
 
 		// a single live pen
-		paperApp.addPen(constructPen());
+		paperApp.addPenInput(constructPen());
 
 		return paperApp;
 	}

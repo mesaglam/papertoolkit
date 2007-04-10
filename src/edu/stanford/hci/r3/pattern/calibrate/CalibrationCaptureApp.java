@@ -105,7 +105,7 @@ public class CalibrationCaptureApp {
 		setupGUI();
 
 		app = new Application("Calibration");
-		app.addPen(getPen());
+		app.addPenInput(getPen());
 		app.addBatchEventHandler(getBatchedEventHandler());
 		toolkit = new PaperToolkit(true, false, false);
 		toolkit.startApplication(app);

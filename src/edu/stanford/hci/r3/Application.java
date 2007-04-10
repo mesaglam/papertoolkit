@@ -10,7 +10,7 @@ import javax.swing.filechooser.FileSystemView;
 import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
-import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.PenInput;
 import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
@@ -18,14 +18,19 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * An application will consist of Bundles and Sheets, and the actions that are bound to individual
- * regions. A PaperToolkit can load/run an Application. When an Application is running, all events
- * will go through the PaperToolkit's EventEngine.
+ * The R3 approach suggests that you create Application objects to wrap your entire paper + digital
+ * application. This is only ONE approach to solving the paper + digital integration, as you can actually use
+ * R3's components separately...
  * </p>
  * <p>
- * The Application will be able to dispatch events to the correct handlers. An application will also
- * be able to handle pens, but these pens must be registered with the PaperToolkit to enable the
- * event engine to do its work.
+ * An application will consist of Bundles and Sheets, and the actions that are bound to individual regions. A
+ * PaperToolkit can load/run an Application. When an Application is running, all events will go through the
+ * PaperToolkit's EventEngine.
+ * </p>
+ * <p>
+ * The Application will be able to dispatch events to the correct handlers. An application will also be able
+ * to handle pens, but these pens must be registered with the PaperToolkit to enable the event engine to do
+ * its work.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -37,16 +42,16 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class Application {
 
 	/**
-	 * Batched event handlers allow you to get at data that was synchronized through the USB dock.
-	 * In the future, these event handlers will work exactly the same as real-time event handlers.
+	 * Batched event handlers allow you to get at data that was synchronized through the USB dock. In the
+	 * future, these event handlers will work exactly the same as real-time event handlers.
 	 */
 	private List<BatchedEventHandler> batchEventHandlers = new ArrayList<BatchedEventHandler>();
 
 	private DebuggingEnvironment debuggingEnvironment;
 
 	/**
-	 * An application can also coordinate multiple devices. A remote collaboration application might
-	 * have to ask the user to input the device's hostname, for example.
+	 * An application can also coordinate multiple devices. A remote collaboration application might have to
+	 * ask the user to input the device's hostname, for example.
 	 */
 	private List<Device> devices = new ArrayList<Device>();
 
@@ -61,20 +66,21 @@ public class Application {
 	private boolean isRunning = false;
 
 	/**
-	 * The name of the application. Useful for debugging (e.g., when trying to figure out which
-	 * application generated which event).
+	 * The name of the application. Useful for debugging (e.g., when trying to figure out which application
+	 * generated which event).
 	 */
 	private String name;
 
 	/**
-	 * An application will own a number of pens.
+	 * An application will own a number of pen input devices. Most of the time, these are implemented by
+	 * actual digital pens (Pen.java). Sometimes, they can be simulated... by anything that implements the
+	 * PenIput interface..
 	 */
-	private List<Pen> pens = new ArrayList<Pen>();
+	private List<PenInput> penInputDevices = new ArrayList<PenInput>();
 
 	/**
-	 * An application contains multiple bundles, which in turn contain multiple sheets. In the
-	 * simplest case, an application might contain one bundle which might be a single sheet (e.g., a
-	 * GIGAprint).
+	 * An application contains multiple bundles, which in turn contain multiple sheets. In the simplest case,
+	 * an application might contain one bundle which might be a single sheet (e.g., a GIGAprint).
 	 * 
 	 * For simplicity, we expand out Bundles and place the sheets directly in this datastructure.
 	 */
@@ -107,21 +113,20 @@ public class Application {
 	}
 
 	/**
-	 * Add a pen for this application. An application may have multiple pens.
+	 * Add a digital pen (or pen simulator) for this application. An application may have multiple pens.
 	 * 
 	 * @param pen
 	 */
-	public void addPen(Pen pen) {
-		pens.add(pen);
+	public void addPenInput(PenInput penInputDevice) {
+		penInputDevices.add(penInputDevice);
 	}
 
 	/**
-	 * When a sheet is added to an application, we will need to determine how the pattern maps to
-	 * the sheet. We will create a PatternLocationToSheetLocationMapping object from this sheet.
+	 * When a sheet is added to an application, we will need to determine how the pattern maps to the sheet.
+	 * We will create a PatternLocationToSheetLocationMapping object from this sheet.
 	 * 
-	 * WARNING: The current design REQUIRES you to add the sheet AFTER you have added regions to the
-	 * sheet. This is an unfortunate design (ordering constraints), and should be changed _if
-	 * possible_.
+	 * WARNING: The current design REQUIRES you to add the sheet AFTER you have added regions to the sheet.
+	 * This is an unfortunate design (ordering constraints), and should be changed _if possible_.
 	 * 
 	 * Alternative, we can warn when there is ambiguity in loading patternInfo files.
 	 * 
@@ -133,13 +138,13 @@ public class Application {
 				.getPatternLocationToSheetLocationMapping();
 		addSheetObjectToInternalList(sheet);
 		registerMappingWithEventEngineDuringRuntime(mapping);
-		
+
 		sheet.setParentApplication(this);
 	}
 
 	/**
-	 * This method is better than the one argument version, because it makes everything explicit. We
-	 * MAY deprecate the other one at some point.
+	 * This method is better than the one argument version, because it makes everything explicit. We MAY
+	 * deprecate the other one at some point.
 	 * 
 	 * @param sheet
 	 * @param patternInfoFile
@@ -153,9 +158,8 @@ public class Application {
 	}
 
 	/**
-	 * This method may be the best of the three, because you explicitly construct the
-	 * patternToSheetMapping (using any method you prefer). Highest flexibility, but possibly
-	 * inconvenient.
+	 * This method may be the best of the three, because you explicitly construct the patternToSheetMapping
+	 * (using any method you prefer). Highest flexibility, but possibly inconvenient.
 	 * 
 	 * @param sheet
 	 * @param patternInfoFile
@@ -182,10 +186,10 @@ public class Application {
 	}
 
 	/**
-	 * A Paper Application needs BatchEventHandlers to detect when a person synchronizes a pen with
-	 * the computer. In the future, this may be integrated with standard event handling on a region.
-	 * Right now, this is not possible, as we need the ability to calibrate the batched coordinates
-	 * (which are processed by the PAD files) with the streaming coordinates.
+	 * A Paper Application needs BatchEventHandlers to detect when a person synchronizes a pen with the
+	 * computer. In the future, this may be integrated with standard event handling on a region. Right now,
+	 * this is not possible, as we need the ability to calibrate the batched coordinates (which are processed
+	 * by the PAD files) with the streaming coordinates.
 	 * 
 	 * @return
 	 */
@@ -212,8 +216,8 @@ public class Application {
 	}
 
 	/**
-	 * We can calculate this set at paper-application runtime, because each sheet has a reference to
-	 * its pattern map.
+	 * We can calculate this set at paper-application runtime, because each sheet has a reference to its
+	 * pattern map.
 	 * 
 	 * @return the information that maps a pattern location to a location on a sheet.
 	 */
@@ -226,10 +230,10 @@ public class Application {
 	}
 
 	/**
-	 * @return
+	 * @return the list of pens. The EventEngine will have to get the listeners to these pens...
 	 */
-	public List<Pen> getPens() {
-		return pens;
+	public List<PenInput> getPenInputDevices() {
+		return penInputDevices;
 	}
 
 	/**
@@ -240,13 +244,16 @@ public class Application {
 	}
 
 	/**
-	 * Called right before an applications starts. Override to do anything you like right after a
-	 * person clicks start, and right before the application actually starts.
+	 * Called right before an applications starts. Override to do anything you like right after a person
+	 * clicks start, and right before the application actually starts.
 	 */
 	protected void initializeBeforeStarting() {
 		// do nothing, unless it is overridden.
 	}
 
+	/**
+	 * @return true if this application is currently running.
+	 */
 	public boolean isRunning() {
 		return isRunning;
 	}
@@ -259,13 +266,12 @@ public class Application {
 	}
 
 	/**
-	 * Only if this app is currently running, we will ask the event engine to register the pattern
-	 * mapping so that we can handle real-time input events.
+	 * Only if this app is currently running, we will ask the event engine to register the pattern mapping so
+	 * that we can handle real-time input events.
 	 * 
 	 * @param mapping
 	 */
-	private void registerMappingWithEventEngineDuringRuntime(
-			PatternLocationToSheetLocationMapping mapping) {
+	private void registerMappingWithEventEngineDuringRuntime(PatternLocationToSheetLocationMapping mapping) {
 		if (isRunning) {
 			// tell the already-running event engine to be aware of this new pattern mapping!
 			getHostToolkit().getEventEngine().registerPatternMapForEventHandling(mapping);
@@ -306,8 +312,8 @@ public class Application {
 	}
 
 	/**
-	 * Feel free to OVERRIDE this too. It is called if the userChoosesPDFDestination flag is set to
-	 * false, and the user presses the Render PDF Button in the App Manager.
+	 * Feel free to OVERRIDE this too. It is called if the userChoosesPDFDestination flag is set to false, and
+	 * the user presses the Render PDF Button in the App Manager.
 	 */
 	public void renderToPDF() {
 		renderToPDF(FileSystemView.getFileSystemView().getHomeDirectory(), getName());
@@ -315,8 +321,8 @@ public class Application {
 
 	/**
 	 * <p>
-	 * Renders all of the sheets to different PDF files... If there are four Sheets, it will make
-	 * files as follows:
+	 * Renders all of the sheets to different PDF files... If there are four Sheets, it will make files as
+	 * follows:
 	 * </p>
 	 * <code>
 	 * parentDirectory <br>
@@ -326,8 +332,8 @@ public class Application {
 	 * |_fileName_4.pdf <br>
 	 * </code>
 	 * <p>
-	 * Feel Free to OVERRIDE this method if you want to attach different behavior to the App
-	 * Manager's RenderPDF Button.
+	 * Feel Free to OVERRIDE this method if you want to attach different behavior to the App Manager's
+	 * RenderPDF Button.
 	 * </p>
 	 */
 	public void renderToPDF(File parentDirectory, String fileNameWithoutExtension) {
@@ -342,8 +348,8 @@ public class Application {
 			DebugUtils.println("Rendering PDFs...");
 			for (int i = 0; i < sheets.size(); i++) {
 				final Sheet sheet = sheets.get(i);
-				final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension
-						+ "_Sheet_" + i + ".pdf");
+				final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + "_Sheet_" + i
+						+ ".pdf");
 				System.out.println("Rendering: " + destPDFFile.getAbsolutePath());
 				final SheetRenderer renderer = sheet.getRenderer();
 				renderer.renderToPDF(destPDFFile);
@@ -358,8 +364,8 @@ public class Application {
 
 	/**
 	 * Set it to null when the application is not running. Set it to a valid toolkit object when the
-	 * application is running. This allows the application to access the toolkit object that is
-	 * hosting it, during RUNTIME.
+	 * application is running. This allows the application to access the toolkit object that is hosting it,
+	 * during RUNTIME.
 	 * 
 	 * @param toolkit
 	 */
@@ -373,8 +379,8 @@ public class Application {
 	}
 
 	/**
-	 * Used internally by setHostToolkit. When the toolkit is set, the application is running, by
-	 * implication. If the host toolkit is null, then the application has stop running.
+	 * Used internally by setHostToolkit. When the toolkit is set, the application is running, by implication.
+	 * If the host toolkit is null, then the application has stop running.
 	 * 
 	 * @param flag
 	 */

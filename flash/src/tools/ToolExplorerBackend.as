@@ -49,6 +49,13 @@ package tools {
         private function msgListener(event:DataEvent):void {
 	        var message:XML = new XML(event.text);
 	        trace(message.toXMLString());
+	        
+	        
+	        // pass ink samples to the design tools data handler
+	        
+	        
+	        
+	        
         }
 
 

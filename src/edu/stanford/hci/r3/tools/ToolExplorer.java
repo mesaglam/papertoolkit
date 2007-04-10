@@ -5,6 +5,8 @@ import java.io.File;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
+import edu.stanford.hci.r3.pen.PenSample;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.tools.design.sketch.SketchToPaperUI;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -50,12 +52,28 @@ public class ToolExplorer implements FlashListener {
 
 		if (command.equals("Design Clicked")) {
 			sketchToPaperUI = new SketchToPaperUI();
+			sketchToPaperUI.addPenListener(new PenListener() {
+				@Override
+				public void penDown(PenSample sample) {
+
+				}
+
+				@Override
+				public void penUp(PenSample sample) {
+
+				}
+
+				@Override
+				public void sample(PenSample sample) {
+					DebugUtils.println(sample);
+				}
+			});
 		} else if (command.equals("Back Clicked")) {
 			if (sketchToPaperUI != null) {
 				sketchToPaperUI.exit();
 				sketchToPaperUI = null;
 			} else {
-				
+
 			}
 		}
 	}
