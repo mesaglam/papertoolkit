@@ -1,6 +1,10 @@
 package edu.stanford.hci.r3.pen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -17,13 +21,77 @@ import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
  */
 public abstract class PenInput {
 
-	public abstract void addLivePenListener(PenListener listener);
+	/**
+	 * TRUE if the PenInput object is currently connected to the underlying (physical or simulated) pen in
+	 * streaming mode.
+	 */
+	protected boolean liveMode = false;
 
-	public abstract String getName();
+	/**
+	 * A simple default name.
+	 */
+	private String name;
 
-	public abstract boolean isLive();
+	/**
+	 * Cached pen listeners, so we can add them when/if you go live.
+	 * 
+	 * TODO: How will we handle batched events later on?
+	 */
+	protected List<PenListener> penListenersToAdd = new ArrayList<PenListener>();
 
-	public abstract void removeLivePenListener(PenListener listener);
+	/**
+	 * Adds a low-level pen data listener to the live pen. You SHOULD call this after starting live mode....
+	 * However, we can cache the listener for you, if you really want. This is to eliminate annoying ordering
+	 * constraints.
+	 * 
+	 * Subclasses *should* override this, and call the super, to actually make use of PenListeners.
+	 * 
+	 * @param penListener
+	 * @return true if we cached the pen listener on the penListenersToAdd list
+	 */
+	public void addLivePenListener(PenListener penListener) {
+		if (!isLive()) {
+			DebugUtils.println("We cannot register this listener [" + penListener.toString()
+					+ "] at the moment. " + "The Pen is not in Live Mode.");
+			DebugUtils.println("We will keep this listener around until you startLiveMode().");
+			penListenersToAdd.add(penListener);
+		}
+	}
+
+	/**
+	 * @return the name of this pen
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param nomDePlume
+	 *            For differentiating pens during debugging.
+	 */
+	public void setName(String nomDePlume) {
+		name = nomDePlume;
+	}
+
+	/**
+	 * @return if this pen in live mode.
+	 */
+	public boolean isLive() {
+		return liveMode;
+	}
+
+	/**
+	 * Removes the pen listener from the live pen. Subclasses *should* override this, and call the super, to
+	 * actually make use of PenListeners.
+	 * 
+	 * @param penListener
+	 */
+	public void removeLivePenListener(PenListener penListener) {
+		if (penListenersToAdd.contains(penListener)) {
+			penListenersToAdd.remove(penListener);
+			DebugUtils.println("Removed " + penListener + " from the cache of listeners.");
+		}
+	}
 
 	public abstract void startLiveMode();
 
