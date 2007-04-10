@@ -139,7 +139,7 @@ package tools {
 		
 		/**
 		 * Setters for components that we can access from our MXML.
-		 */ 
+		 */
 		public function setApp(appObj:ToolExplorer):void{
 			app = appObj;
 		}

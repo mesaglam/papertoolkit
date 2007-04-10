@@ -2,12 +2,10 @@ package edu.stanford.hci.r3.tools.design.sketch;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -16,13 +14,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.batch.PenSynch;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.pen.ink.InkUtils;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.tools.design.util.Regions;
+import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.communications.COMPort;
+import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -34,39 +37,47 @@ import edu.stanford.hci.r3.tools.design.util.Regions;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  */
 public class SketchToPaperUI {
 
 	/**
 	 * Loads the most recent pen XML and generates a paper UI XML file.
-	 * 
-	 * @param args
 	 */
-	public static void main(String[] args) throws IOException {
-		// open up an Apollo GUI that listens for live sketching
-		// TODO
-		
-		// have a button that exports to XML and Java
-		
-		// done!
-	}
-
-	private static void oldMain() throws IOException {
+	private static void testTranslateXMLFile() {
 		String fileName = // "penSynch/data/XML/2007_03_24__19_51_50_AJ3-AAA-ZU3-7X.xml";
 		"penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml";
-		translate(new File(fileName), "SketchedPaperUI", new File("."));
+		new SketchToPaperUI().translate(new File(fileName), "SketchedPaperUI", new File("."));
 	}
 
-	public static String read(File file) throws IOException {
-		FileInputStream fis = new FileInputStream(file);
-		BufferedReader read = new BufferedReader(new InputStreamReader(fis));
+	private Pen pen;
 
-		StringBuffer sb = new StringBuffer();
-		String line;
-		while ((line = read.readLine()) != null)
-			sb.append(line + "\n");
-		return sb.toString();
+	/**
+	 * 
+	 */
+	public SketchToPaperUI() {
+		DebugUtils.println("New Sketch To Paper UI");
+
+		// set up a pen, and a pen listener...
+		pen = new Pen();
+		pen.addLivePenListener(new PenListener() {
+
+			@Override
+			public void penDown(PenSample sample) {
+				
+			}
+
+			@Override
+			public void penUp(PenSample sample) {
+				
+			}
+
+			@Override
+			public void sample(PenSample sample) {
+				DebugUtils.println(sample);
+			}
+		});
+		pen.startLiveMode();
+		
 	}
 
 	// private static void highlight(List<InkStroke> strokes) {
@@ -81,14 +92,18 @@ public class SketchToPaperUI {
 	// .writeStringToFile(sb.toString(), new File("flash/data/highlightTheseStrokes.xml"));
 	// }
 
+	public void exit() {
+		DebugUtils.println("Exiting Sketch 2 Paper UI");
+		pen.stopLiveMode();
+	}
+
 	/**
 	 * @param strokeFile
 	 * @param className
 	 * @param outputFolder
 	 * @throws IOException
 	 */
-	public static void translate(File strokeFile, String className, File outputFolder)
-			throws IOException {
+	public void translate(File strokeFile, String className, File outputFolder) {
 		PenSynch penSynch = new PenSynch(strokeFile);
 		List<Ink> importedInk = penSynch.getImportedInk();
 
@@ -99,8 +114,7 @@ public class SketchToPaperUI {
 		InkStroke biggestStroke = InkUtils.getStrokeWithLargestArea(importedInk);
 
 		// Strokes inside sheet are regions
-		List<InkStroke> regionStrokes = InkUtils.getAllStrokesContainedWithin(importedInk,
-				biggestStroke);
+		List<InkStroke> regionStrokes = InkUtils.getAllStrokesContainedWithin(importedInk, biggestStroke);
 
 		// Strokes that overlap the sheet but go outside are connectors
 		List<InkStroke> connectors = InkUtils.getStrokesPartlyOutside(importedInk, biggestStroke);
@@ -118,10 +132,14 @@ public class SketchToPaperUI {
 		double scale = Regions.makeItFit(sheet.getWidth(), sheet.getHeight(), 8.5, 11);
 
 		// Print out to...
-		PrintStream outXML = new PrintStream(new FileOutputStream(new File(outputFolder, className
-				+ ".xml")));
-		PrintStream outJava = new PrintStream(new FileOutputStream(new File(outputFolder, className
-				+ ".java")));
+		PrintStream outXML = null;
+		PrintStream outJava = null;
+		try {
+			outXML = new PrintStream(new FileOutputStream(new File(outputFolder, className + ".xml")));
+			outJava = new PrintStream(new FileOutputStream(new File(outputFolder, className + ".java")));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
 
 		// Number format...
 		DecimalFormat df = new DecimalFormat("0.###");
@@ -163,8 +181,7 @@ public class SketchToPaperUI {
 					p = c.getEnd();
 
 				// Find the event nearest that endpoint
-				event = InkUtils.getInkNearPoint(events, new Point2D.Double(p.getX(), p.getY()),
-						40.0);
+				event = InkUtils.getInkNearPoint(events, new Point2D.Double(p.getX(), p.getY()), 40.0);
 
 				// If an event is found...
 				if (event != null) {
@@ -207,14 +224,15 @@ public class SketchToPaperUI {
 		outXML.println("</sheet>");
 		outXML.close();
 
-		String template = read(PaperToolkit.getResourceFile("/designer/template.txt"));
+		// The Template for creating a Paper UI Class...
+		String template = FileUtils.readFileIntoStringBuffer(
+				PaperToolkit.getResourceFile("/designer/template.txt")).toString();
 
 		template = template.replace("{CLASSNAME}", className);
 
 		// Find patterns of type {REPEAT:REGIONS} ... {/REPEAT:REGIONS}
 		// in the template
-		Matcher repeatMatcher = Pattern.compile(
-				"\\{REPEAT:REGIONS\\}([\\s\\S]*?)\\{/REPEAT:REGIONS\\}",
+		Matcher repeatMatcher = Pattern.compile("\\{REPEAT:REGIONS\\}([\\s\\S]*?)\\{/REPEAT:REGIONS\\}",
 				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE).matcher(template);
 		System.out.println("Matches = " + repeatMatcher.matches());
 
@@ -231,8 +249,7 @@ public class SketchToPaperUI {
 
 				// Find {IF:XX} ... {/IF:XX} blocks in the repeat region
 
-				Matcher ifMatcher = Pattern.compile(
-						"\\{IF:([A-Z]+)\\}([\\s\\S]*?)\\{/IF:([A-Z]+)\\}",
+				Matcher ifMatcher = Pattern.compile("\\{IF:([A-Z]+)\\}([\\s\\S]*?)\\{/IF:([A-Z]+)\\}",
 						Pattern.MULTILINE | Pattern.CASE_INSENSITIVE).matcher(repeatString);
 
 				int lastPosition2 = 0;

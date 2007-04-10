@@ -12,6 +12,7 @@ import edu.stanford.hci.r3.pen.streaming.data.PenServerPlainTextSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerSender;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.communications.COMPort;
 import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
@@ -45,11 +46,10 @@ public class PenServer implements PenListener {
 
 				try {
 					if (serverType == ClientServerType.PLAINTEXT) {
-						log("Waiting for a plain text connection on port "
-								+ serverSocket.getLocalPort() + "...");
-					} else { // serverType == Java Server
-						log("Waiting for a java connection on port " + serverSocket.getLocalPort()
+						log("Waiting for a plain text connection on port " + serverSocket.getLocalPort()
 								+ "...");
+					} else { // serverType == Java Server
+						log("Waiting for a java connection on port " + serverSocket.getLocalPort() + "...");
 					}
 					s = serverSocket.accept();
 					log("Got a connection on port " + serverSocket.getLocalPort() + "...");
@@ -85,14 +85,19 @@ public class PenServer implements PenListener {
 
 	public static final int DEFAULT_PLAINTEXT_PORT = 11026;
 
-	public static final String DEFAULT_SERIAL_PORT = "COM5";
+	public static final COMPort DEFAULT_SERIAL_PORT = COMPort.COM5;
 
 	private static PenServer javaPenServer;
 
 	private static PenServer textPenServer;
 
 	/**
-	 * @return
+	 * A connection to the local COM port.
+	 */
+	private static PenStreamingConnection penConnection;
+
+	/**
+	 * @return whether there is a local Java server running.
 	 */
 	public static boolean javaServerStarted() {
 		return javaPenServer != null;
@@ -111,17 +116,18 @@ public class PenServer implements PenListener {
 	public static void main(String[] args) {
 		// default to COM5, ports 11025 and 11026
 		// you can specify these numbers through the arguments
-		String serialPortName = DEFAULT_SERIAL_PORT;
+		COMPort serialPort = DEFAULT_SERIAL_PORT;
 		int tcpipPortJava = DEFAULT_JAVA_PORT;
 		int tcpipPortPlainText = DEFAULT_PLAINTEXT_PORT;
 
 		if (args.length >= 1) {
 			if (args[0].equals("?")) {
-				System.out
-						.println("Usage: PenServer [Serial Port] [TCP/IP Port for Java] [TCP/IP Port for Plain Text]");
+				DebugUtils.println("Usage: PenServer [Serial Port] "
+						+ "[TCP/IP Port for Java] [TCP/IP Port for Plain Text]");
+				DebugUtils.println("Example: PenServer COM5 11025 11026");
 				System.exit(0);
 			} else {
-				serialPortName = args[0];
+				serialPort = COMPort.valueOf(args[0]);
 			}
 		}
 
@@ -132,17 +138,16 @@ public class PenServer implements PenListener {
 			tcpipPortPlainText = Integer.parseInt(args[2]);
 		}
 
-		startBothServers(serialPortName, tcpipPortJava, tcpipPortPlainText);
+		startBothServers(serialPort, tcpipPortJava, tcpipPortPlainText);
 	}
 
 	/**
-	 * Provides default implementation. It's unclear we want two servers going at the same time.
-	 * Won't performance be better if we only send one stream of data? Also, what about Multicast?
-	 * Then, multiple clients can listen in very easily. However, we'd need a server that will dole
-	 * out the multicast address... This is simpler for now.
+	 * Provides default implementation. It's unclear we want two servers going at the same time. Won't
+	 * performance be better if we only send one stream of data? Also, what about Multicast? Then, multiple
+	 * clients can listen in very easily. However, we'd need a server that will dole out the multicast
+	 * address... This is simpler for now.
 	 */
-	public static void startBothServers(String serialPortName, int tcpipPortJava,
-			int tcpipPortPlainText) {
+	public static void startBothServers(COMPort serialPortName, int tcpipPortJava, int tcpipPortPlainText) {
 		startJavaServer(serialPortName, tcpipPortJava);
 		startTextServer(serialPortName, tcpipPortPlainText);
 	}
@@ -155,20 +160,24 @@ public class PenServer implements PenListener {
 	}
 
 	/**
-	 * Start a Java server on this machine at the corresponding TCP/IP port. Add the java server as
-	 * a listener to the local pen connection (at the specified COM port).
+	 * @param comPort
+	 */
+	public static void startJavaServer(COMPort comPort) {
+		startJavaServer(comPort, DEFAULT_JAVA_PORT);
+	}
+
+	/**
+	 * Start a Java server on this machine at the corresponding TCP/IP port. Add the java server as a listener
+	 * to the local pen connection (at the specified COM port).
 	 * 
 	 * @param tcpipPort
 	 */
-	public static void startJavaServer(String serialPortName, int tcpipPort) {
+	public static void startJavaServer(COMPort serialPort, int tcpipPort) {
 		try {
-			// TODO: At some point, provide access to this variable, so we can close a pen
-			// connection if necessary
-			final PenStreamingConnection penConnection = PenStreamingConnection
-					.getInstance(serialPortName);
+			// provide access to this variable, so we can close a pen connection if necessary
+			penConnection = PenStreamingConnection.getInstance(serialPort);
 			if (penConnection == null) {
-				System.err
-						.println("The PenServer could not connect to the local serial port. Is your Bluetooth Dongle unplugged?");
+				DebugUtils.println("The PenServer could not connect to the local serial port.");
 				return;
 			}
 
@@ -188,12 +197,14 @@ public class PenServer implements PenListener {
 	}
 
 	/**
+	 * NOTE, you can only start one PenStreamingConnection at a time, on the local machine. Thus, if you have
+	 * created on one COM5, you cannot create another one at COM6, until you kill the connection.
+	 * 
 	 * @param tcpipPort
 	 */
-	public static void startTextServer(String serialPortName, int tcpipPort) {
+	public static void startTextServer(COMPort serialPort, int tcpipPort) {
 		try {
-			final PenStreamingConnection penConnection = PenStreamingConnection
-					.getInstance(serialPortName);
+			penConnection = PenStreamingConnection.getInstance(serialPort);
 			final ServerSocket textServer = new ServerSocket(tcpipPort);
 			textPenServer = new PenServer(textServer, ClientServerType.PLAINTEXT);
 			penConnection.addPenListener(textPenServer);
@@ -258,8 +269,8 @@ public class PenServer implements PenListener {
 	}
 
 	/**
-	 * Since with a PenListener... a penDown event NEVER overlaps with a penSample event, we now
-	 * must send a sample over the wire for penDown events too!
+	 * Since with a PenListener... a penDown event NEVER overlaps with a penSample event, we now must send a
+	 * sample over the wire for penDown events too!
 	 * 
 	 * @created Jun 12, 2006
 	 * @author Ron Yeh
@@ -301,14 +312,16 @@ public class PenServer implements PenListener {
 	}
 
 	/**
-	 * 
+	 * Kills the local Java or Text Pen server... It also asks the PenConnection class to stop listening to
+	 * the COM port.
 	 */
 	private void stopServer() {
 		try {
-			log("PenServer::" + serverType + " on port " + serverSocket.getLocalPort()
-					+ " is stopping...");
+			log("PenServer::" + serverType + " on port " + serverSocket.getLocalPort() + " is stopping...");
 			exitFlag = true;
 			serverSocket.close();
+			
+			penConnection.exit();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
