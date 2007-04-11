@@ -29,9 +29,9 @@ public class PenEvent {
 	}
 
 	/**
-	 * Whether this event should not be processed anymore by handlers deeper in the queue. FALSE by
-	 * default. An Event Handler should set it to be consumed if it is NOT OK for other handlers to
-	 * deal with this event in "parallel."
+	 * Whether this event should not be processed anymore by handlers deeper in the queue. FALSE by default.
+	 * An Event Handler should set it to be consumed if it is NOT OK for other handlers to deal with this
+	 * event in "parallel."
 	 * 
 	 * transient because the consumed flag is useless when we serialize pen events for later replay.
 	 */
@@ -88,16 +88,9 @@ public class PenEvent {
 	}
 
 	/**
-	 * @return a flag to let us know what type of event this is... DOWN, SAMPLE, or UP
-	 */
-	public PenEventModifier getModifier() {
-		return eventModifier;
-	}
-
-	/**
-	 * WARNING: This is a dangerous method to use, if you do not know what you are doing. The
-	 * original pen samples have not been converted into the region's local coordinate system, so if
-	 * the region happens to have tiled pattern, you may get unexpected results!
+	 * WARNING: This is a dangerous method to use, if you do not know what you are doing. The original pen
+	 * samples have not been converted into the region's local coordinate system, so if the region happens to
+	 * have tiled pattern, you may get unexpected results!
 	 * 
 	 * Use getPercentageLocation(...) instead!
 	 * 
@@ -122,10 +115,9 @@ public class PenEvent {
 	}
 
 	/**
-	 * It will give you a percentage location, from which you can derive actual coordinates (by
-	 * converting to inches, etc). This coordinate will be duplicated when a PEN_UP happens, because
-	 * the coordinate will be set to the last known good coordinate (captured during a regular, non
-	 * PEN_UP sample).
+	 * It will give you a percentage location, from which you can derive actual coordinates (by converting to
+	 * inches, etc). This coordinate will be duplicated when a PEN_UP happens, because the coordinate will be
+	 * set to the last known good coordinate (captured during a regular, non PEN_UP sample).
 	 * 
 	 * @return the location of the event on the parent region.
 	 */
@@ -134,9 +126,9 @@ public class PenEvent {
 	}
 
 	/**
-	 * WARNING: See getOriginalSample(). Do not use this value unless you _know_ what you are doing.
-	 * It is OK to use this value if you are doing simple calculations and you are SURE that the
-	 * samples all come from thes same pattern tile.
+	 * WARNING: See getOriginalSample(). Do not use this value unless you _know_ what you are doing. It is OK
+	 * to use this value if you are doing simple calculations and you are SURE that the samples all come from
+	 * thes same pattern tile.
 	 * 
 	 * @return
 	 */
@@ -152,6 +144,13 @@ public class PenEvent {
 	}
 
 	/**
+	 * @return a flag to let us know what type of event this is... DOWN, SAMPLE, or UP
+	 */
+	public PenEventModifier getType() {
+		return eventModifier;
+	}
+
+	/**
 	 * @return if this event should not be processed anymore
 	 */
 	public boolean isConsumed() {
@@ -161,14 +160,14 @@ public class PenEvent {
 	/**
 	 * @return if this event object represents the pen touching down on the page
 	 */
-	public boolean isPenDown() {
+	public boolean isTypePenDown() {
 		return eventModifier.equals(PenEventModifier.DOWN);
 	}
 
 	/**
 	 * @return if this event object represents the pen lifting up from the page
 	 */
-	public boolean isPenUp() {
+	public boolean isTypePenUp() {
 		return eventModifier.equals(PenEventModifier.UP);
 	}
 

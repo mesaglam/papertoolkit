@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.render.ink;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.util.List;
 
@@ -17,8 +18,11 @@ import edu.stanford.hci.r3.util.geometry.CatmullRomSpline;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 class RenderingTechniqueCatmullRom implements RenderingTechnique {
+
 	public void render(Graphics2D g2d, List<InkStroke> strokes) {
 		for (InkStroke stroke : strokes) {
+			double width = stroke.getWidth();
+			g2d.setStroke(new BasicStroke((float) width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 			final CatmullRomSpline crspline = new CatmullRomSpline();
 			final double[] x = stroke.getXSamples();
 			final double[] y = stroke.getYSamples();

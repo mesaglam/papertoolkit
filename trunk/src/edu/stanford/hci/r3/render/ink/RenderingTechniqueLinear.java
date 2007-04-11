@@ -19,7 +19,13 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
  */
 class RenderingTechniqueLinear implements RenderingTechnique {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.stanford.hci.r3.render.ink.RenderingTechnique#render(java.awt.Graphics2D, java.util.List)
+	 */
 	public void render(Graphics2D g2d, List<InkStroke> strokes) {
+		g2d.setStroke(DEFAULT_INK_STROKE);
 		for (InkStroke stroke : strokes) {
 			final Path2D.Double path = new Path2D.Double();
 			final double[] x = stroke.getXSamples();

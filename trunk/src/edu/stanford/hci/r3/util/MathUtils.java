@@ -2,7 +2,7 @@ package edu.stanford.hci.r3.util;
 
 /**
  * <p>
- * Math
+ * Useful math functions. :)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -13,24 +13,6 @@ package edu.stanford.hci.r3.util;
  */
 public class MathUtils {
 
-	
-	/**
-	 * @param vals
-	 * @return
-	 */
-	public static double standardDeviation(double... vals) {
-		if (vals == null || vals.length == 0) {
-			return 0;
-		}
-
-		final double mean = average(vals);
-		double variance = 0;
-		for (double val : vals) {
-			variance += Math.pow((val - mean), 2);
-		}
-		return Math.sqrt(variance / vals.length);
-	}
-	
 	/**
 	 * If you think your values will overflow this operation, then roll your own
 	 * 
@@ -61,6 +43,37 @@ public class MathUtils {
 	 */
 	public static int rint(double val) {
 		return (int) Math.round(val);
+	}
+
+	/**
+	 * Check out how dispersed a set of data are... Returns the standard deviation.
+	 * 
+	 * @param vals
+	 * @return
+	 */
+	public static double standardDeviation(double... vals) {
+		if (vals == null || vals.length == 0) {
+			return 0;
+		}
+
+		final double mean = average(vals);
+		double variance = 0;
+		for (double val : vals) {
+			variance += Math.pow((val - mean), 2);
+		}
+		return Math.sqrt(variance / vals.length);
+	}
+
+	/**
+	 * @param vals
+	 * @return
+	 */
+	public static double standardDeviation(Double... vals) {
+		double[] valsArray = new double[vals.length];
+		for (int i = 0; i < valsArray.length; i++) {
+			valsArray[i] = vals[i];
+		}
+		return standardDeviation(valsArray);
 	}
 
 	/**

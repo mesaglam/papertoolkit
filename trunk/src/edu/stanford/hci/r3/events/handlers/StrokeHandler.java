@@ -39,10 +39,10 @@ public abstract class StrokeHandler extends EventHandler {
 	 * @see edu.stanford.hci.r3.events.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
 	public void handleEvent(PenEvent event) {
-		if (event.isPenDown()) {
+		if (event.isTypePenDown()) {
 			stroke = new InkStroke();
 			penDownHappened = true;
-		} else if (event.isPenUp()) {
+		} else if (event.isTypePenUp()) {
 			// really, this should always be true
 			if (penDownHappened) {
 				strokeArrived(lastEvent);

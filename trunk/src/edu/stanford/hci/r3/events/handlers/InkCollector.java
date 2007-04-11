@@ -248,7 +248,7 @@ public abstract class InkCollector extends EventHandler {
 		final double xDots = xPct.getValueInPatternDots();
 		final double yDots = yPct.getValueInPatternDots();
 
-		if (event.isPenDown()) {
+		if (event.isTypePenDown()) {
 			currPenDownTime = System.currentTimeMillis();
 			timeDiffBetweenPenUpAndPenDown = currPenDownTime - lastPenUpTime;
 			// DebugUtils.println("The pen was up for " +
@@ -281,7 +281,7 @@ public abstract class InkCollector extends EventHandler {
 				// add this sample back to the current stroke
 				currentStrokeSamples.add(new PenSample(xDots, yDots, 128, timestamp));
 			}
-		} else if (event.isPenUp()) {
+		} else if (event.isTypePenUp()) {
 			// the pen is lifted from the page
 
 			// record the time of the pen up

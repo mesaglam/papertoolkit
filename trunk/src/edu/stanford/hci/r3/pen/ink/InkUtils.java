@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.tools.develop.inkapibrowser.HideFromFlash;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -24,9 +25,9 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class InkUtils {
 
 	/**
-	 * Clusters a list of strokes into a list of list of strokes. The margin allows you to control
-	 * how big the compared bounding boxes are. A margin of 2.0 would double the width and height of
-	 * each bounding box before making intersection comparisons.
+	 * Clusters a list of strokes into a list of list of strokes. The margin allows you to control how big the
+	 * compared bounding boxes are. A margin of 2.0 would double the width and height of each bounding box
+	 * before making intersection comparisons.
 	 * 
 	 * @param strokes
 	 *            list of strokes to group
@@ -51,8 +52,9 @@ public class InkUtils {
 			private Rectangle2D expand(Rectangle2D r) {
 				double dx = r.getWidth() * margin / 2;
 				double dy = r.getHeight() * margin / 2;
-				return new Rectangle2D.Double(r.getX() - dx, r.getY() - dy, r.getWidth() + dx * 2,
-						r.getHeight() + dy * 2);
+				return new Rectangle2D.Double(r.getX() - dx, r.getY() - dy, r.getWidth() + dx * 2, r
+						.getHeight()
+						+ dy * 2);
 			}
 
 			boolean matches(InkStroke stroke) {
@@ -81,85 +83,6 @@ public class InkUtils {
 	}
 
 	/**
-	 * Finds all strokes that intersect with but are not entirely contained by another stroke.
-	 * 
-	 * @param inkWell
-	 *            the list of strokes
-	 * @param container
-	 *            the containing stroke
-	 * @return a list of strokes that are partly inside and outside the container
-	 */
-	public static List<InkStroke> getStrokesPartlyOutside(List<Ink> inkWell, InkStroke container) {
-
-		// calculate the bounds of the container stroke
-		Rectangle2D bounds = container.getBounds();
-
-		// return any stroke that overlaps the container but is not contained
-		// by it
-		List<InkStroke> matchingStrokes = new ArrayList<InkStroke>();
-		for (Ink ink : inkWell) {
-			List<InkStroke> strokes = ink.getStrokes();
-			for (InkStroke stroke : strokes) {
-				Rectangle2D strokeBounds = stroke.getBounds();
-				if (bounds.intersects(strokeBounds) && !bounds.contains(strokeBounds)) {
-					// the stroke is completely outside the containing stroke
-					matchingStrokes.add(stroke);
-				}
-			}
-		}
-		return matchingStrokes;
-	}
-
-	/**
-	 * Finds the first clusters near a particular point (perhaps revise to find nearest cluster).
-	 * 
-	 * @param inkWell
-	 *            list of clusters
-	 * @param point
-	 *            the point to compare to
-	 * @param range
-	 *            number of units away from the point to check
-	 * @return the first cluster near the point
-	 */
-	public static Ink getInkNearPoint(List<Ink> inkWell, Point2D point, double range) {
-
-		Rectangle2D pointRange = new Rectangle2D.Double(point.getX() - range, point.getY() - range,
-				range * 2, range * 2);
-		for (Ink ink : inkWell)
-			for (InkStroke stroke : ink.getStrokes())
-				if (pointRange.intersects(stroke.getBounds()))
-					return ink;
-		return null;
-	}
-
-	/**
-	 * Finds the stroke with the largest area within a list of clusters.
-	 * 
-	 * @param inkWell
-	 *            the list of clusters
-	 * @return the inkstroke with the largest area
-	 */
-	public static InkStroke getStrokeWithLargestArea(List<Ink> inkWell) {
-		InkStroke biggestStroke = null;
-		double maxArea = Double.MIN_VALUE;
-
-		for (Ink ink : inkWell) {
-			List<InkStroke> strokes = ink.getStrokes();
-			for (InkStroke stroke : strokes) {
-
-				double area = stroke.getArea();
-				if (area > maxArea) {
-					biggestStroke = stroke;
-					maxArea = area;
-				}
-			}
-		}
-
-		DebugUtils.println(biggestStroke);
-		return biggestStroke;
-	}
-
-	/**
 	 * Finds all the strokes contained within another stroke's bounding box.
 	 * 
 	 * @param inkWell
@@ -168,8 +91,7 @@ public class InkUtils {
 	 *            the containing stroke
 	 * @return a list of strokes within the container
 	 */
-	public static List<InkStroke> getAllStrokesContainedWithin(List<Ink> inkWell,
-			InkStroke container) {
+	public static List<InkStroke> getAllStrokesContainedWithin(List<Ink> inkWell, InkStroke container) {
 
 		// calculate the bounds of the container stroke
 		Rectangle2D bounds = container.getBounds();
@@ -244,6 +166,100 @@ public class InkUtils {
 			}
 		}
 		return methodsToReturn;
+	}
+
+	/**
+	 * Finds the first clusters near a particular point (perhaps revise to find nearest cluster).
+	 * 
+	 * @param inkWell
+	 *            list of clusters
+	 * @param point
+	 *            the point to compare to
+	 * @param range
+	 *            number of units away from the point to check
+	 * @return the first cluster near the point
+	 */
+	public static Ink getInkNearPoint(List<Ink> inkWell, Point2D point, double range) {
+
+		Rectangle2D pointRange = new Rectangle2D.Double(point.getX() - range, point.getY() - range,
+				range * 2, range * 2);
+		for (Ink ink : inkWell)
+			for (InkStroke stroke : ink.getStrokes())
+				if (pointRange.intersects(stroke.getBounds()))
+					return ink;
+		return null;
+	}
+
+	/**
+	 * @param stroke
+	 * @return
+	 */
+	public static double getMaxDistanceBetweenSamples(InkStroke stroke) {
+		List<PenSample> samples = stroke.getSamples();
+		PenSample currSample = samples.get(0);
+		double maxDistance = Double.MIN_VALUE;
+		for (PenSample s : samples) {
+			maxDistance = Math.max(s.getDistanceFrom(currSample), maxDistance);
+			currSample = s;
+		}
+		return maxDistance;
+	}
+
+	/**
+	 * Finds all strokes that intersect with but are not entirely contained by another stroke.
+	 * 
+	 * @param inkWell
+	 *            the list of strokes
+	 * @param container
+	 *            the containing stroke
+	 * @return a list of strokes that are partly inside and outside the container
+	 */
+	public static List<InkStroke> getStrokesPartlyOutside(List<Ink> inkWell, InkStroke container) {
+
+		// calculate the bounds of the container stroke
+		Rectangle2D bounds = container.getBounds();
+
+		// return any stroke that overlaps the container but is not contained
+		// by it
+		List<InkStroke> matchingStrokes = new ArrayList<InkStroke>();
+		for (Ink ink : inkWell) {
+			List<InkStroke> strokes = ink.getStrokes();
+			for (InkStroke stroke : strokes) {
+				Rectangle2D strokeBounds = stroke.getBounds();
+				if (bounds.intersects(strokeBounds) && !bounds.contains(strokeBounds)) {
+					// the stroke is completely outside the containing stroke
+					matchingStrokes.add(stroke);
+				}
+			}
+		}
+		return matchingStrokes;
+	}
+
+	/**
+	 * Finds the stroke with the largest area within a list of clusters.
+	 * 
+	 * @param inkWell
+	 *            the list of clusters
+	 * @return the inkstroke with the largest area
+	 */
+	public static InkStroke getStrokeWithLargestArea(List<Ink> inkWell) {
+		InkStroke biggestStroke = null;
+		double maxArea = Double.MIN_VALUE;
+
+		for (Ink ink : inkWell) {
+			List<InkStroke> strokes = ink.getStrokes();
+			for (InkStroke stroke : strokes) {
+
+				double area = stroke.getArea();
+				if (area > maxArea) {
+					biggestStroke = stroke;
+					maxArea = area;
+				}
+			}
+		}
+
+		DebugUtils.println(biggestStroke);
+		return biggestStroke;
 	}
 
 	/**

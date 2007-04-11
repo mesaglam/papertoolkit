@@ -117,7 +117,7 @@ public abstract class ClickHandler extends EventHandler {
 	 * @see edu.stanford.hci.r3.events.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
 	public void handleEvent(PenEvent event) {
-		if (event.isPenDown()) {
+		if (event.isTypePenDown()) {
 			long currPenDownTime = System.currentTimeMillis();
 			long diff = currPenDownTime - lastPenUpTime;
 			if (diff > MILLIS_TO_DELAY) {
@@ -132,7 +132,7 @@ public abstract class ClickHandler extends EventHandler {
 					lastClickNotifier = null;
 				}
 			}
-		} else if (event.isPenUp()) {
+		} else if (event.isTypePenUp()) {
 
 			lastPenUpTime = System.currentTimeMillis();
 

@@ -29,6 +29,8 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
  */
 public class InkPanel extends JPanel {
 
+	private Ink currentInk;
+
 	/**
 	 * Zoom in (> 1.0) or out (< 1.0) to the ink canvas.
 	 */
@@ -39,6 +41,8 @@ public class InkPanel extends JPanel {
 	 * subclass. Make sure to call repaint though!
 	 */
 	protected List<Ink> inkWell = Collections.synchronizedList(new LinkedList<Ink>());
+
+	private boolean invertInkColors = false;
 
 	/**
 	 * 
@@ -67,16 +71,34 @@ public class InkPanel extends JPanel {
 	 * @param ink
 	 */
 	public void addInk(Ink ink) {
+		currentInk = ink;
 		inkWell.add(ink);
+		repaint();
+	}
+
+	/**
+	 * @return the newly added Ink object.
+	 */
+	public Ink addNewInk() {
+		currentInk = new Ink();
+		inkWell.add(currentInk);
+		repaint();
+		return currentInk;
+	}
+
+	/**
+	 * Remove all the ink from the ink panel.
+	 */
+	public void clear() {
+		inkWell.clear();
 		repaint();
 	}
 
 	/**
 	 * 
 	 */
-	public void clear() {
-		inkWell.clear();
-		repaint();
+	public void displayInvertedInkColor() {
+		invertInkColors = true;
 	}
 
 	/**
@@ -99,15 +121,17 @@ public class InkPanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		final Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
+
 		final AffineTransform transform = g2d.getTransform();
 		g2d.scale(inkScale, inkScale);
-		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 
 		// the drawing of ink is "atomic" with respect to
 		// adding and removing from the inkWell
 		synchronized (inkWell) {
 			for (Ink ink : inkWell) {
 				renderer.setInk(ink);
+				renderer.useInvertedInkColors();
 				renderer.renderToG2D(g2d);
 			}
 		}
