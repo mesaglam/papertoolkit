@@ -8,6 +8,8 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
 
 /**
  * <p>
+ * Uses quadratic splines to render the ink. It isn't as faithful as Catmull Rom or even Linear, because the
+ * line doesn't pass exactly through the ink samples, but rather, close to them.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -18,7 +20,12 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
  */
 class RenderingTechniqueQuadratic implements RenderingTechnique {
 
+	private static int ERROR_THRESHOLD = 500;
+
 	public void render(Graphics2D g2d, final List<InkStroke> strokes) {
+		
+		g2d.setStroke(DEFAULT_INK_STROKE);
+		
 		// Each Stroke will be One Path (it's just more efficient this way)
 		for (final InkStroke s : strokes) {
 
@@ -47,7 +54,7 @@ class RenderingTechniqueQuadratic implements RenderingTechnique {
 				final double diffFromLastX = currX - lastGoodX;
 				final double diffFromLastY = currY - lastGoodY;
 
-				if (Math.abs(diffFromLastX) > 500 || Math.abs(diffFromLastY) > 500) {
+				if (Math.abs(diffFromLastX) > ERROR_THRESHOLD || Math.abs(diffFromLastY) > ERROR_THRESHOLD) {
 					// too much error; eliminate totally random data...
 					// this usually arises from writing outside the margin onto disjoint pattern
 					// (like the anoto pidget)

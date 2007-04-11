@@ -1,6 +1,8 @@
 package edu.stanford.hci.r3.render.ink;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.util.List;
 
 import edu.stanford.hci.r3.pen.ink.InkStroke;
@@ -17,6 +19,9 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
  */
 public interface RenderingTechnique {
 
+	public static final Stroke DEFAULT_INK_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
+			BasicStroke.JOIN_ROUND);
+
 	public void render(Graphics2D g2d, final List<InkStroke> strokes);
-	
+
 }

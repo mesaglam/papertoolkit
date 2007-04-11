@@ -74,12 +74,12 @@ public abstract class HandwritingRecognizer extends EventHandler {
 		final long timestamp = event.getTimestamp();
 
 		// collect the ink strokes
-		if (event.isPenDown()) {
+		if (event.isTypePenDown()) {
 			// not a pen error!
 			currentStrokeSamples.clear();
 			currentStrokeSamples.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128,
 					timestamp));
-		} else if (event.isPenUp()) {
+		} else if (event.isTypePenUp()) {
 			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
 			contentArrived();
 			// System.out.println("Collected " + strokes.size() + " strokes so far.");

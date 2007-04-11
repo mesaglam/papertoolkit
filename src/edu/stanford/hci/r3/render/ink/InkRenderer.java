@@ -34,12 +34,12 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
  */
 public class InkRenderer {
 
-	private static final Stroke INK_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
-			BasicStroke.JOIN_ROUND);
 
 	private Ink ink;
 
-	private RenderingTechnique renderingTechnique = new RenderingTechniqueCatmullRom();
+	private RenderingTechnique renderingTechnique = new RenderingTechniqueHybrid();
+
+	private boolean invertedColors = false;
 
 	public InkRenderer() {
 
@@ -63,8 +63,13 @@ public class InkRenderer {
 
 		// anti-aliased, high quality rendering
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
-		g2d.setColor(ink.getColor());
-		g2d.setStroke(INK_STROKE);
+		Color inkColor = ink.getColor();
+		if (invertedColors) {
+			g2d.setColor(new Color(255 - inkColor.getRed(), 255 - inkColor.getGreen(), 255 - inkColor
+					.getBlue()));
+		} else {
+			g2d.setColor(inkColor);
+		}
 
 		final List<InkStroke> strokes = ink.getStrokes();
 		renderingTechnique.render(g2d, strokes);
@@ -78,8 +83,7 @@ public class InkRenderer {
 	 * @param destJPEGFile
 	 */
 	public void renderToJPEG(File destJPEGFile, int widthPixels, int heightPixels) {
-		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(widthPixels,
-				heightPixels);
+		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(widthPixels, heightPixels);
 		final Graphics2D graphics2D = image.createGraphics();
 		graphics2D.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 
@@ -96,8 +100,7 @@ public class InkRenderer {
 	/**
 	 * Looks very similar to SheetRenderer's. TODO: Can we integrate this?
 	 */
-	public void renderToJPEG(File destJPEGFile, Pixels resolutionPixelsPerInch, Units width,
-			Units height) {
+	public void renderToJPEG(File destJPEGFile, Pixels resolutionPixelsPerInch, Units width, Units height) {
 		final double scale = Points.ONE.getConversionTo(resolutionPixelsPerInch);
 
 		final int w = MathUtils.rint(width.getValueIn(resolutionPixelsPerInch));
@@ -121,6 +124,9 @@ public class InkRenderer {
 		DebugUtils.println("Wrote the File");
 	}
 
+	/**
+	 * @param destFile
+	 */
 	public void renderToJPEGRecentered(File destFile) {
 		double minX = ink.getMinX();
 		double minY = ink.getMinY();
@@ -136,7 +142,7 @@ public class InkRenderer {
 		graphics2D.setColor(Color.WHITE);
 		graphics2D.fillRect(0, 0, w, h);
 		graphics2D.translate(-(minX - 10), -(minY - 10));
-		
+
 		renderToG2D(graphics2D);
 		graphics2D.dispose();
 		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destFile);
@@ -163,6 +169,10 @@ public class InkRenderer {
 	}
 
 	public void useQuadraticRendering() {
-		setRenderingTechnique(new RenderingTechniqueQuadratic());
+		setRenderingTechnique(new RenderingTechniqueCatmullRom());
+	}
+
+	public void useInvertedInkColors() {
+		invertedColors = true;
 	}
 }

@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.Date;
 
 import edu.stanford.hci.r3.units.PatternDots;
+import edu.stanford.hci.r3.util.MathUtils;
 
 /**
  * <p>
@@ -76,6 +77,10 @@ public class PenSample implements Serializable {
 		penUp = isPenUp;
 	}
 
+	public double getDistanceFrom(PenSample otherSample) {
+		return MathUtils.distance(x, y, otherSample.x, otherSample.y);
+	}
+
 	/**
 	 * @return
 	 */
@@ -126,8 +131,8 @@ public class PenSample implements Serializable {
 	}
 
 	/**
-	 * Does this sample represent a Pen Up? Perhaps we should subclass PenSample, instead of storing
-	 * another field in here? It seems a little wasteful if most samples are not pen up samples. =\
+	 * Does this sample represent a Pen Up? Perhaps we should subclass PenSample, instead of storing another
+	 * field in here? It seems a little wasteful if most samples are not pen up samples. =\
 	 * 
 	 * @param b
 	 */
@@ -171,16 +176,17 @@ public class PenSample implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Sample: [" + FORMATTER.format(x) + ", " + FORMATTER.format(y) + "] F=" + force
-				+ " T=" + timestamp + " P=" + (isPenUp() ? "UP" : "DOWN");
+		return "Sample: [" + FORMATTER.format(x) + ", " + FORMATTER.format(y) + "] F=" + force + " T="
+				+ timestamp + " P=" + (isPenUp() ? "UP" : "DOWN");
 	}
 
 	/**
 	 * So far, this is used when communicating with Flash in real time.
+	 * 
 	 * @return
 	 */
 	public String toXMLString() {
-		return "<p x=\"" + x + "\" y=\"" + y + "\" f=\"" + force + "\" t=\"" + timestamp
-				+ "\" p=\"" + (isPenUp() ? "U" : "D") + "\"/>";
+		return "<p x=\"" + x + "\" y=\"" + y + "\" f=\"" + force + "\" t=\"" + timestamp + "\" p=\""
+				+ (isPenUp() ? "U" : "D") + "\"/>";
 	}
 }

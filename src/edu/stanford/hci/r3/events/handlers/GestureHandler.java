@@ -60,11 +60,11 @@ public abstract class GestureHandler extends EventHandler {
 	 */
 	public void handleEvent(PenEvent event) {
 		PercentageCoordinates percentageLocation = event.getPercentageLocation();
-		if (event.isPenDown()) {
+		if (event.isTypePenDown()) {
 			firstPercentageX = percentageLocation.getActualValueInXDirection();
 			firstPercentageY = percentageLocation.getActualValueInYDirection();
 			numSamples = 0;
-		} else if (event.isPenUp()) {
+		} else if (event.isTypePenUp()) {
 			// register a gesture on pen up
 			// only if we get more than N samples do we register a gesture
 			if (numSamples > gestureThreshold) {

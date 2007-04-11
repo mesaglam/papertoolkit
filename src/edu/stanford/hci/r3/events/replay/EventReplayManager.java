@@ -109,7 +109,7 @@ public class EventReplayManager {
 	 */
 	private String createStringFromEvent(PenEvent event) {
 		final PenSample sample = event.getOriginalSample();
-		return event.getModifier() + SEPARATOR + event.getPenID() + SEPARATOR + event.getPenName()
+		return event.getType() + SEPARATOR + event.getPenID() + SEPARATOR + event.getPenName()
 				+ SEPARATOR + event.getTimestamp() + SEPARATOR + sample.getX() + SEPARATOR
 				+ sample.getY() + SEPARATOR + sample.getTimestamp() + SEPARATOR + sample.getForce();
 	}
@@ -206,7 +206,7 @@ public class EventReplayManager {
 					}
 
 					// assume here that all PenEvent objects have their flags set correctly
-					if (event.isPenUp()) {
+					if (event.isTypePenUp()) {
 						eventEngine.handlePenUpEvent(event);
 					} else {
 						eventEngine.handlePenEvent(event);

@@ -16,11 +16,11 @@ import edu.stanford.hci.r3.util.MathUtils;
  * Store ink strokes (multiple samples) in here.
  * </p>
  * <p>
- * We assume that the units in this stroke are consistent (one reference unit), and make sense to
- * the client class that ends up using this stroke object. For example, if the units is in
- * PatternDots, and the values are derived directly from the streaming PenListeners, we need to make
- * sure that the stroke samples do not jump from one page tile to another. In that case, we would
- * assume that the streamed samples come from one Anoto pattern tile, unless otherwise specified.
+ * We assume that the units in this stroke are consistent (one reference unit), and make sense to the client
+ * class that ends up using this stroke object. For example, if the units is in PatternDots, and the values
+ * are derived directly from the streaming PenListeners, we need to make sure that the stroke samples do not
+ * jump from one page tile to another. In that case, we would assume that the streamed samples come from one
+ * Anoto pattern tile, unless otherwise specified.
  * </p>
  * <p>
  * </p>
@@ -39,8 +39,7 @@ public class InkStroke {
 	private static final PatternDots DEFAULT_REFERENCE_UNIT = new PatternDots();
 
 	/**
-	 * The bounds of this ink stroke. This is the rightmost x coordinate of any sample in this
-	 * stroke.
+	 * The bounds of this ink stroke. This is the rightmost x coordinate of any sample in this stroke.
 	 */
 	private double maxX = Double.MIN_VALUE;
 
@@ -69,13 +68,18 @@ public class InkStroke {
 	 */
 	private List<PenSample> samples = new ArrayList<PenSample>();
 
+	/**
+	 * The stroke width. It determines how wide the ink stroke will look when rendered.
+	 */
+	private double strokeWidth = 1.2;
+
 	public InkStroke() {
 		referenceUnit = DEFAULT_REFERENCE_UNIT;
 	}
 
 	/**
-	 * Copies the samples into our own arrays. The reference unit enables us to interpret the
-	 * samples correctly.
+	 * Copies the samples into our own arrays. The reference unit enables us to interpret the samples
+	 * correctly.
 	 * 
 	 * @param currentStrokeSamples
 	 * @param reference
@@ -123,6 +127,9 @@ public class InkStroke {
 		maxY = Math.max(penSample.y, maxY);
 	}
 
+	/**
+	 * @return the area in pixels^2, or whatever units the ink is in (possible PatternDots^2)
+	 */
 	public double getArea() {
 		return (maxX - minX) * (maxY - minY);
 	}
@@ -132,6 +139,13 @@ public class InkStroke {
 	 */
 	public Rectangle2D getBounds() {
 		return new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
+	}
+
+	/**
+	 * @return
+	 */
+	public long getDuration() {
+		return getLastTimestamp() - getFirstTimestamp();
 	}
 
 	/**
@@ -173,6 +187,9 @@ public class InkStroke {
 		return samples.get(samples.size() - 1).timestamp;
 	}
 
+	/**
+	 * @return
+	 */
 	public Date getLastTimestampAsDate() {
 		return new Date(samples.get(samples.size() - 1).timestamp);
 	}
@@ -242,6 +259,10 @@ public class InkStroke {
 			t[i] = samples.get(i).timestamp;
 		}
 		return t;
+	}
+
+	public double getWidth() {
+		return strokeWidth;
 	}
 
 	/**
@@ -337,6 +358,10 @@ public class InkStroke {
 		minY = mnY;
 	}
 
+	public void setSamples(List<PenSample> newSamples) {
+		samples = newSamples;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -344,8 +369,8 @@ public class InkStroke {
 	 */
 	public String toString() {
 		return "InkStroke: Bounds [" + minX + ", " + minY + "  -->  " + maxX + ", " + maxY + "] "
-				+ getNumSamples() + " Samples with timestamps from [" + getFirstTimestampAsDate()
-				+ " to " + getLastTimestampAsDate() + "]";
+				+ getNumSamples() + " Samples with timestamps from [" + getFirstTimestampAsDate() + " to "
+				+ getLastTimestampAsDate() + "]";
 	}
 
 }
