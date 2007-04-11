@@ -7,7 +7,6 @@ import java.util.List;
 
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.pen.ink.InkUtils;
-import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.geometry.CatmullRomSpline;
 
 /**
@@ -28,13 +27,10 @@ class RenderingTechniqueHybrid implements RenderingTechnique {
 			double width = stroke.getWidth();
 			g2d.setStroke(new BasicStroke((float) width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
-			// use the area to determine if it's a small stroke or a large one...
-			// double area = stroke.getArea();
-			// long duration = stroke.getDuration();
-			// DebugUtils.println(area + " " + duration);
-			// DebugUtils.println(area / duration + "");
-			// duration < 1000ms is a relatively fast stroke...
-
+			// this doubles as a good max velocity measure, since the samples come in at more or less a
+			// constant rate. If the max velocity is too high, we should probably use catmull rom.
+			// TODO: In the future, we should hybridize at an even finer granularity (i.e. within stroke)
+			// right now, we are hybridizing between strokes.
 			double maxDistanceBetweenSamples = InkUtils.getMaxDistanceBetweenSamples(stroke);
 			// DebugUtils.println("MaxD: " + maxDistanceBetweenSamples);
 

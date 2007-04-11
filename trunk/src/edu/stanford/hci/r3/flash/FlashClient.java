@@ -70,6 +70,7 @@ public class FlashClient {
 								// Flex.
 
 								DebugUtils.println("Got a policy file request.");
+								
 								// waiting = true;
 								String msg = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">"
 										+ "<!-- Policy file for xmlsocket://socks.mysite.com --><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\" /></cross-domain-policy>";
