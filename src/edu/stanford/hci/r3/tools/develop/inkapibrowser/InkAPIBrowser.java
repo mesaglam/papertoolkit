@@ -11,8 +11,6 @@ import java.util.List;
 
 import javax.swing.filechooser.FileSystemView;
 
-import org.jfree.util.ArrayUtilities;
-
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
