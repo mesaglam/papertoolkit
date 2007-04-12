@@ -196,6 +196,8 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Can only point to files...
+	 * 
 	 * @param resourcePath
 	 * @return
 	 */
