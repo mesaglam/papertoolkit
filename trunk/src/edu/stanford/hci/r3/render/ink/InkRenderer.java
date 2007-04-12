@@ -112,6 +112,9 @@ public class InkRenderer {
 		// transform the graphics such that we are in destUnits' pixels per inch, so that when we
 		// draw 72 Graphics2D pixels from now on, it will equal the correct number of output pixels
 		// in the JPEG.
+		// 
+		// TODO: Joel said that this next line is a bug, and ruins his blog app's ink alignment
+		// Can we figure out why? Why do we not need this line?
 		graphics2D.setTransform(AffineTransform.getScaleInstance(scale, scale));
 
 		// render a white canvas
