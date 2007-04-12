@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.wizardofoz;
+package edu.stanford.hci.r3.demos.flash;
 
 import edu.stanford.hci.r3.PaperToolkit;
 
