@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.pattern.PatternPackage;
 import edu.stanford.hci.r3.util.DebugUtils;
@@ -38,7 +39,7 @@ public class BatchServer {
 	/**
 	 * Will listen on this port for text commands.
 	 */
-	public static final int DEFAULT_PLAINTEXT_PORT = 9999;
+	public static final int DEFAULT_PLAINTEXT_PORT = Constants.Ports.BATCH_SERVER;
 
 	/**
 	 * Tells the server that a client wishes to exit. Closes the client's handler.

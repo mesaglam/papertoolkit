@@ -4,12 +4,14 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import edu.stanford.hci.r3.config.Constants;
+
 /**
  * <p>
  * This server will relay Ink objects to the Flash UI, which will listen for them.
  * 
- * This is a skeleton implementation. Later on, we will allow our event handlers and content filters
- * to live in the world of Flash, for faster UI prototyping.
+ * This is a skeleton implementation. Later on, we will allow our event handlers and content filters to live
+ * in the world of Flash, for faster UI prototyping.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -23,7 +25,7 @@ public class FlashInkRelayServer {
 	/**
 	 * communicate through this port
 	 */
-	public static final int DEFAULT_PORT = 6544;
+	public static final int DEFAULT_PORT = Constants.Ports.FLASH_INK_RELAY_SERVER;
 
 	/**
 	 * @param args

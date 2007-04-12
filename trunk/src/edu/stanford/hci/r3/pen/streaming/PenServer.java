@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerJavaObjectXMLSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerPlainTextSender;
@@ -81,9 +82,9 @@ public class PenServer implements PenListener {
 	/**
 	 * The default port to which pen clients can connect...
 	 */
-	public static final int DEFAULT_JAVA_PORT = 11025;
+	public static final int DEFAULT_JAVA_PORT = Constants.Ports.PEN_SERVER_JAVA;
 
-	public static final int DEFAULT_PLAINTEXT_PORT = 11026;
+	public static final int DEFAULT_PLAINTEXT_PORT = Constants.Ports.PEN_SERVER_PLAINTEXT;
 
 	public static final COMPort DEFAULT_SERIAL_PORT = COMPort.COM5;
 

@@ -12,6 +12,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -34,7 +35,7 @@ public class FlashCommunicationServer {
 	/**
 	 * communicate through this port
 	 */
-	public static final int DEFAULT_PORT = 8545;
+	public static final int DEFAULT_PORT = Constants.Ports.FLASH_COMMUNICATION_SERVER;
 
 	/**
 	 * Only counts up.

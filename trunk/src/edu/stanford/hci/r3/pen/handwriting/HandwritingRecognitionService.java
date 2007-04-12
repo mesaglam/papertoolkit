@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -34,7 +35,7 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class HandwritingRecognitionService {
 
-	private static final int HWREC_PORT = 9898;
+	private static final int HWREC_PORT = Constants.Ports.HANDWRITING_RECOGNITION;
 
 	private static final String HWREC_SERVER = "localhost";
 
