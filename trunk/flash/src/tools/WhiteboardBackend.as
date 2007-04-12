@@ -6,6 +6,7 @@
 	import mx.controls.TextArea;
 	import ink.Ink;
 	import ink.InkStroke;
+	import flash.display.Stage;
 
 	
 	public class WhiteboardBackend extends Sprite {
@@ -21,6 +22,8 @@
 		// this number is set by the first sample that comes in that uses scientific notation
 		private var xMinOffset:Number = -1;
 		private var yMinOffset:Number = -1;
+		
+		private var theParent:Whiteboard = null;
 		
 		public function WhiteboardBackend(dbt:TextArea):void {
 			inkWell = new Ink();
@@ -38,6 +41,10 @@
 			sock = new XMLSocket();
 			configureListeners(sock);
 			sock.connect("localhost", 6544);
+		}
+
+		public function setParent(p:Whiteboard):void {
+			theParent = p;
 		}
 
         private function configureListeners(dispatcher:IEventDispatcher):void {
@@ -60,6 +67,11 @@
 		public function recenter():void {
 			inkWell.recenter();
 		}
+		
+		public function recenterMostRecent(stage:Stage):void {
+			inkWell.recenterMostRecent(stage);
+		}
+		
 
         private function dataHandler(event:DataEvent):void {
             //trace("dataHandler: " + event);
@@ -124,7 +136,7 @@
 				inkWell.addStroke(currInkStroke);
 
 				// reposition it to the minimum (with some padding) after each stroke
-				inkWell.recenter();
+				inkWell.recenterMostRecent(theParent.stage);
 
 				// start up a new stroke
    				currInkStroke = new InkStroke();

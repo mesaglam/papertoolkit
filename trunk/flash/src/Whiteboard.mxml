@@ -13,11 +13,14 @@
 			public function constructWhiteboard():void {
 				whitebd = new WhiteboardBackend(debugText);
 
+
 				container = new UIComponent();
 				addChild(container);
 
 				container.addChild(whitebd);				
 				debugText.text = "Just Testing...";
+				
+				whitebd.setParent(this);
 			}
 
 			public function zoomIn():void {
@@ -27,7 +30,8 @@
 			public function resetZoom():void {
 				whitebd.scaleX = 1;
 				whitebd.scaleY = 1;
-				whitebd.recenter();
+				// whitebd.recenter();
+				whitebd.recenterMostRecent(stage);
 			}
 			public function zoomOut():void {
 				whitebd.scaleX *= .8;
@@ -41,9 +45,11 @@
 		]]>
 	</mx:Script>
 	<mx:Button label="Save" bottom="10" left="10"/>
-	<mx:Button label="+" bottom="10" right="10" width="40" click="zoomIn()"/>
-	<mx:Button label="-" right="136" bottom="10" click="zoomOut()"/>
 	<mx:TextArea editable="false" width="276" right="10" top="10" id="debugText" color="#000000" bottom="41" visible="false"/>
 	<mx:Button label="Debug" bottom="10" left="81" click="toggleDebugText()"/>
-	<mx:Button label="Zoom" right="58" bottom="10" click="resetZoom()"/>
+	<mx:HBox bottom="10" right="10">
+		<mx:Button label="Smaller" click="zoomOut()"/>
+		<mx:Button label="Reset Zoom" click="resetZoom()"/>
+		<mx:Button label="Bigger" click="zoomIn()"/>
+	</mx:HBox>
 </mx:Application>

@@ -57,6 +57,7 @@ package ink {
 			return begin;
 		}
 
+		// add an ink sample...
 		public function addPoint(xVal:Number, yVal:Number, f:Number):void {
 			// assume f is 0 to 128
 			// later: cap it to 0 to 128
@@ -85,26 +86,12 @@ package ink {
 				lastLastYVal = yVal;
 			}
 			else {
-
-/*
-				if ((Math.abs(xVal - lastXVal) > 10) && (Math.abs(yVal - lastYVal) > 10)) {
-					trace("big hop in x and y");
-						
-					// curve to... with a control point computed from the last two points!
-					var vX:Number = xVal - lastLastXVal;
-					var vY:Number = yVal - lastLastYVal;
-					
-					var controlX:Number = lastXVal + vX/3;
-					var controlY:Number = lastYVal + vY/3;
-						
-					// g.drawCircle(controlX, controlY, 2);
-					// g.curveTo(controlX, controlY, xVal, yVal);
-					g.curveTo(controlX, controlY, xVal, yVal);
-				} else {
-					// regular
-					g.lineTo(xVal, yVal);
-				}
-*/
+				// check to see if it's a large jump
+				// in the future, we'll want to subdivide and add new points, so the lineTo looks smoother :)
+				var dX:Number = xVal - lastXVal;
+				var dY:Number = yVal - lastYVal;
+				trace("dX,dY from last sample: " + dX + ", " + dY);
+				
 				// reverted to simple linetos..
 				g.lineTo(xVal, yVal);
 				
@@ -139,6 +126,14 @@ package ink {
 		public function get maxY():Number {
 			return yMax;
 		}
+		
+		public function get lastX():Number {
+			return lastXVal;
+		}
+		public function get lastY():Number {
+			return lastYVal;
+		}
+		
 		
 		public function set inkColor(c:uint):void {
 			color = c;
