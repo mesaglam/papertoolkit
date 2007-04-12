@@ -115,12 +115,11 @@ public abstract class CommentCollector extends InkCollector {
 		try {
 			entry = new SyndEntryImpl();
 			entry.setTitle("Comment " + (count + 1) + " on story \"" + bbentry.title + "\"");
-			entry.setLink(CommentCollector.COMMENT_URL_PREFIX + commentFileName);
+			entry.setLink(CommentCollector.COMMENT_URL_PREFIX + comment_filename);
 			entry.setPublishedDate(new Date());
 			description = new SyndContentImpl();
-			description.setType("text/plain");
-			description.setValue("<p><img src=\"" + CommentCollector.COMMENT_URL_PREFIX + commentFileName
-					+ "\"></p>");
+			description.setType("text/html");
+			description.setValue("<p><img src=\"" + CommentCollector.COMMENT_URL_PREFIX + comment_filename + "\"></p>");
 			entry.setDescription(description);
 			rss_entries.add(entry);
 
