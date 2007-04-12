@@ -4,6 +4,7 @@ package ink {
 	import flash.display.Graphics;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.display.Stage;
 
 	
 	public class Ink extends Sprite {
@@ -15,6 +16,8 @@ package ink {
 		private var yMin:Number = Number.MAX_VALUE;
 		private var xMax:Number = Number.MIN_VALUE;
 		private var yMax:Number = Number.MIN_VALUE;
+
+		private var mostRecentStroke:InkStroke = null;
 
 		public function setColor():void {
 			// for each stroke, set the color!
@@ -40,10 +43,14 @@ package ink {
 			this.stopDrag();
         }
 		
+		// add an ink stroke
+		// we keep around the most recent stroke, so that we can do cool calculations, like recentering
 		public function addStroke(stroke:InkStroke):void {
 			//trace("Add Stroke");
 			strokes.push(stroke);			
 			addChild(stroke);
+			
+			mostRecentStroke = stroke;
 			
 			xMin = Math.min(xMin, stroke.minX);
 			yMin = Math.min(yMin, stroke.minY);
@@ -53,9 +60,46 @@ package ink {
 		
         
         // move the ink so that we can see it!
+        // move the origin to near the top left of the display...
         public function recenter():void {
         	x = -xMin + 30;
         	y = -yMin + 50;
+        }
+
+		
+        
+        // move the ink so that we can see the most recent ink strokes!
+        // basically, we should recenter() first, and then find the delta
+        // to the most recent stroke
+        public function recenterMostRecent(stage:Stage):void {
+        	if (mostRecentStroke == null) {
+        		return;
+        	}
+        	
+        	trace(stage);
+        	trace(stage.stageWidth);
+        	
+        	// are these visible?
+        	var dXFromOrigin:Number = (mostRecentStroke.lastX - xMin);
+        	var dYFromOrigin:Number = (mostRecentStroke.lastY - yMin);
+        	
+        	var lastSampleXNotVisible:Boolean = dXFromOrigin > stage.stageWidth;
+        	var lastSampleYNotVisible:Boolean = dYFromOrigin > stage.stageHeight; 
+        	
+        	trace("dX,dY from Origin: " + dXFromOrigin + ", " + dYFromOrigin);
+        	// trace("Stage Size: " + stage.stageWidth + " " + stage.stageHeight);
+        	
+    		x = -xMin + 30;
+    		y = -yMin + 50;
+
+        	if (lastSampleXNotVisible) {
+        		x -= (dXFromOrigin - stage.stageWidth + 60);
+        	} 
+        	
+        	if (lastSampleYNotVisible) {
+        		y -= (dYFromOrigin - stage.stageHeight + 100);
+			}
+
         }
 		
 	}
