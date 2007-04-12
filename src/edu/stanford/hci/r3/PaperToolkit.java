@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -103,7 +104,6 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
  * </p>
  * <p>
  * TODOS:
- * <li>Move all PORTs into a Communications class, so we can configure them!
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -122,6 +122,8 @@ public class PaperToolkit {
 	public static final String CONFIG_PATTERN_PATH_KEY = "tiledpatterngenerator.patternpath";
 
 	public static final String CONFIG_PATTERN_PATH_VALUE = "/pattern/";
+
+	private static final String HW_REC_KEY = "handwritingRecognition";
 
 	/**
 	 * Whether we have called initializeLookAndFeel() yet...
@@ -317,7 +319,8 @@ public class PaperToolkit {
 				.println("Without any arguments, we run the PaperToolkit Explorer. You can also run Papertoolkit with one argument: ");
 		System.out.println("	-actions	// runs the action receiver");
 		System.out.println("	-pen		// runs the pen server");
-		System.out.println("Thank you for using R3! Feel free to send feedback (good & bad) to ronyeh@cs.stanford.edu.");
+		System.out
+				.println("Thank you for using R3! Feel free to send feedback (good & bad) to ronyeh@cs.stanford.edu.");
 	}
 
 	/**
@@ -431,6 +434,12 @@ public class PaperToolkit {
 	 * A list of all applications loaded (but not necessarily running) in this system.
 	 */
 	private List<Application> loadedApplications = new ArrayList<Application>();
+
+	/**
+	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
+	 * your own program.
+	 */
+	private final Properties localProperties = new Properties();
 
 	/**
 	 * Description for the app manager.
@@ -895,6 +904,10 @@ public class PaperToolkit {
 		return model;
 	}
 
+	public String getProperty(String propertyKey) {
+		return localProperties.getProperty(propertyKey);
+	}
+
 	/**
 	 * @param app
 	 * @return
@@ -1075,7 +1088,33 @@ public class PaperToolkit {
 	 */
 	private void loadStartupConfiguration() {
 		final Properties props = Configuration.getPropertiesFromConfigFile(CONFIG_FILE_KEY);
-		useHandwriting = Boolean.parseBoolean(props.getProperty("handwritingRecognition"));
+		useHandwriting = Boolean.parseBoolean(props.getProperty(HW_REC_KEY));
+
+		// also check for a custom PaperToolkit.xml in the run directory of the application
+		// properties in that file will override the ones we just loaded from the default location
+		// alternatively, you can just edit the default PaperToolkit.xml, located in
+		// data/config/PaperToolkit.xml
+		File localPropsFile = new File("PaperToolkit.xml");
+		if (localPropsFile.exists()) {
+			DebugUtils.println("Local Properties File Exists. Overriding Properties: ");
+			try {
+				localProperties.loadFromXML(new FileInputStream(localPropsFile));
+			} catch (InvalidPropertiesFormatException e) {
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (localProperties.containsKey(HW_REC_KEY)) {
+				String newProp = localProperties.getProperty(HW_REC_KEY);
+				DebugUtils
+						.println(HW_REC_KEY + " was: [" + useHandwriting + "] and is now [" + newProp + "]");
+				useHandwriting = Boolean.parseBoolean(newProp);
+			}
+		} else {
+			DebugUtils.println("Local Properties File Does Not Exist");
+		}
 	}
 
 	/**

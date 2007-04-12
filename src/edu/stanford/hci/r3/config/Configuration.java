@@ -40,7 +40,7 @@ public class Configuration extends Properties {
 	 *            a key to index the toolkit's configuration
 	 * @return the value corresponding to the configName key
 	 */
-	private static String get(String propertyName) {
+	private static String getPropertyValue(String propertyName) {
 		final String property = config.getProperty(propertyName);
 		// System.out.println("Configuration.java: Retrieved Property " + propertyName + " --> "
 		// + property);
@@ -50,13 +50,13 @@ public class Configuration extends Properties {
 	/**
 	 * TODO: Works for now, but won't work once we package it in a JAR.
 	 * 
-	 * @param propertyName
+	 * @param configFileKey
 	 * @return
 	 */
-	public static File getConfigFile(String propertyName) {
+	public static File getConfigFile(String configFileKey) {
 		try {
 			// System.out.println("Configuration.java: Property Name: " + propertyName);
-			final URL resource = Configuration.class.getResource(get(propertyName));
+			final URL resource = Configuration.class.getResource(getPropertyValue(configFileKey));
 			// System.out.println("Configuration.java: URL: " + resource);
 			final URI uri = resource.toURI();
 			final File file = new File(uri);
@@ -73,12 +73,16 @@ public class Configuration extends Properties {
 	 * @throws IOException
 	 */
 	private static InputStream getConfigFileStream(String propertyName) throws IOException {
-		final String resourceName = get(propertyName);
+		final String resourceName = getPropertyValue(propertyName);
 		// System.out.println("Configuration.java: Resource is " + resourceName);
 		final URL resource = Configuration.class.getResource(resourceName);
 		return resource.openStream();
 	}
 
+	/**
+	 * @param configFileKey
+	 * @return
+	 */
 	public static Properties getPropertiesFromConfigFile(String configFileKey) {
 		final Properties props = new Properties();
 		try {
@@ -125,6 +129,7 @@ public class Configuration extends Properties {
 	 */
 	private void setDefaultConfig() {
 		// part of the resources in the JAR File (or export directory)
+		// this maps abstract names to actual files on the file system.
 		setProperty(Pixels.CONFIG_FILE_KEY, Pixels.CONFIG_FILE_VALUE);
 		setProperty(RegionRenderer.CONFIG_FILE_KEY, RegionRenderer.CONFIG_FILE_VALUE);
 		setProperty(ActionReceiver.CONFIG_FILE_KEY, ActionReceiver.CONFIG_FILE_VALUE);

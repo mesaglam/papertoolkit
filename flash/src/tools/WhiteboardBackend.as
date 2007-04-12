@@ -17,6 +17,11 @@
 
 		private var currInkStroke:InkStroke;
 		
+		// in case the numbers are too big, we should subtract them by this number
+		// this number is set by the first sample that comes in that uses scientific notation
+		private var xMinOffset:Number = -1;
+		private var yMinOffset:Number = -1;
+		
 		public function WhiteboardBackend(dbt:TextArea):void {
 			inkWell = new Ink();
 			addChild(inkWell);
@@ -65,8 +70,53 @@
 
 			trace(inkXML.@x + " " + inkXML.@y + " " + inkXML.@f + " " + inkXML.@t + " " + inkXML.@p);
 
-			var xVal:Number = parseFloat(inkXML.@x);
-			var yVal:Number = parseFloat(inkXML.@y);
+
+
+			var xStr:String = inkXML.@x;
+			var xExp:String = "";
+			var xEIndex:int = xStr.indexOf("E");
+			var xVal:Number = 0;
+			// handle scientific notation
+			if (xEIndex > -1) {
+				xExp = xStr.substr(xEIndex+1);
+				xStr = xStr.substr(0, xEIndex);
+				xVal = parseFloat(xStr)*Math.pow(10, parseInt(xExp)); // scientific notation
+
+				// Figure out a minimum offset to reduce these large numbers!
+				if (xMinOffset == -1){
+					// uninitialized
+					xMinOffset = xVal;
+				}
+
+				xVal = xVal - xMinOffset;
+			} else {
+				xVal = parseFloat(inkXML.@x);				
+			}
+			
+
+			var yStr:String = inkXML.@y;
+			var yExp:String = "";
+			var yEIndex:int = yStr.indexOf("E");
+			var yVal:Number = 0;
+			// handle scientific notation
+			if (yEIndex > -1) {
+				yExp = yStr.substr(yEIndex+1);
+				yStr = yStr.substr(0, yEIndex);
+				yVal = parseFloat(yStr)*Math.pow(10, parseInt(yExp)); // scientific notation
+
+				if (yMinOffset == -1){
+					// uninitialized
+					yMinOffset = yVal;
+				}
+
+				yVal = yVal - yMinOffset;
+			} else {
+				yVal = parseFloat(inkXML.@y);
+			}
+
+
+
+			trace(xVal + ", " + yVal);
 
 			var penUp:Boolean = inkXML.@p == "U";
 			if (penUp) {

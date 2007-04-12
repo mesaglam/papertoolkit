@@ -130,6 +130,11 @@ public class Pen extends PenInput {
 	 * @param hostDomainNameOrIPAddr
 	 */
 	public void startLiveMode(String hostDomainNameOrIPAddr) {
+		if (liveMode) {
+			// already started
+			return;
+		}
+		
 		// if the pen is on the local host...
 		// ensure that a java server has been started on this machine
 		if (hostDomainNameOrIPAddr.equals(LOCALHOST)) {
@@ -159,6 +164,11 @@ public class Pen extends PenInput {
 	 * Exit live mode.
 	 */
 	public void stopLiveMode() {
+		if (!liveMode) {
+			// already stopped
+			return;
+		}
+		
 		livePenClient.disconnect();
 		livePenClient = null;
 		liveMode = false;

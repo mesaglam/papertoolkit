@@ -15,11 +15,13 @@ package edu.stanford.hci.r3.config;
 public class Constants {
 
 	public static class Ports {
+		public static final int ACROBAT_SERVER = 8888;
+
 		public static final int ACTION_RECEIVER_JAVA = 11035;
 		public static final int ACTION_RECEIVER_PLAINTEXT = 11036;
 
 		public static final int BATCH_SERVER = 9999;
-
+		
 		public static final int FLASH_COMMUNICATION_SERVER = 8545;
 		public static final int FLASH_CONTROL_SERVER = 6543;
 		public static final int FLASH_INK_RELAY_SERVER = 6544;
@@ -28,6 +30,5 @@ public class Constants {
 
 		public static final int PEN_SERVER_JAVA = 11025;
 		public static final int PEN_SERVER_PLAINTEXT = 11026;
-
 	}
 }

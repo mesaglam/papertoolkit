@@ -52,7 +52,7 @@ public class BatchServer {
 	private List<Socket> clients = new ArrayList<Socket>();
 
 	/**
-	 * We will pass batched events to this event engine, to simulate event dispatch in "real time".
+	 * TODO: We will pass batched events to this event engine, to simulate event dispatch in "real time".
 	 */
 	private EventEngine eventEngine;
 
@@ -67,8 +67,8 @@ public class BatchServer {
 	private boolean exitFlag = false;
 
 	/**
-	 * Used for converting batched coordinates to streaming coordinates, which can be passed to our event
-	 * handlers.
+	 * TODO: Used for converting batched coordinates to streaming coordinates, which can be passed to our
+	 * event handlers.
 	 */
 	private Map<String, PatternPackage> patternPackages = PatternPackage
 			.getAvailablePatternPackages(PaperToolkit.getPatternPath());
