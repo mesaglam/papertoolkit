@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -67,7 +68,7 @@ public class AcrobatCommunicationServer {
 			return;
 		}
 		try {
-			server = new AcrobatCommunicationServer(8888, new FileOutputStream(new File(
+			server = new AcrobatCommunicationServer(Constants.Ports.ACROBAT_SERVER, new FileOutputStream(new File(
 					"AcrobatCommunicationServer.log")));
 
 		} catch (FileNotFoundException e) {
