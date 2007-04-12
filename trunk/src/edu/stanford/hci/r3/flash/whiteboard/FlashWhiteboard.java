@@ -6,12 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.SwingUtilities;
-
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
+import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -37,16 +36,12 @@ public class FlashWhiteboard {
 
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File whiteBoardHTML = new File(r3RootPath, "flash/bin/Whiteboard.html");
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Desktop.getDesktop().browse(whiteBoardHTML.toURI());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		try {
+			DebugUtils.println("Loading the Flash GUI...");
+			Desktop.getDesktop().browse(whiteBoardHTML.toURI());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void addPen(Pen pen) {
