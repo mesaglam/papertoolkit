@@ -18,6 +18,7 @@ import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.config.Configuration;
+import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.networking.ClientServerType;
 
@@ -47,12 +48,12 @@ public class ActionReceiver {
 	/**
 	 * Will listen on this port for Java XML objects.
 	 */
-	public static final int DEFAULT_JAVA_PORT = 11035;
+	public static final int DEFAULT_JAVA_PORT = Constants.Ports.ACTION_RECEIVER_JAVA;
 
 	/**
 	 * Will listen on this port for text commands.
 	 */
-	public static final int DEFAULT_PLAINTEXT_PORT = 11036;
+	public static final int DEFAULT_PLAINTEXT_PORT = Constants.Ports.ACTION_RECEIVER_PLAINTEXT;
 
 	/**
 	 * 

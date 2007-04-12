@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import edu.stanford.hci.r3.config.Constants;
+
 /**
  * <p>
  * This server will relay events to the Flash UI, which will listen for commands. It can ask the UI
@@ -24,7 +26,7 @@ public class FlashControlServer {
 	/**
 	 * communicate through this port
 	 */
-	public static final int DEFAULT_PORT = 6543;
+	public static final int DEFAULT_PORT = Constants.Ports.FLASH_CONTROL_SERVER;
 
 	/**
 	 * @param args
