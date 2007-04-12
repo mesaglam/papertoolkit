@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+	<properties>
+	<comment>Default Properties for configuring the Paper Toolkit. You can override them by hosting a PaperToolkit.xml in the root directory of your application.</comment>
+	<entry key="handwritingRecognition">false</entry>
+	<entry key="unusedProperty">unusedValue</entry>
+</properties>

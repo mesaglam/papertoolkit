@@ -1,5 +1,7 @@
 package edu.stanford.hci.r3.demos.wizardofoz;
 
+import edu.stanford.hci.r3.PaperToolkit;
+
 /**
  * <p>
  * Examples of how you might use R3 to create a Wizard of Oz interface to capture pen input, and provide
@@ -14,9 +16,14 @@ package edu.stanford.hci.r3.demos.wizardofoz;
  */
 public class WizardOfOz {
 
-	
+	private PaperToolkit paperToolkit;
+
+	public WizardOfOz() {
+		paperToolkit = new PaperToolkit();
+		// DebugUtils.println(paperToolkit.getProperty("unusedProperty"));
+	}
+
 	public static void main(String[] args) {
-		// TODO
-		
+		new WizardOfOz();
 	}
 }
