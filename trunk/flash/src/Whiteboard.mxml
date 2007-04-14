@@ -44,5 +44,5 @@
 		<mx:Button label="Exit" click="whitebd.exit()"/>
 	</mx:HBox>
 	<mx:ColorPicker id="colorSwatch" left="10" bottom="40" width="48" height="48"/>
-	<mx:Label text="Live Whiteboard" right="10" top="10" fontSize="30" alpha="0" color="#b3deff"/>
+	<mx:Label text="Live Whiteboard" right="10" top="10" fontSize="30" alpha="0" color="#b3deff" id="title"/>
 </mx:Application>
