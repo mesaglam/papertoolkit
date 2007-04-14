@@ -50,6 +50,14 @@ package ink {
 			strokes.push(stroke);			
 			addChild(stroke);
 			
+
+			if (mostRecentStroke != null) {
+				if (Math.abs(stroke.lastX - mostRecentStroke.lastX) > 800) {
+					// if it's > 800 anoto dots away from the last ink stroke, we assume it's in a different cluster (i.e., page)
+					trace("New Cluster");
+				}
+			}
+			
 			mostRecentStroke = stroke;
 			
 			xMin = Math.min(xMin, stroke.minX);

@@ -58,27 +58,18 @@ public class FlashClient {
 							command = command.trim();
 							commandLowerCase = command.toLowerCase();
 							// System.out.println(">> Reading a line from the client: [" + command + "]");
-							if (commandLowerCase.equals("exit")) {
+							if (command.equals("exit")) {
 								done = true;
 								exitClient();
-							} else if (commandLowerCase.equals("exitserver")) {
+							} else if (command.equals("exitServer")) {
 								done = true;
 								clientSocket.close();
 								server.exitServer();
-							} else if (command.contains("policy-file-request")) {
-								// TODO: Make this work for Flash GUIs on systems that have NOT installed
-								// Flex.
-
-								DebugUtils.println("Got a policy file request.");
-								
-								// waiting = true;
-								String msg = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">"
-										+ "<!-- Policy file for xmlsocket://socks.mysite.com --><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\" /></cross-domain-policy>";
-								sendMessage(msg);
-								clientSocket.close();
-								toClient.close();
-								fromClient.close();
+							} else if (command.equals("exitApplication")) {
 								done = true;
+								clientSocket.close();
+								server.exitServer();
+								System.exit(0);
 							} else {
 								// DebugUtils.println("Client " + clientID + " Unhandled command: "
 								// + command);

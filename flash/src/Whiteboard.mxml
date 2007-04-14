@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Whiteboard" creationComplete="constructWhiteboard()">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Whiteboard" creationComplete="constructWhiteboard()"
+	addedToStage="addedToStage()">
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
@@ -9,47 +11,38 @@
 			// more or less all the code is stored in the as file! =)			
 			private var whitebd:WhiteboardBackend;
 			private var container:UIComponent;
-			
+		 	
 			public function constructWhiteboard():void {
-				whitebd = new WhiteboardBackend(debugText);
-
-
+				whitebd = new WhiteboardBackend();
 				container = new UIComponent();
+				container.addChild(whitebd);				
 				addChild(container);
 
-				container.addChild(whitebd);				
-				debugText.text = "Just Testing...";
-				
+				whitebd.setDebugText(debugText);
 				whitebd.setParent(this);
 			}
-
-			public function zoomIn():void {
-				whitebd.scaleX *= 1.25;
-				whitebd.scaleY *= 1.25;
-			}
-			public function resetZoom():void {
-				whitebd.scaleX = 1;
-				whitebd.scaleY = 1;
-				// whitebd.recenter();
-				whitebd.recenterMostRecent(stage);
-			}
-			public function zoomOut():void {
-				whitebd.scaleX *= .8;
-				whitebd.scaleY *= .8;
+			
+			public function addedToStage():void {
+				trace("addedToStage");
+				whitebd.setRoot(root);
+				whitebd.setStage(stage);
+				whitebd.processParameters();
 			}
 			
-			public function toggleDebugText():void {
-				// removeAllChildren(); // don't do this! It removes all components
-				debugText.visible = !debugText.visible;
-			}
 		]]>
 	</mx:Script>
-	<mx:Button label="Save" bottom="10" left="10"/>
-	<mx:TextArea editable="false" width="276" right="10" top="10" id="debugText" color="#000000" bottom="41" visible="false"/>
-	<mx:Button label="Debug" bottom="10" left="81" click="toggleDebugText()"/>
+	<mx:TextArea editable="false" width="255" right="10" top="53" id="debugText" color="#000000" bottom="41" 
+		visible="false" alpha="0.85" fontSize="10" fontFamily="Lucida Console"/>
 	<mx:HBox bottom="10" right="10">
-		<mx:Button label="Smaller" click="zoomOut()"/>
-		<mx:Button label="Reset Zoom" click="resetZoom()"/>
-		<mx:Button label="Bigger" click="zoomIn()"/>
+		<mx:Button label="-" click="whitebd.zoomOut()"/>
+		<mx:Button label="Reset Zoom" click="whitebd.resetZoom()"/>
+		<mx:Button label="+" click="whitebd.zoomIn()"/>
 	</mx:HBox>
+	<mx:HBox bottom="10" left="10">
+		<mx:Button label="Save" click="whitebd.saveInk()"/>
+		<mx:Button label="Debug" click="whitebd.toggleDebugText()"/>
+		<mx:Button label="Exit" click="whitebd.exit()"/>
+	</mx:HBox>
+	<mx:ColorPicker id="colorSwatch" left="10" bottom="40" width="48" height="48"/>
+	<mx:Label text="Live Whiteboard" right="10" top="10" fontSize="30" alpha="0" color="#b3deff"/>
 </mx:Application>
