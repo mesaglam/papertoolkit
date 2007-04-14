@@ -32,7 +32,7 @@ public class DebugPaperApplication {
 
 			@Override
 			public void clicked(PenEvent e) {
-				DebugUtils.println("Clicked");
+				DebugUtils.println(e.getPenName() + " Clicked");
 			}
 
 			@Override
@@ -58,7 +58,8 @@ public class DebugPaperApplication {
 		sheet.addRegion(buttonRegion);
 
 		Application app = new Application("A Simple Debug Application");
-		app.addPenInput(new Pen("Single Pen"));
+		app.addPenInput(new Pen("Local Pen"));
+		app.addPenInput(new Pen("Laptop Pen", "171.66.51.122"));
 		app.addSheet(sheet); // no pattern info xml file loaded...
 
 		PaperToolkit p = new PaperToolkit(true, false, false);

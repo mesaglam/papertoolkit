@@ -1,7 +1,10 @@
 package edu.stanford.hci.r3.demos.flash;
 
+import sun.security.krb5.Config;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.config.Configuration;
+import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.flash.whiteboard.FlashWhiteboard;
 import edu.stanford.hci.r3.pen.Pen;
 
@@ -36,7 +39,7 @@ public class WizardOfOz {
 
 		pen = new Pen("Home", "solaria.stanford.edu");
 
-		whiteboard = new FlashWhiteboard();
+		whiteboard = new FlashWhiteboard(Constants.Ports.FLASH_COMMUNICATION_SERVER);
 		whiteboard.addPen(pen);
 
 		app = new Application("Wizard of Oz Monitoring");

@@ -31,7 +31,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
  */
-public class DebugPaperApplication2 {
+public class DebugShowMeApp {
 	public static void main(String[] args) {
 
 		Sheet sheet = new Sheet(8.5, 11);
