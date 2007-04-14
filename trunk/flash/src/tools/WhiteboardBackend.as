@@ -95,27 +95,33 @@
             trace(event.text); // parse the text and assemble InkStrokes...
             var msg:XML = new XML(event.text);
             
-   			if (event.text.indexOf("<p")>-1) {
+            // this whole switching thing isn't the smartest...
+            // perhaps we should get the node name of the XML?
+            // because as it stands, <p would mess us up if it came
+            // before penDownEvent
+			if (event.text.indexOf("<penDownEvent") > -1) {
+				// start up a new stroke
+   				currInkStroke = new InkStroke();
+   				// add it to the stage
+				inkWell.addChild(currInkStroke);
+   			} else if (event.text.indexOf("<p")>-1) {
 				handleInk(event.text);
 	   		} else if (event.text.indexOf("<swatchColor") > -1){
-	   			trace(msg..r + " " + msg..g + " " + msg..b);
+	   			// trace(msg..r + " " + msg..g + " " + msg..b);
 	   			var intColor:int = 
 	   				(parseInt(msg.@r) << 16) + 
 	   				(parseInt(msg.@g) << 8) + 
 	   				(parseInt(msg.@b));
-	   			trace(intColor+"");
+	   			// trace(intColor+"");
 	   			theParent.colorSwatch.selectedColor = intColor;
-   			}
+   			} 
         }
         
 
 		private function handleInk(xmlTxt:String):void {
             var inkXML:XML = new XML(xmlTxt);
             // trace("XML: " + inkXML.toXMLString());
-
 			// trace(inkXML.@x + " " + inkXML.@y + " " + inkXML.@f + " " + inkXML.@t + " " + inkXML.@p);
-
-			
 
 			var xStr:String = inkXML.@x;
 			var xExp:String = "";
@@ -163,14 +169,13 @@
 
 			var penUp:Boolean = inkXML.@p == "U";
 			if (penUp) {
-				// add to the inkWell
+				inkWell.removeChild(currInkStroke);
 				inkWell.addStroke(currInkStroke);
-
-				// reposition it to the minimum (with some padding) after each stroke
+				
+				// penUps are a duplicate of the last regular sample
+				// so, we do nothing, but possibly reposition it to the minimum 
+				// (with some padding) after each stroke
 				inkWell.recenterMostRecent(theParent.stage);
-
-				// start up a new stroke
-   				currInkStroke = new InkStroke();
 			} else {
 				// add samples to the current stroke
 				currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));

@@ -17,7 +17,7 @@ package ink {
 		private var xMax:Number = Number.MIN_VALUE;
 		private var yMax:Number = Number.MIN_VALUE;
 
-		private var mostRecentStroke:InkStroke = null;
+		private var mostRecentStroke:InkStroke = new InkStroke();
 
 		public function setColor():void {
 			// for each stroke, set the color!
@@ -50,7 +50,6 @@ package ink {
 			strokes.push(stroke);			
 			addChild(stroke);
 			
-
 			if (mostRecentStroke != null) {
 				if (Math.abs(stroke.lastX - mostRecentStroke.lastX) > 800) {
 					// if it's > 800 anoto dots away from the last ink stroke, we assume it's in a different cluster (i.e., page)
@@ -79,6 +78,9 @@ package ink {
         // move the ink so that we can see the most recent ink strokes!
         // basically, we should recenter() first, and then find the delta
         // to the most recent stroke
+        //
+        // Actually, we should check to see if the most recent samples are already visible
+        // if they are, we need not change the view!
         public function recenterMostRecent(stage:Stage):void {
         	if (mostRecentStroke == null) {
         		return;

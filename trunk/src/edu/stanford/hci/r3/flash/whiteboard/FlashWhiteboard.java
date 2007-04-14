@@ -47,6 +47,8 @@ public class FlashWhiteboard {
 
 	private Color swatchColor;
 
+	private String title;
+
 	public FlashWhiteboard(int portNum) {
 		port = portNum;
 	}
@@ -61,6 +63,7 @@ public class FlashWhiteboard {
 					DebugUtils.println("Connected!");
 					flash.sendMessage("<swatchColor r='" + swatchColor.getRed() + "' g='"
 							+ swatchColor.getGreen() + "' b='" + swatchColor.getBlue() + "'/>");
+					flash.sendMessage("<title value='" + title + "'/>");
 				} else {
 					DebugUtils.println("Unhandled command: " + command);
 				}
@@ -90,6 +93,7 @@ public class FlashWhiteboard {
 
 			@Override
 			public void penDown(PenSample sample) {
+				flash.sendMessage("<penDownEvent/>");
 				flash.sendMessage(sample.toXMLString());
 			}
 
@@ -108,5 +112,9 @@ public class FlashWhiteboard {
 
 	public void setSwatchColor(Color color) {
 		swatchColor = color;
+	}
+
+	public void setTitle(String titleStr) {
+		title = titleStr;
 	}
 }
