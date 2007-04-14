@@ -10,6 +10,8 @@
 	import java.JavaIntegration;
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;
+	import flash.filters.BevelFilter;
+	import flash.display.SpreadMethod;
 
 	
 	public class WhiteboardBackend extends Sprite {
@@ -33,12 +35,18 @@
 
 		private var portNum:int = 8545; // default
 
+		private var penTipCrossHair:Sprite = new Sprite();
 
 		public function WhiteboardBackend():void {
 			trace("Ink Client Started.");
 			inkWell = new Ink();
 			addChild(inkWell);
 			currInkStroke = new InkStroke();
+			
+			penTipCrossHair.graphics.lineStyle(1, 0xDC3322);
+			penTipCrossHair.graphics.drawCircle(-1, -1, 4);
+			penTipCrossHair.x = -100;
+			inkWell.addChild(penTipCrossHair);
 		}
 		
 		public function setDebugText(dbt:TextArea):void {
@@ -114,7 +122,9 @@
 	   				(parseInt(msg.@b));
 	   			// trace(intColor+"");
 	   			theParent.colorSwatch.selectedColor = intColor;
-   			} 
+	   		} else if (event.text.indexOf("<title") > -1){
+	   			theParent.title.text = msg.@value;
+	   		}
         }
         
 
@@ -179,6 +189,9 @@
 			} else {
 				// add samples to the current stroke
 				currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));
+
+				penTipCrossHair.x = xVal;
+				penTipCrossHair.y = yVal;
 			}	
 		}
 

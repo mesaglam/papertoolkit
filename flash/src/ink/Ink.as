@@ -53,6 +53,10 @@ package ink {
 			if (mostRecentStroke != null) {
 				if (Math.abs(stroke.lastX - mostRecentStroke.lastX) > 800) {
 					// if it's > 800 anoto dots away from the last ink stroke, we assume it's in a different cluster (i.e., page)
+					// we scan the current clusters, to see if it is within the 800 threshold of any of the clusters
+					// we choose the closest one...
+					// if not, then we add a whole new cluster!
+					// TODO
 					trace("New Cluster");
 				}
 			}
@@ -69,11 +73,11 @@ package ink {
         // move the ink so that we can see it!
         // move the origin to near the top left of the display...
         public function recenter():void {
-        	x = -xMin + 30;
-        	y = -yMin + 50;
+        	x = -xMin + padding;
+        	y = -yMin + padding;
         }
 
-		
+		private var padding:int = 60;
         
         // move the ink so that we can see the most recent ink strokes!
         // basically, we should recenter() first, and then find the delta
@@ -86,31 +90,39 @@ package ink {
         		return;
         	}
         	
-        	trace(stage);
-        	trace(stage.stageWidth);
+        	trace("Stage Size: " + stage.stageWidth + ", " + stage.stageHeight);
+        	trace("Current Location of Ink: " + x + ", " + y);
+        	trace("Current Bounds of Ink: " + xMin + ", " + yMin + " --> " + xMax + ", " + yMax);
+			trace("Most Recent Sample: " + mostRecentStroke.lastX + ", " + mostRecentStroke.lastY);
+			
+			// is the most recent sample visible?
+			// i.e., is x + mostRecentStroke.lastX both > 0 and < stageWidth?
+			// same for height
+
         	
         	// are these visible?
-        	var dXFromOrigin:Number = (mostRecentStroke.lastX - xMin);
-        	var dYFromOrigin:Number = (mostRecentStroke.lastY - yMin);
+        	var dXFromOrigin:Number = (mostRecentStroke.lastX + x);
+        	var dYFromOrigin:Number = (mostRecentStroke.lastY + y);
         	
-        	var lastSampleXNotVisible:Boolean = dXFromOrigin > stage.stageWidth;
-        	var lastSampleYNotVisible:Boolean = dYFromOrigin > stage.stageHeight; 
-        	
-        	trace("dX,dY from Origin: " + dXFromOrigin + ", " + dYFromOrigin);
-        	// trace("Stage Size: " + stage.stageWidth + " " + stage.stageHeight);
-        	
-    		x = -xMin + 30;
-    		y = -yMin + 50;
+        	var lastSampleXOffStageRight:Boolean = dXFromOrigin > (stage.stageWidth - padding);
+        	var lastSampleXOffStageLeft:Boolean = dXFromOrigin < padding;
 
-        	if (lastSampleXNotVisible) {
-        		x -= (dXFromOrigin - stage.stageWidth + 60);
-        	} 
+        	var lastSampleYOffStageBottom:Boolean = dYFromOrigin > stage.stageHeight - padding; 
+        	var lastSampleYOffStageTop:Boolean = dYFromOrigin < padding; 
         	
-        	if (lastSampleYNotVisible) {
-        		y -= (dYFromOrigin - stage.stageHeight + 100);
-			}
-
+        	
+        	// if it's off stage, then move the writing toward the center!
+        	if (lastSampleXOffStageRight) {
+        		x -= (dXFromOrigin - stage.stageWidth + padding) + stage.stageWidth/3;
+        	} else if (lastSampleXOffStageLeft) {
+        		x = -mostRecentStroke.lastX + padding + stage.stageWidth/3;
+        	}
+        	
+        	if (lastSampleYOffStageBottom) {
+        		y -= (dYFromOrigin - stage.stageHeight + padding) + stage.stageHeight/3;
+        	} else if (lastSampleYOffStageTop) {
+        		y = -mostRecentStroke.lastY + padding + stage.stageHeight/3;
+        	}
         }
-		
 	}
 }
