@@ -106,6 +106,9 @@ public class Pen extends PenInput {
 	}
 
 	/**
+	 * Customize the COM port, before going live...
+	 * This will only have an effect on the local pen, as you can't really tell the remote pen which port to connect on.
+	 * For that, you should customize the PenServer or PenServerTrayApp directly.
 	 * @param port
 	 */
 	public void setLocalComPort(COMPort port) {

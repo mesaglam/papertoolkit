@@ -1,17 +1,37 @@
 package edu.stanford.hci.r3.pen.streaming;
 
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.config.Constants;
+import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.WindowUtils;
+import edu.stanford.hci.r3.util.communications.COMPort;
 import edu.stanford.hci.r3.util.graphics.ImageCache;
 
 /**
  * <p>
- * A little application that you can deploy to other machines that will host physical pens. It will
- * run with an icon in the system tray.
+ * A little application that you can deploy to other machines that will host physical pens. It will run with
+ * an icon in the system tray.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -23,100 +43,119 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
 public class PenServerTrayApp {
 
 	/**
-	 * 
-	 */
-	private static ActionListener iconListener;
-
-	/**
-	 * Pen Server is stopped.
-	 */
-	private static Image imageOFF;
-
-	/**
-	 * Tells us the pen server is running (default).
-	 */
-	private static Image imageON;
-
-	/**
-	 * 
-	 */
-	private static MenuItem onOffItem;
-
-	/**
-	 * 
-	 */
-	private static boolean serverRunning;
-
-	/**
-	 * 
+	 * Label for the Menu...
 	 */
 	private static final String START_PEN_SERVER_MSG = "Start the Pen Server";
 
 	/**
-	 * 
+	 * Label for the Menu...
 	 */
 	private static final String STOP_PEN_SERVER_MSG = "Stop the Pen Server";
-
-	/**
-	 * 
-	 */
-	private static TrayIcon trayIcon;
-
-	/**
-	 * @return
-	 */
-	private static ActionListener getExitListener() {
-		return new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Exiting the Pen Server Tray App...");
-				System.exit(0);
-			}
-		};
-	}
-
-	/**
-	 * @return
-	 */
-	private static ActionListener getOnOffListener() {
-		if (iconListener == null) {
-			iconListener = new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					if (serverRunning) {
-						trayIcon.displayMessage("Pen is Offline", "Pen Server stopped.",
-								TrayIcon.MessageType.INFO);
-						PenServer.stopServers();
-						trayIcon.setImage(imageOFF);
-						onOffItem.setLabel(START_PEN_SERVER_MSG);
-						serverRunning = false;
-					} else {
-						trayIcon.displayMessage("Pen is Online",
-								"Server started. The pen is now in live mode.",
-								TrayIcon.MessageType.INFO);
-						PenServer.startJavaServer();
-						trayIcon.setImage(imageON);
-						onOffItem.setLabel(STOP_PEN_SERVER_MSG);
-						serverRunning = true;
-					}
-				}
-			};
-		}
-		return iconListener;
-	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		PaperToolkit.initializeLookAndFeel();
+
+		// pop up a dialog box asking which serial port and which TCP/IP port to use...
+		final JDialog dialog = new JDialog();
+
+		FormLayout layout = new FormLayout( //
+				"right:pref, 3dlu, pref", // columns
+				"p, 3dlu, p, 9dlu, p" // rows
+		);
+		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
+
+		CellConstraints cc = new CellConstraints();
+
+		final JComboBox comPortComboBox = new JComboBox(COMPort.PORTS);
+		comPortComboBox.setSelectedItem(COMPort.COM5);
+		final JTextField serialPortTextField = new JTextField(15);
+		serialPortTextField.setText(Constants.Ports.PEN_SERVER_JAVA + "");
+		JButton button = new JButton("OK");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				COMPort selectedCOMPort = (COMPort) comPortComboBox.getSelectedItem();
+				int selectedTCPIPPort = Integer.parseInt(serialPortTextField.getText());
+				DebugUtils.println(selectedCOMPort + " " + selectedTCPIPPort);
+				new PenServerTrayApp(selectedCOMPort, selectedTCPIPPort);
+				dialog.dispose();
+			}
+		});
+
+		builder.addLabel("Bluetooth COM Port (e.g., COM5)", cc.xy(1, 1));
+		builder.add(comPortComboBox, cc.xyw(3, 1, 1));
+
+		builder.addLabel("Pen Server Serial Port (e.g., 11025)", cc.xy(1, 3));
+		builder.add(serialPortTextField, cc.xyw(3, 3, 1));
+
+		builder.add(button, cc.xyw(1, 5, 3));
+
+		dialog.getContentPane().add(builder.getPanel());
+		dialog.setTitle("Pen Server Options");
+		dialog.pack();
+		dialog.setLocation(WindowUtils.getWindowOrigin(dialog.getWidth(), dialog.getHeight(),
+				WindowUtils.DESKTOP_CENTER));
+		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
+	}
+
+	/**
+	 * 
+	 */
+	private COMPort comPort;
+
+	/**
+	 * 
+	 */
+	private ActionListener iconListener;
+
+	/**
+	 * Pen Server is stopped.
+	 */
+	private Image imageOFF;
+
+	/**
+	 * Tells us the pen server is running (default).
+	 */
+	private Image imageON;
+
+	/**
+	 * 
+	 */
+	private MenuItem onOffItem;
+
+	/**
+	 * 
+	 */
+	private boolean serverRunning;
+
+	/**
+	 * 
+	 */
+	private int tcpipPort;
+
+	/**
+	 * 
+	 */
+	private TrayIcon trayIcon;
+
+	public PenServerTrayApp(COMPort btDongleComPortT, int penServerTcpIpPorT) {
 		if (!SystemTray.isSupported()) {
-			System.err.println("The System Tray is not supported. "
-					+ "Exiting the Pen Server Tray App.");
+			System.err.println("The System Tray is not supported. " + "Exiting the Pen Server Tray App.");
 			return;
 		}
 		final SystemTray systemTray = SystemTray.getSystemTray();
-		imageON = ImageCache
-				.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sun.png"));
-		imageOFF = ImageCache.loadBufferedImage(PenServerTrayApp.class
-				.getResource("/icons/sunOff.png"));
+
+		comPort = btDongleComPortT;
+		tcpipPort = penServerTcpIpPorT;
+
+		// the on/off icons
+		imageON = ImageCache.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sun.png"));
+		imageOFF = ImageCache.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sunOff.png"));
 
 		final PopupMenu popup = new PopupMenu();
 		final MenuItem exitItem = new MenuItem("Exit");
@@ -146,7 +185,48 @@ public class PenServerTrayApp {
 		}
 
 		// start the pen server!
-		PenServer.startJavaServer();
+		PenServer.startJavaServer(comPort, tcpipPort);
 		serverRunning = true;
+	}
+
+	/**
+	 * @return the menu item's listener for closing the tray app...
+	 */
+	private ActionListener getExitListener() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Exiting the Pen Server Tray App...");
+				System.exit(0);
+			}
+		};
+	}
+
+	/**
+	 * @return The listener for toggling on/off the pen server.
+	 */
+	private ActionListener getOnOffListener() {
+		if (iconListener == null) {
+			iconListener = new ActionListener() {
+
+				public void actionPerformed(ActionEvent ae) {
+					if (serverRunning) {
+						trayIcon.displayMessage("Pen is Offline", "Pen Server stopped.",
+								TrayIcon.MessageType.INFO);
+						PenServer.stopServers();
+						trayIcon.setImage(imageOFF);
+						onOffItem.setLabel(START_PEN_SERVER_MSG);
+						serverRunning = false;
+					} else {
+						trayIcon.displayMessage("Pen is Online",
+								"Server started. The pen is now in live mode.", TrayIcon.MessageType.INFO);
+						PenServer.startJavaServer(comPort, tcpipPort);
+						trayIcon.setImage(imageON);
+						onOffItem.setLabel(STOP_PEN_SERVER_MSG);
+						serverRunning = true;
+					}
+				}
+			};
+		}
+		return iconListener;
 	}
 }
