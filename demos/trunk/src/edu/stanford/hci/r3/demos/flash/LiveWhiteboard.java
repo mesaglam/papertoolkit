@@ -46,23 +46,23 @@ public class LiveWhiteboard {
 		flashWhiteboard1.setTitle("Red Pen");
 		flashWhiteboard1.load();
 
-//		flashWhiteboard2 = new FlashWhiteboard(8990);
-//		flashWhiteboard2.addPen(pen1);
-//		flashWhiteboard2.setSwatchColor(Color.BLUE);
-//		flashWhiteboard2.setTitle("Blue Pen");
-//		flashWhiteboard2.load();
-//
-//		flashWhiteboard3 = new FlashWhiteboard(8991);
-//		flashWhiteboard3.addPen(pen1);
-//		flashWhiteboard3.setSwatchColor(Color.GREEN);
-//		flashWhiteboard3.setTitle("Green Pen");
-//		flashWhiteboard3.load();
-//
-//		flashWhiteboard4 = new FlashWhiteboard(8992);
-//		flashWhiteboard4.addPen(pen1);
-//		flashWhiteboard4.setSwatchColor(Color.ORANGE);
-//		flashWhiteboard4.setTitle("Orange Pen");
-//		flashWhiteboard4.load();
+		flashWhiteboard2 = new FlashWhiteboard(8990);
+		flashWhiteboard2.addPen(pen1);
+		flashWhiteboard2.setSwatchColor(Color.BLUE);
+		flashWhiteboard2.setTitle("Blue Pen");
+		flashWhiteboard2.load();
+
+		flashWhiteboard3 = new FlashWhiteboard(8991);
+		flashWhiteboard3.addPen(pen1);
+		flashWhiteboard3.setSwatchColor(Color.GREEN);
+		flashWhiteboard3.setTitle("Green Pen");
+		flashWhiteboard3.load();
+
+		flashWhiteboard4 = new FlashWhiteboard(8992);
+		flashWhiteboard4.addPen(pen1);
+		flashWhiteboard4.setSwatchColor(Color.ORANGE);
+		flashWhiteboard4.setTitle("Orange Pen");
+		flashWhiteboard4.load();
 	}
 
 }
