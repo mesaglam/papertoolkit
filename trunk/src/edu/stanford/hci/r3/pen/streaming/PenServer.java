@@ -161,10 +161,12 @@ public class PenServer implements PenListener {
 	}
 
 	/**
-	 * @param comPort
+	 * Use the default java port...
+	 * 
+	 * @param serialPort
 	 */
-	public static void startJavaServer(COMPort comPort) {
-		startJavaServer(comPort, DEFAULT_JAVA_PORT);
+	public static void startJavaServer(COMPort serialPort) {
+		startJavaServer(serialPort, DEFAULT_JAVA_PORT);
 	}
 
 	/**
@@ -321,7 +323,7 @@ public class PenServer implements PenListener {
 			log("PenServer::" + serverType + " on port " + serverSocket.getLocalPort() + " is stopping...");
 			exitFlag = true;
 			serverSocket.close();
-			
+
 			penConnection.exit();
 		} catch (IOException e) {
 			e.printStackTrace();
