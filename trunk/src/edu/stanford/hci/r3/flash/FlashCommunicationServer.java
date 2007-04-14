@@ -121,7 +121,7 @@ public class FlashCommunicationServer {
 								readerIn, writerOut));
 					}
 				} catch (SocketException e) {
-					log("Socket was Closed");
+					log("Server Socket was Closed");
 					// e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
