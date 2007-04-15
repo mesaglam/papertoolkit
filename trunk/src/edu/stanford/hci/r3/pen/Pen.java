@@ -53,6 +53,11 @@ public class Pen extends PenInput {
 	private COMPort localPenComPort = DEFAULT_COM_PORT;
 
 	/**
+	 * The port that the local or remote pen server is listening on...
+	 */
+	private int penServerTcpIpPort = PenServer.DEFAULT_JAVA_PORT;
+
+	/**
 	 * Can't use this constructor more than once, because you can only have ONE physical pen connected to the
 	 * localhost's pen server. However, you can have two pen objects listen to the same localhost server if
 	 * you wish. They will just get the same data.
@@ -106,15 +111,24 @@ public class Pen extends PenInput {
 	}
 
 	/**
-	 * Customize the COM port, before going live...
-	 * This will only have an effect on the local pen, as you can't really tell the remote pen which port to connect on.
-	 * For that, you should customize the PenServer or PenServerTrayApp directly.
+	 * Customize the COM port, before going live... This will only have an effect on the local pen, as you
+	 * can't really tell the remote pen which port to connect on. For that, you should customize the PenServer
+	 * or PenServerTrayApp directly.
+	 * 
 	 * @param port
 	 */
 	public void setLocalComPort(COMPort port) {
 		localPenComPort = port;
 	}
 
+	/**
+	 * Customize the port with which you will connect to the PenServer.
+	 * 
+	 * @param tcpipPort
+	 */
+	public void setPenServerPort(int tcpipPort) {
+		penServerTcpIpPort = tcpipPort;
+	}
 
 	/**
 	 * Connects to the pen connection on the local machine, with the default com port. This will ensure the
@@ -137,7 +151,7 @@ public class Pen extends PenInput {
 			// already started
 			return;
 		}
-		
+
 		// if the pen is on the local host...
 		// ensure that a java server has been started on this machine
 		if (hostDomainNameOrIPAddr.equals(LOCALHOST)) {
@@ -148,8 +162,7 @@ public class Pen extends PenInput {
 
 		// start a client to listen to the pen...
 		if (livePenClient == null && !isLive()) {
-			livePenClient = new PenClient(hostDomainNameOrIPAddr, PenServer.DEFAULT_JAVA_PORT,
-					ClientServerType.JAVA);
+			livePenClient = new PenClient(hostDomainNameOrIPAddr, penServerTcpIpPort, ClientServerType.JAVA);
 			livePenClient.connect();
 			liveMode = true;
 
@@ -171,7 +184,7 @@ public class Pen extends PenInput {
 			// already stopped
 			return;
 		}
-		
+
 		livePenClient.disconnect();
 		livePenClient = null;
 		liveMode = false;

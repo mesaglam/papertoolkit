@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>Streaming Live Data</title>
+<link href="../../resources/styles.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<script language="javascript" type="text/javascript" 
+  src="../../resources/header.js"></script>
+<p class="Heading">Flash Integration   </p>
+<p>R3 provides integration with Adobe Flash. The basic idea is that R3's Java components talk to Flash GUIs through the network (a socket connection). </p>
+<ol>
+  <li>We will walk through a simple demonstration application of how you can use the R3 Flash Components. </li>
+  <li>The Flash components can be compiled if you have Adobe's Flex Builder 2. Point it to PaperToolkit/flash, and Flex will import the project automatically. In the future, we will try to support some of the free open source development tools, such as MTASC. But right now, if you don't have access to the Flex builder, you can try downloading the free Flex 2 SDK and see if you can get the components compiled (I haven't tried using the command line tools yet). </li>
+  <li>If you do not have the Flex compilers, you can grab the binaries from <a href="http://hci.stanford.edu/paper/deployments/files/flash/">http://hci.stanford.edu/paper/deployments/files/flash/</a>.<br>
+  Just grab the most recent one (the version as of this writing is April 14, 2007). Unzip it into your <span class="Code">PaperToolkit/flash/</span> directory, so that the Whiteboard.swf file can be found in <span class="Code">PaperToolkit/flash/bin/</span>. </li>
+  <li>In the PaperToolkitDemos, navigate to <span class="Code">edu.stanford.hci.r3.demos.flash</span> and take a look at <span class="Code">LiveWhiteboard</span>.</li>
+  <li>Notice that we create two Pen devices. Then, we create four FlashWhiteboard components, and attach each pen to two different live whiteboards. When you run the code (you will have to edit the code so that the Pen devices reflect your own setup), you will see four browser windows pop up. I've tiled them by CONTROL+clicking on the Windows taskbar, and choosing Tile Horizontally. <br>
+    <br>
+    <img src="Whiteboard.png" alt="HWDebugger" width="800" height="637"></li>
+  <li>Also notice that you can customize the Title and the color swatch for each window. We'll add more features to this flash component in the future. </li>
+</ol>
+<hr noshade size=1/>
+<p class="Author">Ron B. Yeh<br>
+Stanford University </p>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-522093-7";
+urchinTracker();
+</script>
+</body>
+</html>
