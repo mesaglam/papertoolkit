@@ -25,7 +25,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Represents a single pen synch (i.e., one xml file in the penSynch XML directory).
+ * Represents a single pen synch (i.e., one xml file in the penSynch XML directory). This class is used for
+ * backwards compatibility with files that are created by Dissect.exe.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -34,7 +35,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PenSynch {
+public class PenSynchAnotoDissect {
 
 	private static final String PAGE = "page";
 	private static final String REQUEST_INFORMATION = "requestInformation";
@@ -42,7 +43,7 @@ public class PenSynch {
 
 	public static void main(String[] args) {
 		File xmlFile = new File("penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml");
-		new PenSynch(xmlFile);
+		new PenSynchAnotoDissect(xmlFile);
 	}
 
 	/**
@@ -54,10 +55,7 @@ public class PenSynch {
 	private String penID;
 	private Date universalTime;
 
-	/**
-	 * @param penSynchXMLFile
-	 */
-	public PenSynch(File penSynchXMLFile) {
+	public PenSynchAnotoDissect(File penSynchXMLFile) {
 		XMLInputFactory xmlInput = XMLInputFactory.newInstance();
 		try {
 			XMLEventReader eventReader = xmlInput.createXMLEventReader(new FileInputStream(penSynchXMLFile));

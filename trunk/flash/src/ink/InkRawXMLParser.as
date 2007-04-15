@@ -19,7 +19,8 @@ package ink {
 		private var inkColor:uint;
 		private var inkWidth:Number;
 		
-		public function InkRawXMLParser(xmlData:XML, inkColorVal:uint=0xDADADA, inkWidthVal:Number=1.6):void {			
+		public function InkRawXMLParser(xmlData:XML, 
+										inkColorVal:uint=0xDADADA, inkWidthVal:Number=0.8):void {			
 			inkColor = inkColorVal;
 			inkWidth = inkWidthVal;
 			processXML(xmlData);
