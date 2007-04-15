@@ -9,14 +9,16 @@ import edu.stanford.hci.r3.util.graphics.ImageUtils;
 
 /**
  * <p>
- * A Local/Remote JFrame and associated Graphics2D object, essentially. Calls to this graphics2D are
- * handled differently depending on whether the device is local or not. If it is a remote device,
- * the commands are replicated across the wire to the actual device. Don't do toooo many, of
- * course... Need to load local images and such.
+ * A Local/Remote JFrame and associated Graphics2D object, essentially. Calls to this graphics2D are handled
+ * differently depending on whether the device is local or not. If it is a remote device, the commands are
+ * replicated across the wire to the actual device. Don't do toooo many, of course... Need to load local
+ * images and such.
  * 
- * This class needs to know whether it's local or remote, and it will handle the display
- * accordingly. If it is remote, it will ask the associated action receiver to create a display
- * object, etc.
+ * This class needs to know whether it's local or remote, and it will handle the display accordingly. If it is
+ * remote, it will ask the associated action receiver to create a display object, etc.
+ * 
+ * TODO: Alternatively, we can implement a remote Display channel that runs in Apollo/Flash! That means, we
+ * can have really nice vector graphics that can scale to the display size!
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -32,16 +34,9 @@ public class DisplayChannel {
 	 * </p>
 	 */
 	public enum ImageLocation {
-		NORTH,
-		SOUTH,
-		EAST,
-		WEST,
-		NORTH_EAST,
-		NORTH_WEST,
-		SOUTH_EAST,
-		SOUTH_WEST
+		NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST
 	}
-	
+
 	/**
 	 * 
 	 */
