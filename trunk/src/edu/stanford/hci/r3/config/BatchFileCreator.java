@@ -19,8 +19,8 @@ import edu.stanford.hci.r3.util.xml.TagType;
 
 /**
  * <p>
- * This is a utility generating the correct classpath for a WindowsXP Batch file. The classpath is
- * determined from the eclipse project settings (.classpath).
+ * This is a utility generating the correct classpath for a WindowsXP Batch file. The classpath is determined
+ * from the eclipse project settings (.classpath).
  * 
  * Run this whenever the classpath changes.
  * </p>
@@ -36,10 +36,7 @@ public class BatchFileCreator {
 	public enum Attributes {
 		EXCLUDING, KIND, PATH
 	}
-	public enum Nodes {
-		CLASSPATH, CLASSPATHENTRY, ATTRIBUTES, ATTRIBUTE
-	}
-	
+
 	private class ClassPathEntry {
 
 		public boolean excluding = false;
@@ -51,6 +48,10 @@ public class BatchFileCreator {
 		public String toString() {
 			return kind + "\texclude?:" + excluding + "\t" + path;
 		}
+	}
+
+	public enum Nodes {
+		ATTRIBUTE, ATTRIBUTES, CLASSPATH, CLASSPATHENTRY
 	}
 
 	/**
@@ -72,14 +73,15 @@ public class BatchFileCreator {
 
 		final BatchFileCreator creator = new BatchFileCreator();
 		try {
-			final String classPathString = creator.parseFile(classpathFile, "",
-					new HashSet<String>());
+			final String classPathString = creator.parseFile(classpathFile, "", new HashSet<String>());
 
 			File batchFile = new File("PenServer.bat");
-			FileUtils.writeStringToFile("java -classpath " + classPathString + " edu.stanford.hci.r3.pen.streaming.PenServerTrayApp \n pause", batchFile);
+			FileUtils.writeStringToFile("java -classpath " + classPathString
+					+ " edu.stanford.hci.r3.pen.streaming.PenServerTrayApp \n pause", batchFile);
 
 			File batchFile2 = new File("ActionReceiver.bat");
-			FileUtils.writeStringToFile("java -classpath " + classPathString + " edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp \n pause", batchFile2);
+			FileUtils.writeStringToFile("java -classpath " + classPathString
+					+ " edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp \n pause", batchFile2);
 
 			System.out.println(classPathString);
 		} catch (FileNotFoundException e) {
@@ -103,8 +105,8 @@ public class BatchFileCreator {
 	private Set<String> referencePaths;
 
 	/**
-	 * Uses the fast XMLStreamReader to parse BNet-ized Anoto XML files. By BNet-ized, we mean the
-	 * process in XMLRequestParser to clean the dissect.exe output.
+	 * Uses the fast XMLStreamReader to parse BNet-ized Anoto XML files. By BNet-ized, we mean the process in
+	 * XMLRequestParser to clean the dissect.exe output.
 	 * 
 	 * @param f
 	 * @param pathPrefix
@@ -114,8 +116,8 @@ public class BatchFileCreator {
 	 * @throws FileNotFoundException
 	 * @throws FactoryConfigurationError
 	 */
-	private String parseFile(File f, String pathPrefix, Set<String> srcP)
-			throws FileNotFoundException, XMLStreamException {
+	private String parseFile(File f, String pathPrefix, Set<String> srcP) throws FileNotFoundException,
+			XMLStreamException {
 		referencePaths = srcP;
 		prefix = pathPrefix;
 
@@ -237,8 +239,7 @@ public class BatchFileCreator {
 					break;
 				case CLASSPATHENTRY:
 					// only if eclipse considers this path "included"
-					if (!currentNode.excluding && !currentKind.equals("con")
-							&& !currentKind.equals("var")) {
+					if (!currentNode.excluding && !currentKind.equals("con") && !currentKind.equals("var")) {
 						// if it's a src/ type, we gotta recursively compute the classpath
 						if (currentKind.equals("src")) {
 							if (currentPath.equals("src")) {
@@ -257,8 +258,8 @@ public class BatchFileCreator {
 									referencePaths.add(currentPath);
 									File cpFile = null;
 									try {
-										cpFile = new File(new File(new File(".."), currentPath),
-												".classpath").getCanonicalFile();
+										cpFile = new File(new File(new File(".."), currentPath), ".classpath")
+												.getCanonicalFile();
 									} catch (IOException e1) {
 										e1.printStackTrace();
 									}
