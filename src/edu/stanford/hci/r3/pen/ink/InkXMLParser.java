@@ -37,11 +37,23 @@ public class InkXMLParser {
 
 	/**
 	 * <p>
+	 * PAGE and INK are aliases, as our ButterflyNet format would create PAGE xml files that are more or less
+	 * compatible with our new INK xml files.
 	 * </p>
 	 */
 	public enum Nodes {
-		INK, P, STROKE
+		INK, P, PAGE, STROKE
 	}
+
+	private long beginTS;
+
+	private PenSample currentSample;
+
+	private ArrayList<PenSample> currentStroke;
+
+	private long endTS;
+
+	private int f;
 
 	private Ink ink;
 
@@ -50,21 +62,11 @@ public class InkXMLParser {
 	 */
 	private String recentXMLText = "";
 
-	private ArrayList<PenSample> currentStroke;
-
-	private PenSample currentSample;
-
 	private long t;
-
-	private int f;
-
-	private double y;
 
 	private double x;
 
-	private long endTS;
-
-	private long beginTS;
+	private double y;
 
 	public InkXMLParser(Ink theInk) {
 		ink = theInk;
@@ -198,6 +200,8 @@ public class InkXMLParser {
 			case P:
 				break;
 			case INK:
+			case PAGE:
+				// 
 				break;
 			}
 		} else { // END

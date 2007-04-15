@@ -20,7 +20,7 @@ package ink {
 
 		private var g:Graphics = graphics;
 
-		private var strokeWidth:Number = 1.6;
+		private var strokeWidth:Number = 1.5;
 		
 		private var color:uint = defaultColor;
 		
@@ -90,7 +90,16 @@ package ink {
 				// in the future, we'll want to subdivide and add new points, so the lineTo looks smoother :)
 				var dX:Number = xVal - lastXVal;
 				var dY:Number = yVal - lastYVal;
-				trace("dX,dY from last sample: " + dX + ", " + dY);
+				// trace("InkStroke.as: dX,dY from last sample: " + dX + ", " + dY);
+				
+				
+				// if it's an UBER JUMP... then this may be the problem where anoto notebooks 
+				// have noncontiguous pattern. In that case, just disregard this whole point
+				if (Math.abs(dX) > 500 || Math.abs(dY) > 500) {
+					// trace("InkStroke.as: Disregarding a Large Jump in Ink Samples...");
+					return;
+				}
+				
 				
 				// reverted to simple linetos..
 				g.lineTo(xVal, yVal);
