@@ -27,15 +27,27 @@ package ink {
 			
 		}
 		
-		public function addPageDecorations():void {
-			var g:Graphics = graphics;
-			g.beginFill(0x202020);
-			g.lineStyle(0.5, 0x444444);
-			g.drawRect(xMin-padding, yMin-padding, (xMax-xMin)+(2*padding), (yMax-yMin)+(2*padding));
-		}
-
 		public function getNumStrokes():Number {
 			return strokes.length;
+		}
+
+		public function get paddingX():Number {
+			return padding;
+		}
+		public function get paddingY():Number {
+			return padding;
+		}
+		public function get minX():Number {
+			return xMin;
+		}
+		public function get minY():Number {
+			return yMin;
+		}
+		public function get maxX():Number {
+			return xMax;
+		}
+		public function get maxY():Number {
+			return yMax;
 		}
 
 		public function Ink() {			
@@ -88,20 +100,6 @@ package ink {
         }
 
         
-		public function rescaleAndrecenter(parent:DisplayObject):void {
-        	trace("Parent Size: " + parent.width + ", " + parent.height);
-        	trace("Ink Size: " + width + ", " + height);
-        	trace("Current Bounds of Ink: " + xMin + ", " + yMin + " --> " + xMax + ", " + yMax + " [" + 
-        	      (xMax-xMin) + ", " + (yMax - yMin) + "]");
-        	if (parent.width > width) {
-        		var dWidth:Number = parent.width - width;
-        		var dWidth_Half:Number = dWidth/2;
-				trace("Width: " + dWidth + " " + dWidth_Half);
-        		x = dWidth_Half - xMin;
-        		trace("Recentering... setting x to: " + x);
-        	}
-		}
-
         // move the ink so that we can see the most recent ink strokes!
         // basically, we should recenter() first, and then find the delta
         // to the most recent stroke

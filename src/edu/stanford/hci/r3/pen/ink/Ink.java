@@ -9,14 +9,12 @@ import javax.swing.filechooser.FileSystemView;
 
 import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
-import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * On its surface, this is just a <code>List&lt;InkStroke&gt;</code>... However, this class will
- * provide nice functions for clustering strokes, selecting strokes, etc.
+ * On its surface, this is just a <code>List&lt;InkStroke&gt;</code>... However, this class will provide
+ * nice functions for clustering strokes, selecting strokes, etc.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -29,8 +27,8 @@ public class Ink {
 
 	/**
 	 * <p>
-	 * Helps us determine where we got this ink from. It is not a required field, but is set when it
-	 * is convenient.
+	 * Helps us determine where we got this ink from. It is not a required field, but is set when it is
+	 * convenient.
 	 * </p>
 	 */
 	public enum InkSource {
@@ -48,8 +46,13 @@ public class Ink {
 	private Color color = DEFAULT_DARK_INK_COLOR;
 
 	/**
-	 * The bounds of this ink collection. This is the rightmost x coordinate of any sample in this
-	 * collection of strokes.
+	 * Most recent timestamp in this Ink cluster.
+	 */
+	private long maxTS = Long.MIN_VALUE;
+
+	/**
+	 * The bounds of this ink collection. This is the rightmost x coordinate of any sample in this collection
+	 * of strokes.
 	 */
 	private double maxX = Double.MIN_VALUE;
 
@@ -57,6 +60,11 @@ public class Ink {
 	 * 
 	 */
 	private double maxY = Double.MIN_VALUE;
+
+	/**
+	 * Earliest Timestamp in this Ink cluster.
+	 */
+	private long minTS = Long.MAX_VALUE;
 
 	/**
 	 * 
@@ -74,8 +82,8 @@ public class Ink {
 	private String name = "Ink";
 
 	/**
-	 * For ink that has sourceType set to BATCHED, this field is meaningful. It tells us which
-	 * logical page this ink came from. For STREAMED ink, this field will be left NULL.
+	 * For ink that has sourceType set to BATCHED, this field is meaningful. It tells us which logical page
+	 * this ink came from. For STREAMED ink, this field will be left NULL.
 	 */
 	private PageAddress pageAddress;
 
@@ -126,27 +134,10 @@ public class Ink {
 		updateMinAndMax(s);
 	}
 
-	/**
-	 * @return return an XML representation of this Ink object.
-	 */
-	public String getAsXML() {
-		return getAsXML(true);
-	}
-
-	/**
-	 * Represents this Ink object as an XML string.
-	 * 
-	 * @param useSeparatorLines
-	 * @return
-	 */
-	public String getAsXML(boolean useSeparatorLines) {
-		final String separator = useSeparatorLines ? "\n" : "";
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(getOpenTagXML() + separator);
-		sb.append(getInnerXML(useSeparatorLines) + separator);
-		sb.append("</ink>");
-		return sb.toString();
+	public void append(Ink pageInk) {
+		for (InkStroke stroke : pageInk.getStrokes()) {
+			addStroke(stroke);
+		}
 	}
 
 	/**
@@ -156,6 +147,13 @@ public class Ink {
 		return color;
 	}
 
+	public long getFirstTimestamp() {
+		return minTS;
+	}
+
+	/**
+	 * @return
+	 */
 	public String getInnerXML() {
 		return getInnerXML(false);
 	}
@@ -167,19 +165,24 @@ public class Ink {
 		final String separator = useSeparatorLines ? "\n" : "";
 		StringBuilder sb = new StringBuilder();
 		for (InkStroke s : strokes) {
-			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\""
-					+ s.getLastTimestamp() + "\">" + separator);
+			sb.append("<stroke begin=\"" + s.getFirstTimestamp() + "\" end=\"" + s.getLastTimestamp() + "\">"
+					+ separator);
 			double[] x = s.getXSamples();
 			double[] y = s.getYSamples();
 			int[] f = s.getForceSamples();
 			long[] ts = s.getTimeSamples();
 			for (int i = 0; i < x.length; i++) {
-				sb.append("<p x=\"" + x[i] + "\" y=\"" + y[i] + "\" f=\"" + f[i] + "\" t=\""
-						+ ts[i] + "\"/>");
+				sb
+						.append("<p x=\"" + x[i] + "\" y=\"" + y[i] + "\" f=\"" + f[i] + "\" t=\"" + ts[i]
+								+ "\"/>");
 			}
 			sb.append("</stroke>" + separator);
 		}
 		return sb.toString();
+	}
+
+	public long getLastTimestamp() {
+		return maxTS;
 	}
 
 	public double getMaxX() {
@@ -216,11 +219,16 @@ public class Ink {
 	 * @return
 	 */
 	private String getOpenTagXML() {
-		if (pageAddress == null) {
-			return "<ink>";
-		} else {
-			return "<ink address=\"" + pageAddress.toString() + "\">";
+		StringBuilder sb = new StringBuilder();
+		sb.append("<ink");
+		if (pageAddress != null) {
+			sb.append(" address=\"" + pageAddress.toString() + "\"");
 		}
+		if (minTS != Long.MAX_VALUE) {
+			sb.append(" begin=\"" + minTS + "\" end=\"" + maxTS + "\"");
+		}
+		sb.append(">");
+		return sb.toString();
 	}
 
 	/**
@@ -252,8 +260,8 @@ public class Ink {
 	}
 
 	/**
-	 * Load strokes and other information from an xml file. It will clear this object before the
-	 * load occurs, effectively replacing this Ink object with the one represented by the XML file.
+	 * Load strokes and other information from an xml file. It will clear this object before the load occurs,
+	 * effectively replacing this Ink object with the one represented by the XML file.
 	 * 
 	 * @param xmlFileSource
 	 */
@@ -294,7 +302,7 @@ public class Ink {
 	 * @param xmlFileDest
 	 */
 	public void saveToXMLFile(File xmlFileDest) {
-		FileUtils.writeStringToFile(getAsXML(true), xmlFileDest);
+		FileUtils.writeStringToFile(toXMLString(true), xmlFileDest);
 	}
 
 	/**
@@ -305,8 +313,7 @@ public class Ink {
 	}
 
 	/**
-	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink
-	 * clusters.
+	 * Use this for anything you like. It may help in debugging, or uniquely identifying ink clusters.
 	 * 
 	 * @param theName
 	 */
@@ -315,8 +322,8 @@ public class Ink {
 	}
 
 	/**
-	 * Set the Anoto page address that we got this Ink object from. When we do this, it is implied
-	 * that our sourceType is BATCHED.
+	 * Set the Anoto page address that we got this Ink object from. When we do this, it is implied that our
+	 * sourceType is BATCHED.
 	 * 
 	 * @param address
 	 */
@@ -340,6 +347,29 @@ public class Ink {
 	}
 
 	/**
+	 * @return return an XML representation of this Ink object.
+	 */
+	public String toXMLString() {
+		return toXMLString(true);
+	}
+
+	/**
+	 * Represents this Ink object as an XML string.
+	 * 
+	 * @param useSeparatorLines
+	 * @return
+	 */
+	public String toXMLString(boolean useSeparatorLines) {
+		final String separator = useSeparatorLines ? "\n" : "";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(getOpenTagXML() + separator);
+		sb.append(getInnerXML(useSeparatorLines) + separator);
+		sb.append("</ink>");
+		return sb.toString();
+	}
+
+	/**
 	 * @param s
 	 */
 	private void updateMinAndMax(InkStroke s) {
@@ -348,5 +378,7 @@ public class Ink {
 		minY = Math.min(s.getMinY(), minY);
 		maxX = Math.max(s.getMaxX(), maxX);
 		maxY = Math.max(s.getMaxY(), maxY);
+		minTS = Math.min(s.getFirstTimestamp(), minTS);
+		maxTS = Math.max(s.getLastTimestamp(), maxTS);
 	}
 }

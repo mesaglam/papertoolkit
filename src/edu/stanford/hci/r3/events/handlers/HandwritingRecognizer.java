@@ -98,7 +98,7 @@ public abstract class HandwritingRecognizer extends EventHandler {
 			return "";
 		} else {
 			final Ink ink = new Ink(strokes);
-			final String xml = ink.getAsXML(false /* no separator lines */);
+			final String xml = ink.toXMLString(false /* no separator lines */);
 			final String result = recognizerService.recognizeHandwriting(xml);
 			return result;
 		}
