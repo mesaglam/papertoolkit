@@ -23,10 +23,10 @@ public class FlashClient {
 
 	private int clientID;
 	private Socket clientSocket;
+	private Thread clientThread;
 	private BufferedReader fromClient;
 	private FlashCommunicationServer server;
 	private PrintStream toClient;
-	private Thread clientThread ;
 
 	public FlashClient(FlashCommunicationServer flashCommServer, int id, Socket clientSock,
 			BufferedReader readerIn, PrintStream writerOut) {
@@ -44,7 +44,6 @@ public class FlashClient {
 				boolean done = false;
 				while (!done) {
 					String command = null;
-					String commandLowerCase = null;
 					try {
 						command = fromClient.readLine();
 					} catch (IOException e) {
@@ -56,7 +55,6 @@ public class FlashClient {
 							clientSocket.close();
 						} else {
 							command = command.trim();
-							commandLowerCase = command.toLowerCase();
 							// System.out.println(">> Reading a line from the client: [" + command + "]");
 							if (command.equals("exit")) {
 								done = true;

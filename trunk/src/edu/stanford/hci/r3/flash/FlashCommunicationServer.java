@@ -10,7 +10,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.util.DebugUtils;
@@ -41,6 +43,8 @@ public class FlashCommunicationServer {
 	 * Only counts up.
 	 */
 	private int clientID = 0;
+
+	private Map<String, FlashCommand> commands = new HashMap<String, FlashCommand>();
 
 	/**
 	 * All the clients that have connected to us! You can test this by telnetting in to this server and port.
@@ -77,6 +81,10 @@ public class FlashCommunicationServer {
 		serverThread.start();
 	}
 
+	public void addCommand(String cmdName, FlashCommand flashCommand) {
+		commands.put(cmdName, flashCommand);
+	}
+
 	/**
 	 * @param flashListener
 	 */
@@ -96,7 +104,8 @@ public class FlashCommunicationServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		DebugUtils.println("Exiting Flash Communications Server.... If this is the last thread, the program should exit.");
+		DebugUtils
+				.println("Exiting Flash Communications Server.... If this is the last thread, the program should exit.");
 	}
 
 	/**
@@ -132,18 +141,39 @@ public class FlashCommunicationServer {
 		};
 	}
 
-	private void log(String string) {
-		DebugUtils.println(string);
-	}
-
 	/**
 	 * @param clientID
 	 * @param command
 	 */
 	public void handleCommand(int clientID, String command) {
-		DebugUtils.println("Server got command [" + command + "] from client " + clientID);
-		for (FlashListener listener : listeners) {
-			listener.messageReceived(command);
+		if (commands.containsKey(command)) {
+			// invoking a stored command
+			commands.get(command).invoke();
+		} else {
+			// sending the command on to listeners
+			DebugUtils.println("Server got command [" + command + "] from client " + clientID);
+			for (FlashListener listener : listeners) {
+				listener.messageReceived(command);
+			}
+		}
+	}
+
+	private void log(String string) {
+		DebugUtils.println(string);
+	}
+
+	/**
+	 * Point it to the Apollo exe that will serve as your GUI.
+	 * 
+	 * @param apolloGUIFile
+	 */
+	public void openFlashApolloGUI(File apolloGUIFile) {
+		try {
+			ProcessBuilder processBuilder = new ProcessBuilder(apolloGUIFile.getAbsolutePath(), "port:"
+					+ serverPort);
+			processBuilder.start();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -161,21 +191,6 @@ public class FlashCommunicationServer {
 		// TODO: pass the port
 		try {
 			Desktop.getDesktop().browse(flashGUIFile.toURI());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Point it to the Apollo exe that will serve as your GUI.
-	 * 
-	 * @param apolloGUIFile
-	 */
-	public void openFlashApolloGUI(File apolloGUIFile) {
-		try {
-			ProcessBuilder processBuilder = new ProcessBuilder(apolloGUIFile.getAbsolutePath(), "port:"
-					+ serverPort);
-			processBuilder.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

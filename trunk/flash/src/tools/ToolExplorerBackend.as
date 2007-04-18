@@ -24,9 +24,8 @@ package tools {
 
 		// the port that the Java back end is listening on
 		private var portNum:int;
-		
 		private var javaBackend:JavaIntegration;
-		
+
 		public function ToolExplorerBackend(win:NativeWindow):void {
 			window = win;		
 			stageObj = win.stage;
@@ -41,7 +40,6 @@ package tools {
 		// this is called after the command line arguments are processed
 		private function start():void {
 			// toggleFullScreen();
-			
 			javaBackend = new JavaIntegration(portNum);	
 			javaBackend.addMessageListener(msgListener);
 		}

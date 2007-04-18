@@ -15,10 +15,6 @@
 				explorer.setApp(this);
 				explorer.setDesignToolPanel(designToolPanel);
 			}			
-			
-			public function doSomething():void {
-				trace(designToolPanel);
-			}
 		]]>
 	</mx:Script>
 
@@ -133,5 +129,4 @@
 		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="10" paddingLeft="25" paddingTop="10" paddingRight="25"/>
 	</mx:VBox>
 	<mx:LinkButton label="?" click="explorer.browseToDocumentationWebsite();" fontWeight="bold" fontSize="23" color="#666668" left="117" bottom="10" height="41"/>
-	<mx:Button label="Do Something" horizontalCenter="0" bottom="10" click="doSomething();"/>
 </mx:ApolloApplication>

@@ -5,12 +5,15 @@ package ink {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.display.Stage;
+	import flash.filters.GradientBevelFilter;
+	import flash.display.DisplayObject;
 
 	
 	public class Ink extends Sprite {
 	
 		private var strokes:Array = new Array(); // of InkStroke objects
 		
+		private var padding:int = 60;
 		
 		private var xMin:Number = Number.MAX_VALUE;
 		private var yMin:Number = Number.MAX_VALUE;
@@ -22,6 +25,13 @@ package ink {
 		public function setColor():void {
 			// for each stroke, set the color!
 			
+		}
+		
+		public function addPageDecorations():void {
+			var g:Graphics = graphics;
+			g.beginFill(0x202020);
+			g.lineStyle(0.5, 0x444444);
+			g.drawRect(xMin-padding, yMin-padding, (xMax-xMin)+(2*padding), (yMax-yMin)+(2*padding));
 		}
 
 		public function getNumStrokes():Number {
@@ -72,13 +82,26 @@ package ink {
         
         // move the ink so that we can see it!
         // move the origin to near the top left of the display...
-        public function recenter():void {
+        public function resetLocation():void {
         	x = -xMin + padding;
         	y = -yMin + padding;
         }
 
-		private var padding:int = 60;
         
+		public function rescaleAndrecenter(parent:DisplayObject):void {
+        	trace("Parent Size: " + parent.width + ", " + parent.height);
+        	trace("Ink Size: " + width + ", " + height);
+        	trace("Current Bounds of Ink: " + xMin + ", " + yMin + " --> " + xMax + ", " + yMax + " [" + 
+        	      (xMax-xMin) + ", " + (yMax - yMin) + "]");
+        	if (parent.width > width) {
+        		var dWidth:Number = parent.width - width;
+        		var dWidth_Half:Number = dWidth/2;
+				trace("Width: " + dWidth + " " + dWidth_Half);
+        		x = dWidth_Half - xMin;
+        		trace("Recentering... setting x to: " + x);
+        	}
+		}
+
         // move the ink so that we can see the most recent ink strokes!
         // basically, we should recenter() first, and then find the delta
         // to the most recent stroke
