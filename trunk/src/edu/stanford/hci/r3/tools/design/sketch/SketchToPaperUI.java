@@ -196,7 +196,7 @@ public class SketchToPaperUI {
 				if (event != null) {
 					// Recognize the text...
 					String result = service.recognizeHandwriting(event
-							.getAsXML(false /* no separator lines */));
+							.toXMLString(false /* no separator lines */));
 
 					// Split it on non-alpha numeric characters
 					String pieces[] = result.split("[^a-zA-Z0-9]");

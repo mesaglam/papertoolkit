@@ -144,7 +144,7 @@ public class InkAPIBrowser {
 		List<Ink> importedInk = penSynch.getImportedInk();
 		for (Ink ink : importedInk) {
 			DebugUtils.println("Sending ink from: " + ink.getSourcePageAddress());
-			flash.sendMessage(ink.getAsXML(false));
+			flash.sendMessage(ink.toXMLString(false));
 
 			mostRecentInkObject = ink;
 		}
@@ -235,7 +235,7 @@ public class InkAPIBrowser {
 		DebugUtils.println("New Ink: " + inkResult.getNumStrokes());
 		
 		// send this ink back to the Flash GUI, to highlight in red!
-		flash.sendMessage("<highlight>" + inkResult.getAsXML(false) + "</highlight>");
+		flash.sendMessage("<highlight>" + inkResult.toXMLString(false) + "</highlight>");
 	}
 
 	/**

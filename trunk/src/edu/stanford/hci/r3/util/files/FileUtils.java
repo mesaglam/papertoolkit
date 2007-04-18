@@ -71,9 +71,9 @@ public class FileUtils {
 	}
 
 	/**
-	 * A flexible copy function. It will do slightly different things depending on what is passed
-	 * into the parameters. It can copy a file to another file, into a directory, or a directory
-	 * into another directory.
+	 * A flexible copy function. It will do slightly different things depending on what is passed into the
+	 * parameters. It can copy a file to another file, into a directory, or a directory into another
+	 * directory.
 	 * 
 	 * @param sourceFileOrDir
 	 * @param targetFileOrDir
@@ -111,8 +111,7 @@ public class FileUtils {
 	 * @param visibleFilesOnly
 	 * @throws IOException
 	 */
-	private static void copyDirectory(File srcDir, File destDir, boolean visibleFilesOnly)
-			throws IOException {
+	private static void copyDirectory(File srcDir, File destDir, boolean visibleFilesOnly) throws IOException {
 		if (visibleFilesOnly && (isHiddenOrDotFile(srcDir))) {
 			// this source directory does not fit the flag, because it is hidden
 			return;
@@ -147,8 +146,7 @@ public class FileUtils {
 	 * @param visibleFilesOnly
 	 * @throws IOException
 	 */
-	private static void copyFile(File source, File dest, boolean visibleFilesOnly)
-			throws IOException {
+	private static void copyFile(File source, File dest, boolean visibleFilesOnly) throws IOException {
 		if (visibleFilesOnly && isHiddenOrDotFile(source)) {
 			// this source file does not fit the flag
 			return;
@@ -235,8 +233,8 @@ public class FileUtils {
 	}
 
 	/**
-	 * @return The current time, with symbols replaced with underscores, so that we can use it in
-	 *         file names. This is great for logs that have to be tagged with dates.
+	 * @return The current time, with symbols replaced with underscores, so that we can use it in file names.
+	 *         This is great for logs that have to be tagged with dates.
 	 */
 	public static String getCurrentTimeForUseInAFileName() {
 		String time = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
@@ -267,6 +265,58 @@ public class FileUtils {
 
 		return year + "_" + monthStr + "_" + dateStr + "__" + //
 				hourStr + "_" + minuteStr + "_" + secondsStr;
+	}
+
+	/**
+	 * break a path down into individual elements and add to a list. example : if a path is /a/b/c/d.txt, the
+	 * breakdown will be [d.txt,c,b,a]
+	 * 
+	 * @author David M. Howard
+	 * @param f
+	 *            input file
+	 * @return a List collection with the individual elements of the path in reverse order
+	 */
+	private static List<String> getPathList(File f) {
+		List<String> l = new ArrayList<String>();
+		File r;
+		try {
+			r = f.getCanonicalFile();
+			while (r != null) {
+				l.add(r.getName());
+				r = r.getParentFile();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			l = null;
+		}
+		return l;
+	}
+
+	/**
+	 * get relative path of File 'f' with respect to 'home' directory example : home = /a/b/c f = /a/d/e/x.txt
+	 * s = getRelativePath(home,f) = ../../d/e/x.txt
+	 * 
+	 * home = "/a/b/c" file = "/a/b/c/d/e.txt" relative path = "d/e.txt"
+	 * 
+	 * home = "/a/b/c" file = "/a/d/f/g.txt" relative path = "../../d/f/g.txt"
+	 * 
+	 * @author David M. Howard
+	 * @param home
+	 *            base path, should be a directory, not a file, or it doesn't make sense
+	 * @param f
+	 *            file to generate path for
+	 * @return path from home to f as a string
+	 */
+	public static String getRelativePath(File home, File f) {
+		List<String> homelist;
+		List<String> filelist;
+		String s;
+
+		homelist = getPathList(home);
+		filelist = getPathList(f);
+		s = matchPathLists(homelist, filelist);
+
+		return s;
 	}
 
 	/**
@@ -367,6 +417,47 @@ public class FileUtils {
 	}
 
 	/**
+	 * figure out a string representing the relative path of 'f' with respect to 'r'
+	 * 
+	 * @author David M. Howard
+	 * 
+	 * @param r
+	 *            home path
+	 * @param f
+	 *            path of file
+	 */
+	private static String matchPathLists(List<String> r, List<String> f) {
+		int i;
+		int j;
+		String s;
+		// start at the beginning of the lists
+		// iterate while both lists are equal
+		s = "";
+		i = r.size() - 1;
+		j = f.size() - 1;
+
+		// first eliminate common root
+		while ((i >= 0) && (j >= 0) && (r.get(i).equals(f.get(j)))) {
+			i--;
+			j--;
+		}
+
+		// for each remaining level in the home path, add a ..
+		for (; i >= 0; i--) {
+			s += ".." + File.separator;
+		}
+
+		// for each level in the file path, add the path
+		for (; j >= 1; j--) {
+			s += f.get(j) + File.separator;
+		}
+
+		// file name
+		s += f.get(j);
+		return s;
+	}
+
+	/**
 	 * Works with positive numbers... and has a corner case where value=0 and numDigits=1 will fail.
 	 * 
 	 * @param value
@@ -400,8 +491,8 @@ public class FileUtils {
 		final StringBuilder returnVal = new StringBuilder();
 		final String endLine = separateWithNewLines ? "\n" : "";
 		try {
-			final BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
-					f.getAbsoluteFile())));
+			final BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f
+					.getAbsoluteFile())));
 			String line = "";
 			while ((line = br.readLine()) != null) {
 				returnVal.append(line + endLine);
@@ -429,8 +520,7 @@ public class FileUtils {
 		if (directoryChooser == null) {
 			directoryChooser = new JFileChooser();
 			directoryChooser.setDialogTitle(title);
-			directoryChooser.setCurrentDirectory(FileSystemView.getFileSystemView()
-					.getDefaultDirectory());
+			directoryChooser.setCurrentDirectory(FileSystemView.getFileSystemView().getDefaultDirectory());
 			directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		}
 		int returnVal = directoryChooser.showOpenDialog(parent);
@@ -464,8 +554,8 @@ public class FileUtils {
 		}
 
 		// show the dialog and see what people do
-		int returnVal = (type == FileChooserType.SAVE) ? fileChooser.showSaveDialog(parent)
-				: fileChooser.showOpenDialog(parent);
+		int returnVal = (type == FileChooserType.SAVE) ? fileChooser.showSaveDialog(parent) : fileChooser
+				.showOpenDialog(parent);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			return fileChooser.getSelectedFile();
@@ -509,14 +599,14 @@ public class FileUtils {
 	/**
 	 * For JPEGs....
 	 * 
-	 * This is a little bit slow, as it takes 4.3 seconds for about 670 files. Can we speed this up
-	 * through a cache? After implementing the cache, it takes about 875 ms to sort 670 files. This
-	 * is because we only read each file once, and save the timestamp in memory.
+	 * This is a little bit slow, as it takes 4.3 seconds for about 670 files. Can we speed this up through a
+	 * cache? After implementing the cache, it takes about 875 ms to sort 670 files. This is because we only
+	 * read each file once, and save the timestamp in memory.
 	 * 
 	 * @param files
 	 * @param direction
 	 */
-	public static void sortPhotosByCaptureDate(List<File> files, final SortDirection direction) {
+	public static HashMap<File, Long> sortPhotosByCaptureDate(List<File> files, final SortDirection direction) {
 		// cache of file --> timestamp mappings.
 		final HashMap<File, Long> exifTimes = new HashMap<File, Long>();
 
@@ -542,7 +632,6 @@ public class FileUtils {
 				}
 				// end cache
 
-
 				long diff = aTime - bTime;
 				if (diff == 0) {
 					return 0;
@@ -563,6 +652,7 @@ public class FileUtils {
 			}
 		});
 		SystemUtils.toc();
+		return exifTimes;
 	}
 
 	/**

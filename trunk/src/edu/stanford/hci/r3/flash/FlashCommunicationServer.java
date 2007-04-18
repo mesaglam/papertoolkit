@@ -204,7 +204,12 @@ public class FlashCommunicationServer {
 	 * @param msg
 	 */
 	public void sendMessage(String msg) {
-		DebugUtils.println("Sending message: " + msg + " to all " + flashClients.size() + " clients");
+		if (msg.length() < 100) {
+			DebugUtils.println("Sending message: " + msg + " to all " + flashClients.size() + " clients");
+		} else {
+			DebugUtils.println("Sending message: " + msg.substring(0, 100) + "... to all "
+					+ flashClients.size() + " clients");
+		}
 		for (FlashClient client : flashClients) {
 			client.sendMessage(msg);
 		}

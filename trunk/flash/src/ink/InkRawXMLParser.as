@@ -27,6 +27,8 @@ package ink {
 		}
 
 		private function processXML(xml:XML):void {
+			trace("InkRawXMLParser: " + xml.@begin + ", " + xml.@end);
+			
 			// get all the strokes (somewhere down the XML tree)
 			var strokes:XMLList = xml.descendants("stroke");
 			

@@ -238,7 +238,7 @@ public class CalibrationCaptureApp {
 	 */
 	private void saveBatchedStrokes(Ink inkOnThisPage) {
 		savedBatchedInk = inkOnThisPage;
-		FileUtils.writeStringToFile(inkOnThisPage.getAsXML(), new File("data/calibration/"
+		FileUtils.writeStringToFile(inkOnThisPage.toXMLString(), new File("data/calibration/"
 				+ streamedStrokesFileName + ".batched.xml"));
 	}
 
@@ -249,7 +249,7 @@ public class CalibrationCaptureApp {
 		savedStreamedInk = currStreamedInk;
 		currStreamedInk = null;
 		streamedStrokesFileName = System.currentTimeMillis();
-		FileUtils.writeStringToFile(savedStreamedInk.getAsXML(), new File("data/calibration/"
+		FileUtils.writeStringToFile(savedStreamedInk.toXMLString(), new File("data/calibration/"
 				+ streamedStrokesFileName + ".streamed.xml"));
 		streamedStrokesInfoLabel.setText(savedStreamedInk.getNumStrokes() + " strokes saved.");
 	}
