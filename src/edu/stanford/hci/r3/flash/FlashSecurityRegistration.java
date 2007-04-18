@@ -1,6 +1,8 @@
 package edu.stanford.hci.r3.flash;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.filechooser.FileSystemView;
 
@@ -24,7 +26,27 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class FlashSecurityRegistration {
 
+	private List<File> paths = new ArrayList<File>();
+
 	public static void main(String[] args) {
+		new FlashSecurityRegistration().registerPaths();
+	}
+
+	public FlashSecurityRegistration() {
+		this("papertoolkit.cfg");
+	}
+
+	private String fileName;
+	
+	public FlashSecurityRegistration(String fName) {
+		fileName = fName;
+	}
+
+	public void addPathToRegister(File path) {
+		paths.add(path);
+	}
+
+	public void registerPaths() {
 		// Find the FlashPlayer trust directory for this user...
 		String pathBeneathHomeDirectory = "Application Data/Macromedia/Flash Player/#Security/FlashPlayerTrust";
 		File desktopDirectory = FileSystemView.getFileSystemView().getHomeDirectory().getAbsoluteFile();
@@ -40,9 +62,16 @@ public class FlashSecurityRegistration {
 		// e.g., PaperToolkit/flash/bin
 		File flashBinDir = new File(PaperToolkit.getToolkitRootPath(), "flash/bin");
 		String pathToAuthorizeForFlash = flashBinDir.getAbsolutePath();
+
+		StringBuilder pathsToRegister = new StringBuilder();
+		pathsToRegister.append(pathToAuthorizeForFlash + "\n");
+		for (File p : paths) {
+			pathsToRegister.append(p.getAbsolutePath() + "\n");
+		}
 		
-		File destFile = new File(flashPlayerTrustDir, "papertoolkit.cfg");
-		FileUtils.writeStringToFile(pathToAuthorizeForFlash, destFile);
-		DebugUtils.println("Whitelisted [PaperToolkit/flash/bin] to avoid Flash's Security Sandboxing for Local SWF files...");
+		File destFile = new File(flashPlayerTrustDir, fileName);
+		FileUtils.writeStringToFile(pathsToRegister.toString(), destFile);
+		DebugUtils.println("Whitelisted [" + pathsToRegister.substring(0, pathsToRegister.length()-1)
+				+ "] to avoid Flash's Security Sandboxing for Local SWF files...");
 	}
 }
