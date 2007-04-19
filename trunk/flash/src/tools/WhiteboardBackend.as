@@ -63,7 +63,7 @@
 		}
 
 		public function recenter():void {
-			inkWell.recenter();
+			inkWell.resetLocation();
 		}
 		
 		public function setRoot(rt:DisplayObject):void {
