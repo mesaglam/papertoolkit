@@ -100,7 +100,7 @@ package tools {
  			inkContainer.scaleY = 1;
  			
  			if (inkWell != null) {
-	 			inkWell.recenter();
+	 			inkWell.resetLocation();
  			}
  		}
  		

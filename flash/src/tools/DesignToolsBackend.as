@@ -20,7 +20,7 @@
 		}
 		
 		public function recenter():void {
-			inkWell.recenter();
+			inkWell.resetLocation();
 		}
 
         private function dataHandler(event:DataEvent):void {
@@ -41,7 +41,7 @@
 				inkWell.addStroke(currInkStroke);
 
 				// reposition it to the minimum (with some padding) after each stroke
-				inkWell.recenter();
+				inkWell.resetLocation();
 
 				// start up a new stroke
    				currInkStroke = new InkStroke();
