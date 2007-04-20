@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="90%" height="90%" borderStyle="solid" borderColor="#646464" cornerRadius="25" borderThickness="3" alpha="0.5" backgroundColor="#515151" backgroundAlpha="5">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="90%" height="90%" borderStyle="solid" borderColor="#646464" cornerRadius="25" 
+	borderThickness="2" backgroundAlpha=".25" backgroundColor="#000000"
+	creationComplete="init()">
 	<mx:Label x="10" y="10" text="Design a Paper UI by sketching on patterned paper." fontSize="15"/>
 	<mx:Script>
 		<![CDATA[
@@ -7,9 +9,30 @@
 			import flash.events.MouseEvent;
 
 			private var designTools:DesignToolsBackend;
+			private var container:UIComponent;
 			
 			public function init():void {
-			}			
+				trace("DesignTools Init");
+				designTools = new DesignToolsBackend();
+				container = new UIComponent();
+				container.addChild(designTools);
+				addChild(container);
+				designTools.setParent(this);
+			}
+			
+			public function get backend():DesignToolsBackend {
+				return designTools;
+			}
 		]]>
 	</mx:Script>
+	<mx:VDividedBox right="10" top="50" bottom="10" width="30%">
+		<mx:Tree right="10" top="48" bottom="226" id="paperUIComponents" labelField="@label" backgroundColor="#454545" width="100%">
+		</mx:Tree>
+		<mx:DataGrid cornerRadius="0" bottom="10" right="10" top="276" width="100%" color="#4b494a">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Name" dataField="propName"/>
+				<mx:DataGridColumn headerText="Value" dataField="propValue"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VDividedBox>
 </mx:Canvas>

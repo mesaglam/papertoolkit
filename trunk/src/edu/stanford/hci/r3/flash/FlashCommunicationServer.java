@@ -44,6 +44,9 @@ public class FlashCommunicationServer {
 	 */
 	private int clientID = 0;
 
+	/**
+	 * 
+	 */
 	private Map<String, FlashCommand> commands = new HashMap<String, FlashCommand>();
 
 	/**
@@ -51,6 +54,9 @@ public class FlashCommunicationServer {
 	 */
 	private List<FlashClient> flashClients = new ArrayList<FlashClient>();
 
+	/**
+	 * 
+	 */
 	private List<FlashListener> listeners = new ArrayList<FlashListener>();
 
 	/**
@@ -58,6 +64,9 @@ public class FlashCommunicationServer {
 	 */
 	private int serverPort;
 
+	/**
+	 * 
+	 */
 	private Thread serverThread;
 
 	/**
@@ -81,6 +90,10 @@ public class FlashCommunicationServer {
 		serverThread.start();
 	}
 
+	/**
+	 * @param cmdName
+	 * @param flashCommand
+	 */
 	public void addCommand(String cmdName, FlashCommand flashCommand) {
 		commands.put(cmdName, flashCommand);
 	}
@@ -93,7 +106,7 @@ public class FlashCommunicationServer {
 	}
 
 	/**
-	 * 
+	 * Exits the Flash communication server.
 	 */
 	public void exitServer() {
 		for (FlashClient client : flashClients) {
@@ -104,8 +117,11 @@ public class FlashCommunicationServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		DebugUtils
-				.println("Exiting Flash Communications Server.... If this is the last thread, the program should exit.");
+		DebugUtils.println("Exiting Flash Communications Server.... "
+				+ "If this is the last thread, the program should exit.");
+		for (FlashListener listener : listeners) {
+			listener.messageReceived("exitServer");
+		}
 	}
 
 	/**
@@ -158,6 +174,9 @@ public class FlashCommunicationServer {
 		}
 	}
 
+	/**
+	 * @param string
+	 */
 	private void log(String string) {
 		DebugUtils.println(string);
 	}
@@ -184,11 +203,12 @@ public class FlashCommunicationServer {
 	 * @param flashGUIFile
 	 *            Or perhaps this should be a URL in the future, as the GUI can live online? Launches the
 	 *            flash GUI in a browser.
-	 * 
 	 */
 	public void openFlashGUI(File flashGUIFile) {
 		// browse to the flash GUI file, and pass over our port as a query parameter
 		// TODO: pass the port
+		// Idea... auto-generate an HTML file that includes the PORT as a query parameter?
+		// We did this for the Whiteboard
 		try {
 			Desktop.getDesktop().browse(flashGUIFile.toURI());
 		} catch (IOException e) {
@@ -196,6 +216,9 @@ public class FlashCommunicationServer {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void removeAllFlashClientListeners() {
 		listeners.clear();
 	}

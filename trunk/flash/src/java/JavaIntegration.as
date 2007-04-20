@@ -47,7 +47,7 @@ package java {
             sock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
         }
 
-		// 
+		// add something to handle the data that comes from the Java backend...
 		public function addMessageListener(msgListener:Function):void {
             sock.addEventListener(DataEvent.DATA, msgListener);
 		}
@@ -80,6 +80,10 @@ package java {
 		 * Sends a line over to the Java backend.
 		 */
 		public function send(msg:String):void {
+			if (sock==null || !sock.connected) {
+				trace("Socket is null or not connected. Message ["+msg+"] was not sent.");
+				return;
+			}
 			sock.send(msg + "\n");
 		}
 	}

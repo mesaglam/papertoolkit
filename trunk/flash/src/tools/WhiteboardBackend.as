@@ -12,6 +12,7 @@
 	import flash.display.LoaderInfo;
 	import flash.filters.BevelFilter;
 	import flash.display.SpreadMethod;
+	import ink.InkUtils;
 
 	
 	public class WhiteboardBackend extends Sprite {
@@ -19,10 +20,12 @@
 		private var inkWell:Ink;
 		private var debugText:TextArea;
 		private var currInkStroke:InkStroke;
+
 		// in case the numbers are too big, we should subtract them by this number
 		// this number is set by the first sample that comes in that uses scientific notation
 		private var xMinOffset:Number = -1;
 		private var yMinOffset:Number = -1;
+		
 		private var theParent:Whiteboard = null;
 
 		// a socket client that talks to the Java back end
@@ -127,53 +130,29 @@
 	   		}
         }
         
-
+		
 		private function handleInk(xmlTxt:String):void {
             var inkXML:XML = new XML(xmlTxt);
             // trace("XML: " + inkXML.toXMLString());
 			// trace(inkXML.@x + " " + inkXML.@y + " " + inkXML.@f + " " + inkXML.@t + " " + inkXML.@p);
 
-			var xStr:String = inkXML.@x;
-			var xExp:String = "";
-			var xEIndex:int = xStr.indexOf("E");
 			var xVal:Number = 0;
-			// handle scientific notation
-			if (xEIndex > -1) {
-				xExp = xStr.substr(xEIndex+1);
-				xStr = xStr.substr(0, xEIndex);
-				xVal = parseFloat(xStr)*Math.pow(10, parseInt(xExp)); // scientific notation
-
-				// Figure out a minimum offset to reduce these large numbers!
-				if (xMinOffset == -1){
-					// uninitialized
-					xMinOffset = xVal;
-				}
-
-				xVal = xVal - xMinOffset;
-			} else {
-				xVal = parseFloat(inkXML.@x);				
+			var xStr:String = inkXML.@x;
+			xVal = InkUtils.getCoordinateValueFromString(xStr);
+			// Figure out a minimum offset to reduce these large numbers!
+			if (xMinOffset == -1) { // uninitialized
+				xMinOffset = xVal;
 			}
-			
+			xVal = xVal - xMinOffset;
 
 			var yStr:String = inkXML.@y;
-			var yExp:String = "";
-			var yEIndex:int = yStr.indexOf("E");
 			var yVal:Number = 0;
-			// handle scientific notation
-			if (yEIndex > -1) {
-				yExp = yStr.substr(yEIndex+1);
-				yStr = yStr.substr(0, yEIndex);
-				yVal = parseFloat(yStr)*Math.pow(10, parseInt(yExp)); // scientific notation
-
-				if (yMinOffset == -1){
-					// uninitialized
-					yMinOffset = yVal;
-				}
-
-				yVal = yVal - yMinOffset;
-			} else {
-				yVal = parseFloat(inkXML.@y);
+			yVal = InkUtils.getCoordinateValueFromString(yStr);
+			// Figure out a minimum offset to reduce these large numbers!
+			if (yMinOffset == -1) { // uninitialized
+				yMinOffset = yVal;
 			}
+			yVal = yVal - yMinOffset;
 
 			// trace(xVal + ", " + yVal);
 
@@ -195,6 +174,7 @@
 			}	
 		}
 
+		// make the ink easier to read by zooming in
 		public function zoomIn():void {
 			scaleX *= 1.25;
 			scaleY *= 1.25;
@@ -205,6 +185,7 @@
 			// whitebd.recenter();
 			recenterMostRecent(stage);
 		}
+		// make the ink smaller by zooming out
 		public function zoomOut():void {
 			scaleX *= .8;
 			scaleY *= .8;

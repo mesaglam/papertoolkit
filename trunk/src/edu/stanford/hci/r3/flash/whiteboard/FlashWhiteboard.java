@@ -5,24 +5,14 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.wraplog.SystemLogger;
-
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.actions.types.OpenURL2Action;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
+import edu.stanford.hci.r3.flash.FlashPenListener;
 import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.PenSample;
-import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
@@ -49,10 +39,25 @@ public class FlashWhiteboard {
 
 	private String title;
 
+	/**
+	 * @param portNum
+	 */
 	public FlashWhiteboard(int portNum) {
 		port = portNum;
 	}
 
+	/**
+	 * @param pen
+	 */
+	public void addPen(Pen pen) {
+		pens.add(pen);
+		pen.startLiveMode();
+		pen.addLivePenListener(new FlashPenListener(flash));
+	}
+
+	/**
+	 * 
+	 */
 	public void load() {
 		// start the local server for sending ink over to the Flash client app
 		flash = new FlashCommunicationServer(port);
@@ -68,7 +73,6 @@ public class FlashWhiteboard {
 					DebugUtils.println("Unhandled command: " + command);
 				}
 			}
-
 		});
 
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
@@ -86,34 +90,16 @@ public class FlashWhiteboard {
 		}
 	}
 
-	public void addPen(Pen pen) {
-		pens.add(pen);
-		pen.startLiveMode();
-		pen.addLivePenListener(new PenListener() {
-
-			@Override
-			public void penDown(PenSample sample) {
-				flash.sendMessage("<penDownEvent/>");
-				flash.sendMessage(sample.toXMLString());
-			}
-
-			@Override
-			public void penUp(PenSample sample) {
-				flash.sendMessage(sample.toXMLString());
-			}
-
-			@Override
-			public void sample(PenSample sample) {
-				flash.sendMessage(sample.toXMLString());
-			}
-
-		});
-	}
-
+	/**
+	 * @param color
+	 */
 	public void setSwatchColor(Color color) {
 		swatchColor = color;
 	}
 
+	/**
+	 * @param titleStr
+	 */
 	public void setTitle(String titleStr) {
 		title = titleStr;
 	}

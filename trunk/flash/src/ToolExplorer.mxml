@@ -22,7 +22,7 @@
 	<mx:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="200"/>
 	
 	<mx:states>
-		<mx:State name="DesignClicked">
+		<mx:State name="{ToolExplorerBackend.DESIGN_MODE}">
 			<mx:SetProperty target="{topRightImageDesign}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
