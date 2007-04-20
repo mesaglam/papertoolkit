@@ -2,7 +2,7 @@ package edu.stanford.hci.r3.flash;
 
 /**
  * <p>
- * 
+ * Listens for commands coming from flash.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

@@ -13,9 +13,12 @@ package tools {
 	import java.JavaIntegration;
 	import flash.events.DataEvent;
 	import tools.DesignTools;
+	import flash.events.Event;
 	
 	
 	public class ToolExplorerBackend extends Sprite {
+		
+		public static const DESIGN_MODE:String = "DesignClicked";
 		
 		private var stageObj:Stage;
 		private var window:NativeWindow;
@@ -46,14 +49,11 @@ package tools {
 
         private function msgListener(event:DataEvent):void {
 	        var message:XML = new XML(event.text);
-	        trace(message.toXMLString());
-	        
-	        
-	        // pass ink samples to the design tools data handler
-	        
-	        
-	        
-	        
+	        //trace(message.toXMLString());
+			if (app.currentState == DESIGN_MODE) {
+		        // pass ink samples to the design tools data handler
+				designTool.backend.processMessage(event.text);
+			}
         }
 
 
@@ -117,7 +117,7 @@ package tools {
 		 * A bunch of handlers for GUI buttons that invoke something in Java-land.
 		 */		
 		public function designClicked():void {
-			app.currentState = "DesignClicked";
+			app.currentState = DESIGN_MODE;
 			javaBackend.send("Design Clicked");
 		}
 		public function directionsClicked():void {
@@ -147,10 +147,15 @@ package tools {
 		 */
 		public function setApp(appObj:ToolExplorer):void{
 			app = appObj;
+			app.window.addEventListener(Event.CLOSE, windowCloseHandler);
 		}
 		public function setDesignToolPanel(designToolPanel:DesignTools):void{
 			designTool = designToolPanel;
 		}
 
+		private function windowCloseHandler(e:Event):void {
+			trace("Window Closing.");
+			exit();
+		}
 	}
 }
