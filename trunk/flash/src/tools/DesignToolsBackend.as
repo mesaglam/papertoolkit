@@ -7,12 +7,15 @@
 	import ink.Ink;
 	import ink.InkStroke;
 	import ink.InkUtils;
+	import flash.geom.Rectangle;
+	import mx.containers.Canvas;
 	
 	public class DesignToolsBackend extends Sprite {
 		
 		private var inkWell:Ink;
 		private var currInkStroke:InkStroke;
 		private var theParent:DesignTools;
+		private var inkCanvas:Canvas;
 
 		// in case the numbers are too big, we should subtract them by this number
 		// this number is set by the first sample that comes in that uses scientific notation
@@ -21,13 +24,12 @@
 
 		// constructor		
 		public function DesignToolsBackend():void {
-			resetInk();
-		}
-		
-		public function resetInk():void {
 			if (inkWell != null) {
 				removeChild(inkWell);
 			}
+		}
+		
+		public function resetInk():void {
 			inkWell = new Ink();
 			addChild(inkWell);
 			currInkStroke = new InkStroke();
@@ -36,13 +38,21 @@
 		// provides access to the mxml components
 		public function setParent(p:DesignTools):void {
 			theParent = p;
+			inkCanvas = theParent.inkCanvas;
 		}
 
-		public function recenter():void {
-			inkWell.resetLocation();
-		}
-
+		// processes the xml text
         public function processMessage(msgText:String):void {
+        	if (inkWell==null) {
+				resetInk();
+        	}
+
+			// DEBUG
+			// Draw a gray box at the inkCanvas rectangle, because that is where we will display our ink
+			graphics.clear();
+			graphics.lineStyle(1, 0x555555);
+        	graphics.drawRect(inkCanvas.x, inkCanvas.y, inkCanvas.width, inkCanvas.height);
+        	
             //trace("dataHandler: " + event);
             // trace(msgText); // parse the text and assemble InkStrokes...
             var msg:XML = new XML(msgText);
@@ -55,17 +65,19 @@
 			var msgName:String = msg.name();
             
 			if (msgName=="penDownEvent") {
+	   			trace("Pen Down");
 				// start up a new stroke
    				currInkStroke = new InkStroke();
    				// add it to the stage
 				inkWell.addChild(currInkStroke);
    			} else if (msgName=="p") {
-   				trace("Handling Ink");
+   				// trace("Handling Ink");
 				handleInk(msgText);
 	   		} else if (msgName=="penUpEvent") {
 	   			trace("Pen Up");
-	   			// recognize
 	   			
+	   			// recognize 
+	   			/*
 	   			var paperUI:XML = 
 		        <sheet label="Paper UI">
 			        <region label="Button">
@@ -79,9 +91,11 @@
 		        </sheet>;
 	   			
 	   			theParent.paperUIComponents.dataProvider = new XMLList(paperUI);
+	   			*/
 	   		}
         }
         
+        //
 		private function handleInk(xmlTxt:String):void {
             var inkXML:XML = new XML(xmlTxt);
             // trace("XML: " + inkXML.toXMLString());
@@ -109,13 +123,14 @@
 
 			var penUp:Boolean = inkXML.@p == "U";
 			if (penUp) {
+				trace("Handling Pen Up");
 				inkWell.removeChild(currInkStroke);
 				inkWell.addStroke(currInkStroke);
 				
 				// penUps are a duplicate of the last regular sample
 				// so, we do nothing, but possibly reposition it to the minimum 
 				// (with some padding) after each stroke
-				inkWell.recenterMostRecent(theParent.stage);
+				//inkWell.recenterMostRecent(theParent.inkCanvas);
 			} else {
 				// add samples to the current stroke
 				currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));

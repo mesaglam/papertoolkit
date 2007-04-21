@@ -5,10 +5,13 @@ package ink {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 
+	// As a display object, it can be added to an Ink object
+	// As a representation of an Ink Stroke, it can be used for calcuation/clustering purposes
 	public class InkStroke extends Sprite {
 
-		private static var defaultColor:uint = 0xDADADA;
-		private static var highlightColor:uint = 0xFF99AA;
+		// static constants
+		private static const DEFAULT_COLOR:uint = 0xDADADA;
+		private static const HIGHLIGHT_COLOR:uint = 0xFF99AA;
 
 		private var xSamples:Array = new Array();
 		private var ySamples:Array = new Array();
@@ -18,24 +21,30 @@ package ink {
 		private var xMax:Number = Number.MIN_VALUE;
 		private var yMax:Number = Number.MIN_VALUE;
 
+		
 		private var g:Graphics = graphics;
 
 		private var strokeWidth:Number = 1.5;
 		
-		private var color:uint = defaultColor;
+		private var color:uint = DEFAULT_COLOR;
 		
+		// whether this stroke should be highlighted, and rendered using the highlight color
 		private var highlight:Boolean = false;
 
+		// timestamps
 		private var begin:Number;
 		private var end:Number;
 		
+		// the last sample we received. Helps us for rendering with splines
 		private var lastXVal:Number = -1;
 		private var lastYVal:Number = -1;
 		
+		// two samples ago. It allows us to render the strokes more cleanly... using splines
 		private var lastLastXVal:Number = -1;
 		private var lastLastYVal:Number = -1;
 
 		
+		// constructor
 		public function InkStroke(beginTS:String="0", endTS:String="0"):void {			
 			//trace(beginTS + " to " + endTS);
 			begin = parseInt(beginTS);
@@ -43,13 +52,13 @@ package ink {
 			buttonMode = true;
 		}		
 
+		// determines whether this stroke should be highlighted on screen
 		public function set highlighted(value:Boolean):void {
 			highlight=value;
-			
 			if (highlight) {
-				color = highlightColor;
+				color = HIGHLIGHT_COLOR;
 			} else {
-				color = defaultColor;
+				color = DEFAULT_COLOR;
 			}
 		}
 

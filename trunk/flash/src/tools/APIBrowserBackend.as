@@ -171,9 +171,7 @@ package tools {
 	        	inkWell = parser.ink;
 				inkContainer.addChild(inkWell);
 				
-				
-				numStrokesDisplayedLabel.text = inkWell.getNumStrokes() + "";
-				
+				numStrokesDisplayedLabel.text = inkWell.numStrokes + "";
             } else if (event.text.indexOf("<methods")>-1) {
 				var methodsData:XMLList = message.descendants("method");
 				trace(methodsData.toXMLString());

@@ -7,12 +7,12 @@ package ink {
 	import flash.display.Stage;
 	import flash.filters.GradientBevelFilter;
 	import flash.display.DisplayObject;
+	import flash.geom.Rectangle;
 
 	
+	// Ink is a display object, but the InkClusters store the data and do cool calculations for us...
 	public class Ink extends Sprite {
 	
-		private var strokes:Array = new Array(); // of InkStroke objects
-		
 		private var padding:int = 60;
 		
 		private var xMin:Number = Number.MAX_VALUE;
@@ -20,15 +20,21 @@ package ink {
 		private var xMax:Number = Number.MIN_VALUE;
 		private var yMax:Number = Number.MIN_VALUE;
 
-		private var mostRecentStroke:InkStroke = new InkStroke();
+		private var mostRecentStroke:InkStroke;
+		private var mostRecentCluster:InkCluster;
+
+		// it's recursive in the sense that clusters are just Ink objects themselves...
+		// Thus, an Ink can have Ink objects as its children
+		private var clusters:Array/*<Ink>*/ = new Array();
+		
+		private var strokeCount:Number = 0;
 
 		public function setColor():void {
 			// for each stroke, set the color!
-			
 		}
 		
-		public function getNumStrokes():Number {
-			return strokes.length;
+		public function get numStrokes():Number {
+			return strokeCount;
 		}
 
 		public function get paddingX():Number {
@@ -50,8 +56,8 @@ package ink {
 			return yMax;
 		}
 
-		public function Ink() {			
-			buttonMode = true;			
+		public function Ink() {
+			buttonMode = true;
 
 			// add drag support
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -65,12 +71,20 @@ package ink {
 			this.stopDrag();
         }
 		
-		// add an ink stroke
-		// we keep around the most recent stroke, so that we can do cool calculations, like recentering
+		// add an ink stroke for display
+		// we keep around the most recent stroke and ink cluster, 
+		// so that we can do cool calculations, like recentering
 		public function addStroke(stroke:InkStroke):void {
 			//trace("Add Stroke");
-			strokes.push(stroke);			
-			addChild(stroke);
+			strokeCount++;
+			mostRecentStroke = stroke;
+			if (mostRecentCluster == null) {
+				mostRecentCluster = new InkCluster();
+				clusters.push(mostRecentCluster);
+			}
+			
+			mostRecentCluster.addStroke(stroke);
+			addChild(stroke); // add the stroke as a child for display
 			
 			if (mostRecentStroke != null) {
 				if (Math.abs(stroke.lastX - mostRecentStroke.lastX) > 800) {
@@ -99,19 +113,23 @@ package ink {
         	y = -yMin + padding;
         }
 
-        
         // move the ink so that we can see the most recent ink strokes!
         // basically, we should recenter() first, and then find the delta
         // to the most recent stroke
         //
         // Actually, we should check to see if the most recent samples are already visible
         // if they are, we need not change the view!
-        public function recenterMostRecent(stage:Stage):void {
+        //
+        // OR, we can cluster the strokes, and make sure the most recent cluster is visible.
+        public function recenterMostRecent(parent:DisplayObject):void {
         	if (mostRecentStroke == null) {
         		return;
         	}
         	
-        	trace("Stage Size: " + stage.stageWidth + ", " + stage.stageHeight);
+        	var parentWidth:Number = parent.width;
+        	var parentHeight:Number = parent.height;
+
+        	trace("Parent Size: " + parentWidth + ", " + parentHeight);
         	trace("Current Location of Ink: " + x + ", " + y);
         	trace("Current Bounds of Ink: " + xMin + ", " + yMin + " --> " + xMax + ", " + yMax);
 			trace("Most Recent Sample: " + mostRecentStroke.lastX + ", " + mostRecentStroke.lastY);
@@ -120,29 +138,28 @@ package ink {
 			// i.e., is x + mostRecentStroke.lastX both > 0 and < stageWidth?
 			// same for height
 
-        	
         	// are these visible?
         	var dXFromOrigin:Number = (mostRecentStroke.lastX + x);
         	var dYFromOrigin:Number = (mostRecentStroke.lastY + y);
         	
-        	var lastSampleXOffStageRight:Boolean = dXFromOrigin > (stage.stageWidth - padding);
+        	var lastSampleXOffStageRight:Boolean = dXFromOrigin > (parentWidth - padding);
         	var lastSampleXOffStageLeft:Boolean = dXFromOrigin < padding;
 
-        	var lastSampleYOffStageBottom:Boolean = dYFromOrigin > stage.stageHeight - padding; 
+        	var lastSampleYOffStageBottom:Boolean = dYFromOrigin > parentHeight - padding; 
         	var lastSampleYOffStageTop:Boolean = dYFromOrigin < padding; 
         	
         	
         	// if it's off stage, then move the writing toward the center!
         	if (lastSampleXOffStageRight) {
-        		x -= (dXFromOrigin - stage.stageWidth + padding) + stage.stageWidth/3;
+        		x -= (dXFromOrigin - parentWidth + padding) + parentWidth/3;
         	} else if (lastSampleXOffStageLeft) {
-        		x = -mostRecentStroke.lastX + padding + stage.stageWidth/3;
+        		x = -mostRecentStroke.lastX + padding + parentWidth/3;
         	}
         	
         	if (lastSampleYOffStageBottom) {
-        		y -= (dYFromOrigin - stage.stageHeight + padding) + stage.stageHeight/3;
+        		y -= (dYFromOrigin - parentHeight + padding) + parentHeight/3;
         	} else if (lastSampleYOffStageTop) {
-        		y = -mostRecentStroke.lastY + padding + stage.stageHeight/3;
+        		y = -mostRecentStroke.lastY + padding + parentHeight/3;
         	}
         }
 	}
