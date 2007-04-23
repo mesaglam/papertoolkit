@@ -14,7 +14,7 @@
 				explorer = new ToolExplorerBackend(this.window);
 				explorer.setApp(this);
 				explorer.setDesignToolPanel(designToolPanel);
-			}			
+			}
 		]]>
 	</mx:Script>
 
@@ -85,7 +85,11 @@
 			<mx:icon>@Embed('../icons/Design.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="20"/>
-		<mx:Button label="Code" labelPlacement="bottom" paddingBottom="5" click="explorer.yinyangClicked();">
+		<mx:Button label="API Explorer" labelPlacement="bottom" paddingBottom="5" click="explorer.directionsClicked();">
+			<mx:icon>@Embed('../icons/Directions.png')</mx:icon>
+		</mx:Button>
+		<mx:Spacer width="20"/>
+		<mx:Button label="Code / Debug" labelPlacement="bottom" paddingBottom="5" click="explorer.yinyangClicked();">
 			<mx:icon>@Embed('../icons/YinYang.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="20"/>
@@ -95,10 +99,6 @@
 		<mx:Spacer width="20"/>
 		<mx:Button label="Toolbox" labelPlacement="bottom" paddingBottom="5" click="explorer.toolboxClicked();">
 			<mx:icon>@Embed('../icons/Toolbox.png')</mx:icon>
-		</mx:Button>
-		<mx:Spacer width="20"/>
-		<mx:Button label="API Explorer" labelPlacement="bottom" paddingBottom="5" click="explorer.directionsClicked();">
-			<mx:icon>@Embed('../icons/Directions.png')</mx:icon>
 		</mx:Button>
 	</mx:HBox>
 	
