@@ -13,6 +13,7 @@
 	import flash.filters.BevelFilter;
 	import flash.display.SpreadMethod;
 	import ink.InkUtils;
+	import components.Whiteboard;
 
 	
 	public class WhiteboardBackend extends Sprite {
@@ -126,10 +127,9 @@
 	   			// trace(intColor+"");
 	   			theParent.colorSwatch.selectedColor = intColor;
 	   		} else if (event.text.indexOf("<title") > -1){
-	   			theParent.title.text = msg.@value;
+	   			theParent.titleLabel.text = msg.@value;
 	   		}
         }
-        
 		
 		private function handleInk(xmlTxt:String):void {
             var inkXML:XML = new XML(xmlTxt);
@@ -197,8 +197,12 @@
         
         public function saveInk():void {
         	// send a message to java to save the current ink...
-        	
         }
+
+        public function loadInk():void {
+        	// send a message to java to load an ink file...
+        }
+        
 		public function exit():void {
 			javaBackend.send("exitApplication");
 		}

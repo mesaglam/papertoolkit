@@ -25,7 +25,8 @@ package tools {
 		public static const PAPER_UI_MODE:String = "Paper UI";
 		public static const TOOLBOX_MODE:String = "Toolbox";
 		public static const API_MODE:String = "API Explorer";
-		public static const MAIN_MENU_MODE:String = "Main Menu";
+		public static const MAIN_MENU_MODE:String = "Welcome Screen";
+		public static const WHITEBOARD_MODE:String = "Whiteboard";
 		
 		private var stageObj:Stage;
 		private var window:NativeWindow;
@@ -37,16 +38,32 @@ package tools {
 		private var javaBackend:JavaIntegration;
 
 		// constructor
-		public function ToolExplorerBackend(win:NativeWindow):void {
-			window = win;		
-			stageObj = win.stage;
-
+		public function ToolExplorerBackend(appObj:ToolExplorer):void {
+			app = appObj;
+			app.window.addEventListener(Event.CLOSE, windowCloseHandler);
+			window = app.window;		
+			stageObj = window.stage;
 			window.width = 1280;
 			window.height = 720;
-
 			addListenerForCommandLineArguments();
+			setupToolList();
 		}			
 
+		public function selectTool():void {
+			app.currentState=app.toolList.selectedItem.data;
+		}
+
+		private function setupToolList():void {
+			var toolsArr:Array = new Array();
+			toolsArr.push({label:MAIN_MENU_MODE, data:""});
+			toolsArr.push({label:DESIGN_MODE, data:DESIGN_MODE});
+			toolsArr.push({label:API_MODE, data:API_MODE});
+			toolsArr.push({label:CODE_AND_DEBUG_MODE, data:CODE_AND_DEBUG_MODE});
+			toolsArr.push({label:PAPER_UI_MODE, data:PAPER_UI_MODE});
+			toolsArr.push({label:TOOLBOX_MODE, data:TOOLBOX_MODE});
+			toolsArr.push({label:WHITEBOARD_MODE, data:WHITEBOARD_MODE});
+			app.toolList.dataProvider = toolsArr;
+		}
 
 		// this is called after the command line arguments are processed
 		private function start():void {
@@ -146,7 +163,9 @@ package tools {
 		public function designClicked():void {
 			// communicate which pen is currently selected
 			var penObj:Object = app.penList.selectedItem;
-			javaBackend.send("<pen name='"+penObj.name+"' server='"+penObj.server+"' port='"+penObj.port+"'/>");
+			if (penObj != null) {
+				javaBackend.send("<pen name='"+penObj.name+"' server='"+penObj.server+"' port='"+penObj.port+"'/>");
+			}
 
 			// say that we are in design mode
 			app.currentState = DESIGN_MODE;
@@ -175,10 +194,6 @@ package tools {
 		
 		
 		// Setters for components that we can access from our MXML.
-		public function set applicationObject(appObj:ToolExplorer):void{
-			app = appObj;
-			app.window.addEventListener(Event.CLOSE, windowCloseHandler);
-		}
 		public function set designToolPanel(designToolPanel:DesignTools):void{
 			designTool = designToolPanel;
 		}
