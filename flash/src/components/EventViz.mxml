@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="startEventViz();">
-
-	<mx:Style source="styles/styles.css"/>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Event Viz" creationComplete="startEventViz();">
+	<mx:Style source="../styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
 			import tools.EventVizBackend;
@@ -44,4 +43,4 @@
 		<mx:Button label="Exit" click="viz.exit(event);"/>
 		<mx:Button label="Register Most Recent Pattern" click="viz.loadMappings(event);"/>
 	</mx:HBox>
-</mx:Application>
+</mx:Canvas>

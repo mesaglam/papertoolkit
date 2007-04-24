@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-	layout="absolute" backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Whiteboard" creationComplete="constructWhiteboard()"
-	addedToStage="addedToStage()">
-	<mx:Style source="styles/styles.css"/>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Whiteboard" creationComplete="constructWhiteboard()" backgroundColor="#000000">
 	<mx:Script>
 		<![CDATA[
 			import tools.WhiteboardBackend;
@@ -13,22 +10,19 @@
 			private var container:UIComponent;
 		 	
 			public function constructWhiteboard():void {
+				trace("creationComplete");
 				whitebd = new WhiteboardBackend();
 				container = new UIComponent();
 				container.addChild(whitebd);				
 				addChild(container);
-
 				whitebd.setDebugText(debugText);
 				whitebd.setParent(this);
-			}
-			
-			public function addedToStage():void {
-				trace("addedToStage");
+
+
 				whitebd.setRoot(root);
 				whitebd.setStage(stage);
 				whitebd.processParameters();
 			}
-			
 		]]>
 	</mx:Script>
 	<mx:TextArea editable="false" width="255" right="10" top="53" id="debugText" color="#000000" bottom="41" 
@@ -40,9 +34,8 @@
 	</mx:HBox>
 	<mx:HBox bottom="10" left="10">
 		<mx:Button label="Save" click="whitebd.saveInk()"/>
-		<mx:Button label="Debug" click="whitebd.toggleDebugText()"/>
-		<mx:Button label="Exit" click="whitebd.exit()"/>
+		<mx:Button label="Load" click="whitebd.loadInk();"/>
 	</mx:HBox>
 	<mx:ColorPicker id="colorSwatch" left="10" bottom="40" width="48" height="48"/>
-	<mx:Label text="Live Whiteboard" right="10" top="10" fontSize="30" alpha="0" color="#b3deff" id="title"/>
-</mx:Application>
+	<mx:Label text="Live Whiteboard" right="10" top="10" fontSize="30" alpha="0" color="#ffffff" id="titleLabel"/>
+</mx:Canvas>

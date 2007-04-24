@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:ApolloApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();" xmlns:components="components.*">
+	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Tool Explorer" addedToStage="init();" xmlns:components="components.*">
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
@@ -11,8 +11,7 @@
 			private var explorer:ToolExplorerBackend;
 			
 			public function init():void {
-				explorer = new ToolExplorerBackend(this.window);
-				explorer.applicationObject = this;
+				explorer = new ToolExplorerBackend(this);
 				explorer.designToolPanel = designToolPanel;
 			}
 		]]>
@@ -20,6 +19,9 @@
 
 	<mx:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="200"/>
 	<mx:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="200"/>
+
+	<mx:Fade id="brighten" alphaFrom="1" alphaTo="1" duration="100"/>
+	<mx:Fade startDelay="600" id="dim" alphaFrom="1" alphaTo=".1" duration="1000"/>
 	
 	<mx:states>
 		<mx:State name="{ToolExplorerBackend.DESIGN_MODE}">
@@ -32,7 +34,7 @@
 				<components:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
-			<mx:RemoveChild target="{penList}"/>
+			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
 		<mx:State name="{ToolExplorerBackend.CODE_AND_DEBUG_MODE}">
 			<mx:SetProperty target="{topRightImageYinYang}" name="visible" value="true"/>
@@ -44,7 +46,7 @@
 				<components:DesignTools left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
-			<mx:RemoveChild target="{penList}"/>
+			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
 		<mx:State name="{ToolExplorerBackend.PAPER_UI_MODE}">
 			<mx:SetProperty target="{topRightImageStickies}" name="visible" value="true"/>
@@ -56,7 +58,7 @@
 				<components:DesignTools left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
-			<mx:RemoveChild target="{penList}"/>
+			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
 		<mx:State name="{ToolExplorerBackend.TOOLBOX_MODE}">
 			<mx:SetProperty target="{topRightImageToolbox}" name="visible" value="true"/>
@@ -68,7 +70,7 @@
 				<components:DesignTools left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
-			<mx:RemoveChild target="{penList}"/>
+			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
 		<mx:State name="{ToolExplorerBackend.API_MODE}">
 			<mx:SetProperty target="{topRightImageDirections}" name="visible" value="true"/>
@@ -80,38 +82,44 @@
 				<components:DesignTools left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
-			<mx:RemoveChild target="{penList}"/>
+			<mx:RemoveChild target="{dropDownContainer}"/>
+		</mx:State>
+		<mx:State name="{ToolExplorerBackend.WHITEBOARD_MODE}">
+			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
+			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
+			<mx:SetProperty target="{titleLabel}" name="visible" value="false"/>
+			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
+			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
+				<components:Whiteboard left="0" right="0" top="0" bottom="90">
+				</components:Whiteboard>
+			</mx:AddChild>
+			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
 	</mx:states>
-	<mx:Label text="PaperToolkit Tool Explorer" fontSize="40" left="10" top="10" id="titleLabel"/>
+	<mx:Label text="PaperToolkit Tool Explorer" fontSize="40" top="10" id="titleLabel" left="10" width="537"/>
 	
 	<mx:HBox horizontalCenter="0" verticalCenter="0" id="toolButtonsContainer" hideEffect="{fadeOut}" showEffect="{fadeIn}">
 		<mx:Button label="Design" labelPlacement="bottom" paddingBottom="5" click="explorer.designClicked();">
 			<mx:icon>@Embed('../icons/Design.png')</mx:icon>
 		</mx:Button>
-		<mx:Spacer width="20"/>
+		<mx:Spacer width="17"/>
 		<mx:Button label="API Explorer" labelPlacement="bottom" paddingBottom="5" click="explorer.directionsClicked();">
 			<mx:icon>@Embed('../icons/Directions.png')</mx:icon>
 		</mx:Button>
-		<mx:Spacer width="20"/>
+		<mx:Spacer width="17"/>
 		<mx:Button label="Code &amp; Debug" labelPlacement="bottom" paddingBottom="5" click="explorer.yinyangClicked();">
 			<mx:icon>@Embed('../icons/YinYang.png')</mx:icon>
 		</mx:Button>
-		<mx:Spacer width="20"/>
+		<mx:Spacer width="17"/>
 		<mx:Button label="Paper UIs" labelPlacement="bottom" paddingBottom="5" click="explorer.stickiesClicked();">
 			<mx:icon>@Embed('../icons/Stickies.png')</mx:icon>
 		</mx:Button>
-		<mx:Spacer width="20"/>
+		<mx:Spacer width="17"/>
 		<mx:Button label="Toolbox" labelPlacement="bottom" paddingBottom="5" click="explorer.toolboxClicked();">
 			<mx:icon>@Embed('../icons/Toolbox.png')</mx:icon>
 		</mx:Button>
 	</mx:HBox>
 	
-	<mx:VBox right="10" bottom="10" id="copyrightContainer">
-		<mx:Label text="Copyright 2007" fontWeight="bold" fontFamily="Trebuchet MS" color="#c0c0c0"/>
-		<mx:LinkButton label="Stanford University HCI Group" click="explorer.browseToHCIWebsite();" fontFamily="Trebuchet MS" color="#c0c0c0"/>
-		<mx:LinkButton label="Ron B. Yeh" click="explorer.browseToAuthorWebsite();" fontFamily="Trebuchet MS" color="#c0c0c0"/>
-	</mx:VBox>
 
 	<mx:Image right="10" top="10" id="topRightImageDesign" visible="false">
 		<mx:source>@Embed('../icons/Design.png')</mx:source>
@@ -129,9 +137,19 @@
 		<mx:source>@Embed('../icons/Toolbox.png')</mx:source>
 	</mx:Image>
 	
+	<mx:VBox id="dropDownContainer" alpha="0.1" rollOverEffect="{brighten}" rollOutEffect="{dim}" right="10" top="10">
+		<mx:ComboBox id="penList" color="#000000" toolTip="Select a Pen"></mx:ComboBox>
+		<mx:ComboBox id="toolList" color="#000000" toolTip="Other Tools" change="explorer.selectTool();"></mx:ComboBox>
+	</mx:VBox>
+
+	<mx:VBox right="10" bottom="10" id="copyrightContainer">
+		<mx:Label text="Copyright 2007" fontWeight="bold" fontFamily="Trebuchet MS" color="#c0c0c0"/>
+		<mx:LinkButton label="Stanford University HCI Group" click="explorer.browseToHCIWebsite();" fontFamily="Trebuchet MS" color="#c0c0c0"/>
+		<mx:LinkButton label="Ron B. Yeh" click="explorer.browseToAuthorWebsite();" fontFamily="Trebuchet MS" color="#c0c0c0"/>
+	</mx:VBox>
+
 	<mx:VBox left="10" bottom="10">
 		<mx:Button id="backButton" label="Back" visible="false" click="explorer.backButtonClicked();"  width="100%" hideEffect="{fadeOut}" showEffect="{fadeIn}"/>
-		<mx:ComboBox id="penList" color="#000000" width="98"></mx:ComboBox>
 		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="10" paddingLeft="25" paddingTop="10" paddingRight="25"/>
 	</mx:VBox>
 	<mx:LinkButton label="?" click="explorer.browseToDocumentationWebsite();" fontWeight="bold" fontSize="23" color="#666668" left="117" bottom="10" height="41"/>
