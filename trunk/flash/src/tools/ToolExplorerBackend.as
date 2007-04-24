@@ -58,15 +58,15 @@ package tools {
         private function msgListener(event:DataEvent):void {
 	        var message:XML = new XML(event.text);
 	        var msgName:String = message.name();
-	        //trace(message.toXMLString());
-	        trace("Message Name: " + msgName);
+	        // trace(message.toXMLString());
+	        // trace("Message Name: " + msgName);
 			if (app.currentState == DESIGN_MODE) {
 		        // pass ink samples to the design tools data handler
 				designTool.backend.processMessage(event.text);
 			} else if (msgName == "pens") {
 				// get all the pens and populate the combo box
 				var pensXML:XMLList = message.descendants("pen");
-				trace(pensXML.toXMLString());
+				// trace(pensXML.toXMLString());
 				var pens:Array = new Array();
 				for each (var pen:XML in pensXML) {
 					//trace(stroke);

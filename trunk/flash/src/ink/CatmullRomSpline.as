@@ -187,14 +187,14 @@ package ink {
 			var p:Array = new Array();
 			var c:Number = 0;
 			
-			trace("Vertices Plus: " + v);
+			// trace("Vertices Plus: " + v);
 			
 			for(var i:int=0, len:int=v.length; i<len-3; i++){
 				var p1:Object = v[i+1];
 				var p2:Object = v[i+2];
 				var pMid:Object = catmullRom(0.5, v[i], p1, p2, v[i+3]);
 				
-				trace("Points P1: " + p1 + "   P2: " + p2 + "   PMID: " + pMid);
+				// trace("Points P1: " + p1 + "   P2: " + p2 + "   PMID: " + pMid);
 				
 				// an approximate mid-point length calculation
 				var dist:Number =  	Math.sqrt(Math.abs(Math.pow(pMid.x-p1.x ,2)) + 
@@ -202,21 +202,21 @@ package ink {
 									Math.sqrt(Math.abs(Math.pow(pMid.x-p2.x ,2)) + 
 									Math.abs(Math.pow(pMid.y - p2.y ,2)));
 									
-				trace("Lengths: " + lengths);				
+				// trace("Lengths: " + lengths);				
 									
 				lengths[i] = dist;
 				var t:Number = 1/(dist/approxLineLength);
 				
-				trace("Delta T: " + t);
+				// trace("Delta T: " + t);
 				
 				for(var j:Number=0; j<1; j+=t){
-					trace("Blending");
+					// trace("Blending");
 					p[c] = catmullRom(j, v[i], p1, p2, v[i+3]);
 					p[c++].vertex = i;
 				}
 			}
 			p[c++] = catmullRom(1, v[i-1], v[i], v[i+1], v[i+2]);
-			trace("Returning Points");
+			// trace("Returning Points");
 			return p;
 		}
 		
@@ -315,7 +315,7 @@ package ink {
 				verticesPlus.push({x:xSamples[i], y:ySamples[i]});
 			}
 
-			trace("Duplicating Vertices: " + verticesPlus);
+			// trace("Duplicating Vertices: " + verticesPlus);
 			
 			if(!closedPath){
 				// the assumed 2 extra points at start and finish

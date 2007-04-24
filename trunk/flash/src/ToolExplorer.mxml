@@ -131,7 +131,7 @@
 	
 	<mx:VBox left="10" bottom="10">
 		<mx:Button id="backButton" label="Back" visible="false" click="explorer.backButtonClicked();"  width="100%" hideEffect="{fadeOut}" showEffect="{fadeIn}"/>
-		<mx:ComboBox id="penList" color="#000000"></mx:ComboBox>
+		<mx:ComboBox id="penList" color="#000000" width="98"></mx:ComboBox>
 		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="10" paddingLeft="25" paddingTop="10" paddingRight="25"/>
 	</mx:VBox>
 	<mx:LinkButton label="?" click="explorer.browseToDocumentationWebsite();" fontWeight="bold" fontSize="23" color="#666668" left="117" bottom="10" height="41"/>

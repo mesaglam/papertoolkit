@@ -7,12 +7,16 @@ package ink {
 	import flash.display.Stage;
 	import flash.filters.GradientBevelFilter;
 	import flash.display.DisplayObject;
+	import flash.geom.Rectangle;
+	import utils.MathUtils;
 
 	
 	// Ink is a display object, but the InkClusters store the data and do cool calculations for us...
 	public class Ink extends Sprite {
 	
 		private var padding:int = 60;
+		private var paddingSmall:int = 10;
+		
 		
 		private var xMin:Number = Number.MAX_VALUE;
 		private var yMin:Number = Number.MAX_VALUE;
@@ -24,11 +28,13 @@ package ink {
 
 		// it's recursive in the sense that clusters are just Ink objects themselves...
 		// Thus, an Ink can have Ink objects as its children
-		private var clusters:Array/*<Ink>*/ = new Array();
+		private var clusters:Array/*<InkCluster>*/ = new Array();
 		
 		private var strokeCount:Number = 0;
 
-		public function setColor():void {
+		private var currentlyPreviewing:InkStroke;
+
+		public function set color(c:uint):void {
 			// for each stroke, set the color!
 		}
 		
@@ -55,6 +61,15 @@ package ink {
 			return yMax;
 		}
 
+		public function startPreview(stroke:InkStroke):void {
+			currentlyPreviewing = stroke;
+			addChild(currentlyPreviewing);
+		}
+		public function stopPreview():void {
+			removeChild(currentlyPreviewing);
+			currentlyPreviewing = null;
+		}
+
 		public function Ink() {
 			buttonMode = true;
 
@@ -76,28 +91,49 @@ package ink {
 		public function addStroke(stroke:InkStroke):void {
 			//trace("Add Stroke");
 			strokeCount++;
-			mostRecentStroke = stroke;
+			
+			// which cluster does this stroke belong to?
 			if (mostRecentCluster == null) {
+				// we just started, so create a new cluster
 				mostRecentCluster = new InkCluster();
 				clusters.push(mostRecentCluster);
+			} else if (mostRecentStroke != null) {
+				// see if this stroke is close to the previous stroke or not
+				var dDist:Number = MathUtils.distance(stroke.avgX, stroke.avgY, 
+													  mostRecentStroke.avgX, mostRecentStroke.avgY);
+				if (dDist > InkCluster.CLUSTER_GAP) {
+					// if it's > 500 anoto dots away from the last ink stroke, 
+					// we assume it's in a different cluster (e.g, new page)
+					// we scan the current clusters, to see if it is within the threshold 
+					// of any of the clusters.
+					// 
+					// we choose the closest one...
+					// if not, then we add a whole new cluster!
+					var foundCluster:Boolean = false;
+					for each (var c:InkCluster in clusters) {
+						trace("Scanning Cluster: " + c);
+						if (c.closeEnoughTo(stroke)) {
+							trace("Found Cluster");
+							mostRecentCluster = c;
+							foundCluster = true;
+							break;
+						}
+					}
+					if (!foundCluster) {
+						trace("New Cluster");
+						// didn't find any
+						mostRecentCluster = new InkCluster();
+						clusters.push(mostRecentCluster);
+					}
+				}
 			}
 			
 			mostRecentCluster.addStroke(stroke);
 			addChild(stroke); // add the stroke as a child for display
 			
-			if (mostRecentStroke != null) {
-				if (Math.abs(stroke.lastX - mostRecentStroke.lastX) > 800) {
-					// if it's > 800 anoto dots away from the last ink stroke, we assume it's in a different cluster (i.e., page)
-					// we scan the current clusters, to see if it is within the 800 threshold of any of the clusters
-					// we choose the closest one...
-					// if not, then we add a whole new cluster!
-					// TODO
-					trace("New Cluster");
-				}
-			}
-			
 			mostRecentStroke = stroke;
-			
+
+			// update statistics			
 			xMin = Math.min(xMin, stroke.minX);
 			yMin = Math.min(yMin, stroke.minY);
 			xMax = Math.max(xMax, stroke.maxX);
@@ -115,13 +151,22 @@ package ink {
 
 		// make sure the most recent cluster is visible within this rectangle
 		// if not, then at the very least, the most recent stroke...
-		public function recenterMostRecentCluster():void {
-			trace("Recenter Most Recent Cluster");
-			mostRecentCluster.minX;
-			mostRecentCluster.minY;
-			mostRecentCluster.maxX;
-			mostRecentCluster.maxY;
-		///	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+		public function recenterMostRecentCluster(rect:Rectangle):void {
+			var minX:Number = Number.MAX_VALUE;
+			var minY:Number = Number.MAX_VALUE;
+			
+			if (currentlyPreviewing != null) {
+				minX = Math.min(currentlyPreviewing.minX, minX);
+				minY = Math.min(currentlyPreviewing.minY, minY);
+			}
+			if (mostRecentCluster != null) {
+				trace("Recenter Most Recent Cluster to: " + rect);
+				trace("Most Recent Cluster: " + mostRecentCluster.toString());
+				minX = Math.min(mostRecentCluster.minX, minX);
+				minY = Math.min(mostRecentCluster.minY, minY);
+			}
+			x = -minX + paddingSmall;
+			y = -minY + paddingSmall;
 		}
 
         // move the ink so that we can see the most recent ink strokes!

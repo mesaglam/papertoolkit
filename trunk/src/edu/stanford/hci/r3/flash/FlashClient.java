@@ -109,7 +109,7 @@ public class FlashClient {
 		} else {
 			DebugUtils.println("There is no client to send the message to.");
 		}
-		DebugUtils.println("Sent " + message.length() + " bytes.");
+		// DebugUtils.println("Sent " + message.length() + " bytes.");
 		System.out.flush();
 	}
 
