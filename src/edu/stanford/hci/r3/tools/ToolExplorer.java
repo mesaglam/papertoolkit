@@ -6,8 +6,6 @@ import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
 import edu.stanford.hci.r3.flash.FlashPenListener;
-import edu.stanford.hci.r3.pen.PenSample;
-import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.tools.design.sketch.SketchToPaperUI;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -36,22 +34,23 @@ public class ToolExplorer implements FlashListener {
 		// Start the Apollo GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File toolExplorerApollo = new File(r3RootPath, "flash/bin/ToolExplorer.exe");
-		flash = new FlashCommunicationServer(8989);
+		flash = new FlashCommunicationServer();
 		flash.addFlashClientListener(this);
 		flash.openFlashApolloGUI(toolExplorerApollo);
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see edu.stanford.hci.r3.flash.FlashListener#messageReceived(java.lang.String)
 	 */
 	@Override
 	public void messageReceived(String command) {
 		DebugUtils.println(command);
-		if (command.equals("Design Clicked")) {
+		if (command.equals("Design")) {
 			sketchToPaperUI = new SketchToPaperUI();
 			sketchToPaperUI.addPenListener(new FlashPenListener(flash));
-		} else if (command.equals("Back Clicked")) {
+		} else if (command.equals("Main Menu")) {
 			if (sketchToPaperUI != null) {
 				sketchToPaperUI.exit();
 				sketchToPaperUI = null;

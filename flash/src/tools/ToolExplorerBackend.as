@@ -12,13 +12,20 @@ package tools {
 	
 	import java.JavaIntegration;
 	import flash.events.DataEvent;
-	import tools.DesignTools;
 	import flash.events.Event;
+	import components.DesignTools;
 	
 	
+	// Helps developers navigate the Paper Toolkit visually...
 	public class ToolExplorerBackend extends Sprite {
 		
-		public static const DESIGN_MODE:String = "DesignClicked";
+		// Strings used for Message Passing with Java, and for Flex GUI States
+		public static const DESIGN_MODE:String = "Design";
+		public static const CODE_AND_DEBUG_MODE:String = "Code and Debug";
+		public static const PAPER_UI_MODE:String = "Paper UI";
+		public static const TOOLBOX_MODE:String = "Toolbox";
+		public static const API_MODE:String = "API Explorer";
+		public static const MAIN_MENU_MODE:String = "Main Menu";
 		
 		private var stageObj:Stage;
 		private var window:NativeWindow;
@@ -29,6 +36,7 @@ package tools {
 		private var portNum:int;
 		private var javaBackend:JavaIntegration;
 
+		// constructor
 		public function ToolExplorerBackend(win:NativeWindow):void {
 			window = win;		
 			stageObj = win.stage;
@@ -100,7 +108,7 @@ package tools {
 		    start();
 		}
 
-
+		// handlers for Flex GUI buttons
 		public function browseToAuthorWebsite():void {
 			navigateToURL(new URLRequest("http://graphics.stanford.edu/~ronyeh"));			
 		}
@@ -110,49 +118,47 @@ package tools {
 		public function browseToDocumentationWebsite():void {
 			navigateToURL(new URLRequest("http://hci.stanford.edu/paper/documentation/"));			
 		}
-		
 
 		
-		/**
-		 * A bunch of handlers for GUI buttons that invoke something in Java-land.
-		 */		
+		//
+		// A bunch of handlers for GUI buttons that invoke something in Java-land.
+		// 
 		public function designClicked():void {
 			app.currentState = DESIGN_MODE;
-			javaBackend.send("Design Clicked");
+			javaBackend.send(DESIGN_MODE);
 		}
 		public function directionsClicked():void {
-			app.currentState = "CompassClicked";
-			javaBackend.send("Compass Clicked");
+			app.currentState = API_MODE;
+			javaBackend.send(API_MODE);
 		}
 		public function stickiesClicked():void {
-			app.currentState = "StickiesClicked";
-			javaBackend.send("Stickies Clicked");
+			app.currentState = PAPER_UI_MODE;
+			javaBackend.send(PAPER_UI_MODE);
 		}
 		public function toolboxClicked():void {
-			app.currentState = "ToolboxClicked";
-			javaBackend.send("Toolbox Clicked");
+			app.currentState = TOOLBOX_MODE;
+			javaBackend.send(TOOLBOX_MODE);
 		}
 		public function yinyangClicked():void {
-			app.currentState = "YinYangClicked";
-			javaBackend.send("YinYang Clicked");
+			app.currentState = CODE_AND_DEBUG_MODE;
+			javaBackend.send(CODE_AND_DEBUG_MODE);
 		}
 		public function backButtonClicked():void{
-			app.currentState='';
-			javaBackend.send("Back Clicked");
+			app.currentState="";
+			javaBackend.send(MAIN_MENU_MODE);
 		}
 		
 		
-		/**
-		 * Setters for components that we can access from our MXML.
-		 */
-		public function setApp(appObj:ToolExplorer):void{
+		// Setters for components that we can access from our MXML.
+		public function set applicationObject(appObj:ToolExplorer):void{
 			app = appObj;
 			app.window.addEventListener(Event.CLOSE, windowCloseHandler);
 		}
-		public function setDesignToolPanel(designToolPanel:DesignTools):void{
+		public function set designToolPanel(designToolPanel:DesignTools):void{
 			designTool = designToolPanel;
 		}
 
+		// event handler
 		private function windowCloseHandler(e:Event):void {
 			trace("Window Closing.");
 			exit();

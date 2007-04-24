@@ -82,6 +82,7 @@ public class FlashCommunicationServer {
 	}
 
 	/**
+	 * Customize the port for the Flash Communication Server.
 	 * @param port
 	 */
 	public FlashCommunicationServer(int port) {
