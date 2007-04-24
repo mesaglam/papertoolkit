@@ -7,7 +7,6 @@ package ink {
 	import flash.display.Stage;
 	import flash.filters.GradientBevelFilter;
 	import flash.display.DisplayObject;
-	import flash.geom.Rectangle;
 
 	
 	// Ink is a display object, but the InkClusters store the data and do cool calculations for us...
@@ -112,6 +111,18 @@ package ink {
         	x = -xMin + padding;
         	y = -yMin + padding;
         }
+
+
+		// make sure the most recent cluster is visible within this rectangle
+		// if not, then at the very least, the most recent stroke...
+		public function recenterMostRecentCluster():void {
+			trace("Recenter Most Recent Cluster");
+			mostRecentCluster.minX;
+			mostRecentCluster.minY;
+			mostRecentCluster.maxX;
+			mostRecentCluster.maxY;
+		///	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+		}
 
         // move the ink so that we can see the most recent ink strokes!
         // basically, we should recenter() first, and then find the delta

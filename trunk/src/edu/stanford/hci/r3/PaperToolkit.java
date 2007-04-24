@@ -123,8 +123,10 @@ public class PaperToolkit {
 
 	public static final String CONFIG_PATTERN_PATH_VALUE = "/pattern/";
 
+	/**
+	 * Property Keys.
+	 */
 	private static final String HW_REC_KEY = "handwritingRecognition";
-
 	/**
 	 * Whether we have called initializeLookAndFeel() yet...
 	 */
@@ -134,6 +136,8 @@ public class PaperToolkit {
 	 * Where to find the directories that store our pattern definition files.
 	 */
 	public static final File PATTERN_PATH = getPatternPath();
+
+	private static final String REMOTE_PENS_KEY = "remotePens";
 
 	private static PaperToolkit toolkitInstance;
 
@@ -286,7 +290,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Alternatively, try using the batch files instead.
+	 * Alternatively, try using the *.bat files instead.
 	 * 
 	 * @param args
 	 */
@@ -295,7 +299,7 @@ public class PaperToolkit {
 			// the 0 args branch will run the Paper Toolkit GUI, which helps designers learn what you
 			// can do with this toolkit. It integrates with the documentation and stuff too!
 			printUsage();
-			new ToolExplorer();
+			new PaperToolkit().startToolExplorer();
 		} else if (args[0].startsWith("-actions")) {
 			ActionReceiverTrayApp.main(new String[] {});
 		} else if (args[0].startsWith("-pen")) {
@@ -425,6 +429,12 @@ public class PaperToolkit {
 	 */
 	private JButton exitAppManagerButton;
 
+	/**
+	 * Store frequently used pens here... so that you can ask the toolkit for them instead of creating them
+	 * from scratch. This list is loaded up from the PaperToolkit.xml config file.
+	 */
+	private List<Pen> frequentlyUsedPens = new ArrayList<Pen>();
+
 	private List<ActionListener> listenersToLoadRecentPatternMappings = new ArrayList<ActionListener>();
 
 	/**
@@ -439,7 +449,7 @@ public class PaperToolkit {
 
 	/**
 	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
-	 * your own program.
+	 * your own program. Then, you can get the local properties from this properties object.
 	 */
 	private final Properties localProperties = new Properties();
 
@@ -484,7 +494,7 @@ public class PaperToolkit {
 	private boolean useAppManager = false;
 
 	/**
-	 * 
+	 * Whether or not to use handwriting recognition. It will start the HWRec Server...
 	 */
 	private boolean useHandwriting;
 
@@ -795,6 +805,10 @@ public class PaperToolkit {
 		return FileUtils.showDirectoryChooser(appManager, "Choose a Directory for your PDFs");
 	}
 
+	public List<Pen> getFrequentlyUsedPens() {
+		return frequentlyUsedPens;
+	}
+
 	/**
 	 * @return
 	 */
@@ -1090,7 +1104,7 @@ public class PaperToolkit {
 	 */
 	private void loadStartupConfiguration() {
 		final Properties props = Configuration.getPropertiesFromConfigFile(CONFIG_FILE_KEY);
-		useHandwriting = Boolean.parseBoolean(props.getProperty(HW_REC_KEY));
+		setStartupProperties(props);
 
 		// also check for a custom PaperToolkit.xml in the run directory of the application
 		// properties in that file will override the ones we just loaded from the default location
@@ -1101,18 +1115,13 @@ public class PaperToolkit {
 			DebugUtils.println("Local Properties File Exists. Overriding Properties: ");
 			try {
 				localProperties.loadFromXML(new FileInputStream(localPropsFile));
+				setStartupProperties(localProperties);
 			} catch (InvalidPropertiesFormatException e) {
 				e.printStackTrace();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
-			if (localProperties.containsKey(HW_REC_KEY)) {
-				String newProp = localProperties.getProperty(HW_REC_KEY);
-				DebugUtils
-						.println(HW_REC_KEY + " was: [" + useHandwriting + "] and is now [" + newProp + "]");
-				useHandwriting = Boolean.parseBoolean(newProp);
 			}
 		} else {
 			DebugUtils.println("Local Properties File Does Not Exist");
@@ -1156,6 +1165,40 @@ public class PaperToolkit {
 				}
 			}
 		}).start();
+	}
+
+	/**
+	 * @param props
+	 */
+	private void setStartupProperties(Properties props) {
+		if (props.containsKey(HW_REC_KEY)) {
+			String theProp = props.getProperty(HW_REC_KEY);
+			DebugUtils.println(HW_REC_KEY + " was: [" + useHandwriting + "] and is now [" + theProp + "]");
+			useHandwriting = Boolean.parseBoolean(theProp);
+		}
+
+		
+		// add the Pens that we use most frequently...
+		frequentlyUsedPens.add(new Pen("Local Pen"));
+		if (props.containsKey(REMOTE_PENS_KEY)) {
+			String theProp = props.getProperty(REMOTE_PENS_KEY);
+			DebugUtils.println("Loading Frequently Used Remote Pens from PaperToolkit.xml: " + theProp);
+			String[] pens = theProp.split(","); // comma delimited
+			for (String pen : pens) {
+				int colonIndex = pen.indexOf(":");
+				String penServerName = pen.substring(0, colonIndex);
+				int penServerPort = Integer.parseInt(pen.substring(colonIndex + 1, pen.length()));
+				DebugUtils.println("Adding Pen " + penServerName + " : " + penServerPort);
+				String shortName = "";
+				if (penServerName.contains(".")) {
+					shortName = penServerName.substring(0, penServerName.indexOf("."));					
+				} else {
+					shortName = penServerName;
+				}
+				frequentlyUsedPens.add(new Pen(shortName, penServerName, penServerPort));
+			}
+		}
+
 	}
 
 	/**
@@ -1212,6 +1255,13 @@ public class PaperToolkit {
 
 		// provides access back to the toolkit object
 		paperApp.setHostToolkit(this);
+	}
+
+	/**
+	 * Helps guide developers through the Paper Toolkit.
+	 */
+	private void startToolExplorer() {
+		new ToolExplorer(this);
 	}
 
 	/**

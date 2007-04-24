@@ -3,8 +3,6 @@ package edu.stanford.hci.r3.pattern.coordinates;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.stanford.hci.r3.util.DebugUtils;
-
 /**
  * <p>
  * Represents a logical page address, which is available when we import batched pen strokes.

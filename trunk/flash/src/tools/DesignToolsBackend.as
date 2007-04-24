@@ -84,6 +84,9 @@
 	   				currInkStroke.rerenderWithCurves();
 	   			}
 	   			
+	   			// recenter the cluster so that it is visible for us...
+	   			
+	   			
 	   			// recognize 
 	   			/*
 	   			var paperUI:XML = 
@@ -103,7 +106,8 @@
 	   		}
         }
         
-        //
+        // deal with the ink samples
+        // create ink objects, and render them to screen...
 		private function handleInk(xmlTxt:String):void {
             var inkXML:XML = new XML(xmlTxt);
             // trace("XML: " + inkXML.toXMLString());
@@ -132,7 +136,10 @@
 			var penUp:Boolean = inkXML.@p == "U";
 			if (penUp) {
 				trace("Handling Pen Up");
+				
+				// remove the temporary child
 				inkWell.removeChild(currInkStroke);
+				// add it more permanently
 				inkWell.addStroke(currInkStroke);
 				
 				// penUps are a duplicate of the last regular sample

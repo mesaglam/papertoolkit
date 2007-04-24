@@ -35,7 +35,6 @@ package java {
 			// this should be gotten from the query parameter...
 			// for now, we'll hard code it...
 			sock.connect("localhost", port);
-			send("Flash Client Connected");
 		}
 		
 		//
@@ -58,6 +57,7 @@ package java {
 
         private function connectHandler(event:Event):void {
             trace("connectHandler: " + event);
+			send("Connected");
         }
 
 		private function debugOut(msg:String):void {

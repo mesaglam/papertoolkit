@@ -141,7 +141,7 @@ public class FlashCommunicationServer {
 						final BufferedReader readerIn = new BufferedReader(new InputStreamReader(incoming
 								.getInputStream()));
 						final PrintStream writerOut = new PrintStream(incoming.getOutputStream());
-
+						
 						// pass this to a handler thread that will service this client!
 						flashClients.add(new FlashClient(FlashCommunicationServer.this, clientID++, incoming,
 								readerIn, writerOut));

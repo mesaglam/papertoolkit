@@ -32,6 +32,7 @@
 				<components:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
+			<mx:RemoveChild target="{penList}"/>
 		</mx:State>
 		<mx:State name="{ToolExplorerBackend.CODE_AND_DEBUG_MODE}">
 			<mx:SetProperty target="{topRightImageYinYang}" name="visible" value="true"/>
@@ -43,6 +44,7 @@
 				<components:DesignTools left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
+			<mx:RemoveChild target="{penList}"/>
 		</mx:State>
 		<mx:State name="{ToolExplorerBackend.PAPER_UI_MODE}">
 			<mx:SetProperty target="{topRightImageStickies}" name="visible" value="true"/>
@@ -54,6 +56,7 @@
 				<components:DesignTools left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
+			<mx:RemoveChild target="{penList}"/>
 		</mx:State>
 		<mx:State name="{ToolExplorerBackend.TOOLBOX_MODE}">
 			<mx:SetProperty target="{topRightImageToolbox}" name="visible" value="true"/>
@@ -65,6 +68,7 @@
 				<components:DesignTools left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
+			<mx:RemoveChild target="{penList}"/>
 		</mx:State>
 		<mx:State name="{ToolExplorerBackend.API_MODE}">
 			<mx:SetProperty target="{topRightImageDirections}" name="visible" value="true"/>
@@ -76,6 +80,7 @@
 				<components:DesignTools left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
 			</mx:AddChild>
+			<mx:RemoveChild target="{penList}"/>
 		</mx:State>
 	</mx:states>
 	<mx:Label text="PaperToolkit Tool Explorer" fontSize="40" left="10" top="10" id="titleLabel"/>
@@ -126,6 +131,7 @@
 	
 	<mx:VBox left="10" bottom="10">
 		<mx:Button id="backButton" label="Back" visible="false" click="explorer.backButtonClicked();"  width="100%" hideEffect="{fadeOut}" showEffect="{fadeIn}"/>
+		<mx:ComboBox id="penList" color="#000000"></mx:ComboBox>
 		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="10" paddingLeft="25" paddingTop="10" paddingRight="25"/>
 	</mx:VBox>
 	<mx:LinkButton label="?" click="explorer.browseToDocumentationWebsite();" fontWeight="bold" fontSize="23" color="#666668" left="117" bottom="10" height="41"/>

@@ -57,10 +57,30 @@ package tools {
 
         private function msgListener(event:DataEvent):void {
 	        var message:XML = new XML(event.text);
+	        var msgName:String = message.name();
 	        //trace(message.toXMLString());
+	        trace("Message Name: " + msgName);
 			if (app.currentState == DESIGN_MODE) {
 		        // pass ink samples to the design tools data handler
 				designTool.backend.processMessage(event.text);
+			} else if (msgName == "pens") {
+				// get all the pens and populate the combo box
+				var pensXML:XMLList = message.descendants("pen");
+				trace(pensXML.toXMLString());
+				var pens:Array = new Array();
+				for each (var pen:XML in pensXML) {
+					//trace(stroke);
+					var penItem:Object = new Object();				
+					penItem.label = pen.@name + ":" + pen.@port;
+					penItem.data = pen.@server + ":" + pen.@port;
+					penItem.name = pen.@name;
+					penItem.server = pen.@server;
+					penItem.port = pen.@port;
+					pens.push(penItem);
+				}			
+				app.penList.dataProvider = pens;
+			} else {
+	        	trace("Unhandled: " + message.toXMLString());
 			}
         }
 
@@ -124,6 +144,11 @@ package tools {
 		// A bunch of handlers for GUI buttons that invoke something in Java-land.
 		// 
 		public function designClicked():void {
+			// communicate which pen is currently selected
+			var penObj:Object = app.penList.selectedItem;
+			javaBackend.send("<pen name='"+penObj.name+"' server='"+penObj.server+"' port='"+penObj.port+"'/>");
+
+			// say that we are in design mode
 			app.currentState = DESIGN_MODE;
 			javaBackend.send(DESIGN_MODE);
 		}
