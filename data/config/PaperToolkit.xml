@@ -3,4 +3,5 @@
 	<properties>
 	<comment>Default Properties for configuring the Paper Toolkit. You can override them by hosting a PaperToolkit.xml in the root directory of your application.</comment>
 	<entry key="handwritingRecognition">true</entry>
+	<entry key="remotePens">solaria.stanford.edu:11104,solaria.stanford.edu:11105</entry>
 </properties>

@@ -84,6 +84,16 @@ public class Pen extends PenInput {
 		defaultPenServer = penServerHostName;
 	}
 
+	/**
+	 * @param name
+	 * @param penServerHostName
+	 * @param penServerPort
+	 */
+	public Pen(String name, String penServerHostName, int penServerPort) {
+		this(name, penServerHostName);
+		setPenServerPort(penServerPort);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -96,6 +106,14 @@ public class Pen extends PenInput {
 			// if we're live, then listen to the PenClient
 			livePenClient.addPenListener(penListener);
 		}
+	}
+
+	public String getPenServerName() {
+		return defaultPenServer;
+	}
+
+	public int getPenServerPort() {
+		return penServerTcpIpPort;
 	}
 
 	/*

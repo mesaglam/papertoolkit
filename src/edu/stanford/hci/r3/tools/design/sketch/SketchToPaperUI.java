@@ -45,7 +45,7 @@ public class SketchToPaperUI {
 	private static void testTranslateXMLFile() {
 		String fileName = // "penSynch/data/XML/2007_03_24__19_51_50_AJ3-AAA-ZU3-7X.xml";
 		"penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml";
-		new SketchToPaperUI().translate(new File(fileName), "SketchedPaperUI", new File("."));
+		new SketchToPaperUI(new Pen()).translate(new File(fileName), "SketchedPaperUI", new File("."));
 	}
 
 	private Pen pen;
@@ -53,26 +53,26 @@ public class SketchToPaperUI {
 	/**
 	 * 
 	 */
-	public SketchToPaperUI() {
+	public SketchToPaperUI(Pen p) {
 		DebugUtils.println("New Sketch To Paper UI");
+		pen = p;
 
-		// set up a pen, and a pen listener...
-		pen = new Pen();
+		// set up the pen, and a pen listener...
 		pen.startLiveMode();
 		pen.addLivePenListener(new PenListener() {
 			@Override
 			public void penDown(PenSample sample) {
-				
+
 			}
 
 			@Override
 			public void penUp(PenSample sample) {
-				
+
 			}
 
 			@Override
 			public void sample(PenSample sample) {
-				
+
 			}
 		});
 	}
