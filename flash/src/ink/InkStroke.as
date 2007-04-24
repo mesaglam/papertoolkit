@@ -98,7 +98,7 @@ package ink {
 			if (dDist > 500) {
 				// trace("InkStroke.as: Disregarding a Large Jump in Ink Samples...");
 				return;
-			} else if (dDist > 20) {
+			} else if (dDist > 10) {
 				// trace("Large Jump in Ink Samples");
 				largeJump = true;
 			}

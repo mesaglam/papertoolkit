@@ -75,6 +75,11 @@ public class FlashCommunicationServer {
 	private ServerSocket socket;
 
 	/**
+	 * Useful for debugging Flash communcations...
+	 */
+	private boolean verbose = false;
+
+	/**
 	 * Allows us to send messages to the Flash GUI.
 	 */
 	public FlashCommunicationServer() {
@@ -83,6 +88,7 @@ public class FlashCommunicationServer {
 
 	/**
 	 * Customize the port for the Flash Communication Server.
+	 * 
 	 * @param port
 	 */
 	public FlashCommunicationServer(int port) {
@@ -141,7 +147,7 @@ public class FlashCommunicationServer {
 						final BufferedReader readerIn = new BufferedReader(new InputStreamReader(incoming
 								.getInputStream()));
 						final PrintStream writerOut = new PrintStream(incoming.getOutputStream());
-						
+
 						// pass this to a handler thread that will service this client!
 						flashClients.add(new FlashClient(FlashCommunicationServer.this, clientID++, incoming,
 								readerIn, writerOut));
@@ -228,15 +234,22 @@ public class FlashCommunicationServer {
 	 * @param msg
 	 */
 	public void sendMessage(String msg) {
-		if (msg.length() < 100) {
-			DebugUtils.println("Sending message: " + msg.replace("\n", "") + " to all " + flashClients.size()
-					+ " clients");
-		} else {
-			DebugUtils.println("Sending message: " + msg.substring(0, 100).replace("\n", "") + "... to all "
-					+ flashClients.size() + " clients");
+		if (verbose) {
+			if (msg.length() < 100) {
+				DebugUtils.println("Sending message: " + msg.replace("\n", "") + " to all "
+						+ flashClients.size() + " clients");
+			} else {
+				DebugUtils.println("Sending message: " + msg.substring(0, 100).replace("\n", "")
+						+ "... to all " + flashClients.size() + " clients");
+			}
 		}
+
 		for (FlashClient client : flashClients) {
 			client.sendMessage(msg);
 		}
+	}
+
+	public void setVerbose(boolean v) {
+		verbose = v;
 	}
 }

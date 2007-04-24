@@ -1,4 +1,6 @@
 package ink {
+	import utils.MathUtils;
+	
 	
 	// helps us do calculations on the ink, etc...
 	// does not allow display of the ink strokes
@@ -20,9 +22,21 @@ package ink {
 		private var yAvg:Number = 0;
 		private var numSamples:Number = 0;
 		
+		public static const CLUSTER_GAP:Number = 500;
+
 		
 		public function InkCluster():void {
 			
+		}
+		
+		public function toString():String {
+			return "Ink Cluster: Bounds {" + minX + "," + minY + " --> " + maxX + "," + maxY + 
+			"} Center: {"+xAvg + "," + yAvg + "}";
+		}
+		
+		public function closeEnoughTo(stroke:InkStroke):Boolean {
+			// are the centers close enough?
+			return MathUtils.distance(xAvg, yAvg, stroke.avgX, stroke.avgY) <= CLUSTER_GAP;
 		}
 		
 		public function addStroke(stroke:InkStroke):void {

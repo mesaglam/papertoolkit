@@ -50,11 +50,13 @@
         	}
 
 			// DEBUG
-			// Draw a gray box at the inkCanvas rectangle, because that is where we will display our ink
-			graphics.clear();
-			graphics.lineStyle(1, 0x555555);
-        	graphics.drawRect(inkCanvas.x, inkCanvas.y, inkCanvas.width, inkCanvas.height);
-        	
+			// Draw a box at the inkCanvas rectangle, because that is where we will display our ink
+			if (false) {
+				graphics.clear();
+				graphics.lineStyle(1, 0x654565);
+	        	graphics.drawRect(inkCanvas.x, inkCanvas.y, inkCanvas.width, inkCanvas.height);
+			}
+			
             //trace("dataHandler: " + event);
             // trace(msgText); // parse the text and assemble InkStrokes...
             var msg:XML = new XML(msgText);
@@ -70,11 +72,16 @@
 	   			trace("Pen Down");
 				// start up a new stroke
    				currInkStroke = new InkStroke();
-   				// add it to the stage
-				inkWell.addChild(currInkStroke);
+   				// add it to the stage, but don't consider it "added"
+   				inkWell.startPreview(currInkStroke);
    			} else if (msgName=="p") {
    				// trace("Handling Ink");
 				handleInk(msgText);
+
+	   			// recenter the cluster so that it is visible for us...
+	   			inkWell.recenterMostRecentCluster(new Rectangle(inkCanvas.x, inkCanvas.y, 
+	   															inkCanvas.width, inkCanvas.height));
+
 	   		} else if (msgName=="penUpEvent") {
 	   			trace("Pen Up");
 	   			
@@ -83,8 +90,6 @@
 	   			if (currInkStroke.isLargeJump) {
 	   				currInkStroke.rerenderWithCurves();
 	   			}
-	   			
-	   			// recenter the cluster so that it is visible for us...
 	   			
 	   			
 	   			// recognize 
@@ -137,8 +142,8 @@
 			if (penUp) {
 				trace("Handling Pen Up");
 				
-				// remove the temporary child
-				inkWell.removeChild(currInkStroke);
+				// remove the temporary InkStroke child
+				inkWell.stopPreview();
 				// add it more permanently
 				inkWell.addStroke(currInkStroke);
 				
