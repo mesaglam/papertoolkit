@@ -5,6 +5,7 @@
 	<mx:Label x="10" y="10" text="Design a Paper UI by sketching on patterned paper." fontSize="15"/>
 	<mx:Script>
 		<![CDATA[
+			import tools.DesignToolsBackend;
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:ApolloApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();" xmlns:tools="tools.*">
+	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Event Viz" creationComplete="init();" xmlns:components="components.*">
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
@@ -12,8 +12,8 @@
 			
 			public function init():void {
 				explorer = new ToolExplorerBackend(this.window);
-				explorer.setApp(this);
-				explorer.setDesignToolPanel(designToolPanel);
+				explorer.applicationObject = this;
+				explorer.designToolPanel = designToolPanel;
 			}
 		]]>
 	</mx:Script>
@@ -29,52 +29,52 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Design"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<tools:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
-				</tools:DesignTools>
+				<components:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
+				</components:DesignTools>
 			</mx:AddChild>
 		</mx:State>
-		<mx:State name="YinYangClicked">
+		<mx:State name="{ToolExplorerBackend.CODE_AND_DEBUG_MODE}">
 			<mx:SetProperty target="{topRightImageYinYang}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
 			<mx:SetProperty target="{titleLabel}" name="text" value="Code"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<tools:DesignTools left="10" right="10" top="80" bottom="90">
-				</tools:DesignTools>
+				<components:DesignTools left="10" right="10" top="80" bottom="90">
+				</components:DesignTools>
 			</mx:AddChild>
 		</mx:State>
-		<mx:State name="StickiesClicked">
+		<mx:State name="{ToolExplorerBackend.PAPER_UI_MODE}">
 			<mx:SetProperty target="{topRightImageStickies}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
 			<mx:SetProperty target="{titleLabel}" name="text" value="Paper UIs"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<tools:DesignTools left="10" right="10" top="80" bottom="90">
-				</tools:DesignTools>
+				<components:DesignTools left="10" right="10" top="80" bottom="90">
+				</components:DesignTools>
 			</mx:AddChild>
 		</mx:State>
-		<mx:State name="ToolboxClicked">
+		<mx:State name="{ToolExplorerBackend.TOOLBOX_MODE}">
 			<mx:SetProperty target="{topRightImageToolbox}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
 			<mx:SetProperty target="{titleLabel}" name="text" value="Toolbox"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<tools:DesignTools left="10" right="10" top="80" bottom="90">
-				</tools:DesignTools>
+				<components:DesignTools left="10" right="10" top="80" bottom="90">
+				</components:DesignTools>
 			</mx:AddChild>
 		</mx:State>
-		<mx:State name="CompassClicked">
+		<mx:State name="{ToolExplorerBackend.API_MODE}">
 			<mx:SetProperty target="{topRightImageDirections}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
 			<mx:SetProperty target="{titleLabel}" name="text" value="API Explorer"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<tools:DesignTools left="10" right="10" top="80" bottom="90">
-				</tools:DesignTools>
+				<components:DesignTools left="10" right="10" top="80" bottom="90">
+				</components:DesignTools>
 			</mx:AddChild>
 		</mx:State>
 	</mx:states>
@@ -89,7 +89,7 @@
 			<mx:icon>@Embed('../icons/Directions.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="20"/>
-		<mx:Button label="Code / Debug" labelPlacement="bottom" paddingBottom="5" click="explorer.yinyangClicked();">
+		<mx:Button label="Code &amp; Debug" labelPlacement="bottom" paddingBottom="5" click="explorer.yinyangClicked();">
 			<mx:icon>@Embed('../icons/YinYang.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="20"/>

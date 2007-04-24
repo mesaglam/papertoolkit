@@ -9,6 +9,7 @@
 	import ink.InkUtils;
 	import flash.geom.Rectangle;
 	import mx.containers.Canvas;
+	import components.DesignTools;
 	
 	// 
 	public class DesignToolsBackend extends Sprite {
@@ -76,6 +77,12 @@
 				handleInk(msgText);
 	   		} else if (msgName=="penUpEvent") {
 	   			trace("Pen Up");
+	   			
+	   			// rerender the last stroke with curves
+	   			// if the large jump would otherwise cause chunky looking curves
+	   			if (currInkStroke.isLargeJump) {
+	   				currInkStroke.rerenderWithCurves();
+	   			}
 	   			
 	   			// recognize 
 	   			/*
