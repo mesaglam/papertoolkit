@@ -18,7 +18,7 @@ import edu.umd.cs.piccolo.nodes.PText;
 
 /**
  * <p>
- * 
+ * The old implementation of the Debug Visualization.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
