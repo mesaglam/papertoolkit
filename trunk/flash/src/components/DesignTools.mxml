@@ -21,10 +21,9 @@
 				inkCanvas.addChild(container);
 			}
 			
-			// accessor to the actionscript backend of this mxml class
-			public function get backend():DesignToolsBackend {
-				return designTools;
-			}
+	        public function processMessage(msgText:String):void {
+	        	designTools.processMessage(msgText);
+	        }
 		]]>
 	</mx:Script>
 	<mx:HDividedBox left="10" right="10" bottom="10" top="40">

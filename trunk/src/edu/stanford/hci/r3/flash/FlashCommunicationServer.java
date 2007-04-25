@@ -35,11 +35,6 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class FlashCommunicationServer {
 
 	/**
-	 * communicate through this port
-	 */
-	public static final int DEFAULT_PORT = Constants.Ports.FLASH_COMMUNICATION_SERVER;
-
-	/**
 	 * Only counts up.
 	 */
 	private int clientID = 0;
@@ -55,7 +50,7 @@ public class FlashCommunicationServer {
 	private List<FlashClient> flashClients = new ArrayList<FlashClient>();
 
 	/**
-	 * 
+	 * Send messages to these Java listeners.
 	 */
 	private List<FlashListener> listeners = new ArrayList<FlashListener>();
 
@@ -83,7 +78,7 @@ public class FlashCommunicationServer {
 	 * Allows us to send messages to the Flash GUI.
 	 */
 	public FlashCommunicationServer() {
-		this(DEFAULT_PORT);
+		this(Constants.Ports.FLASH_COMMUNICATION_SERVER);
 	}
 
 	/**
@@ -176,7 +171,10 @@ public class FlashCommunicationServer {
 			// sending the command on to listeners
 			DebugUtils.println("Server got command [" + command + "] from client " + clientID);
 			for (FlashListener listener : listeners) {
-				listener.messageReceived(command);
+				boolean consumed = listener.messageReceived(command);
+				if (consumed) {
+					break;
+				}
 			}
 		}
 	}
@@ -193,10 +191,15 @@ public class FlashCommunicationServer {
 	 * 
 	 * @param apolloGUIFile
 	 */
-	public void openFlashApolloGUI(File apolloGUIFile) {
+	public void openFlashApolloGUI(File apolloGUIFile, String... otherArguments) {
 		try {
-			ProcessBuilder processBuilder = new ProcessBuilder(apolloGUIFile.getAbsolutePath(), "port:"
-					+ serverPort);
+			List<String> app = new ArrayList<String>();
+			app.add(apolloGUIFile.getAbsolutePath());
+			app.add("port:" + serverPort);
+			for (String arg : otherArguments) {
+				app.add(arg);
+			}
+			ProcessBuilder processBuilder = new ProcessBuilder(app);
 			processBuilder.start();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -210,8 +213,10 @@ public class FlashCommunicationServer {
 	 * @param flashGUIFile
 	 *            Or perhaps this should be a URL in the future, as the GUI can live online? Launches the
 	 *            flash GUI in a browser.
+	 * @deprecated because we moved everything over to Apollo for simplicity
 	 */
-	public void openFlashGUI(File flashGUIFile) {
+	@SuppressWarnings("unused")
+	private void openFlashGUI(File flashGUIFile) {
 		// browse to the flash GUI file, and pass over our port as a query parameter
 		// TODO: pass the port
 		// Idea... auto-generate an HTML file that includes the PORT as a query parameter?

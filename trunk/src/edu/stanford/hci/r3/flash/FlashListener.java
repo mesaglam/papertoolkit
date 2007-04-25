@@ -13,5 +13,10 @@ package edu.stanford.hci.r3.flash;
  * 
  */
 public interface FlashListener {
-	public void messageReceived(String command);
+	
+	/**
+	 * @param command
+	 * @return if the event was "consumed" If so, do not process it anymore...
+	 */
+	public boolean messageReceived(String command);
 }

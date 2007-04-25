@@ -1,27 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Whiteboard" creationComplete="constructWhiteboard()" backgroundColor="#000000">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Whiteboard" 
+	creationComplete="constructWhiteboard();" backgroundColor="#222222">
 	<mx:Script>
 		<![CDATA[
+			import java.JavaIntegration;
 			import tools.WhiteboardBackend;
 			import mx.core.UIComponent;
 			
 			// more or less all the code is stored in the as file! =)			
 			private var whitebd:WhiteboardBackend;
 			private var container:UIComponent;
+		 	private var java:JavaIntegration;
 		 	
 			public function constructWhiteboard():void {
-				trace("creationComplete");
-				whitebd = new WhiteboardBackend();
+				trace("WhiteBoard Init");
+				whitebd = new WhiteboardBackend(this);
 				container = new UIComponent();
 				container.addChild(whitebd);				
 				addChild(container);
-				whitebd.setDebugText(debugText);
-				whitebd.setParent(this);
+			}
 
+	        public function processMessage(msgText:String):void {
+	        	whitebd.processMessage(msgText);
+	        }
 
-				whitebd.setRoot(root);
-				whitebd.setStage(stage);
-				whitebd.processParameters();
+			public function get javaBackend():JavaIntegration {
+				return java;				
+			}
+			public function set javaBackend(javaInteg:JavaIntegration):void {
+				java = javaInteg;				
 			}
 		]]>
 	</mx:Script>
@@ -36,6 +43,6 @@
 		<mx:Button label="Save" click="whitebd.saveInk()"/>
 		<mx:Button label="Load" click="whitebd.loadInk();"/>
 	</mx:HBox>
-	<mx:ColorPicker id="colorSwatch" left="10" bottom="40" width="48" height="48"/>
-	<mx:Label text="Live Whiteboard" right="10" top="10" fontSize="30" alpha="0" color="#ffffff" id="titleLabel"/>
+	<mx:ColorPicker id="colorSwatch" right="10" width="32" top="15" height="32"/>
+	<mx:Label text="Live Whiteboard" right="50" top="10" fontSize="30" alpha="0" color="#ffffff" id="titleLabel"/>
 </mx:Canvas>

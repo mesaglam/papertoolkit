@@ -29,9 +29,6 @@
 		
 		private var theParent:Whiteboard = null;
 
-		// a socket client that talks to the Java back end
-		private var javaBackend:JavaIntegration;
-
 		private var theStage:Stage;
 		private var theRoot:DisplayObject;
 
@@ -41,8 +38,10 @@
 
 		private var penTipCrossHair:Sprite = new Sprite();
 
-		public function WhiteboardBackend():void {
-			trace("Ink Client Started.");
+		public function WhiteboardBackend(p:Whiteboard):void {
+			trace("Whiteboard Started.");
+			theParent = p;
+
 			inkWell = new Ink();
 			addChild(inkWell);
 			currInkStroke = new InkStroke();
@@ -51,6 +50,9 @@
 			penTipCrossHair.graphics.drawCircle(-1, -1, 4);
 			penTipCrossHair.x = -100;
 			inkWell.addChild(penTipCrossHair);
+
+			// notify java that we have started
+	        theParent.javaBackend.send(ToolExplorerBackend.WHITEBOARD_MODE);
 		}
 		
 		public function setDebugText(dbt:TextArea):void {
@@ -60,10 +62,6 @@
 		private function debugOut(msg:String):void {
 			trace(msg);
 			debugText.text = msg + "\n" + debugText;
-		}
-
-		public function setParent(p:Whiteboard):void {
-			theParent = p;
 		}
 
 		public function recenter():void {
@@ -82,7 +80,8 @@
 			inkWell.recenterMostRecent(stage);
 		}
 
-		public function processParameters():void {
+		// now unused. It used to retrieve parameters from the host HTML page
+		private function processParameters():void {
 			try {
 				var keyStr:String;
 				var valueStr:String;
@@ -97,28 +96,25 @@
 			} catch (error:Error) {
 				trace(error);
 			}
-			
-			javaBackend = new JavaIntegration(portNum);	
-			javaBackend.addMessageListener(msgListener);
 		}
 
-        private function msgListener(event:DataEvent):void {
-            //trace("dataHandler: " + event);
-            trace(event.text); // parse the text and assemble InkStrokes...
-            var msg:XML = new XML(event.text);
+        public function processMessage(msgText:String):void {
+            trace(msgText); // parse the text and assemble InkStrokes...
+            var msg:XML = new XML(msgText);
+            var msgName:String = msg.name();
             
             // this whole switching thing isn't the smartest...
             // perhaps we should get the node name of the XML?
             // because as it stands, <p would mess us up if it came
             // before penDownEvent
-			if (event.text.indexOf("<penDownEvent") > -1) {
+			if (msgName=="penDownEvent") {
 				// start up a new stroke
    				currInkStroke = new InkStroke();
    				// add it to the stage
 				inkWell.addChild(currInkStroke);
-   			} else if (event.text.indexOf("<p")>-1) {
-				handleInk(event.text);
-	   		} else if (event.text.indexOf("<swatchColor") > -1){
+   			} else if (msgName=="p") {
+				handleInk(msgText);
+	   		} else if (msgName=="swatchColor") {
 	   			// trace(msg..r + " " + msg..g + " " + msg..b);
 	   			var intColor:int = 
 	   				(parseInt(msg.@r) << 16) + 
@@ -126,10 +122,11 @@
 	   				(parseInt(msg.@b));
 	   			// trace(intColor+"");
 	   			theParent.colorSwatch.selectedColor = intColor;
-	   		} else if (event.text.indexOf("<title") > -1){
+	   		} else if (msgName=="title") {
 	   			theParent.titleLabel.text = msg.@value;
 	   		}
         }
+
 		
 		private function handleInk(xmlTxt:String):void {
             var inkXML:XML = new XML(xmlTxt);
@@ -203,8 +200,5 @@
         	// send a message to java to load an ink file...
         }
         
-		public function exit():void {
-			javaBackend.send("exitApplication");
-		}
  	}
 }
