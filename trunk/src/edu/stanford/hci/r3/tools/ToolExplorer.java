@@ -66,6 +66,9 @@ public class ToolExplorer implements FlashListener {
 		flash.addFlashClientListener(listener);
 	}
 
+	/**
+	 * @return
+	 */
 	public FlashCommunicationServer getFlashServer() {
 		return flash;
 	}
@@ -127,9 +130,5 @@ public class ToolExplorer implements FlashListener {
 		} else {
 			return false;
 		}
-	}
-
-	public void sendMessage(String msg) {
-		flash.sendMessage(msg);
 	}
 }

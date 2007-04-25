@@ -3,6 +3,7 @@
 	creationComplete="constructWhiteboard();" backgroundColor="#333333">
 	<mx:Script>
 		<![CDATA[
+			import tools.Tool;
 			import java.JavaIntegration;
 			import tools.WhiteboardBackend;
 			import mx.core.UIComponent;
@@ -10,8 +11,8 @@
 			// more or less all the code is stored in the as file! =)			
 			private var whitebd:WhiteboardBackend;
 			private var container:UIComponent;
-		 	private var java:JavaIntegration;
 		 	
+			//
 			public function constructWhiteboard():void {
 				trace("WhiteBoard Init");
 				whitebd = new WhiteboardBackend(this);
@@ -20,6 +21,7 @@
 				inkCanvas.addChild(container);
 			}
 
+			//
 	        public function processMessage(msgText:String):void {
 	        	if (whitebd == null) {
 	        		trace("Whiteboard Backend is not initialized. Message: [" + msgText + "] was discarded.");
@@ -28,17 +30,20 @@
 	        	whitebd.processMessage(msgText);
 	        }
 
-			public function get javaBackend():JavaIntegration {
-				return java;				
-			}
+			//
 			public function set javaBackend(javaInteg:JavaIntegration):void {
-				java = javaInteg;				
+				whitebd.javaBackend = javaInteg;
+			}
+			
+			//
+			public function get tool():Tool {
+				return whitebd;
 			}
 		]]>
 	</mx:Script>
 	<mx:TextArea editable="false" width="255" right="10" top="53" id="debugText" color="#000000" bottom="41" 
 		visible="false" alpha="0.85" fontSize="10" fontFamily="Lucida Console"/>
-	<mx:HBox bottom="10" right="10">
+	<mx:VBox bottom="10" right="10" horizontalAlign="right">
 		<mx:HBox>
 			<mx:Button label="Save" click="whitebd.saveInk()"/>
 			<mx:Button label="Load" click="whitebd.loadInk();"/>
@@ -48,10 +53,11 @@
 			<mx:Button label="Reset Zoom" click="whitebd.resetZoom()"/>
 			<mx:Button label="+" click="whitebd.zoomIn()"/>
 		</mx:HBox>
-	</mx:HBox>
+	</mx:VBox>
 	
 	<mx:ColorPicker id="colorSwatch" right="10" width="32" top="15" height="32"/>
 	<mx:Label text="Live Whiteboard" right="50" top="10" fontSize="30" alpha="0" color="#ffffff" id="titleLabel"/>
 	<mx:Canvas right="10" top="55" left="10" bottom="40" id="inkCanvas">
 	</mx:Canvas>
+	<mx:Button label="Exit" visible="false" id="exitButton" left="10" bottom="10" click="whitebd.exit();"/>
 </mx:Canvas>

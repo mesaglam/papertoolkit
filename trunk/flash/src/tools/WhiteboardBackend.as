@@ -17,9 +17,10 @@
 	import ink.InkCluster;
 	import mx.containers.Canvas;
 	import flash.geom.Rectangle;
+	import java.Constants;
 
 	
-	public class WhiteboardBackend extends Sprite {
+	public class WhiteboardBackend extends Sprite implements Tool {
 		
 		private var inkWell:Ink;
 		private var debugText:TextArea;
@@ -32,16 +33,12 @@
 		
 		private var theParent:Whiteboard = null;
 
-		private var theStage:Stage;
-		private var theRoot:DisplayObject;
-
-		private var paramObj:Object;
-
-		private var portNum:int = 8545; // default
-
+		// a circle to remind us where the pen was last seen
 		private var penTipCrossHair:Sprite = new Sprite();
 
 		private var inkCanvas:Canvas;
+
+		private var javaServer:JavaIntegration;
 
 		public function WhiteboardBackend(p:Whiteboard):void {
 			trace("Whiteboard Started.");
@@ -57,13 +54,31 @@
 			inkWell.addChild(penTipCrossHair);
 
 			inkCanvas = theParent.inkCanvas;
-
-			// notify java that we have started
-	        theParent.javaBackend.send(ToolExplorerBackend.WHITEBOARD_MODE);
 		}
+
+		public function set javaBackend(javaInteg:JavaIntegration):void {
+			javaServer = javaInteg;
+			javaServer.addConnectListener(connectListener);
+		}
+
+        private function connectListener(event:Event):void {
+        	trace("WhiteboardBackend Connection!");
+        	
+			// notify java that we have started
+	        javaServer.send(Constants.WHITEBOARD_MODE);
+        }
 		
 		public function setDebugText(dbt:TextArea):void {
 			debugText = dbt;
+		}
+		
+		// for when we wrap the tool in HTML
+		public function showExitButton():void {
+			theParent.exitButton.visible = true;
+		}
+		
+		public function exit():void {
+			javaServer.send("exitApplication");
 		}
 		
 		private function debugOut(msg:String):void {
@@ -75,32 +90,6 @@
 			inkWell.resetLocation();
 		}
 		
-		public function setRoot(rt:DisplayObject):void {
-			theRoot = rt;
-		}
-		
-		public function setStage(stg:Stage):void {
-			theStage = stg;
-		}
-		
-		// now unused. It used to retrieve parameters from the host HTML page
-		private function processParameters():void {
-			try {
-				var keyStr:String;
-				var valueStr:String;
-				paramObj = LoaderInfo(theRoot.loaderInfo).parameters;
-				for (keyStr in paramObj) {
-					valueStr = String(paramObj[keyStr]);
-					trace(keyStr + ":\t" + valueStr);
-					if (keyStr=="port") {
-						portNum = parseInt(valueStr);
-					}
-				}
-			} catch (error:Error) {
-				trace(error);
-			}
-		}
-
         public function processMessage(msgText:String):void {
             // trace(msgText); // parse the text and assemble InkStrokes...
             var msg:XML = new XML(msgText);

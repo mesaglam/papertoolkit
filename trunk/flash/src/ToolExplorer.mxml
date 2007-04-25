@@ -4,6 +4,7 @@
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
+			import java.Constants;
 			import tools.ToolExplorerBackend;
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
@@ -23,7 +24,7 @@
 	<mx:Fade startDelay="600" id="dim" alphaFrom="1" alphaTo=".1" duration="1000"/>
 	
 	<mx:states>
-		<mx:State name="{ToolExplorerBackend.DESIGN_MODE}">
+		<mx:State name="{Constants.DESIGN_MODE}">
 			<mx:SetProperty target="{topRightImageDesign}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
@@ -35,7 +36,7 @@
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
-		<mx:State name="{ToolExplorerBackend.WHITEBOARD_MODE}">
+		<mx:State name="{Constants.WHITEBOARD_MODE}">
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
 			<mx:SetProperty target="{titleLabel}" name="visible" value="false"/>
@@ -46,7 +47,7 @@
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
-		<mx:State name="{ToolExplorerBackend.CODE_AND_DEBUG_MODE}">
+		<mx:State name="{Constants.CODE_AND_DEBUG_MODE}">
 			<mx:SetProperty target="{topRightImageYinYang}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
@@ -58,7 +59,7 @@
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
-		<mx:State name="{ToolExplorerBackend.PAPER_UI_MODE}">
+		<mx:State name="{Constants.PAPER_UI_MODE}">
 			<mx:SetProperty target="{topRightImageStickies}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
@@ -70,7 +71,7 @@
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
-		<mx:State name="{ToolExplorerBackend.TOOLBOX_MODE}">
+		<mx:State name="{Constants.TOOLBOX_MODE}">
 			<mx:SetProperty target="{topRightImageToolbox}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
@@ -82,7 +83,7 @@
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
-		<mx:State name="{ToolExplorerBackend.API_MODE}">
+		<mx:State name="{Constants.API_MODE}">
 			<mx:SetProperty target="{topRightImageDirections}" name="visible" value="true"/>
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
 			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
