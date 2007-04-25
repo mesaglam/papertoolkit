@@ -94,6 +94,9 @@ public class DebuggingEnvironment {
 		sendAppLayout();
 	}
 
+	/**
+	 * 
+	 */
 	public void showFlashView() {
 		// start the Flash GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
