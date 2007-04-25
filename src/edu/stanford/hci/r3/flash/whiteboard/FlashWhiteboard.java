@@ -62,16 +62,19 @@ public class FlashWhiteboard {
 					toolExplorer.sendMessage("<swatchColor r='" + swatchColor.getRed() + "' g='"
 							+ swatchColor.getGreen() + "' b='" + swatchColor.getBlue() + "'/>");
 					toolExplorer.sendMessage("<title value='" + title + "'/>");
-					return false;
+
+					for (Pen p : pens) {
+						DebugUtils.println("Adding Pen Listener");
+						p.addLivePenListener(new FlashPenListener(toolExplorer.getFlashServer()));
+					}
+					
+					return true;
 				} else {
 					DebugUtils.println("Unhandled command: " + command);
 					return false;
 				}
 			}
 		});
-		for (Pen p : pens) {
-			p.addLivePenListener(new FlashPenListener(toolExplorer.getFlashServer()));
-		}
 	}
 
 	/**

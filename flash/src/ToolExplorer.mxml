@@ -30,7 +30,7 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Design"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
+				<components:DesignTools id="designToolPanel" left="10" right="10" top="70" bottom="10">
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
@@ -41,7 +41,7 @@
 			<mx:SetProperty target="{titleLabel}" name="visible" value="false"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:Whiteboard id="whiteBoardPanel" left="0" right="0" top="0" bottom="90">
+				<components:Whiteboard id="whiteBoardPanel" left="0" right="0" top="0" bottom="0">
 				</components:Whiteboard>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
@@ -53,7 +53,7 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Code"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:DesignTools left="10" right="10" top="80" bottom="90">
+				<components:DesignTools left="10" right="10" top="80" bottom="40">
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
@@ -65,7 +65,7 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Paper UIs"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:DesignTools left="10" right="10" top="80" bottom="90">
+				<components:DesignTools left="10" right="10" top="80" bottom="40">
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
@@ -77,7 +77,7 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Toolbox"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:DesignTools left="10" right="10" top="80" bottom="90">
+				<components:DesignTools left="10" right="10" top="80" bottom="40">
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
@@ -89,7 +89,7 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="API Explorer"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:DesignTools left="10" right="10" top="80" bottom="90">
+				<components:DesignTools left="10" right="10" top="80" bottom="40">
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
@@ -149,7 +149,7 @@
 
 	<mx:VBox left="10" bottom="10">
 		<mx:Button id="backButton" label="Back" visible="false" click="explorer.backButtonClicked();"  width="100%" hideEffect="{fadeOut}" showEffect="{fadeIn}"/>
-		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="10" paddingLeft="25" paddingTop="10" paddingRight="25"/>
+		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="2" paddingLeft="25" paddingTop="2" paddingRight="25"/>
 	</mx:VBox>
 	<mx:LinkButton label="?" click="explorer.browseToDocumentationWebsite();" fontWeight="bold" fontSize="23" color="#666668" left="117" bottom="10" height="41"/>
 </mx:ApolloApplication>

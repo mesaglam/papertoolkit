@@ -14,6 +14,9 @@
 	import flash.display.SpreadMethod;
 	import ink.InkUtils;
 	import components.Whiteboard;
+	import ink.InkCluster;
+	import mx.containers.Canvas;
+	import flash.geom.Rectangle;
 
 	
 	public class WhiteboardBackend extends Sprite {
@@ -38,6 +41,8 @@
 
 		private var penTipCrossHair:Sprite = new Sprite();
 
+		private var inkCanvas:Canvas;
+
 		public function WhiteboardBackend(p:Whiteboard):void {
 			trace("Whiteboard Started.");
 			theParent = p;
@@ -50,6 +55,8 @@
 			penTipCrossHair.graphics.drawCircle(-1, -1, 4);
 			penTipCrossHair.x = -100;
 			inkWell.addChild(penTipCrossHair);
+
+			inkCanvas = theParent.inkCanvas;
 
 			// notify java that we have started
 	        theParent.javaBackend.send(ToolExplorerBackend.WHITEBOARD_MODE);
@@ -76,10 +83,6 @@
 			theStage = stg;
 		}
 		
-		public function recenterMostRecent(stage:Stage):void {
-			inkWell.recenterMostRecent(stage);
-		}
-
 		// now unused. It used to retrieve parameters from the host HTML page
 		private function processParameters():void {
 			try {
@@ -99,7 +102,7 @@
 		}
 
         public function processMessage(msgText:String):void {
-            trace(msgText); // parse the text and assemble InkStrokes...
+            // trace(msgText); // parse the text and assemble InkStrokes...
             var msg:XML = new XML(msgText);
             var msgName:String = msg.name();
             
@@ -157,11 +160,13 @@
 			if (penUp) {
 				inkWell.removeChild(currInkStroke);
 				inkWell.addStroke(currInkStroke);
+				currInkStroke.rerenderWithCurves();
 				
 				// penUps are a duplicate of the last regular sample
 				// so, we do nothing, but possibly reposition it to the minimum 
 				// (with some padding) after each stroke
-				inkWell.recenterMostRecent(theParent.stage);
+				inkWell.recenterMostRecentCluster(new Rectangle(inkCanvas.x, inkCanvas.y, 
+   																inkCanvas.width, inkCanvas.height));
 			} else {
 				// add samples to the current stroke
 				currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));
@@ -179,8 +184,8 @@
 		public function resetZoom():void {
 			scaleX = 1;
 			scaleY = 1;
-			// whitebd.recenter();
-			recenterMostRecent(stage);
+			inkWell.recenterMostRecentCluster(new Rectangle(inkCanvas.x, inkCanvas.y, 
+   															inkCanvas.width, inkCanvas.height));
 		}
 		// make the ink smaller by zooming out
 		public function zoomOut():void {

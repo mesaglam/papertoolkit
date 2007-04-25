@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Whiteboard" 
-	creationComplete="constructWhiteboard();" backgroundColor="#222222">
+	creationComplete="constructWhiteboard();" backgroundColor="#333333">
 	<mx:Script>
 		<![CDATA[
 			import java.JavaIntegration;
@@ -17,10 +17,14 @@
 				whitebd = new WhiteboardBackend(this);
 				container = new UIComponent();
 				container.addChild(whitebd);				
-				addChild(container);
+				inkCanvas.addChild(container);
 			}
 
 	        public function processMessage(msgText:String):void {
+	        	if (whitebd == null) {
+	        		trace("Whiteboard Backend is not initialized. Message: [" + msgText + "] was discarded.");
+	        		return;
+	        	}
 	        	whitebd.processMessage(msgText);
 	        }
 
@@ -35,14 +39,19 @@
 	<mx:TextArea editable="false" width="255" right="10" top="53" id="debugText" color="#000000" bottom="41" 
 		visible="false" alpha="0.85" fontSize="10" fontFamily="Lucida Console"/>
 	<mx:HBox bottom="10" right="10">
-		<mx:Button label="-" click="whitebd.zoomOut()"/>
-		<mx:Button label="Reset Zoom" click="whitebd.resetZoom()"/>
-		<mx:Button label="+" click="whitebd.zoomIn()"/>
+		<mx:HBox>
+			<mx:Button label="Save" click="whitebd.saveInk()"/>
+			<mx:Button label="Load" click="whitebd.loadInk();"/>
+		</mx:HBox>
+		<mx:HBox>
+			<mx:Button label="-" click="whitebd.zoomOut()"/>
+			<mx:Button label="Reset Zoom" click="whitebd.resetZoom()"/>
+			<mx:Button label="+" click="whitebd.zoomIn()"/>
+		</mx:HBox>
 	</mx:HBox>
-	<mx:HBox bottom="10" left="10">
-		<mx:Button label="Save" click="whitebd.saveInk()"/>
-		<mx:Button label="Load" click="whitebd.loadInk();"/>
-	</mx:HBox>
+	
 	<mx:ColorPicker id="colorSwatch" right="10" width="32" top="15" height="32"/>
 	<mx:Label text="Live Whiteboard" right="50" top="10" fontSize="30" alpha="0" color="#ffffff" id="titleLabel"/>
+	<mx:Canvas right="10" top="55" left="10" bottom="40" id="inkCanvas">
+	</mx:Canvas>
 </mx:Canvas>

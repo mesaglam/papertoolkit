@@ -161,8 +161,8 @@ package ink {
 				minY = Math.min(currentlyPreviewing.minY, minY);
 			}
 			if (mostRecentCluster != null) {
-				trace("Recenter Most Recent Cluster to: " + rect);
-				trace("Most Recent Cluster: " + mostRecentCluster.toString());
+				// trace("Recenter Most Recent Cluster to: " + rect);
+				// trace("Most Recent Cluster: " + mostRecentCluster.toString());
 				minX = Math.min(mostRecentCluster.minX, minX);
 				minY = Math.min(mostRecentCluster.minY, minY);
 			}
@@ -178,7 +178,8 @@ package ink {
         // if they are, we need not change the view!
         //
         // OR, we can cluster the strokes, and make sure the most recent cluster is visible.
-        public function recenterMostRecent(parent:DisplayObject):void {
+        // Now Unused... 
+        private function recenterMostRecentStroke(rect:Rectangle):void {
         	if (mostRecentStroke == null) {
         		return;
         	}

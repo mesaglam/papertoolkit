@@ -53,8 +53,6 @@ package ink {
 		private var lastControlX:Number = -1;
 		private var lastControlY:Number = -1;
 		
-		private var largeJump:Boolean = false;
-		
 		// constructor
 		public function InkStroke(beginTS:String="0", endTS:String="0"):void {			
 			//trace(beginTS + " to " + endTS);
@@ -98,9 +96,6 @@ package ink {
 			if (dDist > 500) {
 				// trace("InkStroke.as: Disregarding a Large Jump in Ink Samples...");
 				return;
-			} else if (dDist > 10) {
-				// trace("Large Jump in Ink Samples");
-				largeJump = true;
 			}
 			
 			// trace("InkStroke.as: dX,dY from last sample: " + dX + ", " + dY);
@@ -233,9 +228,6 @@ package ink {
 		}
 		public function get lastY():Number {
 			return lastYVal;
-		}
-		public function get isLargeJump():Boolean {
-			return largeJump;
 		}
 		///////////////// END GETTERS ////////////////////////		
 		
