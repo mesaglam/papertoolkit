@@ -245,6 +245,7 @@ public class FileUtils {
 	}
 
 	/**
+	 * Return a string that can be used as the main part of the file name. This represents the current timestamp.
 	 * @return
 	 */
 	public static String getCurrentTimeForUseInASortableFileName() {

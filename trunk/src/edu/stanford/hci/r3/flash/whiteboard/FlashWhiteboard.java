@@ -8,11 +8,17 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.filechooser.FileSystemView;
+
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
 import edu.stanford.hci.r3.flash.FlashPenListener;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.pen.PenSample;
+import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.ink.InkStroke;
+import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 import edu.stanford.hci.r3.tools.ToolExplorer;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
@@ -72,9 +78,9 @@ public class FlashWhiteboard {
 			public boolean messageReceived(String command) {
 				if (command.equals("Whiteboard")) {
 					DebugUtils.println("Whiteboard Connected!");
-					
+
 					DebugUtils.println("Color: " + swatchColor);
-					
+
 					flash.sendMessage("<swatchColor r='" + swatchColor.getRed() + "' g='"
 							+ swatchColor.getGreen() + "' b='" + swatchColor.getBlue() + "'/>");
 					flash.sendMessage("<title value='" + title + "'/>");
@@ -82,13 +88,48 @@ public class FlashWhiteboard {
 					for (Pen p : pens) {
 						DebugUtils.println("Adding Pen Listener");
 						p.addLivePenListener(new FlashPenListener(flash));
+						p.addLivePenListener(getInkListener());
 					}
-					
+
 					return true;
+				} else if (command.equals("LoadInk")) {
+					DebugUtils.println("LoadInk Not Implemented");
+				} else if (command.equals("SaveInk")) {
+					DebugUtils.println("SaveInk Not Implemented");
+					DebugUtils.println("Saving " + inkWell.getNumStrokes() + " strokes");
+					String fileName = title + "_" + FileUtils.getCurrentTimeForUseInASortableFileName() + ".xml";
+					File desktopDir = FileSystemView.getFileSystemView().getHomeDirectory();
+					DebugUtils.println(desktopDir + "/" + fileName);
+					inkWell.saveToXMLFile(new File(desktopDir, fileName));
 				} else {
 					DebugUtils.println("Flash Whiteboard Unhandled command: " + command);
 					return false;
 				}
+				return true;
+			}
+
+		};
+	}
+
+	private Ink inkWell = new Ink();
+	private InkStroke currInkStroke;
+
+	private PenListener getInkListener() {
+		return new PenListener() {
+			@Override
+			public void penDown(PenSample sample) {
+				currInkStroke = new InkStroke();
+				currInkStroke.addSample(sample);
+			}
+
+			@Override
+			public void penUp(PenSample sample) {
+				inkWell.addStroke(currInkStroke);
+			}
+
+			@Override
+			public void sample(PenSample sample) {
+				currInkStroke.addSample(sample);
 			}
 		};
 	}
@@ -116,8 +157,7 @@ public class FlashWhiteboard {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	/**
 	 * @param color
 	 */
