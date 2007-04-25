@@ -40,7 +40,6 @@ package java {
 		//
         private function configureListeners():void {
             sock.addEventListener(Event.CLOSE, closeHandler);
-            sock.addEventListener(Event.CONNECT, connectHandler);
             sock.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
             sock.addEventListener(ProgressEvent.PROGRESS, progressHandler);
             sock.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
@@ -51,13 +50,13 @@ package java {
             sock.addEventListener(DataEvent.DATA, msgListener);
 		}
         
+		// From now on, users of this class need to handle their own Connect event
+        public function addConnectListener(connectListener:Function):void {
+            sock.addEventListener(Event.CONNECT, connectListener);
+        }
+        
         private function closeHandler(event:Event):void {
             trace("closeHandler: " + event);
-        }
-
-        private function connectHandler(event:Event):void {
-            trace("connectHandler: " + event);
-			send("Connected");
         }
 
 		private function debugOut(msg:String):void {

@@ -22,6 +22,7 @@
     </sourceAttachmentPath>
   </compiler>
   <applications>
+    <application path="ToolWrapper.mxml"/>
     <application path="ToolExplorer.mxml"/>
   </applications>
   <buildCSSFiles/>

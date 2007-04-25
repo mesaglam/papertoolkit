@@ -15,19 +15,11 @@ package tools {
 	import flash.events.Event;
 	import components.DesignTools;
 	import components.Whiteboard;
+	import java.Constants;
 	
 	
 	// Helps developers navigate the Paper Toolkit visually...
 	public class ToolExplorerBackend extends Sprite {
-		
-		// Strings used for Message Passing with Java, and for Flex GUI States
-		public static const DESIGN_MODE:String = "Design";
-		public static const CODE_AND_DEBUG_MODE:String = "Code and Debug";
-		public static const PAPER_UI_MODE:String = "Paper UI";
-		public static const TOOLBOX_MODE:String = "Toolbox";
-		public static const API_MODE:String = "API Explorer";
-		public static const MAIN_MENU_MODE:String = "Welcome Screen";
-		public static const WHITEBOARD_MODE:String = "Whiteboard";
 		
 		private var stageObj:Stage;
 		private var window:NativeWindow;
@@ -60,7 +52,7 @@ package tools {
 			javaBackend.addMessageListener(msgListener);
 			
 			// set the mode
-			if (modeName == WHITEBOARD_MODE) {
+			if (modeName == Constants.WHITEBOARD_MODE) {
 				whiteBoardClicked();
 			}
 		}
@@ -71,10 +63,10 @@ package tools {
 	        var msgName:String = message.name();
 	        // trace(message.toXMLString());
 	        // trace("Message Name: " + msgName);
-			if (app.currentState == DESIGN_MODE) {
+			if (app.currentState == Constants.DESIGN_MODE) {
 		        // pass ink samples to the design tools data handler
 				app.designToolPanel.processMessage(event.text);
-			} else if (app.currentState == WHITEBOARD_MODE) {
+			} else if (app.currentState == Constants.WHITEBOARD_MODE) {
 				app.whiteBoardPanel.processMessage(event.text);
 			} else if (msgName == "pens") {
 				// get all the pens and populate the combo box
@@ -168,32 +160,32 @@ package tools {
 			}
 
 			// say that we are in design mode
-			app.currentState = DESIGN_MODE;
-			javaBackend.send(DESIGN_MODE);
+			app.currentState = Constants.DESIGN_MODE;
+			javaBackend.send(Constants.DESIGN_MODE);
 		}
 		public function apiExplorerClicked():void {
-			app.currentState = API_MODE;
-			javaBackend.send(API_MODE);
+			app.currentState = Constants.API_MODE;
+			javaBackend.send(Constants.API_MODE);
 		}
 		public function paperUIsClicked():void {
-			app.currentState = PAPER_UI_MODE;
-			javaBackend.send(PAPER_UI_MODE);
+			app.currentState = Constants.PAPER_UI_MODE;
+			javaBackend.send(Constants.PAPER_UI_MODE);
 		}
 		public function toolboxClicked():void {
-			app.currentState = TOOLBOX_MODE;
-			javaBackend.send(TOOLBOX_MODE);
+			app.currentState = Constants.TOOLBOX_MODE;
+			javaBackend.send(Constants.TOOLBOX_MODE);
 		}
 		public function codeAndDebugClicked():void {
-			app.currentState = CODE_AND_DEBUG_MODE;
-			javaBackend.send(CODE_AND_DEBUG_MODE);
+			app.currentState = Constants.CODE_AND_DEBUG_MODE;
+			javaBackend.send(Constants.CODE_AND_DEBUG_MODE);
 		}
 		public function whiteBoardClicked():void{
-			app.currentState=WHITEBOARD_MODE;
+			app.currentState=Constants.WHITEBOARD_MODE;
 			app.whiteBoardPanel.javaBackend = javaBackend;
 		}
 		public function backButtonClicked():void{
 			app.currentState="";
-			javaBackend.send(MAIN_MENU_MODE);
+			javaBackend.send(Constants.MAIN_MENU_MODE);
 		}
 
 		public function selectTool():void {
@@ -202,13 +194,13 @@ package tools {
 
 		private function setupToolList():void {
 			var toolsArr:Array = new Array();
-			toolsArr.push({label:MAIN_MENU_MODE, data:backButtonClicked});
-			toolsArr.push({label:DESIGN_MODE, data:designClicked});
-			toolsArr.push({label:API_MODE, data:apiExplorerClicked});
-			toolsArr.push({label:CODE_AND_DEBUG_MODE, data:codeAndDebugClicked});
-			toolsArr.push({label:PAPER_UI_MODE, data:paperUIsClicked});
-			toolsArr.push({label:TOOLBOX_MODE, data:toolboxClicked});
-			toolsArr.push({label:WHITEBOARD_MODE, data:whiteBoardClicked});
+			toolsArr.push({label:Constants.MAIN_MENU_MODE, data:backButtonClicked});
+			toolsArr.push({label:Constants.DESIGN_MODE, data:designClicked});
+			toolsArr.push({label:Constants.API_MODE, data:apiExplorerClicked});
+			toolsArr.push({label:Constants.CODE_AND_DEBUG_MODE, data:codeAndDebugClicked});
+			toolsArr.push({label:Constants.PAPER_UI_MODE, data:paperUIsClicked});
+			toolsArr.push({label:Constants.TOOLBOX_MODE, data:toolboxClicked});
+			toolsArr.push({label:Constants.WHITEBOARD_MODE, data:whiteBoardClicked});
 			app.toolList.dataProvider = toolsArr;
 		}
 

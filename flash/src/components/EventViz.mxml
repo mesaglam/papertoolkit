@@ -19,7 +19,7 @@
 				viz.setCodeTextArea(code);
 				container.addChild(viz);
 				addChild(container);
-			}			
+			}
 		]]>
 	</mx:Script>
 	<mx:Label x="10" y="10" text="Paper UI Event Visualization" fontFamily="Trebuchet MS" fontWeight="bold" fontSize="28" color="#b4c1d8"/>
