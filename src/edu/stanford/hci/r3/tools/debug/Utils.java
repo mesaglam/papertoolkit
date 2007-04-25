@@ -6,33 +6,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-/*
-import com.sun.jdi.AbsentInformationException;
-import com.sun.jdi.Bootstrap;
-import com.sun.jdi.Location;
-import com.sun.jdi.Method;
-import com.sun.jdi.VirtualMachine;
-import com.sun.jdi.VirtualMachineManager;
-import com.sun.jdi.connect.AttachingConnector;
-import com.sun.jdi.connect.IllegalConnectorArgumentsException;
-import com.sun.jdi.connect.Connector.Argument;
-*/
 
 /**
- * 
+ * TODO: Figure out how to integrate these utils into PaperToolkit utils, or the DebuggingEnvironment class.
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author Marcello
- *
  */
 public class Utils {
+	
 	/*
 	public static void main(String args[]) {
 		System.out.println("vm = "+getVM());
@@ -87,6 +73,8 @@ public class Utils {
 		
 		return sb.toString();
 	}*/
+	
+	
 	/**
 	 * Reads a file into a list of Strings
 	 * @param file

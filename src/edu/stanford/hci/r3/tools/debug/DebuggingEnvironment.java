@@ -31,10 +31,7 @@ public class DebuggingEnvironment {
 	}
 
 	private Application app;
-	private DebugPCanvas canvas;
 	private FlashCommunicationServer flash;
-
-	private DebugFrame frame;
 
 	/**
 	 * @param paperApp
@@ -123,21 +120,6 @@ public class DebuggingEnvironment {
 		// Start the local messaging server
 		flash = new FlashCommunicationServer();
 		showFlashView();
-	}
-
-	/**
-	 * This is old code that used Piccolo to debug the running paper application.
-	 * 
-	 * @param paperApp
-	 */
-	@Deprecated
-	private void startPiccoloDebugView(Application paperApp) {
-		// set up a GUI
-		frame = new DebugFrame(paperApp.getName());
-		canvas = frame.getCanvas();
-
-		// add visual components to GUI
-		canvas.addVisualComponents(paperApp);
 	}
 
 	/**
