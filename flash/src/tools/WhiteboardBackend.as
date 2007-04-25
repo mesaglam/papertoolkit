@@ -95,6 +95,8 @@
             var msg:XML = new XML(msgText);
             var msgName:String = msg.name();
             
+            //trace("WhiteBoard got message: " + msg.toXMLString());
+            
             // this whole switching thing isn't the smartest...
             // perhaps we should get the node name of the XML?
             // because as it stands, <p would mess us up if it came
@@ -188,10 +190,12 @@
         
         public function saveInk():void {
         	// send a message to java to save the current ink...
+        	javaServer.send("SaveInk");
         }
 
         public function loadInk():void {
         	// send a message to java to load an ink file...
+        	javaServer.send("LoadInk");
         }
         
  	}
