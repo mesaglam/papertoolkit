@@ -12,7 +12,6 @@
 			
 			public function init():void {
 				explorer = new ToolExplorerBackend(this);
-				explorer.designToolPanel = designToolPanel;
 			}
 		]]>
 	</mx:Script>
@@ -33,6 +32,17 @@
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
 				<components:DesignTools id="designToolPanel" left="10" right="10" top="80" bottom="90">
 				</components:DesignTools>
+			</mx:AddChild>
+			<mx:RemoveChild target="{dropDownContainer}"/>
+		</mx:State>
+		<mx:State name="{ToolExplorerBackend.WHITEBOARD_MODE}">
+			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
+			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
+			<mx:SetProperty target="{titleLabel}" name="visible" value="false"/>
+			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
+			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
+				<components:Whiteboard id="whiteBoardPanel" left="0" right="0" top="0" bottom="90">
+				</components:Whiteboard>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
@@ -84,17 +94,6 @@
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
 		</mx:State>
-		<mx:State name="{ToolExplorerBackend.WHITEBOARD_MODE}">
-			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
-			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
-			<mx:SetProperty target="{titleLabel}" name="visible" value="false"/>
-			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
-			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:Whiteboard left="0" right="0" top="0" bottom="90">
-				</components:Whiteboard>
-			</mx:AddChild>
-			<mx:RemoveChild target="{dropDownContainer}"/>
-		</mx:State>
 	</mx:states>
 	<mx:Label text="PaperToolkit Tool Explorer" fontSize="40" top="10" id="titleLabel" left="10" width="537"/>
 	
@@ -103,15 +102,15 @@
 			<mx:icon>@Embed('../icons/Design.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="17"/>
-		<mx:Button label="API Explorer" labelPlacement="bottom" paddingBottom="5" click="explorer.directionsClicked();">
+		<mx:Button label="API Explorer" labelPlacement="bottom" paddingBottom="5" click="explorer.apiExplorerClicked();">
 			<mx:icon>@Embed('../icons/Directions.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="17"/>
-		<mx:Button label="Code &amp; Debug" labelPlacement="bottom" paddingBottom="5" click="explorer.yinyangClicked();">
+		<mx:Button label="Code &amp; Debug" labelPlacement="bottom" paddingBottom="5" click="explorer.codeAndDebugClicked();">
 			<mx:icon>@Embed('../icons/YinYang.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="17"/>
-		<mx:Button label="Paper UIs" labelPlacement="bottom" paddingBottom="5" click="explorer.stickiesClicked();">
+		<mx:Button label="Paper UIs" labelPlacement="bottom" paddingBottom="5" click="explorer.paperUIsClicked();">
 			<mx:icon>@Embed('../icons/Stickies.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="17"/>
@@ -137,12 +136,12 @@
 		<mx:source>@Embed('../icons/Toolbox.png')</mx:source>
 	</mx:Image>
 	
-	<mx:VBox id="dropDownContainer" alpha="0.1" rollOverEffect="{brighten}" rollOutEffect="{dim}" right="10" top="10">
+	<mx:VBox id="dropDownContainer" alpha="0.1" rollOverEffect="{brighten}" rollOutEffect="{dim}" right="10" bottom="10">
 		<mx:ComboBox id="penList" color="#000000" toolTip="Select a Pen"></mx:ComboBox>
 		<mx:ComboBox id="toolList" color="#000000" toolTip="Other Tools" change="explorer.selectTool();"></mx:ComboBox>
 	</mx:VBox>
 
-	<mx:VBox right="10" bottom="10" id="copyrightContainer">
+	<mx:VBox bottom="10" id="copyrightContainer" left="157" width="212">
 		<mx:Label text="Copyright 2007" fontWeight="bold" fontFamily="Trebuchet MS" color="#c0c0c0"/>
 		<mx:LinkButton label="Stanford University HCI Group" click="explorer.browseToHCIWebsite();" fontFamily="Trebuchet MS" color="#c0c0c0"/>
 		<mx:LinkButton label="Ron B. Yeh" click="explorer.browseToAuthorWebsite();" fontFamily="Trebuchet MS" color="#c0c0c0"/>

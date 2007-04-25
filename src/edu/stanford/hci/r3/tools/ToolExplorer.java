@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
 import edu.stanford.hci.r3.flash.FlashPenListener;
@@ -27,15 +28,23 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class ToolExplorer implements FlashListener {
 
-	private FlashCommunicationServer flash;
-	private SketchToPaperUI sketchToPaperUI;
-	private PaperToolkit paperToolkit;
 	private Pen currentPen;
+	private FlashCommunicationServer flash;
+	private PaperToolkit paperToolkit;
+	private SketchToPaperUI sketchToPaperUI;
 
 	/**
 	 * @param paperToolkit
 	 */
 	public ToolExplorer(PaperToolkit r3) {
+		this(r3, null, Constants.Ports.FLASH_COMMUNICATION_SERVER);
+	}
+
+	/**
+	 * @param r3
+	 * @param startupMode
+	 */
+	public ToolExplorer(PaperToolkit r3, String startupMode, int port) {
 		paperToolkit = r3;
 		// start the Flash Communications Server, and register our listeners...
 		// Start the Apollo GUI
@@ -43,14 +52,29 @@ public class ToolExplorer implements FlashListener {
 		final File toolExplorerApollo = new File(r3RootPath, "flash/bin/ToolExplorer.exe");
 		flash = new FlashCommunicationServer();
 		flash.addFlashClientListener(this);
-		flash.openFlashApolloGUI(toolExplorerApollo);
+		if (startupMode != null) {
+			flash.openFlashApolloGUI(toolExplorerApollo, "mode:" + startupMode);
+		} else {
+			flash.openFlashApolloGUI(toolExplorerApollo);
+		}
+	}
+
+	/**
+	 * @param listener
+	 */
+	public void addFlashClientListener(FlashListener listener) {
+		flash.addFlashClientListener(listener);
+	}
+
+	public FlashCommunicationServer getFlashServer() {
+		return flash;
 	}
 
 	/*
 	 * @see edu.stanford.hci.r3.flash.FlashListener#messageReceived(java.lang.String)
 	 */
 	@Override
-	public void messageReceived(String command) {
+	public boolean messageReceived(String command) {
 		DebugUtils.println(command);
 		if (command.equals("Connected")) {
 			StringBuilder pens = new StringBuilder();
@@ -63,9 +87,11 @@ public class ToolExplorer implements FlashListener {
 			}
 			pens.append("</pens>");
 			flash.sendMessage(pens.toString());
+			return true;
 		} else if (command.equals("Design")) {
 			sketchToPaperUI = new SketchToPaperUI(currentPen);
 			sketchToPaperUI.addPenListener(new FlashPenListener(flash));
+			return true;
 		} else if (command.equals("Main Menu")) {
 			if (sketchToPaperUI != null) {
 				sketchToPaperUI.exit();
@@ -73,6 +99,7 @@ public class ToolExplorer implements FlashListener {
 			} else {
 
 			}
+			return true;
 		} else if (command.startsWith("<pen")) {
 			final Pattern penPattern = Pattern.compile("<pen name='(.*?)' server='(.*?)' port='(.*?)'/>");
 			final Matcher matcherPen = penPattern.matcher(command);
@@ -92,10 +119,17 @@ public class ToolExplorer implements FlashListener {
 					}
 				}
 			}
-
+			return true;
 		} else if (command.equals("exitServer")) {
 			DebugUtils.println("Exiting the Application");
 			System.exit(0);
+			return true;
+		} else {
+			return false;
 		}
+	}
+
+	public void sendMessage(String msg) {
+		flash.sendMessage(msg);
 	}
 }

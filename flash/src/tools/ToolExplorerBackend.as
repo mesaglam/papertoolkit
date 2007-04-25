@@ -14,6 +14,7 @@ package tools {
 	import flash.events.DataEvent;
 	import flash.events.Event;
 	import components.DesignTools;
+	import components.Whiteboard;
 	
 	
 	// Helps developers navigate the Paper Toolkit visually...
@@ -31,7 +32,6 @@ package tools {
 		private var stageObj:Stage;
 		private var window:NativeWindow;
 		private var app:ToolExplorer;
-		private var designTool:DesignTools;
 
 		// the port that the Java back end is listening on
 		private var portNum:int;
@@ -49,21 +49,6 @@ package tools {
 			setupToolList();
 		}			
 
-		public function selectTool():void {
-			app.currentState=app.toolList.selectedItem.data;
-		}
-
-		private function setupToolList():void {
-			var toolsArr:Array = new Array();
-			toolsArr.push({label:MAIN_MENU_MODE, data:""});
-			toolsArr.push({label:DESIGN_MODE, data:DESIGN_MODE});
-			toolsArr.push({label:API_MODE, data:API_MODE});
-			toolsArr.push({label:CODE_AND_DEBUG_MODE, data:CODE_AND_DEBUG_MODE});
-			toolsArr.push({label:PAPER_UI_MODE, data:PAPER_UI_MODE});
-			toolsArr.push({label:TOOLBOX_MODE, data:TOOLBOX_MODE});
-			toolsArr.push({label:WHITEBOARD_MODE, data:WHITEBOARD_MODE});
-			app.toolList.dataProvider = toolsArr;
-		}
 
 		// this is called after the command line arguments are processed
 		private function start():void {
@@ -79,7 +64,9 @@ package tools {
 	        // trace("Message Name: " + msgName);
 			if (app.currentState == DESIGN_MODE) {
 		        // pass ink samples to the design tools data handler
-				designTool.backend.processMessage(event.text);
+				app.designToolPanel.processMessage(event.text);
+			} else if (app.currentState == WHITEBOARD_MODE) {
+				app.whiteBoardPanel.processMessage(event.text);
 			} else if (msgName == "pens") {
 				// get all the pens and populate the combo box
 				var pensXML:XMLList = message.descendants("pen");
@@ -94,12 +81,12 @@ package tools {
 					penItem.server = pen.@server;
 					penItem.port = pen.@port;
 					pens.push(penItem);
-				}			
+				}
 				app.penList.dataProvider = pens;
 			} else {
-	        	trace("Unhandled: " + message.toXMLString());
+				trace("Unhandled: " + message.toXMLString());
 			}
-        }
+		}
 
 
 		// Switches between full screen and restored window state.
@@ -171,11 +158,11 @@ package tools {
 			app.currentState = DESIGN_MODE;
 			javaBackend.send(DESIGN_MODE);
 		}
-		public function directionsClicked():void {
+		public function apiExplorerClicked():void {
 			app.currentState = API_MODE;
 			javaBackend.send(API_MODE);
 		}
-		public function stickiesClicked():void {
+		public function paperUIsClicked():void {
 			app.currentState = PAPER_UI_MODE;
 			javaBackend.send(PAPER_UI_MODE);
 		}
@@ -183,21 +170,38 @@ package tools {
 			app.currentState = TOOLBOX_MODE;
 			javaBackend.send(TOOLBOX_MODE);
 		}
-		public function yinyangClicked():void {
+		public function codeAndDebugClicked():void {
 			app.currentState = CODE_AND_DEBUG_MODE;
 			javaBackend.send(CODE_AND_DEBUG_MODE);
+		}
+		public function whiteBoardClicked():void{
+			app.currentState=WHITEBOARD_MODE;
+			
+			app.whiteBoardPanel.javaBackend = javaBackend;
 		}
 		public function backButtonClicked():void{
 			app.currentState="";
 			javaBackend.send(MAIN_MENU_MODE);
 		}
-		
-		
-		// Setters for components that we can access from our MXML.
-		public function set designToolPanel(designToolPanel:DesignTools):void{
-			designTool = designToolPanel;
+
+		public function selectTool():void {
+			app.toolList.selectedItem.data();
 		}
 
+		private function setupToolList():void {
+			var toolsArr:Array = new Array();
+			toolsArr.push({label:MAIN_MENU_MODE, data:backButtonClicked});
+			toolsArr.push({label:DESIGN_MODE, data:designClicked});
+			toolsArr.push({label:API_MODE, data:apiExplorerClicked});
+			toolsArr.push({label:CODE_AND_DEBUG_MODE, data:codeAndDebugClicked});
+			toolsArr.push({label:PAPER_UI_MODE, data:paperUIsClicked});
+			toolsArr.push({label:TOOLBOX_MODE, data:toolboxClicked});
+			toolsArr.push({label:WHITEBOARD_MODE, data:whiteBoardClicked});
+			app.toolList.dataProvider = toolsArr;
+		}
+
+		
+		
 		// event handler
 		private function windowCloseHandler(e:Event):void {
 			trace("Window Closing.");

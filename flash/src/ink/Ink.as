@@ -66,13 +66,14 @@ package ink {
 			addChild(currentlyPreviewing);
 		}
 		public function stopPreview():void {
-			removeChild(currentlyPreviewing);
-			currentlyPreviewing = null;
+			if (currentlyPreviewing != null) {
+				removeChild(currentlyPreviewing);
+				currentlyPreviewing = null;
+			}
 		}
 
 		public function Ink() {
 			buttonMode = true;
-
 			// add drag support
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			addEventListener(MouseEvent.MOUSE_UP, onMouseUp);

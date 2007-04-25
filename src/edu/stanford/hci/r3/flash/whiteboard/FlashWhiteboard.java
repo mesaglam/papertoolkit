@@ -1,20 +1,15 @@
 package edu.stanford.hci.r3.flash.whiteboard;
 
 import java.awt.Color;
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
 import edu.stanford.hci.r3.flash.FlashPenListener;
 import edu.stanford.hci.r3.pen.Pen;
+import edu.stanford.hci.r3.tools.ToolExplorer;
 import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -29,8 +24,6 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class FlashWhiteboard {
 
-	private FlashCommunicationServer flash;
-
 	private List<Pen> pens = new ArrayList<Pen>();
 
 	private int port;
@@ -38,6 +31,8 @@ public class FlashWhiteboard {
 	private Color swatchColor;
 
 	private String title;
+
+	private ToolExplorer toolExplorer;
 
 	/**
 	 * @param portNum
@@ -52,41 +47,30 @@ public class FlashWhiteboard {
 	public void addPen(Pen pen) {
 		pens.add(pen);
 		pen.startLiveMode();
-		pen.addLivePenListener(new FlashPenListener(flash));
 	}
 
 	/**
 	 * 
 	 */
 	public void load() {
-		// start the local server for sending ink over to the Flash client app
-		flash = new FlashCommunicationServer(port);
-		flash.addFlashClientListener(new FlashListener() {
+		toolExplorer = new ToolExplorer(new PaperToolkit(), "Whiteboard", port);
+		toolExplorer.addFlashClientListener(new FlashListener() {
 			@Override
-			public void messageReceived(String command) {
-				if (command.equals("Flash Client Connected")) {
-					DebugUtils.println("Connected!");
-					flash.sendMessage("<swatchColor r='" + swatchColor.getRed() + "' g='"
+			public boolean messageReceived(String command) {
+				if (command.equals("Whiteboard")) {
+					DebugUtils.println("Whiteboard Connected!");
+					toolExplorer.sendMessage("<swatchColor r='" + swatchColor.getRed() + "' g='"
 							+ swatchColor.getGreen() + "' b='" + swatchColor.getBlue() + "'/>");
-					flash.sendMessage("<title value='" + title + "'/>");
+					toolExplorer.sendMessage("<title value='" + title + "'/>");
+					return false;
 				} else {
 					DebugUtils.println("Unhandled command: " + command);
+					return false;
 				}
 			}
 		});
-
-		File r3RootPath = PaperToolkit.getToolkitRootPath();
-		File whiteBoardHTML = new File(r3RootPath, "flash/bin/Whiteboard.html");
-		String fileStr = FileUtils.readFileIntoStringBuffer(whiteBoardHTML, true).toString();
-		fileStr = fileStr.replace("PORT_NUM", port + "");
-		whiteBoardHTML = new File(r3RootPath, "flash/bin/Whiteboard_" + port + ".html");
-		FileUtils.writeStringToFile(fileStr, whiteBoardHTML);
-		URI uri = whiteBoardHTML.toURI();
-		try {
-			DebugUtils.println("Loading the Flash GUI...");
-			Desktop.getDesktop().browse(uri);
-		} catch (IOException e) {
-			e.printStackTrace();
+		for (Pen p : pens) {
+			p.addLivePenListener(new FlashPenListener(toolExplorer.getFlashServer()));
 		}
 	}
 
