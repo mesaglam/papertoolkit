@@ -33,6 +33,9 @@ package tools {
 		private var window:NativeWindow;
 		private var app:ToolExplorer;
 
+		// the mode to start in... 
+		private var modeName:String;
+
 		// the port that the Java back end is listening on
 		private var portNum:int;
 		private var javaBackend:JavaIntegration;
@@ -55,8 +58,14 @@ package tools {
 			// toggleFullScreen();
 			javaBackend = new JavaIntegration(portNum);	
 			javaBackend.addMessageListener(msgListener);
+			
+			// set the mode
+			if (modeName == WHITEBOARD_MODE) {
+				whiteBoardClicked();
+			}
 		}
 
+		// handle messages
         private function msgListener(event:DataEvent):void {
 	        var message:XML = new XML(event.text);
 	        var msgName:String = message.name();
@@ -123,9 +132,13 @@ package tools {
 		    	for each (var arg:String in arguments) {
 		    		trace(arg);
 		    		
-		    		if (arg.indexOf("port:") > -1) {
+		    		if (arg.indexOf("port:") == 0) {
 		    			portNum = parseInt(arg.substr(arg.indexOf("port:")+5));
 		    			trace("Port: " + portNum);
+		    		}
+		    		if (arg.indexOf("mode:") == 0) {
+		    			modeName = arg.substr(arg.indexOf("mode:")+5);
+		    			trace("Mode: " + modeName);
 		    		}
 		    	}
 		    }
@@ -176,7 +189,6 @@ package tools {
 		}
 		public function whiteBoardClicked():void{
 			app.currentState=WHITEBOARD_MODE;
-			
 			app.whiteBoardPanel.javaBackend = javaBackend;
 		}
 		public function backButtonClicked():void{

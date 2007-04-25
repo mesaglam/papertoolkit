@@ -77,20 +77,17 @@
    			} else if (msgName=="p") {
    				// trace("Handling Ink");
 				handleInk(msgText);
-
-	   			// recenter the cluster so that it is visible for us...
-	   			inkWell.recenterMostRecentCluster(new Rectangle(inkCanvas.x, inkCanvas.y, 
-	   															inkCanvas.width, inkCanvas.height));
-
 	   		} else if (msgName=="penUpEvent") {
 	   			trace("Pen Up");
+
+				// remove the temporary InkStroke child
+				inkWell.stopPreview();
+
+				// add it more permanently
+				inkWell.addStroke(currInkStroke);
 	   			
 	   			// rerender the last stroke with curves
-	   			// if the large jump would otherwise cause chunky looking curves
-	   			if (currInkStroke.isLargeJump) {
-	   				currInkStroke.rerenderWithCurves();
-	   			}
-	   			
+	   			currInkStroke.rerenderWithCurves();
 	   			
 	   			// recognize 
 	   			/*
@@ -116,7 +113,7 @@
 		private function handleInk(xmlTxt:String):void {
             var inkXML:XML = new XML(xmlTxt);
             // trace("XML: " + inkXML.toXMLString());
-			// trace(inkXML.@x + " " + inkXML.@y + " " + inkXML.@f + " " + inkXML.@t + " " + inkXML.@p);
+			//trace(inkXML.@x + " " + inkXML.@y + " " + inkXML.@f + " " + inkXML.@t + " " + inkXML.@p);
 
 			var xVal:Number = 0;
 			var xStr:String = inkXML.@x;
@@ -138,24 +135,14 @@
 
 			// trace(xVal + ", " + yVal);
 
-			var penUp:Boolean = inkXML.@p == "U";
-			if (penUp) {
-				trace("Handling Pen Up");
-				
-				// remove the temporary InkStroke child
-				inkWell.stopPreview();
-				// add it more permanently
-				inkWell.addStroke(currInkStroke);
-				
-				// penUps are a duplicate of the last regular sample
-				// so, we do nothing, but possibly reposition it to the minimum 
-				// (with some padding) after each stroke
-				//inkWell.recenterMostRecent(theParent.inkCanvas);
-			} else {
+			var penIsDown:Boolean = inkXML.@p == "D";
+			if (penIsDown) {
 				// add samples to the current stroke
 				currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));
-			}	
+			}
+   			// recenter the cluster so that it is visible for us...
+   			inkWell.recenterMostRecentCluster(new Rectangle(inkCanvas.x, inkCanvas.y, 
+   															inkCanvas.width, inkCanvas.height));
 		}
-
 	}
 }
