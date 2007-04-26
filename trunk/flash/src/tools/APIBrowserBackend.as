@@ -20,9 +20,12 @@ package tools {
 	import mx.controls.ComboBox;
 	import mx.controls.TextArea;
 	import flash.system.System;
-	import flash.text.TextField;	
+	import flash.text.TextField;
+	import components.APIBrowser;
+	import java.JavaIntegration;
+	import java.Constants;	
 	
-	public class APIBrowserBackend extends Sprite {
+	public class APIBrowserBackend extends Sprite implements Tool {
 
 		// whether or not we are in fullscreen mode
 		private var fullScreen:Boolean = false;
@@ -31,7 +34,7 @@ package tools {
 		private var stageObj:Stage;
 
 		// communications with the Java backend
-		private var sock:XMLSocket;
+		private var javaServer:JavaIntegration;
 
 		// the sprite to hold the ink!
 		private var inkContainer:Sprite = new Sprite();
@@ -39,34 +42,30 @@ package tools {
 
 		private var inkWell:Ink = null;
 
-		private var welcomeTextLabel:Label;
-		private var methodCallDropDown:ComboBox;		
+		private var theParent:APIBrowser;
 
+        private var methodsToCallInJava:Array = new Array(); // of Strings
 
-
-		public function APIBrowserBackend(stg:Stage):void {
-			stageObj = stg;
-			startListening();
+		// constructor
+		public function APIBrowserBackend(browserParent:APIBrowser):void {
+			theParent = browserParent;
 			g = inkContainer.graphics;
 			addChild(inkContainer);
 		}
 
-		public function setWelcomeText(welcomeText:Label):void {
-			welcomeTextLabel = welcomeText;
-		}
-
+		// copies the code to the clipboard
 		public function copyCodeHandler(event:MouseEvent):void {
-			System.setClipboard(codeTextArea.text);
+			System.setClipboard(theParent.codeArea.text);
 		}
 
 		public function nextHandler(event:MouseEvent):void {
-			welcomeTextLabel.setVisible(false);
-			sendToJava("next");
+			theParent.welcomeText.visible = false;
+	        javaServer.send("next");
 		}
 
 		public function prevHandler(event:MouseEvent):void {
-			welcomeTextLabel.setVisible(false);
-			sendToJava("prev");
+			theParent.welcomeText.visible = false;
+	        javaServer.send("prev");
 		}
 		
 		// switches between full screen and not
@@ -80,11 +79,25 @@ package tools {
 			fullScreen = !fullScreen;
 		}
  		public function saveImage(event:MouseEvent):void {
-			sendToJava("saveImage");
+	        javaServer.send("saveImage");
  		}
+
+		// asks the java server to System.exit(0);
  		public function exit(event:MouseEvent):void {
-			sendToJava("exitServer");
+	        javaServer.send("exitApplication");
  		}
+
+		// for when we wrap the tool in HTML
+		public function showExitButton():void {
+			theParent.exitButton.visible = true;
+		}
+		
+		//
+		public function set javaBackend(javaInteg:JavaIntegration):void {
+			javaServer = javaInteg;
+			javaServer.addConnectListener(connectListener);
+		}
+
 
 		// flash only functions
  		public function zoomIn(event:MouseEvent):void {
@@ -103,58 +116,29 @@ package tools {
 	 			inkWell.resetLocation();
  			}
  		}
- 		
-
-		private function sendToJava(msg:String):void {
-			sock.send(msg + "\n");
-		}
 
 		//
- 		public function startListening():void {
-			sock = new XMLSocket();
-			configureListeners(sock);
-			
-			// this should be gotten from the query parameter...
-			// for now, we'll hard code it...
-			sock.connect("localhost", 8545);
-			sock.send("ApiBrowserClient connected\n");
+ 		public function connectListener():void {
+			trace("ApiBrowserClient connected\n");
+			javaServer.send(Constants.API_MODE);
 		}
-
-		//
-        private function configureListeners(dispatcher:IEventDispatcher):void {
-            dispatcher.addEventListener(Event.CLOSE, closeHandler);
-            dispatcher.addEventListener(Event.CONNECT, connectHandler);
-            dispatcher.addEventListener(DataEvent.DATA, dataHandler);
-            dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-            dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-            dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-        }
-
-        private function closeHandler(event:Event):void {
-            trace("closeHandler: " + event);
-        }
-
-        private function connectHandler(event:Event):void {
-            trace("connectHandler: " + event);
-        }
 
 		private function debugOut(msg:String):void {
-			sendToJava("flash client says: [" + msg + "]");
+			javaServer.send("Flash client says: [" + msg + "]");
 		}
 
 		//
-        private function dataHandler(event:DataEvent):void {
+        public function processMessage(msgText:String):void {
 			// trace(event.text);
-	        var message:XML = new XML(event.text);
+	        var message:XML = new XML(msgText);
+			theParent.infoTextArea.text = msgText + "\n" + theParent.infoTextArea.text;
 
-			infoTextArea.text = event.text + "\n" + infoTextArea.text;
-			
+            var msgName:String = message.name();
 
 			// make xml out of it, no doubt
 			var parser:InkRawXMLParser;
 	
-			if (event.text.indexOf("<highlight")>-1) {
-				
+			if (msgName == "highlight") {
 				var inkXMLData:XMLList = message..ink;
 				for each (var inkXML:XML in inkXMLData) {
 		        	parser = new InkRawXMLParser(inkXML, 0xFF99AA, 3.4);
@@ -162,7 +146,7 @@ package tools {
 					inkContainer.addChild(parser.ink);					
 				}
 				trace(inkXML.toXMLString());
-			} else if (event.text.indexOf("<ink")>-1) {
+			} else if (msgName == "ink") {
 				// var inkData:XMLList = message.descendants("ink");
 				// trace(inkData.toXMLString());
 	        	parser = new InkRawXMLParser(message);
@@ -171,9 +155,8 @@ package tools {
 	        	}
 	        	inkWell = parser.ink;
 				inkContainer.addChild(inkWell);
-				
-				numStrokesDisplayedLabel.text = inkWell.numStrokes + "";
-            } else if (event.text.indexOf("<methods")>-1) {
+				theParent.numStrokesDisplayed.text = inkWell.numStrokes + "";
+            } else if (msgName == "methods") {
 				var methodsData:XMLList = message.descendants("method");
 				trace(methodsData.toXMLString());
 
@@ -188,61 +171,24 @@ package tools {
 					
 					methods.push(methodItem);
 				}			
-				methodCallDropDown.dataProvider = methods;
+				theParent.methodCallDropdown.dataProvider = methods;
             }
         }
         
-        private var methodsToCallInJava:Array = new Array(); // of Strings
         //
         public function addMethodCall(event:MouseEvent):void {
         	// get current value in combo box
         	
-        	var methodCallString:String = "ink = " + methodCallDropDown.selectedItem.data + "(ink);"; // or list of inkstrokes!
-
-			methodsToCallInJava.push(methodCallDropDown.selectedItem.label);
+        	var methodCallString:String = "ink = " + theParent.methodCallDropdown.selectedItem.data + "(ink);"; // or list of inkstrokes!
+			methodsToCallInJava.push(theParent.methodCallDropdown.selectedItem.label);
         	
         	// add it to the end of the text area
-        	codeTextArea.text = codeTextArea.text + "\n" + methodCallString;
+        	theParent.codeArea.text = theParent.codeArea.text + "\n" + methodCallString;
         	
         	// call this method in java!
-			sendToJava("callMethods: ["+methodsToCallInJava.toString()+"]");
+			javaServer.send("callMethods: ["+ methodsToCallInJava.toString() +"]");
 			
-			numMethodsAddedLabel.text = methodsToCallInJava.length + "";			
+			theParent.numMethodsAdded.text = methodsToCallInJava.length + "";			
         }
-        
-        private function ioErrorHandler(event:IOErrorEvent):void {
-            trace("ioErrorHandler: " + event);
-        }
-
-        private function progressHandler(event:ProgressEvent):void {
-            trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
-        }
-
-        private function securityErrorHandler(event:SecurityErrorEvent):void {
-            trace("securityErrorHandler: " + event);
-        }
-
-		//
-		public function setMethodCallDropdown(methodCalls:ComboBox):void {
-			methodCallDropDown = methodCalls;
-		}
-
-		private var codeTextArea:TextArea;		
-		public function setCodeArea(cArea:TextArea):void {
-			codeTextArea = cArea;
-		}
-
-
-		private var numMethodsAddedLabel:Label;
-		private var numStrokesDisplayedLabel:Label;
-		public function setMetricsTextFields(nMethodsAdded:Label, nStrokesDisplayed:Label):void {
-			numMethodsAddedLabel = nMethodsAdded;
-			numStrokesDisplayedLabel = nStrokesDisplayed;
-		}
-		private var infoTextArea:TextArea;
-		public function setDebugOutTextArea(infoArea:TextArea):void {
-			infoTextArea = infoArea;
-		}
-
 	}
 }

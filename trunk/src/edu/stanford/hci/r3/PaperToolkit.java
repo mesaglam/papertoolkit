@@ -708,12 +708,10 @@ public class PaperToolkit {
 			public void actionPerformed(ActionEvent arg0) {
 				DebuggingEnvironment debuggingEnvironment = app.getDebuggingEnvironment();
 				if (debuggingEnvironment == null) {
-					DebugUtils.println("Starting Debugging...");
-					debuggingEnvironment = new DebuggingEnvironment(app);
-					app.setDebuggingEnvironment(debuggingEnvironment);
-				} else {
-					debuggingEnvironment.showFlashView();
+					debuggingEnvironment = new DebuggingEnvironment();
 				}
+				debuggingEnvironment.setApp(app);
+				debuggingEnvironment.showFlashView();
 			}
 		};
 	}
@@ -1177,7 +1175,6 @@ public class PaperToolkit {
 			useHandwriting = Boolean.parseBoolean(theProp);
 		}
 
-		
 		// add the Pens that we use most frequently...
 		frequentlyUsedPens.add(new Pen("Local Pen"));
 		if (props.containsKey(REMOTE_PENS_KEY)) {
@@ -1191,7 +1188,7 @@ public class PaperToolkit {
 				DebugUtils.println("Adding Pen " + penServerName + " : " + penServerPort);
 				String shortName = "";
 				if (penServerName.contains(".")) {
-					shortName = penServerName.substring(0, penServerName.indexOf("."));					
+					shortName = penServerName.substring(0, penServerName.indexOf("."));
 				} else {
 					shortName = penServerName;
 				}

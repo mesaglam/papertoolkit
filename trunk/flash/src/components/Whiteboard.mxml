@@ -21,7 +21,7 @@
 				inkCanvas.addChild(container);
 			}
 
-			//
+			// forward the message onto the actionscript object backing this mxml GUI
 	        public function processMessage(msgText:String):void {
 	        	if (whitebd == null) {
 	        		trace("Whiteboard Backend is not initialized. Message: [" + msgText + "] was discarded.");
@@ -30,12 +30,7 @@
 	        	whitebd.processMessage(msgText);
 	        }
 
-			//
-			public function set javaBackend(javaInteg:JavaIntegration):void {
-				whitebd.javaBackend = javaInteg;
-			}
-			
-			//
+			// retrieve the r3 tool (the actionscript class)
 			public function get tool():Tool {
 				return whitebd;
 			}

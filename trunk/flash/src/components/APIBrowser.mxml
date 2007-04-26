@@ -1,7 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Ink API Browser" creationComplete="startBrowser();">
 
-	<!-- The Real Effects
+	<mx:Script>
+		<![CDATA[
+			import tools.Tool;
+			import tools.APIBrowserBackend;
+
+			import mx.core.UIComponent;
+			import flash.events.MouseEvent;
+			import flash.display.StageDisplayState;
+
+
+			private var browser:APIBrowserBackend;
+			private var container:UIComponent;
+
+	
+			// more or less all the code! =)			
+			public function startBrowser():void {
+				browser = new APIBrowserBackend(this);
+				container = new UIComponent();
+				container.addChild(browser);
+				inkCanvas.addChild(container);
+			}
+
+			// forward the message onto the actionscript object backing this mxml GUI
+	        public function processMessage(msgText:String):void {
+	        	if (browser == null) {
+	        		trace("API Browser Backend is not initialized. Message: [" + msgText + "] was discarded.");
+	        		return;
+	        	}
+	        	browser.processMessage(msgText);
+	        }
+
+			// retrieve the r3 tool (the actionscript class)
+			public function get tool():Tool {
+				return browser;
+			}
+		]]>
+	</mx:Script>
+
+	<!-- The Real Effects, for when we aren't working on the video
 	<mx:Fade id="brighten" alphaFrom="1" alphaTo="1" duration="100"/>
 	<mx:Fade id="dim" startDelay="600" alphaFrom="1" alphaTo=".15" duration="1000"/>
 	-->
@@ -44,7 +82,7 @@
     		<mx:TextArea id="infoTextArea" color="#959595" fontFamily="Courier New" fontSize="15" bottom="50" top="300" left="0" right="0" backgroundColor="#535353"/>
     		<mx:Button label="Exit" id="exitButton" visible="false" click="browser.exit(event);" bottom="0" left="10" right="10"/>
 		</mx:Canvas>
-		<mx:Canvas width="50%" height="100%" backgroundColor="#444444" id="mainCanvas" cornerRadius="10">
+		<mx:Canvas width="50%" height="100%" backgroundColor="#444444" id="inkCanvas" cornerRadius="10">
 			<mx:Label text="Start Drawing!" horizontalCenter="0" verticalCenter="0" id="welcomeText" fontSize="22" fontFamily="Trebuchet MS" alpha="0.9" color="#ffffff"/>
 			<mx:HBox left="10" bottom="10" alpha="0.15" rollOverEffect="{brighten}" rollOutEffect="{dim}">
 				<mx:Button label="Prev" id="prevButton" click="browser.prevHandler(event);" color="#000000"/>
@@ -68,33 +106,4 @@
         	<mx:Button label="Copy to Clipboard" click="browser.copyCodeHandler(event);" textAlign="center" fontWeight="bold" id="copyCodeButton" right="10" bottom="10" color="#000000" left="10"/>
 		</mx:Canvas>
  	</mx:HDividedBox>
-	<mx:Script>
-		<![CDATA[
-			import mx.core.UIComponent;
-			import flash.events.MouseEvent;
-			import flash.display.StageDisplayState;
-
-			import tools.APIBrowserBackend;
-
-			private var browser:APIBrowserBackend;
-			private var container:UIComponent;
-
-	
-			// more or less all the code! =)			
-			public function startBrowser():void {
-				browser = new APIBrowserBackend(stage);
-				browser.setWelcomeText(welcomeText);
-				browser.setMethodCallDropdown(methodCallDropdown);
-				browser.setCodeArea(codeArea);
-				browser.setMetricsTextFields(numMethodsAdded, numStrokesDisplayed);
-				browser.setDebugOutTextArea(infoTextArea);
-
-
-				container = new UIComponent();
-				container.addChild(browser);
-				mainCanvas.addChild(container);
-			}
-			
-		]]>
-	</mx:Script>
 </mx:Canvas>

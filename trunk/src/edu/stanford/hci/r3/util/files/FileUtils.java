@@ -245,7 +245,9 @@ public class FileUtils {
 	}
 
 	/**
-	 * Return a string that can be used as the main part of the file name. This represents the current timestamp.
+	 * Return a string that can be used as the main part of the file name. This represents the current
+	 * timestamp.
+	 * 
 	 * @return
 	 */
 	public static String getCurrentTimeForUseInASortableFileName() {
@@ -467,6 +469,31 @@ public class FileUtils {
 	 */
 	private static String padToTwoDigitsWithZeroes(int value) {
 		return (value < 10) ? "0" + value : "" + value;
+	}
+
+	/**
+	 * Reads a file into a list of Strings
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String> readFileIntoLines(File file) {
+		List<String> lines = new ArrayList<String>();
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			BufferedReader read = new BufferedReader(new InputStreamReader(fis));
+
+			String line;
+			while ((line = read.readLine()) != null) {
+				lines.add(line);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return lines;
 	}
 
 	/**
@@ -693,5 +720,4 @@ public class FileUtils {
 		}
 		writeStringToFile(string, file);
 	}
-
 }

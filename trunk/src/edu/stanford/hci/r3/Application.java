@@ -47,6 +47,9 @@ public class Application {
 	 */
 	private List<BatchedEventHandler> batchEventHandlers = new ArrayList<BatchedEventHandler>();
 
+	/**
+	 * 
+	 */
 	private DebuggingEnvironment debuggingEnvironment;
 
 	/**
@@ -197,6 +200,9 @@ public class Application {
 		return batchEventHandlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public DebuggingEnvironment getDebuggingEnvironment() {
 		return debuggingEnvironment;
 	}
@@ -358,6 +364,9 @@ public class Application {
 
 	}
 
+	/**
+	 * @param debugEnvironment
+	 */
 	public void setDebuggingEnvironment(DebuggingEnvironment debugEnvironment) {
 		debuggingEnvironment = debugEnvironment;
 	}
