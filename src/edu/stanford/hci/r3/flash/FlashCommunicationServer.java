@@ -134,13 +134,13 @@ public class FlashCommunicationServer {
 	private Runnable getServer() {
 		return new Runnable() {
 			public void run() {
-				log("Starting Flash Communications Server at port: " + serverPort);
+				DebugUtils.println("Starting Flash Communications Server at port: " + serverPort);
 				try {
 					socket = new ServerSocket(serverPort);
 					while (true) {
-						log("Waiting for a Client...");
+						// DebugUtils.println("Waiting for a Client...");
 						final Socket incoming = socket.accept();
-						log("Flash Client connected.");
+						// DebugUtils.println("Flash Client connected.");
 						final BufferedReader readerIn = new BufferedReader(new InputStreamReader(incoming
 								.getInputStream()));
 						final PrintStream writerOut = new PrintStream(incoming.getOutputStream());
@@ -150,12 +150,12 @@ public class FlashCommunicationServer {
 								readerIn, writerOut));
 					}
 				} catch (SocketException e) {
-					log("Server Socket was Closed");
+					DebugUtils.println("Server Socket was Closed");
 					// e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				log("Closing Flash Communications Server");
+				DebugUtils.println("Closing Flash Communications Server");
 			}
 
 		};
@@ -179,13 +179,6 @@ public class FlashCommunicationServer {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @param string
-	 */
-	private void log(String string) {
-		DebugUtils.println(string);
 	}
 
 	/**

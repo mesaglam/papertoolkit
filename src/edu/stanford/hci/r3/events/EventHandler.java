@@ -1,7 +1,6 @@
 package edu.stanford.hci.r3.events;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
-import edu.stanford.hci.r3.tools.debug.Utils;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 

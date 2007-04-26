@@ -16,6 +16,9 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * <p>
  * To help you visualize the event handlers and otherwise debug the paper UI and application. This class
  * contains the bulk of the debugging support, whereas the other classes represent the GUI.
+ * 
+ * NOTE: Removed a Utils.java file in this package, at revision 629. That included an attempt by Marcello to
+ * automatically determine the source surrounding a called method, through introspection with the debugger.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

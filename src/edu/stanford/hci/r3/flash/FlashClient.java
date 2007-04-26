@@ -39,7 +39,7 @@ public class FlashClient {
 		clientThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				DebugUtils.println("New Flash Client: " + clientID);
+				DebugUtils.println("New Flash Client: ID == " + clientID);
 
 				boolean done = false;
 				while (!done) {
