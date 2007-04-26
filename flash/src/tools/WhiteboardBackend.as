@@ -56,11 +56,23 @@
 			inkCanvas = theParent.inkCanvas;
 		}
 
+		// for when we wrap the tool in HTML
+		public function showExitButton():void {
+			theParent.exitButton.visible = true;
+		}
+
+		// asks the java server to System.exit(0);
+		public function exit():void {
+			javaServer.send("exitApplication");
+		}
+		
+		//
 		public function set javaBackend(javaInteg:JavaIntegration):void {
 			javaServer = javaInteg;
 			javaServer.addConnectListener(connectListener);
 		}
 
+		// 
         private function connectListener(event:Event):void {
         	trace("WhiteboardBackend Connection!");
         	
@@ -70,15 +82,6 @@
 		
 		public function setDebugText(dbt:TextArea):void {
 			debugText = dbt;
-		}
-		
-		// for when we wrap the tool in HTML
-		public function showExitButton():void {
-			theParent.exitButton.visible = true;
-		}
-		
-		public function exit():void {
-			javaServer.send("exitApplication");
 		}
 		
 		private function debugOut(msg:String):void {

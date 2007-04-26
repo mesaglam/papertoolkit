@@ -68,6 +68,8 @@ package tools {
 				app.designToolPanel.processMessage(event.text);
 			} else if (app.currentState == Constants.WHITEBOARD_MODE) {
 				app.whiteBoardPanel.processMessage(event.text);
+			} else if (app.currentState == Constants.API_MODE) {
+				app.apiBrowserPanel.processMessage(event.text);
 			} else if (msgName == "pens") {
 				// get all the pens and populate the combo box
 				var pensXML:XMLList = message.descendants("pen");
@@ -85,10 +87,9 @@ package tools {
 				}
 				app.penList.dataProvider = pens;
 			} else {
-				trace("Unhandled: " + message.toXMLString());
+				trace("ToolExplorerBackend: Message Unhandled [" + message.toXMLString() + "]");
 			}
 		}
-
 
 		// Switches between full screen and restored window state.
 		public function toggleFullScreen():void {
@@ -165,7 +166,7 @@ package tools {
 		}
 		public function apiExplorerClicked():void {
 			app.currentState = Constants.API_MODE;
-			javaBackend.send(Constants.API_MODE);
+			app.apiBrowserPanel.tool.javaBackend = javaBackend;
 		}
 		public function paperUIsClicked():void {
 			app.currentState = Constants.PAPER_UI_MODE;
@@ -181,7 +182,7 @@ package tools {
 		}
 		public function whiteBoardClicked():void{
 			app.currentState=Constants.WHITEBOARD_MODE;
-			app.whiteBoardPanel.javaBackend = javaBackend;
+			app.whiteBoardPanel.tool.javaBackend = javaBackend;
 		}
 		public function backButtonClicked():void{
 			app.currentState="";

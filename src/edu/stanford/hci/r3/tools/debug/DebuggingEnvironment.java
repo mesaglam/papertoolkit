@@ -36,13 +36,9 @@ public class DebuggingEnvironment {
 	/**
 	 * @param paperApp
 	 */
-	public DebuggingEnvironment(Application paperApp) {
-		app = paperApp;
-
-		DebugUtils.println("Starting to debug " + app);
-
-		// now, we'll use Flash as our GUI
-		startFlashDebugger();
+	public DebuggingEnvironment() {
+		// Start the local messaging server
+		flash = new FlashCommunicationServer();
 	}
 
 	/**
@@ -92,10 +88,18 @@ public class DebuggingEnvironment {
 	}
 
 	/**
-	 * 
+	 * @param paperApp
+	 */
+	public void setApp(Application paperApp) {
+		app = paperApp;
+		app.setDebuggingEnvironment(this);
+		DebugUtils.println("Starting to debug " + app);
+	}
+
+	/**
+	 * start the Flash GUI
 	 */
 	public void showFlashView() {
-		// start the Flash GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File eventVizHTML = new File(r3RootPath, "flash/bin/EventViz.html");
 		flash.openFlashHTMLGUI(eventVizHTML);
@@ -115,15 +119,6 @@ public class DebuggingEnvironment {
 				}
 			}
 		});
-	}
-
-	/**
-	 * 
-	 */
-	private void startFlashDebugger() {
-		// Start the local messaging server
-		flash = new FlashCommunicationServer();
-		showFlashView();
 	}
 
 	/**
