@@ -49,6 +49,7 @@ package tools {
 		private function start():void {
 			// toggleFullScreen();
 			javaBackend = new JavaIntegration(portNum);	
+			javaBackend.addConnectListener(connectListener);
 			javaBackend.addMessageListener(msgListener);
 			
 			// set the mode
@@ -57,12 +58,21 @@ package tools {
 			}
 		}
 
+        private function connectListener(event:Event):void {
+			// notify java that we have started
+	        javaBackend.send("Connected");
+        }
+
+
 		// handle messages
         private function msgListener(event:DataEvent):void {
+	        trace(event.text);
+	        
 	        var message:XML = new XML(event.text);
 	        var msgName:String = message.name();
 	        // trace(message.toXMLString());
 	        // trace("Message Name: " + msgName);
+			
 			if (app.currentState == Constants.DESIGN_MODE) {
 		        // pass ink samples to the design tools data handler
 				app.designToolPanel.processMessage(event.text);
@@ -204,8 +214,6 @@ package tools {
 			toolsArr.push({label:Constants.WHITEBOARD_MODE, data:whiteBoardClicked});
 			app.toolList.dataProvider = toolsArr;
 		}
-
-		
 		
 		// event handler
 		private function windowCloseHandler(e:Event):void {

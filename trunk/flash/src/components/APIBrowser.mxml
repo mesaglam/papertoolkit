@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Ink API Browser" creationComplete="startBrowser();">
-
 	<mx:Script>
 		<![CDATA[
 			import tools.Tool;
@@ -34,6 +33,7 @@
 
 			// retrieve the r3 tool (the actionscript class)
 			public function get tool():Tool {
+				trace("APIBrowser's Tool is: " + browser);
 				return browser;
 			}
 		]]>

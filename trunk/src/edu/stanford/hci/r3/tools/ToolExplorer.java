@@ -80,6 +80,7 @@ public class ToolExplorer implements FlashListener {
 	public boolean messageReceived(String command) {
 		DebugUtils.println(command);
 		if (command.equals("Connected")) {
+			DebugUtils.println("ToolExplorer Connected");
 			StringBuilder pens = new StringBuilder();
 			pens.append("<pens>");
 			final List<Pen> frequentlyUsedPens = paperToolkit.getFrequentlyUsedPens();
