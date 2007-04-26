@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.util.DebugUtils;
+import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
@@ -207,22 +209,23 @@ public class FlashCommunicationServer {
 	}
 
 	/**
-	 * Currently, we assume the next client connection is for THIS flash GUI. =) We'll hopefully be able to
-	 * use this information later.
+	 * Reads in a Template HTML file, and generates the final HTML file on the fly, to contain our SWF,
+	 * passing in the port as a parameter.
 	 * 
 	 * @param flashGUIFile
 	 *            Or perhaps this should be a URL in the future, as the GUI can live online? Launches the
 	 *            flash GUI in a browser.
-	 * @deprecated because we moved everything over to Apollo for simplicity
 	 */
-	@SuppressWarnings("unused")
-	private void openFlashGUI(File flashGUIFile) {
-		// browse to the flash GUI file, and pass over our port as a query parameter
-		// TODO: pass the port
-		// Idea... auto-generate an HTML file that includes the PORT as a query parameter?
-		// We did this for the Whiteboard
+	public void openFlashHTMLGUI(File flashGUIFile) {
 		try {
-			Desktop.getDesktop().browse(flashGUIFile.toURI());
+			String fileStr = FileUtils.readFileIntoStringBuffer(flashGUIFile, true).toString();
+			fileStr = fileStr.replace("PORT_NUM", serverPort + "");
+			final File outputTempHTML = new File(flashGUIFile.getParentFile(), flashGUIFile.getName() + "_"
+					+ serverPort + ".html");
+			FileUtils.writeStringToFile(fileStr, outputTempHTML);
+			final URI uri = outputTempHTML.toURI();
+			DebugUtils.println("Loading the Flash GUI...");
+			Desktop.getDesktop().browse(uri);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

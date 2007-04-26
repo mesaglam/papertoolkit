@@ -14,6 +14,9 @@ package edu.stanford.hci.r3.flash;
  */
 public interface FlashListener {
 	
+	public static final boolean CONSUMED = true;
+	public static final boolean NOT_CONSUMED = false;
+	
 	/**
 	 * @param command
 	 * @return if the event was "consumed" If so, do not process it anymore...

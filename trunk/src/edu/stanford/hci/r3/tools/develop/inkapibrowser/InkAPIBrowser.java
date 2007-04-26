@@ -176,30 +176,36 @@ public class InkAPIBrowser {
 		// start the Flash GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File apiBrowserTML = new File(r3RootPath, "flash/bin/APIBrowserDefault.html");
-		flash.openFlashGUI(apiBrowserTML);
+		flash.openFlashHTMLGUI(apiBrowserTML);
 		flash.removeAllFlashClientListeners(); // HACK: for now..., so we always have one flash
 		// listener
 		flash.addFlashClientListener(new FlashListener() {
 			@Override
-			public void messageReceived(String command) {
+			public boolean messageReceived(String command) {
 				if (command.equals("apibrowserclient connected")) {
 					DebugUtils.println("Flash Client Connected!");
 					sendListOfExposedMethods();
+					return CONSUMED;
 				} else if (command.equals("next")) {
 					nextFile();
 					sendInkFromCurrentFile();
+					return CONSUMED;
 				} else if (command.equals("prev")) {
 					prevFile();
 					sendInkFromCurrentFile();
+					return CONSUMED;
 				} else if (command.equals("saveimage")) {
 					saveInkFromCurrentFileToDiskAndDisplayIt();
+					return CONSUMED;
 				} else if (command.startsWith("callmethods")) {
 					String listOfCommands = command.substring(command.indexOf("[") + 1, command
 							.indexOf("]"));
 					String[] commands = listOfCommands.split(",");
 					callTheseMethods(commands);
+					return CONSUMED;
 				} else {
 					DebugUtils.println("Unhandled command: " + command);
+					return NOT_CONSUMED;
 				}
 			}
 

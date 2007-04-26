@@ -98,16 +98,20 @@ public class DebuggingEnvironment {
 		// start the Flash GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File eventVizHTML = new File(r3RootPath, "flash/bin/EventViz.html");
-		flash.openFlashGUI(eventVizHTML);
+		flash.openFlashHTMLGUI(eventVizHTML);
 		flash.removeAllFlashClientListeners(); // HACK: for now...
 		flash.addFlashClientListener(new FlashListener() {
 			@Override
-			public void messageReceived(String command) {
+			public boolean messageReceived(String command) {
 				if (command.equals("eventvizclient connected")) {
 					DebugUtils.println("Flash Client Connected!");
 					sendApplicationLayout();
+					return CONSUMED;
 				} else if (command.equals("load most recent pattern mappings")) {
 					app.getHostToolkit().loadMostRecentPatternMappings();
+					return CONSUMED;
+				} else {
+					return NOT_CONSUMED;
 				}
 			}
 		});

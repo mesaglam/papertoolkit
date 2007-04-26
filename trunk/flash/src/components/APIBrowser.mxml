@@ -1,59 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Ink API Browser" creationComplete="startBrowser();">
-	<mx:Style source="../styles/styles.css"/>
-	<mx:HDividedBox x="0" y="0" width="100%" height="100%" liveDragging="true">
-		<mx:Canvas label="Canvas 1" width="75%" height="100%" backgroundColor="#555555">
-			<mx:VDividedBox x="0" y="0" width="100%" height="100%">
-				<mx:Canvas width="100%" height="100%" backgroundColor="#444444" id="mainCanvas">
-					<mx:Label text="Start Drawing to see some Ink!" horizontalCenter="0" verticalCenter="0" id="welcomeText" fontSize="22" fontFamily="Trebuchet MS" alpha="0.9"/>
-					<mx:HBox left="10" bottom="10">
-						<mx:Button label="Prev" id="prevButton" click="browser.prevHandler(event);"/>
-						<mx:Button label="Next" id="nextButton" click="browser.nextHandler(event);"/>
-					</mx:HBox>
-					<mx:HBox right="10" top="10">
-						<mx:Button label="-" id="zoomOutButton" click="browser.zoomOut(event);"/>
-						<mx:Button label="100%" id="zoomResetButton" fontFamily="Verdana" click="browser.zoomReset(event);"/>
-						<mx:Button label="+" id="zoomInButton" click="browser.zoomIn(event);"/>
-					</mx:HBox>
-					<mx:HBox right="10" bottom="10">
-						<mx:Button label="Preview Image" id="saveImageButton" click="browser.saveImage(event);"/>
-						<mx:Button label="Exit" id="exitButton" click="browser.exit(event);"/>
-					</mx:HBox>
-					<mx:Button label="Full Screen" click="browser.toggleFullScreen(event);" right="10" top="40" width="111" height="22"/>
-				</mx:Canvas>
-				<mx:TextArea width="100%" height="33%" editable="true" enabled="true" fontFamily="Courier New" fontSize="18" color="#000000" paddingLeft="10" paddingRight="10" id="codeArea" text="Ink ink = &lt;InsertCodeHere&gt;;" fontWeight="bold"/>
-			</mx:VDividedBox>
-        </mx:Canvas>
-        <mx:Canvas label="Canvas 2" width="25%" height="100%" backgroundColor="#555555">
-        	<mx:Button label="→ Copy Code" right="10" left="10" bottom="10" click="browser.copyCodeHandler(event);" height="22" textAlign="center" fontWeight="bold" id="copyCodeButton"/>
-        	<mx:Label text="Ink API Browser" top="10" fontSize="30" color="#8aa5e1" fontFamily="Trebuchet MS" left="10" fontWeight="bold"/>
-        	<mx:ComboBox top="88" left="10" right="10" id="CategoryDropDown" color="#000000">
-			    <mx:dataProvider>
-			        <mx:Array>
-			            <mx:Object label="Utilities" data="Utilities"/>
-			            <mx:Object label="Select" data="Select"/>
-			            <mx:Object label="Decorate" data="Decorate"/>
-			            <mx:Object label="Manipulate" data="Manipulate"/>
-			            <mx:Object label="Associate" data="Associate"/>
-			            <mx:Object label="Transport" data="Transport"/>
-			        </mx:Array>
-			    </mx:dataProvider>
-    		</mx:ComboBox>
-        	<mx:ComboBox top="154" left="10" right="10" id="methodCallDropdown" color="#000000"></mx:ComboBox>
-        	<mx:Panel layout="absolute" right="10" left="10" bottom="40" top="427" title="Metrics" id="optionsPanel">
-        		<mx:Label text="Number of Strokes Displayed:" color="#000000" top="10" left="10" fontWeight="bold" fontSize="15"/>
-        		<mx:Label text="Number of Methods Added:" color="#000000" top="72" left="10" fontWeight="bold" fontSize="15"/>
-        		<mx:Label text="0" color="#000000" top="41" left="30" id="numStrokesDisplayed" fontWeight="bold" fontSize="15"/>
-        		<mx:Label text="0" color="#000000" top="103" left="30" id="numMethodsAdded" fontWeight="bold" fontSize="15"/>
-        	</mx:Panel>
-        	<mx:Label text="Category of Operation" top="57" left="10"/>
-        	<mx:Label text="Method Call" top="123" left="10"/>
-        	<mx:Button label="Add Method Call" left="10" right="10" top="189" click="browser.addMethodCall(event);"/>
-        	<mx:Panel height="200" layout="absolute" left="10" right="10" top="219" title="Information">
-        		<mx:TextArea left="0" right="0" top="0" bottom="0" id="infoTextArea" color="#808080" fontFamily="Courier New" fontSize="15"/>
-        	</mx:Panel>
-        </mx:Canvas>
-	</mx:HDividedBox>
+
+	<!-- The Real Effects
+	<mx:Fade id="brighten" alphaFrom="1" alphaTo="1" duration="100"/>
+	<mx:Fade id="dim" startDelay="600" alphaFrom="1" alphaTo=".15" duration="1000"/>
+	-->
+
+	<mx:Fade id="brighten" alphaTo="1" duration="0"/>
+	<mx:Fade id="dim" startDelay="600" alphaTo=".15" duration="0"/>
+
+	<mx:HDividedBox width="100%" height="100%" liveDragging="true">
+		<mx:Canvas width="25%" height="100%">
+	    	<mx:VBox top="10" left="0" right="0">
+	        	<mx:Label text="Category of Operation" top="40" left="10" width="100%"/>
+	        	<mx:ComboBox top="88" left="10" right="10" id="CategoryDropDown" color="#000000" width="100%">
+				    <mx:dataProvider>
+				        <mx:Array>
+				            <mx:Object label="Utilities" data="Utilities"/>
+				            <mx:Object label="Select" data="Select"/>
+				            <mx:Object label="Decorate" data="Decorate"/>
+				            <mx:Object label="Manipulate" data="Manipulate"/>
+				            <mx:Object label="Associate" data="Associate"/>
+				            <mx:Object label="Transport" data="Transport"/>
+				        </mx:Array>
+				    </mx:dataProvider>
+	    		</mx:ComboBox>
+		    	<mx:Spacer height="5"/>
+	        	<mx:Label text="Method Call" top="123" left="10" width="100%"/>
+	        	<mx:ComboBox top="154" left="10" right="10" id="methodCallDropdown" color="#000000" width="100%"></mx:ComboBox>
+	        	<mx:Button label="Insert Method Call" click="browser.addMethodCall(event);" width="100%"/>
+		    	<mx:Spacer height="10"/>
+		    	<mx:HBox>
+		    		<mx:Label text="Number of Strokes Displayed:" fontWeight="bold" fontSize="15"/>
+		    		<mx:Label text="0" id="numStrokesDisplayed" fontWeight="bold" fontSize="15" textAlign="right"/>
+		    	</mx:HBox>
+		    	<mx:HBox>
+		    		<mx:Label text="Number of Methods Added:" fontWeight="bold" fontSize="15"/>
+		    		<mx:Label text="0" id="numMethodsAdded" fontWeight="bold" fontSize="15" textAlign="right"/>
+		    	</mx:HBox>
+		    	<mx:Spacer height="10"/>
+	    		<mx:Label text="Debug Output:" fontWeight="bold" fontSize="15"/>
+	    	</mx:VBox>
+    		<mx:TextArea id="infoTextArea" color="#959595" fontFamily="Courier New" fontSize="15" bottom="50" top="300" left="0" right="0" backgroundColor="#535353"/>
+    		<mx:Button label="Exit" id="exitButton" visible="false" click="browser.exit(event);" bottom="0" left="10" right="10"/>
+		</mx:Canvas>
+		<mx:Canvas width="50%" height="100%" backgroundColor="#444444" id="mainCanvas" cornerRadius="10">
+			<mx:Label text="Start Drawing!" horizontalCenter="0" verticalCenter="0" id="welcomeText" fontSize="22" fontFamily="Trebuchet MS" alpha="0.9" color="#ffffff"/>
+			<mx:HBox left="10" bottom="10" alpha="0.15" rollOverEffect="{brighten}" rollOutEffect="{dim}">
+				<mx:Button label="Prev" id="prevButton" click="browser.prevHandler(event);" color="#000000"/>
+				<mx:Button label="Next" id="nextButton" click="browser.nextHandler(event);" color="#000000"/>
+			</mx:HBox>
+			<mx:VBox horizontalAlign="right" alpha="0.15" right="10" bottom="10" rollOverEffect="{brighten}" rollOutEffect="{dim}" >
+				<mx:HBox>
+					<mx:Button label="-" id="zoomOutButton" click="browser.zoomOut(event);" color="#000000"/>
+					<mx:Button label="100%" id="zoomResetButton" fontFamily="Verdana" click="browser.zoomReset(event);" color="#000000"/>
+					<mx:Button label="+" id="zoomInButton" click="browser.zoomIn(event);" color="#000000"/>
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Button label="Preview Image" id="saveImageButton" click="browser.saveImage(event);" color="#000000"/>
+					<mx:Button label="Full Screen" click="browser.toggleFullScreen(event);" right="10" top="40" height="22" color="#000000"/>
+				</mx:HBox>
+			</mx:VBox>
+		</mx:Canvas>
+		<mx:Canvas width="25%" height="100%">
+			<mx:TextArea width="100%" height="100%" editable="true" enabled="true" fontFamily="Lucida Console" 
+				fontSize="16" paddingLeft="10" paddingRight="10" id="codeArea" text="Ink ink = &lt;InsertCodeHere&gt;;" fontWeight="bold" color="#000000"/>
+        	<mx:Button label="Copy to Clipboard" click="browser.copyCodeHandler(event);" textAlign="center" fontWeight="bold" id="copyCodeButton" right="10" bottom="10" color="#000000" left="10"/>
+		</mx:Canvas>
+ 	</mx:HDividedBox>
 	<mx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;
