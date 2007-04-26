@@ -90,11 +90,11 @@ public class ToolExplorer implements FlashListener {
 			}
 			pens.append("</pens>");
 			flash.sendMessage(pens.toString());
-			return true;
+			return CONSUMED;
 		} else if (command.equals("Design")) {
 			sketchToPaperUI = new SketchToPaperUI(currentPen);
 			sketchToPaperUI.addPenListener(new FlashPenListener(flash));
-			return true;
+			return CONSUMED;
 		} else if (command.equals("Main Menu")) {
 			if (sketchToPaperUI != null) {
 				sketchToPaperUI.exit();
@@ -102,7 +102,7 @@ public class ToolExplorer implements FlashListener {
 			} else {
 
 			}
-			return true;
+			return CONSUMED;
 		} else if (command.startsWith("<pen")) {
 			final Pattern penPattern = Pattern.compile("<pen name='(.*?)' server='(.*?)' port='(.*?)'/>");
 			final Matcher matcherPen = penPattern.matcher(command);
@@ -122,13 +122,13 @@ public class ToolExplorer implements FlashListener {
 					}
 				}
 			}
-			return true;
+			return CONSUMED;
 		} else if (command.equals("exitServer")) {
 			DebugUtils.println("Exiting the Application");
 			System.exit(0);
-			return true;
+			return CONSUMED;
 		} else {
-			return false;
+			return NOT_CONSUMED;
 		}
 	}
 }

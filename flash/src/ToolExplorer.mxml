@@ -17,11 +17,17 @@
 		]]>
 	</mx:Script>
 
+	<!-- The Real Effects
 	<mx:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="200"/>
 	<mx:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="200"/>
-
 	<mx:Fade id="brighten" alphaFrom="1" alphaTo="1" duration="100"/>
-	<mx:Fade startDelay="600" id="dim" alphaFrom="1" alphaTo=".1" duration="1000"/>
+	<mx:Fade id="dim" startDelay="600" alphaFrom="1" alphaTo=".1" duration="1000"/>
+	-->
+
+	<mx:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="0"/>
+	<mx:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="0"/>
+	<mx:Fade id="brighten" alphaTo="1" duration="0"/>
+	<mx:Fade id="dim" startDelay="600" alphaTo=".1" duration="0"/>
 	
 	<mx:states>
 		<mx:State name="{Constants.DESIGN_MODE}">
@@ -35,6 +41,22 @@
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
+			<mx:SetProperty target="{topRightImageDesign}" name="width" value="100"/>
+			<mx:SetProperty target="{topRightImageDesign}" name="height" value="100"/>
+		</mx:State>
+		<mx:State name="{Constants.API_MODE}">
+			<mx:SetProperty target="{topRightImageDirections}" name="visible" value="true"/>
+			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
+			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
+			<mx:SetProperty target="{titleLabel}" name="text" value="API Explorer"/>
+			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
+			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
+				<components:APIBrowser id="apiBrowserPanel" left="10" right="10" top="70" bottom="20">
+				</components:APIBrowser>
+			</mx:AddChild>
+			<mx:RemoveChild target="{dropDownContainer}"/>
+			<mx:SetProperty target="{topRightImageDirections}" name="width" value="100"/>
+			<mx:SetProperty target="{topRightImageDirections}" name="height" value="100"/>
 		</mx:State>
 		<mx:State name="{Constants.WHITEBOARD_MODE}">
 			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
@@ -58,6 +80,8 @@
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
+			<mx:SetProperty target="{topRightImageYinYang}" name="width" value="100"/>
+			<mx:SetProperty target="{topRightImageYinYang}" name="height" value="100"/>
 		</mx:State>
 		<mx:State name="{Constants.PAPER_UI_MODE}">
 			<mx:SetProperty target="{topRightImageStickies}" name="visible" value="true"/>
@@ -70,6 +94,8 @@
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
+			<mx:SetProperty target="{topRightImageStickies}" name="width" value="100"/>
+			<mx:SetProperty target="{topRightImageStickies}" name="height" value="100"/>
 		</mx:State>
 		<mx:State name="{Constants.TOOLBOX_MODE}">
 			<mx:SetProperty target="{topRightImageToolbox}" name="visible" value="true"/>
@@ -82,18 +108,8 @@
 				</components:DesignTools>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
-		</mx:State>
-		<mx:State name="{Constants.API_MODE}">
-			<mx:SetProperty target="{topRightImageDirections}" name="visible" value="true"/>
-			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
-			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
-			<mx:SetProperty target="{titleLabel}" name="text" value="API Explorer"/>
-			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
-			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:DesignTools left="10" right="10" top="80" bottom="40">
-				</components:DesignTools>
-			</mx:AddChild>
-			<mx:RemoveChild target="{dropDownContainer}"/>
+			<mx:SetProperty target="{topRightImageToolbox}" name="width" value="100"/>
+			<mx:SetProperty target="{topRightImageToolbox}" name="height" value="100"/>
 		</mx:State>
 	</mx:states>
 	<mx:Label text="PaperToolkit Tool Explorer" fontSize="40" top="10" id="titleLabel" left="10" width="537"/>

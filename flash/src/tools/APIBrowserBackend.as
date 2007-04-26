@@ -142,6 +142,7 @@ package tools {
 			sendToJava("flash client says: [" + msg + "]");
 		}
 
+		//
         private function dataHandler(event:DataEvent):void {
 			// trace(event.text);
 	        var message:XML = new XML(event.text);

@@ -1,10 +1,7 @@
 package edu.stanford.hci.r3.flash.whiteboard;
 
 import java.awt.Color;
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,17 +33,25 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class FlashWhiteboard {
 
+	private InkStroke currInkStroke;
+
+	private FlashCommunicationServer flash;
+
+	private Ink inkWell = new Ink();
+
 	private List<Pen> pens = new ArrayList<Pen>();
 
 	private int port;
 
+	/**
+	 * A little block of color on the upper right corner, for helping us match the output window with the
+	 * input pen (if you have color-coded your pens).
+	 */
 	private Color swatchColor;
 
 	private String title;
 
 	private ToolExplorer toolExplorer;
-
-	private FlashCommunicationServer flash;
 
 	/**
 	 * @param portNum
@@ -64,56 +69,48 @@ public class FlashWhiteboard {
 	}
 
 	/**
-	 * 
+	 * @return
 	 */
-	public void loadApolloGUI() {
-		toolExplorer = new ToolExplorer(new PaperToolkit(), "Whiteboard", port);
-		flash = toolExplorer.getFlashServer();
-		toolExplorer.addFlashClientListener(getFlashListener());
-	}
-
 	private FlashListener getFlashListener() {
 		return new FlashListener() {
 			@Override
 			public boolean messageReceived(String command) {
 				if (command.equals("Whiteboard")) {
 					DebugUtils.println("Whiteboard Connected!");
-
 					DebugUtils.println("Color: " + swatchColor);
-
 					flash.sendMessage("<swatchColor r='" + swatchColor.getRed() + "' g='"
 							+ swatchColor.getGreen() + "' b='" + swatchColor.getBlue() + "'/>");
 					flash.sendMessage("<title value='" + title + "'/>");
-
 					for (Pen p : pens) {
 						DebugUtils.println("Adding Pen Listener");
 						p.addLivePenListener(new FlashPenListener(flash));
 						p.addLivePenListener(getInkListener());
 					}
-
-					return true;
+					return CONSUMED;
 				} else if (command.equals("LoadInk")) {
 					DebugUtils.println("LoadInk Not Implemented");
+					return CONSUMED;
 				} else if (command.equals("SaveInk")) {
 					DebugUtils.println("SaveInk Not Implemented");
 					DebugUtils.println("Saving " + inkWell.getNumStrokes() + " strokes");
-					String fileName = title + "_" + FileUtils.getCurrentTimeForUseInASortableFileName() + ".xml";
+					String fileName = title + "_" + FileUtils.getCurrentTimeForUseInASortableFileName()
+							+ ".xml";
 					File desktopDir = FileSystemView.getFileSystemView().getHomeDirectory();
 					DebugUtils.println(desktopDir + "/" + fileName);
 					inkWell.saveToXMLFile(new File(desktopDir, fileName));
+					return CONSUMED;
 				} else {
 					DebugUtils.println("Flash Whiteboard Unhandled command: " + command);
-					return false;
+					return NOT_CONSUMED;
 				}
-				return true;
 			}
 
 		};
 	}
 
-	private Ink inkWell = new Ink();
-	private InkStroke currInkStroke;
-
+	/**
+	 * @return the listener for collecting ink strokes.
+	 */
 	private PenListener getInkListener() {
 		return new PenListener() {
 			@Override
@@ -135,31 +132,30 @@ public class FlashWhiteboard {
 	}
 
 	/**
-	 * Loads the HTML Version...
+	 * Loads the HTML Version... You can launch multiple instances of this.
 	 */
 	public void load() {
 		// start the local server for sending ink over to the Flash client app
 		flash = new FlashCommunicationServer(port);
 		flash.addFlashClientListener(getFlashListener());
-
-		// generate the HTML file on the fly, to contain our SWF
 		final File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File inputWhiteBoardHTML = new File(r3RootPath, "flash/bin/ToolWrapper.html");
-		String fileStr = FileUtils.readFileIntoStringBuffer(inputWhiteBoardHTML, true).toString();
-		fileStr = fileStr.replace("PORT_NUM", port + "");
-		final File outputWhiteBoardHTML = new File(r3RootPath, "flash/bin/Whiteboard_" + port + ".html");
-		FileUtils.writeStringToFile(fileStr, outputWhiteBoardHTML);
-		URI uri = outputWhiteBoardHTML.toURI();
-		try {
-			DebugUtils.println("Loading the Flash GUI...");
-			Desktop.getDesktop().browse(uri);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		flash.openFlashHTMLGUI(inputWhiteBoardHTML);
+	}
+
+	/**
+	 * Loads the Apollo version. It's a native EXE that you have compiled with the Apollo builder. However, it
+	 * seems you can't launch multiple instances. Boo.
+	 */
+	public void loadApolloGUI() {
+		toolExplorer = new ToolExplorer(new PaperToolkit(), "Whiteboard", port);
+		flash = toolExplorer.getFlashServer();
+		toolExplorer.addFlashClientListener(getFlashListener());
 	}
 
 	/**
 	 * @param color
+	 *            shows up in a box in the upper right corner of the display.
 	 */
 	public void setSwatchColor(Color color) {
 		swatchColor = color;
@@ -167,6 +163,7 @@ public class FlashWhiteboard {
 
 	/**
 	 * @param titleStr
+	 *            shows up in the display as the page's title.
 	 */
 	public void setTitle(String titleStr) {
 		title = titleStr;
