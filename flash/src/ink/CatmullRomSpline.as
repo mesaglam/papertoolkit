@@ -145,6 +145,16 @@ package ink {
 			numVertices = xSamples.length;
 			tSamples = new Array(numVertices);
 			
+			trace("Num Vertices: " + numVertices);
+			if (numVertices == 1) {
+				// this is a bad condition, so we will duplicate the point
+				xSamples.push(xSamples[0]);
+				ySamples.push(ySamples[0]);
+				numVertices = xSamples.length;
+				trace("Bad condition encountered. Duplicated Point. Num Vertices is now: " + numVertices);
+			}
+			
+			
 			var first:int = 0;
 			var last:int = numVertices - 1;
 			if (xSamples[first] == xSamples[last] && ySamples[first] == ySamples[last]){

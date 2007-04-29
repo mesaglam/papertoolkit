@@ -20,16 +20,15 @@ public class SystemUtils {
 	private static final double BYTES_PER_MB = (1024.0 * 1024.0);
 
 	/**
-	 * Where to look for DLLs. Unfortunately, you cannot change this at runtime and expect the
-	 * classloaders to find the dlls correctly.
+	 * Where to look for DLLs. Unfortunately, you cannot change this at runtime and expect the classloaders to
+	 * find the dlls correctly.
 	 */
 	public static final String LIBRARY_PATH_KEY = "java.library.path";
 
 	/**
 	 * System character(s) for separating lines. Different for Unix/DOS/Mac.
 	 */
-	public static final String LINE_SEPARATOR = System.getProperties()
-			.getProperty("line.separator");
+	public static final String LINE_SEPARATOR = System.getProperties().getProperty("line.separator");
 
 	/**
 	 * Different for UNIX/WINDOWS/MAC
@@ -41,8 +40,8 @@ public class SystemUtils {
 	/**
 	 * This doesn't work. =\
 	 * 
-	 * TODO: See: http://www.velocityreviews.com/forums/t143553-dll-in-jar.html for a possible
-	 * solution to load dlls from the jar file. Alternate idea:
+	 * TODO: See: http://www.velocityreviews.com/forums/t143553-dll-in-jar.html for a possible solution to
+	 * load dlls from the jar file. Alternate idea:
 	 * http://forum.java.sun.com/thread.jspa?threadID=563861&messageID=3123713
 	 * 
 	 * @param url
@@ -91,9 +90,8 @@ public class SystemUtils {
 	}
 
 	/**
-	 * Sets the user.dir property, so that you can make code dealing with files easier to type/read.
-	 * WARNING: Java seems to have a usability bug in this manner.... Do not use this method for
-	 * now.
+	 * Sets the user.dir property, so that you can make code dealing with files easier to type/read. WARNING:
+	 * Java seems to have a usability bug in this manner.... Do not use this method for now.
 	 * 
 	 * <code>
 	 * SystemUtils.setWorkingDirectory(new File("data/Flickr/"));
@@ -103,9 +101,9 @@ public class SystemUtils {
 	 * System.out.println(new File("Twistr1.xml").getAbsoluteFile().exists()); // returns true
 	 * </code>
 	 * 
-	 * This is a KNOWN Java bug: http://bugs.sun.com/bugdatabase/view_bug.do;:YfiG?bug_id=4117557
-	 * Phooey. That means you have to call getAbsoluteFile() at every point in which you read a file
-	 * stream. I will have to instrument SystemUtils & FileUtils to handle this.
+	 * This is a KNOWN Java bug: http://bugs.sun.com/bugdatabase/view_bug.do;:YfiG?bug_id=4117557 Phooey. That
+	 * means you have to call getAbsoluteFile() at every point in which you read a file stream. I will have to
+	 * instrument SystemUtils & FileUtils to handle this.
 	 * 
 	 * @param file
 	 * @deprecated
@@ -122,10 +120,31 @@ public class SystemUtils {
 	}
 
 	/**
+	 * For saving the time elsewhere.
+	 * 
+	 * @return
+	 */
+	public static long ticLocal() {
+		return System.currentTimeMillis();
+	}
+
+	/**
 	 * Prints out the difference between now and the last time we tic'ed.
 	 */
 	public static void toc() {
 		DebugUtils.println("Clock: " + (System.currentTimeMillis() - previousTime) + " ms.");
+	}
+
+	/**
+	 * Can pass in a time that was saved elsewhere through ticLocal().
+	 * 
+	 * @param lastTime
+	 * @return
+	 */
+	public static long tocLocal(long lastTime) {
+		long t = (System.currentTimeMillis() - lastTime);
+		System.out.println("Clock: " + t + " ms.");
+		return t;
 	}
 
 }

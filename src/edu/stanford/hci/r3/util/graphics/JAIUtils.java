@@ -1,8 +1,6 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.util.graphics;
 
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
@@ -18,13 +16,15 @@ import java.io.File;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.JAI;
+import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.TiledImage;
+import javax.swing.SwingUtilities;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt"> BSD
+ * License</a>.
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -34,8 +34,27 @@ public class JAIUtils {
 	/**
 	 * border extender, reflects the pixels like a mirror.
 	 */
-	private static final RenderingHints RH_BORDER_REFLECT = new RenderingHints(
-			JAI.KEY_BORDER_EXTENDER, BorderExtender.createInstance(BorderExtender.BORDER_REFLECT));
+	private static final RenderingHints RH_BORDER_REFLECT = new RenderingHints(JAI.KEY_BORDER_EXTENDER,
+			BorderExtender.createInstance(BorderExtender.BORDER_REFLECT));
+
+	/**
+	 * returns a writable buffer that is compatible with and (depending on the boolean flag) contains the same
+	 * data as the input image
+	 * 
+	 * @param src
+	 * @return the writable buffer
+	 */
+	public static TiledImage createCompatibleWritableBuffer(PlanarImage inputImage, boolean copyDataFromInput) {
+		// create Tiled Image that is compatible with the input image
+		final TiledImage ti = new TiledImage(inputImage.getMinX(), inputImage.getMinY(), inputImage
+				.getWidth(), inputImage.getHeight(), inputImage.getTileGridXOffset(), inputImage
+				.getTileGridYOffset(), inputImage.getSampleModel(), inputImage.getColorModel());
+		// make it look the same too!
+		if (copyDataFromInput) {
+			ti.setData(inputImage.copyData());
+		}
+		return ti;
+	}
 
 	/**
 	 * Creates an alpha channel to write translucent images to.
@@ -59,9 +78,8 @@ public class JAIUtils {
 		// The ColorModel
 		final ICC_Profile profile = ICC_Profile.getInstance(ColorSpace.CS_sRGB);
 		final boolean hasAlpha = (numBands > 3) ? true : false;
-		final ColorModel colorModel = new ComponentColorModel(new ICC_ColorSpace(profile),
-				hasAlpha, /* premultipliedAlpha */
-				false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+		final ColorModel colorModel = new ComponentColorModel(new ICC_ColorSpace(profile), hasAlpha, /* premultipliedAlpha */
+		false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
 
 		// The SampleModel
 		final int defaultTileSize = 128;
@@ -71,15 +89,15 @@ public class JAIUtils {
 		}
 
 		final SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE,
-				defaultTileSize, defaultTileSize /* heightOfTile */, numBands /* pixelStride */,
-				numBands * defaultTileSize, bandOffsets);
+				defaultTileSize, defaultTileSize /* heightOfTile */, numBands /* pixelStride */, numBands
+						* defaultTileSize, bandOffsets);
 
 		return new TiledImage(0, 0, width, height, 0, 0, sampleModel, colorModel);
 	}
 
 	/**
-	 * Even without an alpha channel, you can do alpha compositing! However, it won't work well if
-	 * you want a transparent background for PNGs.
+	 * Even without an alpha channel, you can do alpha compositing! However, it won't work well if you want a
+	 * transparent background for PNGs.
 	 * 
 	 * @param width
 	 * @param height
@@ -90,8 +108,8 @@ public class JAIUtils {
 	}
 
 	/**
-	 * Create a black image with the given width, height, and color depth (use 3 for an RGB image, 4
-	 * for RGBA).
+	 * Create a black image with the given width, height, and color depth (use 3 for an RGB image, 4 for
+	 * RGBA).
 	 * 
 	 * @param width
 	 * @param height
@@ -108,6 +126,67 @@ public class JAIUtils {
 		pb.add(new Float(height));
 		pb.add(bandValues);
 		return (PlanarImage) JAI.create("constant", pb);
+	}
+
+	/**
+	 * Crop and reposition the image to (0,0) origin Do not use crop by itself, as it is quite useless... :\
+	 * 
+	 * @param img
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public static PlanarImage crop(PlanarImage img, float x, float y, float width, float height) {
+		// error check by intersecting the image bounds with the cropping bounds
+		final Rectangle imageBounds = new Rectangle(0, 0, img.getWidth(), img.getHeight());
+		SwingUtilities.computeIntersection((int) x, (int) y, (int) width, (int) height, imageBounds);
+		final PlanarImage cropped = cropWithoutRecenter(img, imageBounds.x, imageBounds.y, imageBounds.width,
+				imageBounds.height);
+		return translate(cropped, -imageBounds.x, -imageBounds.y);
+	}
+
+	/**
+	 * Deletes pixels from the top, left, bottom, and right.
+	 * 
+	 * @param img
+	 * @param fromTop
+	 * @param fromLeft
+	 * @param fromBottom
+	 * @param fromRight
+	 * @return
+	 */
+	public static PlanarImage cropAwayPixels(PlanarImage img, //
+			float fromTop, float fromLeft, float fromBottom, float fromRight) {
+		final int width = img.getWidth();
+		final int height = img.getHeight();
+		PlanarImage cropped = cropWithoutRecenter(img, fromLeft, fromTop, width - fromLeft - fromRight,
+				height - fromTop - fromBottom);
+		return translate(cropped, -fromLeft, -fromTop);
+	}
+
+	/**
+	 * The raw JAI call that crops the image. Watch out for some unintuitiveness... Instead, we wrap the call
+	 * in a new crop() that auto repositions your image for you.
+	 * 
+	 * @see cropAndReposition(...)
+	 * @param img
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	private static PlanarImage cropWithoutRecenter(PlanarImage img, //
+			float x, float y, float width, float height) {
+		final ParameterBlock pb = new ParameterBlock();
+		pb.addSource(img);
+		pb.add(new Float(x));
+		pb.add(new Float(y));
+		pb.add(new Float(width));
+		pb.add(new Float(height));
+		return JAI.create("crop", pb);
 	}
 
 	/**
@@ -143,11 +222,10 @@ public class JAIUtils {
 		return JAI.create("scale", pb, RH_BORDER_REFLECT);
 	}
 
-	public static PlanarImage scaleImageIteratively(PlanarImage src, float scaleFactorX,
-			float scaleFactorY) {
-		return scaleImageIterativelyToDimensions(src, InterpolationQuality.BILINEAR, (int) Math
-				.round(src.getWidth() * scaleFactorX), (int) Math.round(src.getHeight()
-				* scaleFactorY));
+	public static PlanarImage scaleImageIteratively(PlanarImage src, float scaleFactorX, float scaleFactorY) {
+		return scaleImageIterativelyToDimensions(src, InterpolationQuality.BILINEAR, (int) Math.round(src
+				.getWidth()
+				* scaleFactorX), (int) Math.round(src.getHeight() * scaleFactorY));
 	}
 
 	/**
@@ -159,18 +237,24 @@ public class JAIUtils {
 	 * @param scaleFactorY
 	 * @return
 	 */
-	public static PlanarImage scaleImageIteratively(PlanarImage src,
-			InterpolationQuality interpQuality, float scaleFactorX, float scaleFactorY) {
-		return scaleImageIterativelyToDimensions(src, interpQuality, (int) Math.round(src
-				.getWidth()
+	public static PlanarImage scaleImageIteratively(PlanarImage src, InterpolationQuality interpQuality,
+			float scaleFactorX, float scaleFactorY) {
+		return scaleImageIterativelyToDimensions(src, interpQuality, (int) Math.round(src.getWidth()
 				* scaleFactorX), (int) Math.round(src.getHeight() * scaleFactorY));
 	}
 
+	/**
+	 * @param src
+	 * @param interpQuality
+	 * @param width
+	 * @param height
+	 * @return
+	 */
 	private static PlanarImage scaleImageIterativelyToDimensions(PlanarImage src,
 			InterpolationQuality interpQuality, int width, int height) {
 		// never scale to lower than...
 		double minScale = .5;
-		
+
 		// is there a possiblility that it will loop forever?
 		// we can prevent it by capping it to 10 iterations...
 		int iterations = 0;
@@ -233,6 +317,22 @@ public class JAIUtils {
 		}
 
 		return scaleImageIteratively(src, quality, scaleFactorX, scaleFactorY);
+	}
+
+	/**
+	 * Translates the image.
+	 * 
+	 * @param img
+	 * @param tx
+	 * @param ty
+	 * @return
+	 */
+	public static PlanarImage translate(PlanarImage img, float tx, float ty) {
+		final ParameterBlockJAI pb = new ParameterBlockJAI("translate");
+		pb.addSource(img);
+		pb.setParameter("xTrans", tx);
+		pb.setParameter("yTrans", ty);
+		return JAI.create("translate", pb);
 	}
 
 	/**

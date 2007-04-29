@@ -28,8 +28,8 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt"> BSD
+ * License</a>.
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -128,8 +128,8 @@ public class ImageUtils {
 	}
 
 	/**
-	 * This works for both JPEG and non JPEG images/photos. It defaults to a generic method if it
-	 * cannot find the jpeg EXIF.
+	 * This works for both JPEG and non JPEG images/photos. It defaults to a generic method if it cannot find
+	 * the jpeg EXIF.
 	 * 
 	 * @param imageFile
 	 * @return
@@ -139,8 +139,8 @@ public class ImageUtils {
 			try {
 				final Metadata metadata = JpegMetadataReader.readMetadata(imageFile);
 				final Directory jpegDirectory = metadata.getDirectory(JpegDirectory.class);
-				return new Dimension(jpegDirectory.getInt(JpegDirectory.TAG_JPEG_IMAGE_WIDTH),
-						jpegDirectory.getInt(JpegDirectory.TAG_JPEG_IMAGE_HEIGHT));
+				return new Dimension(jpegDirectory.getInt(JpegDirectory.TAG_JPEG_IMAGE_WIDTH), jpegDirectory
+						.getInt(JpegDirectory.TAG_JPEG_IMAGE_HEIGHT));
 			} catch (JpegProcessingException e) {
 				// fall through
 			} catch (MetadataException e) {
@@ -151,9 +151,9 @@ public class ImageUtils {
 	}
 
 	/**
-	 * Load in the image file just to read the photo size... This should be slower than
-	 * readSize(...) if most of your images are JPEG files with EXIF headers... Use it if you are
-	 * loading non-JPEGS or if your JPEGs do not have EXIFs.
+	 * Load in the image file just to read the photo size... This should be slower than readSize(...) if most
+	 * of your images are JPEG files with EXIF headers... Use it if you are loading non-JPEGS or if your JPEGs
+	 * do not have EXIFs.
 	 * 
 	 * @param imageFile
 	 * @return
@@ -164,12 +164,11 @@ public class ImageUtils {
 	}
 
 	/**
-	 * If the EXIF field does not exist, it will return a time representing the file last modified
-	 * date/time.
+	 * If the EXIF field does not exist, it will return a time representing the file last modified date/time.
 	 * 
-	 * TODO Would users rather pick the latest valid time read from the file system (based on an
-	 * alphabetical sort by name), in the same directory? Maybe it should be a configurable option
-	 * in whatever software uses this method?
+	 * TODO Would users rather pick the latest valid time read from the file system (based on an alphabetical
+	 * sort by name), in the same directory? Maybe it should be a configurable option in whatever software
+	 * uses this method?
 	 * 
 	 * @param photo
 	 * @return
@@ -194,8 +193,8 @@ public class ImageUtils {
 	 * @author Ron Yeh
 	 */
 	public static BufferedImage scaleImage(BufferedImage src, float sX, float sY) {
-		System.err
-				.println("Warning: ImageUtils::scaleImage is a low quality scale. Please use ImageUtils::scaleImageIteratively.");
+		System.err.println("Warning: ImageUtils::scaleImage is a low quality scale. "
+				+ "Please use ImageUtils/JAIUtils::scaleImageIteratively.");
 
 		final int width = (int) (src.getWidth() * sX + 0.5);
 		final int height = (int) (src.getHeight() * sY + 0.5);
@@ -206,12 +205,25 @@ public class ImageUtils {
 		return scaledImg;
 	}
 
+	/**
+	 * @param src
+	 * @param width
+	 * @param height
+	 * @return
+	 */
 	public static BufferedImage scaleImageToFit(BufferedImage src, int width, int height) {
 		return scaleImageToSize(src, width, height, true);
 	}
 
-	public static BufferedImage scaleImageToSize(BufferedImage src, int targetWidth,
-			int targetHeight, boolean maintainAspectRatio) {
+	/**
+	 * @param src
+	 * @param targetWidth
+	 * @param targetHeight
+	 * @param maintainAspectRatio
+	 * @return
+	 */
+	public static BufferedImage scaleImageToSize(BufferedImage src, int targetWidth, int targetHeight,
+			boolean maintainAspectRatio) {
 		// old width and height
 		final int width = src.getWidth();
 		final int height = src.getHeight();
@@ -253,9 +265,8 @@ public class ImageUtils {
 	}
 
 	/**
-	 * This method is generally BETTER than ImageIO.write(...) as that produces low quality output.
-	 * This method will not work for a 4-banded image. The colors will look incorrect. Use the PNG
-	 * version instead.
+	 * This method is generally BETTER than ImageIO.write(...) as that produces low quality output. This
+	 * method will not work for a 4-banded image. The colors will look incorrect. Use the PNG version instead.
 	 * 
 	 * @param buffImage
 	 * @param quality
