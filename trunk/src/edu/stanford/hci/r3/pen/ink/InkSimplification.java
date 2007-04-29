@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.stanford.hci.r3.pen.PenSample;
-import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 
 /**

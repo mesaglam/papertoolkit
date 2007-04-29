@@ -110,6 +110,7 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
  */
 public class PaperToolkit {
 
+	
 	/**
 	 * Font for the App Manager GUI.
 	 */

@@ -63,17 +63,8 @@ package ink {
 
 		// add an ink sample...
 		public function addPoint(xVal:Number, yVal:Number, f:Number):void {
-			// assume f is 0 to 128
-			// later: cap it to 0 to 128
-			// vary width based on the force
-			// don't modify the alpha! as that makes it look crappy
-			var modifiedStrokeWidth:Number = strokeWidth;
-			var delta:Number = 50 - f;
-			modifiedStrokeWidth -= delta * 0.02;
-			// trace("New Stroke Width: " + modifiedStrokeWidth);
-
-			// consider modifying the color based on force
-			g.lineStyle(modifiedStrokeWidth, color);
+			// consider modifying the color and width based on force
+			g.lineStyle(strokeWidth, color);
 			
 			
 			if (xSamples.length == 0) {

@@ -10,9 +10,10 @@ import java.util.List;
 /**
  * Manipulate and analyze Strings.
  * 
- * <p><span class="BSDLicense">
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
- * </span></p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
@@ -44,12 +45,29 @@ public class StringUtils {
 	}
 
 	/**
+	 * @param number,
+	 *            e.g., 15
+	 * @param numTotalDigitsInString,
+	 *            e.g., 4
+	 * @return number as a String, with prepended 0s, e.g., 0015
+	 */
+	public static String padNumberToNDigits(int number, int numTotalDigitsInString) {
+		String numString = number + "";
+		while (numString.length() < numTotalDigitsInString) {
+			numString = "0" + numString; // prepend it with a zero
+		}
+		return numString;
+	}
+
+	/**
+	 * Repeat a string numTimes.
+	 * 
 	 * @param string
 	 * @param numTimes
 	 * @return stringstringstringstring.... numTimes over.
 	 */
 	public static String repeat(String string, int numTimes) {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < numTimes; i++) {
 			sb.append(string);
 		}
@@ -57,8 +75,8 @@ public class StringUtils {
 	}
 
 	/**
-	 * Splits a string into multiple lines, each with at most maxChars characters. We will try our
-	 * best to split after spaces.
+	 * Splits a string into multiple lines, each with at most maxChars characters. We will try our best to
+	 * split after spaces.
 	 * 
 	 * @param string
 	 * @param maxCharsPerLine

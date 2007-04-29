@@ -66,7 +66,7 @@ package tools {
 
 		// handle messages
         private function msgListener(event:DataEvent):void {
-	        trace(event.text);
+	        //trace(event.text);
 	        
 	        var message:XML = new XML(event.text);
 	        var msgName:String = message.name();
