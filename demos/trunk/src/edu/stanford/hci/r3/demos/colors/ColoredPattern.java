@@ -19,8 +19,11 @@ import edu.stanford.hci.r3.render.SheetRenderer;
  */
 public class ColoredPattern {
 	public static void main(String[] args) {
-		Color color = Color.ORANGE;
-		String colorName = "Orange";
+		Color color = Color.BLACK;
+		String colorName = "Black";
+
+		//Color color = Color.ORANGE;
+		//String colorName = "Orange";
 
 		Sheet sheet = new Sheet(8.5, 11);
 		sheet.addRegion(getRegion());
@@ -30,7 +33,7 @@ public class ColoredPattern {
 	}
 
 	private static Region getRegion() {
-		Region r = new Region("Colored", 0, 0, 8.5, 11);
+		Region r = new Region("Colored", 0, 0, 2, 2);
 		r.setActive(true);
 		return r;
 	}
