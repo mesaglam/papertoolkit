@@ -29,7 +29,7 @@ public class LiveWhiteboardOnePen {
 	}
 
 	public LiveWhiteboardOnePen() {
-		this(2);
+		this(1);
 	}
 
 	public LiveWhiteboardOnePen(int numWhiteboards) {
@@ -48,12 +48,12 @@ public class LiveWhiteboardOnePen {
 		for (int i = 0; i < numWhiteboards; i++) {
 			// load the Flash component that listens for real-time ink!
 			// basically, just open the HTML page that contains the flash component! =)
-			FlashWhiteboard flashWhiteboard;
-			flashWhiteboard = new FlashWhiteboard(8989 + i);
-			flashWhiteboard.addPen(pen);
-			flashWhiteboard.setSwatchColor(uniqueColors.get(i));
-			flashWhiteboard.setTitle("Whiteboard" + i);
-			flashWhiteboard.load();
+			FlashWhiteboard whiteboard = new FlashWhiteboard(8989 + i);
+			whiteboard.addPen(pen);
+			whiteboard.setInkColor(new Color(55, 55, 128));
+			whiteboard.setSwatchColor(uniqueColors.get(i));
+			whiteboard.setTitle("Whiteboard" + i);
+			whiteboard.load();
 		}
 	}
 
