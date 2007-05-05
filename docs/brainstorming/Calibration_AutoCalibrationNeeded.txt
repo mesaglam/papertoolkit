@@ -1,0 +1,28 @@
+184084940 7199.0	21.3.23.70
+184086270 7199.0	21.3.23.71
+...
+1.8412218E8 7199.0	21.3.23.98
+1.8412351E8 7199.0	21.3.23.99
+
+1330	0 dots is the offset buffer between pages...
+
+
+
+
+4097107.0 8389499.0	48.0.12.8
+4098452.0 8389497.0	48.0.12.9
+4099767.0 8389499.0	48.0.12.10
+4297952.0 8389497.0	48.0.12.159
+
+
+
+1345	-2 is the offset from even to odd...
+1315	2 is the offset from odd to even...
+
+1330	0 is the avg offset from odd to odd...
+1330	0 is the avg offset from event to even...
+
+
+
+I need a conversion from streaming to batched.... but more importantly, from batched to streaming.
+
