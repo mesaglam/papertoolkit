@@ -37,6 +37,8 @@ public class FlashWhiteboard {
 
 	private FlashCommunicationServer flash;
 
+	private Color inkColor = Color.WHITE;
+
 	private Ink inkWell = new Ink();
 
 	private List<Pen> pens = new ArrayList<Pen>();
@@ -151,6 +153,13 @@ public class FlashWhiteboard {
 		toolExplorer = new ToolExplorer(new PaperToolkit(), "Whiteboard", port);
 		flash = toolExplorer.getFlashServer();
 		toolExplorer.addFlashClientListener(getFlashListener());
+	}
+
+	/**
+	 * @param color
+	 */
+	public void setInkColor(Color color) {
+		inkColor = color;
 	}
 
 	/**
