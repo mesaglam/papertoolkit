@@ -50,7 +50,9 @@ public class LiveWhiteboardOnePen {
 			// basically, just open the HTML page that contains the flash component! =)
 			FlashWhiteboard whiteboard = new FlashWhiteboard(8989 + i);
 			whiteboard.addPen(pen);
-			whiteboard.setInkColor(new Color(55, 55, 128));
+			whiteboard.setBackgroundColor(Color.BLACK);
+			// whiteboard.setInkColor(new Color(55, 55, 128));
+			whiteboard.setInkColor(Color.WHITE);
 			whiteboard.setSwatchColor(uniqueColors.get(i));
 			whiteboard.setTitle("Whiteboard" + i);
 			whiteboard.load();
