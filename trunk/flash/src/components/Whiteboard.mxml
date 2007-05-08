@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Whiteboard" 
-	creationComplete="constructWhiteboard();" backgroundColor="#333333">
+	creationComplete="constructWhiteboard();" backgroundColor="#000000">
 	<mx:Script>
 		<![CDATA[
 			import tools.Tool;

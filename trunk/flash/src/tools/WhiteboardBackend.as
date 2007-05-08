@@ -40,6 +40,10 @@
 
 		private var javaServer:JavaIntegration;
 
+		// override the ink's thickness with this value
+		private var inkStrokeThickness:Number = 3.4;
+
+
 		public function WhiteboardBackend(p:Whiteboard):void {
 			trace("Whiteboard Started.");
 			theParent = p;
@@ -47,6 +51,7 @@
 			inkWell = new Ink();
 			addChild(inkWell);
 			currInkStroke = new InkStroke();
+			currInkStroke.inkWidth = inkStrokeThickness;
 			
 			penTipCrossHair.graphics.lineStyle(1, 0xDC3322);
 			penTipCrossHair.graphics.drawCircle(-1, -1, 4);
@@ -93,6 +98,7 @@
 			inkWell.resetLocation();
 		}
 		
+		// deal with messages sent from Java
         public function processMessage(msgText:String):void {
             // trace(msgText); // parse the text and assemble InkStrokes...
             var msg:XML = new XML(msgText);
@@ -107,6 +113,8 @@
 			if (msgName=="penDownEvent") {
 				// start up a new stroke
    				currInkStroke = new InkStroke();
+   				currInkStroke.inkWidth = inkStrokeThickness;
+   				
    				// add it to the stage
 				inkWell.addChild(currInkStroke);
    			} else if (msgName=="p") {
@@ -121,6 +129,13 @@
 	   			theParent.colorSwatch.selectedColor = intColor;
 	   		} else if (msgName=="title") {
 	   			theParent.titleLabel.text = msg.@value;
+	   		} else if (msgName=="inkColor") {
+	   			
+	   		} else if (msgName=="bgColor") {
+	   			var bgIntColor:int = 
+	   				(parseInt(msg.@r) << 16) + 
+	   				(parseInt(msg.@g) << 8) + 
+	   				(parseInt(msg.@b));
 	   		}
         }
 
