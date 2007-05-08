@@ -33,6 +33,8 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class FlashWhiteboard {
 
+	private Color bgColor;
+
 	private InkStroke currInkStroke;
 
 	private FlashCommunicationServer flash;
@@ -82,7 +84,12 @@ public class FlashWhiteboard {
 					DebugUtils.println("Color: " + swatchColor);
 					flash.sendMessage("<swatchColor r='" + swatchColor.getRed() + "' g='"
 							+ swatchColor.getGreen() + "' b='" + swatchColor.getBlue() + "'/>");
+					flash.sendMessage("<inkColor r='" + inkColor.getRed() + "' g='" + inkColor.getGreen()
+							+ "' b='" + inkColor.getBlue() + "'/>");
+					flash.sendMessage("<bgColor r='" + bgColor.getRed() + "' g='" + bgColor.getGreen()
+							+ "' b='" + bgColor.getBlue() + "'/>");
 					flash.sendMessage("<title value='" + title + "'/>");
+
 					for (Pen p : pens) {
 						DebugUtils.println("Adding Pen Listener");
 						p.addLivePenListener(new FlashPenListener(flash));
@@ -153,6 +160,10 @@ public class FlashWhiteboard {
 		toolExplorer = new ToolExplorer(new PaperToolkit(), "Whiteboard", port);
 		flash = toolExplorer.getFlashServer();
 		toolExplorer.addFlashClientListener(getFlashListener());
+	}
+
+	public void setBackgroundColor(Color c) {
+		bgColor = c;
 	}
 
 	/**

@@ -120,7 +120,7 @@ package ink {
 			trace("Rerender");
 			g.clear();
 			var crspline:CatmullRomSpline = new CatmullRomSpline(xSamples, ySamples);
-			g.lineStyle(1.6, color);
+			g.lineStyle(strokeWidth, color);
 			crspline.plotAll(g);
 		}
 
