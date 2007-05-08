@@ -138,7 +138,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 		if (mainPanel == null) {
 			mainPanel = new InkPanel();
 			mainPanel.setPreferredSize(new Dimension(800, 600));
-			mainPanel.setBackground(Color.WHITE);
+			mainPanel.setBackground(Color.BLACK);
 		}
 		return mainPanel;
 	}
