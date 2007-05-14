@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.audioguide;
+package edu.stanford.hci.r3.demos.gigaprints2006;
 
 import java.io.File;
 

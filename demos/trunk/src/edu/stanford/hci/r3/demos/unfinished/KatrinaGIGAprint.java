@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.katrina;
+package edu.stanford.hci.r3.demos.unfinished;
 
 import java.awt.Color;
 import java.awt.Dimension;
