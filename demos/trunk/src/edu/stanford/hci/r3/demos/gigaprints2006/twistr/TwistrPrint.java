@@ -1,11 +1,11 @@
-package edu.stanford.hci.r3.demos.flickrphotos.twistr;
+package edu.stanford.hci.r3.demos.gigaprints2006.twistr;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.demos.flickrphotos.FlickrPhoto;
+import edu.stanford.hci.r3.demos.gigaprints2006.flickr.FlickrPhoto;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.paper.Region;

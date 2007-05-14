@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.flickrphotos.twistr;
+package edu.stanford.hci.r3.demos.gigaprints2006.twistr;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +11,8 @@ import java.util.Properties;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.demos.flickrphotos.FlickrPhoto;
-import edu.stanford.hci.r3.demos.flickrphotos.PhotoDownloadr;
+import edu.stanford.hci.r3.demos.gigaprints2006.flickr.FlickrPhoto;
+import edu.stanford.hci.r3.demos.gigaprints2006.flickr.PhotoDownloadr;
 import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.util.DebugUtils;

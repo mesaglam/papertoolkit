@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.buttons;
+package edu.stanford.hci.r3.demos.simple;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;

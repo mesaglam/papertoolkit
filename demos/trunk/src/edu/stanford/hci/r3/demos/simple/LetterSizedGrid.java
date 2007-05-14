@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.buttons;
+package edu.stanford.hci.r3.demos.simple;
 
 import java.awt.Font;
 import java.io.File;

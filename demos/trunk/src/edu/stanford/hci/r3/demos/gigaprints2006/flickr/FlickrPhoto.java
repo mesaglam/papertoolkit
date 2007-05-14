@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.flickrphotos;
+package edu.stanford.hci.r3.demos.gigaprints2006.flickr;
 
 import java.io.File;
 import java.net.URL;

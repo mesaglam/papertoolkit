@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.flickrphotos.twistr;
+package edu.stanford.hci.r3.demos.gigaprints2006.twistr;
 
 import java.awt.*;
 

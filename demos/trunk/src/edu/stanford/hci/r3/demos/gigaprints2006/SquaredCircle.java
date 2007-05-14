@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.flickrphotos.squaredcircle;
+package edu.stanford.hci.r3.demos.gigaprints2006;
 
 import java.awt.Color;
 import java.io.File;
@@ -9,8 +9,8 @@ import java.util.List;
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.types.OpenURL2Action;
-import edu.stanford.hci.r3.demos.flickrphotos.FlickrPhoto;
-import edu.stanford.hci.r3.demos.flickrphotos.PhotoDownloadr;
+import edu.stanford.hci.r3.demos.gigaprints2006.flickr.FlickrPhoto;
+import edu.stanford.hci.r3.demos.gigaprints2006.flickr.PhotoDownloadr;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;

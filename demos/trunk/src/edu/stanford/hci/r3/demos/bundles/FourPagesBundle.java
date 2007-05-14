@@ -22,7 +22,7 @@ import edu.stanford.hci.r3.units.Inches;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class FourPages {
+public class FourPagesBundle {
 
 	/**
 	 * @param args
