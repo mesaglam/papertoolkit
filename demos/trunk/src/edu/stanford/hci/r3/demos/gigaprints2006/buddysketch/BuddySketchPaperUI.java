@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.sketch;
+package edu.stanford.hci.r3.demos.gigaprints2006.buddysketch;
 
 import java.io.File;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.blog;
+package edu.stanford.hci.r3.demos.gigaprints2006.blog;
 
 import java.io.File;
 

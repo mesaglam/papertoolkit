@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.posters;
+package edu.stanford.hci.r3.demos.gigaprints2006.posters;
 
 import java.io.File;
 

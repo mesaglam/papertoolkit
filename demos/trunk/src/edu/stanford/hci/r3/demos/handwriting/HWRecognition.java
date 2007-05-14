@@ -17,6 +17,5 @@ public class HWRecognition {
 	public static void main(String[] args) {
 		
 		
-		
 	}
 }
