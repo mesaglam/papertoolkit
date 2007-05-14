@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.hci.r3.events.PenEvent.PenEventModifier;
-import edu.stanford.hci.r3.events.replay.EventReplayManager;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
