@@ -13,7 +13,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Task 3 of the CHI 2007 Studies.
+ * Task 3 of the CHI 2007 Studies. This is a large map that you can tap on to receive audio information
+ * through your bluetooth earset. We run the application on an OQO, and provide the user a Bluetooth headset.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

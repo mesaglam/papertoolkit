@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.audionotebook2;
+package edu.stanford.hci.r3.demos.unfinished;
 
 /**
  * <p>
