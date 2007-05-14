@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.opengl;
+package edu.stanford.hci.r3.demos.externallibs.opengl;
 
 import javax.media.opengl.GLJPanel;
 import javax.swing.JFrame;

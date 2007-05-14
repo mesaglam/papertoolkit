@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.stanford.hci.r3.examples.eps;
+package edu.stanford.hci.r3.demos.externallibs.eps;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;

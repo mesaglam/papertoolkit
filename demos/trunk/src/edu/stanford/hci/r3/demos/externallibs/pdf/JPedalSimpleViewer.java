@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.pdf;
+package edu.stanford.hci.r3.demos.externallibs.pdf;
 
 import org.jpedal.examples.simpleviewer.SimpleViewer;
 

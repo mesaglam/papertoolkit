@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.java.swing;
+package edu.stanford.hci.r3.demos.externallibs.java.swing;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

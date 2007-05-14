@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.speech;
+package edu.stanford.hci.r3.demos.externallibs.speech;
 /**
  * Copyright 2003 Sun Microsystems, Inc.
  * 

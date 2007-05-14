@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.charts;
+package edu.stanford.hci.r3.demos.externallibs.charts;
 
 /**
  * <p>

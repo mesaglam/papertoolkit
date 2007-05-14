@@ -2,7 +2,7 @@ package edu.stanford.hci.r3.demos.eventreplay;
 
 import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.demos.powerpoint.PPTAdvancer;
+import edu.stanford.hci.r3.demos.simple.PPTAdvancer;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;

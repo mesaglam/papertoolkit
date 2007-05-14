@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.java;
+package edu.stanford.hci.r3.demos.externallibs.java;
 
 import java.io.File;
 import java.text.DecimalFormat;

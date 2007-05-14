@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.powerpoint;
+package edu.stanford.hci.r3.demos.simple;
 
 import java.awt.event.KeyEvent;
 import java.io.File;

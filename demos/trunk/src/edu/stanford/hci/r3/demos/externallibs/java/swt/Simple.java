@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.java.swt;
+package edu.stanford.hci.r3.demos.externallibs.java.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;

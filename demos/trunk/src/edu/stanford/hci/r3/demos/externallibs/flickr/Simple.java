@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.flickr;
+package edu.stanford.hci.r3.demos.externallibs.flickr;
 
 import java.io.File;
 import java.net.MalformedURLException;

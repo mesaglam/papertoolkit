@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.examples.java.swt;
+package edu.stanford.hci.r3.demos.externallibs.java.swt;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
