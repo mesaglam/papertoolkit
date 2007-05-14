@@ -1,6 +1,9 @@
-package edu.stanford.hci.r3.examples.streaming;
+package edu.stanford.hci.r3.demos.streaming;
 
-import edu.stanford.hci.r3.flash.timelineControl.FlashControlServer;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenSample;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
@@ -13,11 +16,11 @@ import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class FlashNavigate {
+public class PowerpointNavigate {
 
 	private static PenSample down;
 
-	private static FlashControlServer server;
+	private static Robot robot = null;
 
 	private static PenSample up;
 
@@ -35,11 +38,13 @@ public class FlashNavigate {
 				System.out.println("Pen Up: " + sample);
 				if (up.y > down.y) {
 					System.out.println("Dragged Down");
-					server.sendMessage("[[Circle Map]]");
+					robot.keyPress(KeyEvent.VK_PAGE_DOWN);
+					robot.keyRelease(KeyEvent.VK_PAGE_DOWN);
 				} else {
 					System.out.println("Dragged Up");
+					robot.keyPress(KeyEvent.VK_PAGE_UP);
+					robot.keyRelease(KeyEvent.VK_PAGE_UP);
 				}
-
 			}
 
 			public void sample(PenSample sample) {
@@ -54,7 +59,11 @@ public class FlashNavigate {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		server = new FlashControlServer();
+		try {
+			robot = new Robot();
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
 
 		Pen pen = new Pen();
 		pen.startLiveMode();

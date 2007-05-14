@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.sketch;
+package edu.stanford.hci.r3.demos.simple;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
