@@ -62,7 +62,6 @@ import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.StrokeHandler;
-import edu.stanford.hci.r3.events.replay.EventBrowser;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -110,7 +109,6 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
  */
 public class PaperToolkit {
 
-	
 	/**
 	 * Font for the App Manager GUI.
 	 */
@@ -414,8 +412,6 @@ public class PaperToolkit {
 	private JPanel controls;
 
 	private JButton designSheetsButton;
-
-	private EventBrowser eventBrowser;
 
 	private JButton eventBrowserButton;
 
@@ -742,10 +738,8 @@ public class PaperToolkit {
 			eventBrowserButton = new JButton("View/Replay Events");
 			eventBrowserButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
-					if (eventBrowser == null) {
-						eventBrowser = new EventBrowser(eventEngine.getEventReplayManager());
-					}
-					eventBrowser.setVisible(true);
+					DebugUtils.println("Unimplemented.... Currently Renovating! =)");
+					DebugUtils.println("The Replay Manager " + eventEngine.getEventReplayManager());
 				}
 			});
 		}
