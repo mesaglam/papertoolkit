@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.postthis;
+package edu.stanford.hci.r3.demos.simple;
 
 import java.awt.Font;
 
