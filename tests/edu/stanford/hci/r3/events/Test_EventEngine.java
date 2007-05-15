@@ -31,7 +31,7 @@ public class Test_EventEngine {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new FlowLayout());
 
-		final EventEngine e = new EventEngine();
+		final EventDispatcher e = new EventDispatcher();
 
 		final JTextField serverNameTextField = new SuperJTextField("localhost", 30);
 		JButton connectButton = new JButton("Connect and Register Pen");

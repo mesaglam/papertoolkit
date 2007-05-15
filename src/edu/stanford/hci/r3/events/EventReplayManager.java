@@ -44,11 +44,6 @@ public class EventReplayManager {
 	private static final String SEPARATOR = "\t";
 
 	/**
-	 * We will dispatch events to this event engine, simulating input from one or more pens...
-	 */
-	private EventEngine eventEngine;
-
-	/**
 	 * Events that we can replay...
 	 */
 	private ArrayList<PenEvent> loadedEvents = new ArrayList<PenEvent>();
@@ -63,13 +58,19 @@ public class EventReplayManager {
 	 */
 	private File outputFile;
 
+	/**
+	 * Should we play back the pen events in real time. That is, if there is a one second pause between two
+	 * pen taps, true --> we replicate that one second pause, false --> we replay it as fast as possible.
+	 */
 	private boolean playEventsInRealTime = true;
 
 	/**
+	 * The standard replay manager requires an event engine... The new approach is to record it at the pen
+	 * level...
+	 * 
 	 * @param engine
 	 */
-	public EventReplayManager(EventEngine engine) {
-		eventEngine = engine;
+	public EventReplayManager() {
 	}
 
 	/**
@@ -193,15 +194,25 @@ public class EventReplayManager {
 	}
 
 	/**
+	 * Replay the events that have been loaded, in the order that they appear in the list...
+	 */
+	public void replayLoadedEvents(EventDispatcher eventEngine) {
+		replayToEventEngine(eventEngine, loadedEvents);
+	}
+
+	/**
 	 * Replays the list of events... Ideally, this should play it back at real time or some multiple of
 	 * realtime...
 	 * 
 	 * Threaded, because we do not want any GUI to block when calling this. Alternatively, refactor this into
 	 * blocking & nonblocking versions.
 	 * 
+	 * @param eventEngine
+	 *            We will dispatch events to this event engine, simulating input from one or more pens...
+	 *            eventEngine = engine;
 	 * @param events
 	 */
-	public void replay(final List<PenEvent> events) {
+	public void replayToEventEngine(final EventDispatcher eventEngine, final List<PenEvent> events) {
 		new Thread(new Runnable() {
 			public void run() {
 				long lastTimeStamp = 0;
@@ -233,13 +244,6 @@ public class EventReplayManager {
 				DebugUtils.println("Done. Replayed " + events.size() + " Events");
 			}
 		}).start();
-	}
-
-	/**
-	 * Replay the events that have been loaded, in the order that they appear in the list...
-	 */
-	public void replayLoadedEvents() {
-		replay(loadedEvents);
 	}
 
 	/**

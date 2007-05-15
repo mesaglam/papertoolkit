@@ -20,9 +20,9 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * When you ask the PaperToolkit to run a paper Application, there will be exactly one EventEngine handling
- * all pen events for that Application. This EventEngine will process batched pen data, and also handle
- * streaming data. We will tackle streaming first.
+ * When you ask the PaperToolkit to run a paper Application, there will be exactly one EventDispatcher
+ * handling all pen events for that Application. This EventDispatcher will process batched pen data, and also
+ * handle streaming data. We will tackle streaming first.
  * </p>
  * <p>
  * This class is responsible for sending data to the event handlers, which will create clicks, drags, etc.
@@ -34,7 +34,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class EventEngine {
+public class EventDispatcher {
 
 	/**
 	 * Send all unmapped events here...
@@ -77,21 +77,15 @@ public class EventEngine {
 	private List<PenInput> pensCurrentlyMonitoring = new ArrayList<PenInput>();
 
 	/**
-	 * Each pen gets one and only one event engine listener...
+	 * Each pen gets one and only one listener for the EventDispatcher...
 	 */
 	private Map<PenInput, PenListener> penToListener = new HashMap<PenInput, PenListener>();
-
-	/**
-	 * For saving and replaying sets of PenEvents.
-	 */
-	private EventReplayManager replayManager;
 
 	/**
 	 * This object handles event dispatch by hooking up pen listeners to local and remote pen servers. It will
 	 * figure out where to dispatch incoming pen samples... and will activate the correct event handlers.
 	 */
-	public EventEngine() {
-		replayManager = new EventReplayManager(this);
+	public EventDispatcher() {
 	}
 
 	/**
@@ -114,6 +108,8 @@ public class EventEngine {
 
 	/**
 	 * Creates a new PenEvent from the Pen Name and Identifier.
+	 * 
+	 * TODO: Should the time be gotten from the sample instead?
 	 * 
 	 * @param sample
 	 * @return
@@ -145,13 +141,6 @@ public class EventEngine {
 	}
 
 	/**
-	 * @return the replay manager, allowing access to saved event streams.
-	 */
-	public EventReplayManager getEventReplayManager() {
-		return replayManager;
-	}
-
-	/**
 	 * @param penInputDevice
 	 * @return a pen listener that will report data to this event engine. The engine will then package the
 	 *         data and report it to all event handlers (read: interactors) that are interested in this data.
@@ -174,7 +163,6 @@ public class EventEngine {
 
 				// a pendown generated through a real pen listener should be saved
 				// so that future sessions can replay the stream of events
-				replayManager.saveEvent(event);
 				handlePenEvent(event);
 			}
 
@@ -191,7 +179,6 @@ public class EventEngine {
 				// save the pen up also!
 				// do this before setting the location
 				// the location will be determined later, when the event is resent
-				replayManager.saveEvent(event);
 				handlePenUpEvent(event);
 			}
 
@@ -200,7 +187,6 @@ public class EventEngine {
 			 */
 			public void sample(PenSample sample) {
 				final PenEvent event = createPenEvent(penName, penID, sample);
-				replayManager.saveEvent(event);
 				handlePenEvent(event);
 			}
 		};
