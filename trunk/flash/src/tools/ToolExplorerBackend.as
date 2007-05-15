@@ -193,11 +193,20 @@ package tools {
 		public function whiteBoardClicked():void{
 			app.currentState=Constants.WHITEBOARD_MODE;
 			app.whiteBoardPanel.tool.javaBackend = javaBackend;
+			// the whiteboard component sends the start message
 		}
 		public function backButtonClicked():void{
 			app.currentState="";
 			javaBackend.send(Constants.MAIN_MENU_MODE);
 		}
+		
+		// Event Handler for the event save and replay button in the toolboxj
+		public function eventSaveAndReplayClicked():void{
+			app.currentState=Constants.EVENT_SAVE_AND_REPLAY_MODE;
+			// TODO: like whiteboard, we should set the javaBackend
+			javaBackend.send(Constants.EVENT_SAVE_AND_REPLAY_MODE);
+		}
+
 
 		public function selectTool():void {
 			app.toolList.selectedItem.data();

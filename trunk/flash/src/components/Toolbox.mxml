@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="90%" height="90%" borderStyle="solid" borderColor="#646464" cornerRadius="25" 
+	borderThickness="2" backgroundAlpha="0.75" backgroundColor="#000000">
+	<mx:Label x="10" y="10" text="Explore the PaperToolkit toolbox, a collection of useful utilities for working with pen and paper applications." fontSize="15" color="#ffffff"/>
+	<mx:Script>
+		<![CDATA[
+			// whatever object is passed in should contain the right event handlers!!! =)
+			public var eventHandlerContainer:Object;
+		]]>
+	</mx:Script>
+	<mx:VBox verticalCenter="0" horizontalCenter="0" horizontalAlign="center" verticalGap="10">
+		<mx:Button label="Event Save &amp; Replay" fontSize="15" paddingTop="5" paddingBottom="5" 
+			click="eventHandlerContainer.eventSaveAndReplayClicked()"/>
+		<mx:Button label="View Synched Pen Data" fontSize="15" paddingTop="5" paddingBottom="5"/>
+		<mx:Button label="Event Handlers" fontSize="15" paddingTop="5" paddingBottom="5"/>
+		<mx:Button label="Handwriting Recognition" fontSize="15" paddingTop="5" paddingBottom="5"/>
+	</mx:VBox>
+</mx:Canvas>

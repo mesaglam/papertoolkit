@@ -14,7 +14,7 @@ import java.util.Map;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.config.Constants;
-import edu.stanford.hci.r3.events.EventEngine;
+import edu.stanford.hci.r3.events.EventDispatcher;
 import edu.stanford.hci.r3.pattern.PatternPackage;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -54,7 +54,7 @@ public class BatchServer {
 	/**
 	 * TODO: We will pass batched events to this event engine, to simulate event dispatch in "real time".
 	 */
-	private EventEngine eventEngine;
+	private EventDispatcher eventEngine;
 
 	/**
 	 * 
@@ -83,7 +83,7 @@ public class BatchServer {
 	/**
 	 * @param eventEngine
 	 */
-	public BatchServer(EventEngine theEventEngine) {
+	public BatchServer(EventDispatcher theEventEngine) {
 		try {
 			eventEngine = theEventEngine;
 			serverSocket = new ServerSocket(DEFAULT_PLAINTEXT_PORT);

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="90%" height="90%" borderStyle="solid" borderColor="#646464" cornerRadius="25" 
+	borderThickness="2" backgroundAlpha="0.75" backgroundColor="#000000"
+	creationComplete="init();">
+	<mx:Label x="10" y="10" text="Examine and Replay pen events..." fontSize="15" color="#ffffff"/>
+	<mx:Script>
+		<![CDATA[
+			
+			public function init():void {
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:HDividedBox top="40" bottom="60" left="10" right="10">
+		<mx:List  height="100%" width="40%"></mx:List>
+		<mx:Panel height="100%" layout="absolute" title="Details" color="#000000" fontSize="14" width="60%">
+			<mx:Label x="10" y="10" text="File Name:" color="#000000"/>
+			<mx:Label x="10" y="131" text="Number of Pens:" color="#000000"/>
+			<mx:Label x="10" y="72" text="Date:" color="#000000"/>
+			<mx:Label x="10" y="105" text="Time:" color="#000000"/>
+			<mx:Label x="10" y="36" text="Number of Events:" color="#000000"/>
+			<mx:Label x="10" y="205" text="Time Elapsed:" color="#000000"/>
+		</mx:Panel>
+	</mx:HDividedBox>
+	<mx:Button label="Replay This Set of Events" bottom="10" horizontalCenter="0" fontSize="14" height="40" width="400"/>
+	
+</mx:Canvas>

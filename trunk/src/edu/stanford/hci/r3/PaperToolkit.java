@@ -35,7 +35,7 @@ import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
 import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.application.ApplicationManager;
 import edu.stanford.hci.r3.config.Configuration;
-import edu.stanford.hci.r3.events.EventEngine;
+import edu.stanford.hci.r3.events.EventDispatcher;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.StrokeHandler;
 import edu.stanford.hci.r3.paper.Region;
@@ -376,7 +376,7 @@ public class PaperToolkit {
 	 * The engine that processes all pen events, producing the correct outputs and calling the right event
 	 * handlers.
 	 */
-	private EventEngine eventEngine;
+	private EventDispatcher eventEngine;
 
 	/**
 	 * Store frequently used pens here... so that you can ask the toolkit for them instead of creating them
@@ -446,7 +446,7 @@ public class PaperToolkit {
 			initializeLookAndFeel();
 		}
 
-		eventEngine = new EventEngine();
+		eventEngine = new EventDispatcher();
 		batchServer = new BatchServer(eventEngine);
 
 		// Start the local server up whenever the paper toolkit is initialized.
@@ -568,7 +568,7 @@ public class PaperToolkit {
 	 * 
 	 * @return
 	 */
-	public EventEngine getEventEngine() {
+	public EventDispatcher getEventEngine() {
 		return eventEngine;
 	}
 

@@ -26,8 +26,8 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
  * <p>
  * A client who connects to a server can also have local PenListeners to process the samples...
  * 
- * TODO: A multithreaded Client for listening to multiple servers... However, does this make sense?
- * Why would we want to listen to multiple pens?
+ * TODO: A multithreaded Client for listening to multiple servers... However, does this make sense? Why would
+ * we want to listen to multiple pens?
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -47,8 +47,7 @@ public class PenClient {
 	/**
 	 * Multiple listeners can attach themselves to this Pen Client.
 	 */
-	private List<PenListener> listeners = Collections
-			.synchronizedList(new ArrayList<PenListener>());
+	private List<PenListener> listeners = Collections.synchronizedList(new ArrayList<PenListener>());
 
 	/**
 	 * The name of the machine which is running the pen server. This may be "localhost."
@@ -71,6 +70,8 @@ public class PenClient {
 	}
 
 	/**
+	 * Listens to the PenClient (always local), which is talking to the PenServer (either remote or local).
+	 * 
 	 * @param penListener
 	 * @return
 	 */
@@ -124,6 +125,11 @@ public class PenClient {
 							final PenSample sample = (PenSample) xml.fromXML(line);
 							final boolean penIsUp = sample.isPenUp();
 
+							// TODO: Should we replace the time field in the sample with the time we received this sample?
+							// The old way is that the sample's time field is set to whatever the pen server's time is set to
+							// this might result in some clock skew between different pens...
+							// should there be an option to do this?
+							
 							// basically implements a state machine... =)
 							if (!penIsDown && !penIsUp) {
 								penIsDown = true;
@@ -189,6 +195,7 @@ public class PenClient {
 	}
 
 	/**
+	 * Pass this sample on to the listeners...
 	 * @param sample
 	 */
 	private synchronized void notifyListenersOfPenDown(final PenSample sample) {
@@ -198,6 +205,7 @@ public class PenClient {
 	}
 
 	/**
+	 * Pass this sample on to the listeners...
 	 * @param sample
 	 */
 	private synchronized void notifyListenersOfPenSample(final PenSample sample) {
@@ -207,6 +215,7 @@ public class PenClient {
 	}
 
 	/**
+	 * Pass this sample on to the listeners...
 	 * @param sample
 	 */
 	private synchronized void notifyListenersOfPenUp(final PenSample sample) {

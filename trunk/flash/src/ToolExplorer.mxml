@@ -9,6 +9,9 @@
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 
+			// this variable can be bound to a component's variable
+			// updates to this variable will be reflected in the child component
+			[Bindable]
 			private var explorer:ToolExplorerBackend;
 			
 			public function init():void {
@@ -104,8 +107,23 @@
 			<mx:SetProperty target="{titleLabel}" name="text" value="Toolbox"/>
 			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
 			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
-				<components:DesignTools left="10" right="10" top="80" bottom="40">
-				</components:DesignTools>
+				<components:Toolbox id="toolboxPanel" left="10" right="10" top="70" bottom="10"
+					eventHandlerContainer="{this.explorer}">
+				</components:Toolbox>
+			</mx:AddChild>
+			<mx:RemoveChild target="{dropDownContainer}"/>
+			<mx:SetProperty target="{topRightImageToolbox}" name="width" value="100"/>
+			<mx:SetProperty target="{topRightImageToolbox}" name="height" value="100"/>
+		</mx:State>
+		<mx:State name="{Constants.EVENT_SAVE_AND_REPLAY_MODE}">
+			<mx:SetProperty target="{topRightImageToolbox}" name="visible" value="true"/>
+			<mx:SetProperty target="{toolButtonsContainer}" name="visible" value="false"/>
+			<mx:SetProperty target="{backButton}" name="visible" value="true"/>
+			<mx:SetProperty target="{titleLabel}" name="text" value="Toolbox"/>
+			<mx:SetProperty target="{copyrightContainer}" name="visible" value="false"/>
+			<mx:AddChild relativeTo="{this}" position="firstChild" creationPolicy="all">
+				<components:EventSaveAndReplay id="eventSaveAndReplayPanel" left="10" right="10" top="70" bottom="10">
+				</components:EventSaveAndReplay>
 			</mx:AddChild>
 			<mx:RemoveChild target="{dropDownContainer}"/>
 			<mx:SetProperty target="{topRightImageToolbox}" name="width" value="100"/>
