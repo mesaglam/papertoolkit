@@ -10,13 +10,13 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.R3Action;
 import edu.stanford.hci.r3.actions.remote.ActionHandler;
 import edu.stanford.hci.r3.actions.remote.ActionReceiver;
 import edu.stanford.hci.r3.actions.remote.ActionReceiverConnectionListener;
 import edu.stanford.hci.r3.actions.types.ProcessInformationAction;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.ink.Ink;
@@ -195,10 +195,10 @@ public class BuddySketch extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#initializeBeforeStarting()
+	 * @see edu.stanford.hci.r3.application.Application#initializeBeforeStarting()
 	 */
 	@Override
-	protected void initializeBeforeStarting() {
+	public void initializeBeforeStarting() {
 		startLocalActionReceiver();
 
 		// pause here at the dialog box! =)
@@ -277,7 +277,7 @@ public class BuddySketch extends Application {
 	/**
 	 * Disregard the input...
 	 * 
-	 * @see edu.stanford.hci.r3.Application#renderToPDF(java.io.File, java.lang.String)
+	 * @see edu.stanford.hci.r3.application.Application#renderToPDF(java.io.File, java.lang.String)
 	 */
 	public void renderToPDF() {
 		buddySketchPUI.getRenderer().renderToPDF(new File("data/Sketch/BuddySketchUI.pdf"));

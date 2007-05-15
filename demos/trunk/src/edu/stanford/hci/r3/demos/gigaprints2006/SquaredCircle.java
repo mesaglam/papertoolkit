@@ -6,9 +6,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.actions.types.OpenURL2Action;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.FlickrPhoto;
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.PhotoDownloadr;
 import edu.stanford.hci.r3.events.PenEvent;
@@ -143,7 +143,7 @@ public class SquaredCircle extends Application {
 	/**
 	 * Called by the constructor.
 	 * 
-	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
+	 * @see edu.stanford.hci.r3.application.Application#initializeAfterConstructor()
 	 */
 	@SuppressWarnings("unchecked")
 	protected void initializePaperUI() {

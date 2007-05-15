@@ -1,7 +1,7 @@
 package edu.stanford.hci.r3.demos.eventreplay;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.demos.simple.PPTAdvancer;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
@@ -24,7 +24,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class BasicSaveAndReplay extends Application {
+public class EventSaveAndReplay extends Application {
 
 	/**
 	 * @param args
@@ -45,7 +45,7 @@ public class BasicSaveAndReplay extends Application {
 	/**
 	 * 
 	 */
-	public BasicSaveAndReplay() {
+	public EventSaveAndReplay() {
 		super("Basic Save and Replay");
 		addSheet(getSheet(), getPatternMap());
 		addPenInput(getPen());
@@ -64,7 +64,6 @@ public class BasicSaveAndReplay extends Application {
 					DebugUtils.println("Clicked at: " + e.getPercentageLocation());
 				}
 			});
-			// floatingRegion.addContentFilter(new HandwritingRecognizer());
 		}
 		return floatingRegion;
 	}

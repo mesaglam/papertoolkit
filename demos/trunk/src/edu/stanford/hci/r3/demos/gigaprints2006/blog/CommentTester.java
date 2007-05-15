@@ -2,8 +2,8 @@ package edu.stanford.hci.r3.demos.gigaprints2006.blog;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 

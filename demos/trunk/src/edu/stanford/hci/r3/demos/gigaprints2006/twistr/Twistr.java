@@ -9,8 +9,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.FlickrPhoto;
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.PhotoDownloadr;
 import edu.stanford.hci.r3.devices.Device;

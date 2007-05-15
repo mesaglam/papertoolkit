@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickHandler;
 import edu.stanford.hci.r3.events.handlers.InkCollector;
@@ -77,7 +77,7 @@ public class BioMap extends Application {
 	/**
 	 * Called by the super(...) constructor
 	 * 
-	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
+	 * @see edu.stanford.hci.r3.application.Application#initializeAfterConstructor()
 	 */
 	protected void initializeAfterConstructor() {
 		// sheet = new PDFSheet(new File("data/BioMap/SurveyLocations.pdf"));
@@ -233,7 +233,7 @@ public class BioMap extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#initializeEventHandlers()
+	 * @see edu.stanford.hci.r3.application.Application#initializeEventHandlers()
 	 */
 	protected void initializeEventHandlers() {
 		addBatchEventHandler(new BatchedEventHandler("Note Pages Renderer") {

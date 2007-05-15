@@ -2,8 +2,8 @@ package edu.stanford.hci.r3.demos.gigaprints2006.posters;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;

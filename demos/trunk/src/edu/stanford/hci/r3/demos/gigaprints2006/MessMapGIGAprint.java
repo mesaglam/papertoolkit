@@ -2,8 +2,8 @@ package edu.stanford.hci.r3.demos.gigaprints2006;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
@@ -75,7 +75,7 @@ public class MessMapGIGAprint extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#renderToPDF()
+	 * @see edu.stanford.hci.r3.application.Application#renderToPDF()
 	 */
 	public void renderToPDF() {
 		renderToPDF(new File("data/AvianFlu/"), "AvianFluMessMap_WithPattern");

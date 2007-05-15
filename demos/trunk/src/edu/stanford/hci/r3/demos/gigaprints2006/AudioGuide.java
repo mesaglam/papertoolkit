@@ -2,8 +2,8 @@ package edu.stanford.hci.r3.demos.gigaprints2006;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.events.PenEvent;
 import edu.stanford.hci.r3.events.handlers.ClickAdapter;
@@ -49,15 +49,7 @@ public class AudioGuide extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#initializeBeforeStarting()
-	 */
-	@Override
-	protected void initializeBeforeStarting() {
-
-	}
-
-	/**
-	 * @see edu.stanford.hci.r3.Application#initializeAfterConstructor()
+	 * @see edu.stanford.hci.r3.application.Application#initializeAfterConstructor()
 	 */
 	public void initializePaperUI() {
 		sheet = new PDFSheet(new File("data/AudioGuide/StanfordMapLight.pdf"));
@@ -90,7 +82,7 @@ public class AudioGuide extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.Application#renderToPDF()
+	 * @see edu.stanford.hci.r3.application.Application#renderToPDF()
 	 */
 	public void renderToPDF() {
 		renderToPDF(new File("data/AudioGuide/"), "StanfordMapLight_WithPattern");
