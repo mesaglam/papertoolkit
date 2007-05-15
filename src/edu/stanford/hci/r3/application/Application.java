@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3;
+package edu.stanford.hci.r3.application;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.filechooser.FileSystemView;
 
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -253,7 +254,7 @@ public class Application {
 	 * Called right before an applications starts. Override to do anything you like right after a person
 	 * clicks start, and right before the application actually starts.
 	 */
-	protected void initializeBeforeStarting() {
+	public void initializeBeforeStarting() {
 		// do nothing, unless it is overridden.
 	}
 

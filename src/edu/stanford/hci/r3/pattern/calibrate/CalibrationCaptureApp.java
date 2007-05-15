@@ -13,8 +13,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.pen.ink.Ink;

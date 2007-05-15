@@ -1,11 +1,6 @@
 package edu.stanford.hci.r3;
 
 import java.awt.AWTException;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.Font;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -28,29 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.AbstractListModel;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
-
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.decorator.ComponentAdapter;
-import org.jdesktop.swingx.decorator.ConditionalHighlighter;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
@@ -58,6 +32,8 @@ import com.jgoodies.looks.plastic.theme.DarkStar;
 import com.thoughtworks.xstream.XStream;
 
 import edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp;
+import edu.stanford.hci.r3.application.Application;
+import edu.stanford.hci.r3.application.ApplicationManager;
 import edu.stanford.hci.r3.config.Configuration;
 import edu.stanford.hci.r3.events.EventEngine;
 import edu.stanford.hci.r3.events.PenEvent;
@@ -86,10 +62,7 @@ import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.StringUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
-import edu.stanford.hci.r3.util.components.EndlessProgressDialog;
-import edu.stanford.hci.r3.util.files.FileUtils;
 import edu.stanford.hci.r3.util.graphics.ImageCache;
-import edu.stanford.hci.r3.util.layout.StackedLayout;
 
 /**
  * <p>
@@ -108,11 +81,6 @@ import edu.stanford.hci.r3.util.layout.StackedLayout;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PaperToolkit {
-
-	/**
-	 * Font for the App Manager GUI.
-	 */
-	private static final Font APP_MANAGER_FONT = new Font("Trebuchet MS", Font.PLAIN, 18);
 
 	public static final String CONFIG_FILE_KEY = "papertoolkit.startupinformation";
 
@@ -393,27 +361,16 @@ public class PaperToolkit {
 		return toXML(o).replace("\n", "");
 	}
 
-	private JTextArea appDetailsPanel;
-
-	private JScrollPane appDetailsScrollPane;
-
 	/**
-	 * Stop, run, pause applications.
+	 * Allows us to manage multiple running applications. Showing this GUI is optional. It is useful during
+	 * the design/debugging stages.
 	 */
-	private JFrame appManager;
-
-	private JPanel appsInspectorPanel;
+	private ApplicationManager appManager;
 
 	/**
 	 * Processes batched ink.
 	 */
 	private BatchServer batchServer;
-
-	private JPanel controls;
-
-	private JButton designSheetsButton;
-
-	private JButton eventBrowserButton;
 
 	/**
 	 * The engine that processes all pen events, producing the correct outputs and calling the right event
@@ -422,22 +379,15 @@ public class PaperToolkit {
 	private EventEngine eventEngine;
 
 	/**
-	 * Exits the app manager.
-	 */
-	private JButton exitAppManagerButton;
-
-	/**
 	 * Store frequently used pens here... so that you can ask the toolkit for them instead of creating them
 	 * from scratch. This list is loaded up from the PaperToolkit.xml config file.
 	 */
 	private List<Pen> frequentlyUsedPens = new ArrayList<Pen>();
 
-	private List<ActionListener> listenersToLoadRecentPatternMappings = new ArrayList<ActionListener>();
-
 	/**
-	 * Visual list of loaded (and possibly running) apps.
+	 * 
 	 */
-	private JXList listOfApps;
+	private List<ActionListener> listenersToLoadRecentPatternMappings = new ArrayList<ActionListener>();
 
 	/**
 	 * A list of all applications loaded (but not necessarily running) in this system.
@@ -450,37 +400,12 @@ public class PaperToolkit {
 	 */
 	private final Properties localProperties = new Properties();
 
-	/**
-	 * Description for the app manager.
-	 */
-	private JLabel mainMessage;
-
 	private PopupMenu popupMenu;
-
-	/**
-	 * 
-	 */
-	private JButton printSheetsButton;
-
-	/**
-	 * Progress bar... for when we are rendering, etc.
-	 */
-	private EndlessProgressDialog progress;
 
 	/**
 	 * The list of running applications.
 	 */
 	private List<Application> runningApplications = new ArrayList<Application>();
-
-	/**
-	 * Starts the selected application.
-	 */
-	private JButton startAppButton;
-
-	/**
-	 * Stops the selected application.
-	 */
-	private JButton stopAppButton;
 
 	private TrayIcon trayIcon;
 
@@ -618,81 +543,6 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return the scrollpane that shows the internals of the application.
-	 */
-	private Component getAppDetailsPane() {
-		if (appDetailsScrollPane == null) {
-			appDetailsScrollPane = new JScrollPane(getAppDetailsTextArea());
-		}
-		return appDetailsScrollPane;
-	}
-
-	/**
-	 * @return
-	 */
-	private JTextArea getAppDetailsTextArea() {
-		if (appDetailsPanel == null) {
-			appDetailsPanel = new JTextArea(8, 50 /* cols */);
-			appDetailsPanel.setBackground(new Color(240, 240, 240));
-			appDetailsPanel.setEditable(false);
-		}
-		return appDetailsPanel;
-	}
-
-	/**
-	 * Allows an end user to stop, start, and otherwise manage loaded applications.
-	 * 
-	 * @return
-	 */
-	public JFrame getApplicationManager() {
-		if (appManager == null) {
-			appManager = new JFrame("R3 Applications");
-
-			appManager.setLayout(new BorderLayout());
-			appManager.add(getMainMessage(), BorderLayout.NORTH);
-			appManager.add(getAppsInspectorPanel(), BorderLayout.CENTER);
-			appManager.add(getExitAppManagerButton(), BorderLayout.SOUTH);
-			appManager.add(getControls(), BorderLayout.EAST);
-
-			appManager.setSize(640, 480);
-			appManager.setLocation(WindowUtils.getWindowOrigin(appManager, WindowUtils.DESKTOP_CENTER));
-			appManager.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-			appManager.setVisible(true);
-		}
-		return appManager;
-	}
-
-	/**
-	 * @return
-	 */
-	private Component getAppsInspectorPanel() {
-		if (appsInspectorPanel == null) {
-			appsInspectorPanel = new JPanel();
-			appsInspectorPanel.setLayout(new BorderLayout());
-			appsInspectorPanel.add(getListOfApps(), BorderLayout.CENTER);
-			appsInspectorPanel.add(getAppDetailsPane(), BorderLayout.SOUTH);
-		}
-		return appsInspectorPanel;
-	}
-
-	/**
-	 * @return The strip of buttons on the right.
-	 */
-	private Component getControls() {
-		if (controls == null) {
-			controls = new JPanel();
-			controls.setLayout(new StackedLayout(StackedLayout.VERTICAL));
-			controls.add(getDesignSheetsButton(), "TopWide");
-			controls.add(getRenderSheetsButton(), "TopWide");
-			controls.add(Box.createVerticalStrut(10), "TopWide");
-			controls.add(getStartApplicationButton(), "TopWide");
-			controls.add(getEventBrowserButton(), "TopWide");
-			controls.add(getStopApplicationButton(), "TopWide");
-		}
-		return controls;
-	}
-
-	/**
 	 * Attaches to the popup menu. Allows us to drop into the Debug mode of a paper application, with event
 	 * visualizations and stuff. =)
 	 * 
@@ -714,39 +564,6 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return
-	 */
-	private Component getDesignSheetsButton() {
-		if (designSheetsButton == null) {
-			designSheetsButton = new JButton("Design Sheets");
-			designSheetsButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					JFrame frame = AcrobatDesignerLauncher.start();
-					frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				}
-			});
-		}
-		return designSheetsButton;
-	}
-
-	/**
-	 * @return button for accessing the EventReplayManager's GUI, which allows us to load up and replay
-	 *         eventData files.
-	 */
-	private Component getEventBrowserButton() {
-		if (eventBrowserButton == null) {
-			eventBrowserButton = new JButton("View/Replay Events");
-			eventBrowserButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					DebugUtils.println("Unimplemented.... Currently Renovating! =)");
-					DebugUtils.println("The Replay Manager " + eventEngine.getEventReplayManager());
-				}
-			});
-		}
-		return eventBrowserButton;
-	}
-
-	/**
 	 * EXPERTS ONLY: Interact with the EventEngine at runtime!
 	 * 
 	 * @return
@@ -756,27 +573,10 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Remove any tray icons, and exit!
+	 * 
 	 * @return
 	 */
-	private Component getExitAppManagerButton() {
-		// stop all apps and then exit the application manager
-		if (exitAppManagerButton == null) {
-			exitAppManagerButton = new JButton("Exit App Manager");
-			exitAppManagerButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					System.out.println("Stopping all Applications...");
-					Object[] objects = runningApplications.toArray();
-					for (Object o : objects) {
-						stopApplication((Application) o);
-					}
-					System.out.println("Exiting the Paper Toolkit Application Manager...");
-					System.exit(0);
-				}
-			});
-		}
-		return exitAppManagerButton;
-	}
-
 	private ActionListener getExitListener() {
 		return new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -792,12 +592,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return where to save our Sheet PDFs. NULL if the user cancels.
+	 * @return
 	 */
-	private File getFolderToSavePDFs() {
-		return FileUtils.showDirectoryChooser(appManager, "Choose a Directory for your PDFs");
-	}
-
 	public List<Pen> getFrequentlyUsedPens() {
 		return frequentlyUsedPens;
 	}
@@ -812,61 +608,10 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return a GUI list of loaded applications (running or not).
+	 * @return
 	 */
-	private JXList getListOfApps() {
-		if (listOfApps == null) {
-			listOfApps = new JXList();
-			listOfApps.addListSelectionListener(new ListSelectionListener() {
-				public void valueChanged(ListSelectionEvent event) {
-					Application selectedApp = (Application) listOfApps.getSelectedValue();
-					if (selectedApp != null) {
-						// show a list of sheets
-						final List<Sheet> thisAppsSheets = selectedApp.getSheets();
-						StringBuilder sb = new StringBuilder();
-						for (Sheet s : thisAppsSheets) {
-							// use the longer, more descriptive string
-							sb.append(s.toDetailedString());
-						}
-						getAppDetailsTextArea().setText(sb.toString());
-					}
-				}
-			});
-
-			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0, -1) {
-				@Override
-				protected boolean test(ComponentAdapter c) {
-					if (c.getValue() instanceof Application) {
-						Application app = (Application) c.getValue();
-						if (!runningApplications.contains(app)) { // loaded, but not running
-							return true;
-						}
-					}
-					return false;
-				}
-			});
-			listOfApps.setCellRenderer(new DefaultListCellRenderer() {
-				public Component getListCellRendererComponent(JList list, Object value, int index,
-						boolean isSelected, boolean cellHasFocus) {
-					String appDescription = value.toString();
-					if (value instanceof Application) {
-						Application app = (Application) value;
-						if (runningApplications.contains(app)) { // loaded, but not running
-							appDescription = appDescription + " [running]";
-						} else {
-							appDescription = appDescription + " [stopped]";
-						}
-					}
-					return super.getListCellRendererComponent(list, appDescription, index, isSelected,
-							cellHasFocus);
-				}
-			});
-			listOfApps.setBorder(BorderFactory.createEmptyBorder(20, 5, 20, 5));
-			listOfApps.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			listOfApps.setFont(APP_MANAGER_FONT);
-			updateListOfApps();
-		}
-		return listOfApps;
+	public List<Application> getLoadedApplications() {
+		return loadedApplications;
 	}
 
 	/**
@@ -887,32 +632,6 @@ public class PaperToolkit {
 		return actionListener;
 	}
 
-	/**
-	 * @return
-	 */
-	private Component getMainMessage() {
-		if (mainMessage == null) {
-			mainMessage = new JLabel("<html>Manage your applications here.<br/>"
-					+ "Closing this App Manager will stop <b>all</b> running applications.</html>");
-			mainMessage.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
-			mainMessage.setFont(APP_MANAGER_FONT);
-		}
-		return mainMessage;
-	}
-
-	private ListModel getModel() {
-		final ListModel model = new AbstractListModel() {
-			public Object getElementAt(int appIndex) {
-				return loadedApplications.get(appIndex);
-			}
-
-			public int getSize() {
-				return loadedApplications.size();
-			}
-		};
-		return model;
-	}
-
 	public String getProperty(String propertyKey) {
 		return localProperties.getProperty(propertyKey);
 	}
@@ -931,66 +650,10 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return turn sheets into PDF files.
-	 */
-	private Component getRenderSheetsButton() {
-		if (printSheetsButton == null) {
-			printSheetsButton = new JButton("Make PDFs", new ImageIcon(PaperToolkit.class
-					.getResource("/icons/pdfIcon32x32.png")));
-			printSheetsButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					final Application selectedApp = (Application) listOfApps.getSelectedValue();
-					if (selectedApp != null) {
-						if (selectedApp.isUserChoosingDestinationForPDF()) {
-							renderToSpecificFolder(selectedApp);
-						} else {
-							selectedApp.renderToPDF();
-						}
-						listOfApps.repaint();
-					}
-				}
-
-			});
-		}
-		return printSheetsButton;
-	}
-
-	/**
 	 * @return
 	 */
-	private Component getStartApplicationButton() {
-		if (startAppButton == null) {
-			startAppButton = new JButton("Start Selected Application");
-			startAppButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					Application selectedApp = (Application) listOfApps.getSelectedValue();
-					if (selectedApp != null) {
-						startApplication(selectedApp);
-						listOfApps.repaint();
-					}
-				}
-			});
-		}
-		return startAppButton;
-	}
-
-	/**
-	 * @return
-	 */
-	private Component getStopApplicationButton() {
-		if (stopAppButton == null) {
-			stopAppButton = new JButton("Stop Selected Application");
-			stopAppButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					Application selectedApp = (Application) listOfApps.getSelectedValue();
-					if (selectedApp != null) {
-						stopApplication(selectedApp);
-						listOfApps.repaint();
-					}
-				}
-			});
-		}
-		return stopAppButton;
+	public List<Application> getRunningApplications() {
+		return runningApplications;
 	}
 
 	/**
@@ -1042,49 +705,52 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Adds an application to the loaded list, and displays the application manager.
+	 * Adds an application to the loaded list, and displays the application manager if the useAppManager flag
+	 * is set to true (default == false).
+	 * 
+	 * If you would like to use the GUI launcher/App Manager then call PaperToolkit.useAppManager(true);
 	 * 
 	 * @param app
 	 */
 	public void loadApplication(Application app) {
 		DebugUtils.println("Loading " + app.getName());
 		loadedApplications.add(app);
-		// show the app manager
+
+		// show the app manager if the developer wants to see it.
 		if (useAppManager) {
-			DebugUtils.println("Using the Application Manager. We will hide the System Tray Icon.");
-			getApplicationManager();
-			updateListOfApps();
-		} else {
-			DebugUtils
-					.println("Not using the Application Manager. "
-							+ "If you would like to use the GUI launcher, "
-							+ "call PaperToolkit.useAppManager(true)");
-			DebugUtils.println("We will use the System Tray icon instead.");
-			getSystemTrayIcon();
+			DebugUtils.println("Loading/Updating the Application Manager.");
+			appManager = new ApplicationManager(this);
+			appManager.updateListOfApps();
+		}
 
-			popupMenu.add(new MenuItem("-")); // separator
-			final MenuItem debugItem = new MenuItem("Debug [" + app.getName() + "]");
-			debugItem.addActionListener(getDebugListener(app));
+		// load the system tray icon...
+		getSystemTrayIcon();
 
-			final MenuItem renderItem = new MenuItem("Render Sheets for [" + app.getName() + "]");
-			renderItem.addActionListener(getRenderListener(app));
+		popupMenu.add(new MenuItem("-")); // separator
+		final MenuItem debugItem = new MenuItem("Debug [" + app.getName() + "]");
+		debugItem.addActionListener(getDebugListener(app));
 
-			getTrayPopupMenu().add(debugItem);
-			getTrayPopupMenu().add(renderItem);
+		final MenuItem renderItem = new MenuItem("Render Sheets for [" + app.getName() + "]");
+		renderItem.addActionListener(getRenderListener(app));
 
-			for (final Sheet s : app.getSheets()) {
-				MenuItem item = new MenuItem("Open JFrame for sheet [" + s.getName() + "]");
-				item.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						SheetFrame sf = new SheetFrame(s, 640, 480);
-						sf.setVisible(true);
-					}
-				});
-				getTrayPopupMenu().add(item);
-			}
+		getTrayPopupMenu().add(debugItem);
+		getTrayPopupMenu().add(renderItem);
+
+		for (final Sheet s : app.getSheets()) {
+			MenuItem item = new MenuItem("Open JFrame for sheet [" + s.getName() + "]");
+			item.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					SheetFrame sf = new SheetFrame(s, 640, 480);
+					sf.setVisible(true);
+				}
+			});
+			getTrayPopupMenu().add(item);
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void loadMostRecentPatternMappings() {
 		DebugUtils.println("Loading most recent Pattern Mappings...");
 		for (ActionListener l : listenersToLoadRecentPatternMappings) {
@@ -1129,35 +795,6 @@ public class PaperToolkit {
 	public void print(Sheet sheet) {
 		// Implement this...
 		DebugUtils.println("Unimplemented Method");
-	}
-
-	/**
-	 * @param selectedApp
-	 */
-	private void renderToSpecificFolder(final Application selectedApp) {
-		new Thread(new Runnable() {
-			public void run() {
-				final File folderToSavePDFs = getFolderToSavePDFs();
-				if (folderToSavePDFs != null) { // user approved
-					// an endless progress bar
-					progress = new EndlessProgressDialog(appManager, "Creating the PDF",
-							"Please wait while your PDF is generated.");
-					// start rendering
-					selectedApp.renderToPDF(folderToSavePDFs, selectedApp.getName());
-					DebugUtils.println("Done Rendering.");
-
-					// open the folder in explorer! =)
-					try {
-						Desktop.getDesktop().open(folderToSavePDFs);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-					progress.setVisible(false);
-					progress = null;
-				}
-			}
-		}).start();
 	}
 
 	/**
@@ -1243,7 +880,9 @@ public class PaperToolkit {
 
 		DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);
-		getListOfApps().repaint();
+		if (useAppManager) {
+			appManager.repaintListOfApps();
+		}
 
 		// provides access back to the toolkit object
 		paperApp.setHostToolkit(this);
@@ -1276,7 +915,10 @@ public class PaperToolkit {
 
 		DebugUtils.println("Stopping Application: " + paperApp.getName());
 		runningApplications.remove(paperApp);
-		getListOfApps().repaint();
+
+		if (useAppManager) {
+			appManager.repaintListOfApps();
+		}
 
 		paperApp.setHostToolkit(null);
 	}
@@ -1286,16 +928,6 @@ public class PaperToolkit {
 	 */
 	public void unloadApplication(Application app) {
 		loadedApplications.remove(app);
-	}
-
-	/**
-	 * 
-	 */
-	private void updateListOfApps() {
-		listOfApps.setModel(getModel());
-		if (getModel().getSize() > 0) {
-			listOfApps.setSelectedIndex(0);
-		}
 	}
 
 	/**

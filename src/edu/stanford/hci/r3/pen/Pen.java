@@ -94,8 +94,12 @@ public class Pen extends PenInput {
 		setPenServerPort(penServerPort);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * This is the quick-and-dirty approach to working with streaming pens. If you add a listener, you will be
+	 * able to test the pen and get pattern coordinates. However, you will soon notice that the pattern
+	 * coordinates are in a really large coordinate space, which may be difficult to keep track of. How will
+	 * you map these coordinates into coordinates that make sense for your application? That's what the
+	 * PaperToolkit's Application infrastructure will help you to accomplish.
 	 * 
 	 * @see edu.stanford.hci.r3.pen.PenInput#addLivePenListener(edu.stanford.hci.r3.pen.streaming.listeners.PenListener)
 	 */
@@ -108,10 +112,16 @@ public class Pen extends PenInput {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public String getPenServerName() {
 		return defaultPenServer;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getPenServerPort() {
 		return penServerTcpIpPort;
 	}
