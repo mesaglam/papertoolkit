@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.hci.r3.Application;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;

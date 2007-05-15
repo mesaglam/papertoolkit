@@ -8,15 +8,14 @@ import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 
 /**
  * <p>
- * This coordinate converter will automatically move to wherever the anchor point is set, and will
- * take on the width and height of its associated region. The anchor will be set to the first sample
- * that comes in, if it is not otherwise set. Thus, this pattern coordinate converter can be easily
- * changed at runtime.
+ * This coordinate converter will automatically move to wherever the anchor point is set, and will take on the
+ * width and height of its associated region. The anchor will be set to the first sample that comes in, if it
+ * is not otherwise set. Thus, this pattern coordinate converter can be easily changed at runtime.
  * 
- * Be careful if you have more than one of these in your paper application, as the first one
- * encountered may consume the event before the other one sees if (if the two regions somehow become
- * "overlapped"). Also, if you never set your anchor point, this region may opportunistically steal
- * pen input from another region on your sheet, if it is encountered first by the EventEngine.
+ * Be careful if you have more than one of these in your paper application, as the first one encountered may
+ * consume the event before the other one sees if (if the two regions somehow become "overlapped"). Also, if
+ * you never set your anchor point, this region may opportunistically steal pen input from another region on
+ * your sheet, if it is encountered first by the EventEngine.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -48,6 +47,8 @@ public class FlexiblePatternCoordinateConverter implements PatternCoordinateConv
 	private double widthInDots;
 
 	/**
+	 * Only create one per application. This is most useful for debugging... =)
+	 * 
 	 * @param floatingRegion
 	 */
 	public FlexiblePatternCoordinateConverter(Region floatingRegion) {

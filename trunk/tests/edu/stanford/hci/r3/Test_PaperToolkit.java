@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3;
 
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pen.Pen;

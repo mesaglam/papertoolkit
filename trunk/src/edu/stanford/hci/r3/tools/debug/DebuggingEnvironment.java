@@ -3,8 +3,8 @@ package edu.stanford.hci.r3.tools.debug;
 import java.io.File;
 import java.util.List;
 
-import edu.stanford.hci.r3.Application;
 import edu.stanford.hci.r3.PaperToolkit;
+import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.events.EventHandler;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
