@@ -6,9 +6,12 @@ import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import javax.media.jai.TiledImage;
+
+import org.jibble.epsgraphics.EpsGraphics2D;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -205,6 +208,7 @@ public class SheetRenderer {
 	 * By default, the transforms works at 72 dots per inch. Scale the transform beforehand if you would like
 	 * better or worse rendering.
 	 * 
+	 * This only renders the regions and region content, but not the pattern.
 	 * 
 	 * @param g2d
 	 */
@@ -340,6 +344,31 @@ public class SheetRenderer {
 	}
 
 	/**
+	 * Uses Jibble and some EPS Hacking to create a PostScript file!
+	 * 
+	 * @param file
+	 */
+	public void renderToPostScript(File file) {
+
+		final Units width = sheet.getWidth();
+		final Units height = sheet.getHeight();
+		final float wPoints = (float) width.getValueInPoints();
+		final float hPoints = (float) height.getValueInPoints();
+
+		// layer for regions
+		EpsGraphics2D g2d;
+		try {
+			g2d = new EpsGraphics2D("PostScript Render", file, 0, 0, (int)wPoints, (int)hPoints);
+			// now that we have a G2D, we can just use our other G2D rendering method
+			renderToG2D(g2d);
+			g2d.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
 	 * This saves an xml file with the same name/path, but different extension as the most-recently rendered
 	 * PDF file.
 	 */
@@ -374,6 +403,8 @@ public class SheetRenderer {
 	}
 
 	/**
+	 * This is really just for debugging, as you want BLACK pattern in general.
+	 * 
 	 * @param pColor
 	 */
 	public void setPatternColor(Color pColor) {
@@ -399,14 +430,14 @@ public class SheetRenderer {
 	}
 
 	/**
-	 * 
+	 * Call this one or more times before rendering. It's a hint to the renderer.
 	 */
 	public void useLargerPatternDots() {
 		patternDotSizeAdjustment++;
 	}
 
 	/**
-	 * 
+	 * Call this one or more times before rendering. It's a hint to the renderer.
 	 */
 	public void useSmallerPatternDots() {
 		patternDotSizeAdjustment--;
