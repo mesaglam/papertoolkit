@@ -12,8 +12,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Somewhat similar to Swing's FlowLayout, but it is not a Layout Manager in the sense that it needs
- * to calculate layouts on the fly. It's just a simple utility to lay out your regions more easily.
+ * Somewhat similar to Swing's FlowLayout, but it is not a Layout Manager in the sense that it needs to
+ * calculate layouts on the fly. It's just a simple utility to lay out your regions more easily.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -37,8 +37,7 @@ public class FlowPaperLayout {
 		double offsetYInInches = currRegionGroup.getYOffsetInInches() + yOffsetOfGroup.getValue();
 		for (Region r : regions) {
 			Coordinates regionOffset = currRegionGroup.getRegionOffset(r);
-			sheet.addRegion(r,
-					new Inches(offsetXInInches + regionOffset.getX().getValueInInches()),
+			sheet.addRegion(r, new Inches(offsetXInInches + regionOffset.getX().getValueInInches()),
 					new Inches(offsetYInInches + regionOffset.getY().getValueInInches()));
 		}
 	}
@@ -55,11 +54,14 @@ public class FlowPaperLayout {
 	}
 
 	/**
-	 * Allow CENTER, LEFT, or RIGHT alignments. (Center for now)
+	 * Pass in a sheet and a list of regions... this will lay it out for you automatically.
+	 * 
+	 * TODO: Allow CENTER, LEFT, or RIGHT alignments. (Center for now)
 	 * 
 	 * @param sheet
 	 * @param regions
 	 * @param sheetOffset
+	 *            distance from the upper left corner of the sheet
 	 * @param width
 	 *            of the content area
 	 * @param height
@@ -67,8 +69,10 @@ public class FlowPaperLayout {
 	 * @param hPadding
 	 * @param vPadding
 	 */
-	public static void layout(Sheet sheet, List<Region> regions, Coordinates sheetOffset,
-			Units width, Units height, Units hPadding, Units vPadding) {
+	public static void layout(Sheet sheet, List<Region> regions, //
+			Coordinates sheetOffset, // upper left corner
+			Units width, Units height, // 
+			Units hPadding, Units vPadding) {
 		// keep it around and add it to every region as part of the offset
 		final double xOffset = sheetOffset.getX().getValueInInches();
 		final double yOffset = sheetOffset.getY().getValueInInches();
@@ -83,7 +87,7 @@ public class FlowPaperLayout {
 
 		double maxHeightOfRow = 0;
 
-		// for aligning the current row
+		// keep the regions around, so that we can align the current row
 		final List<Region> currentRow = new ArrayList<Region>();
 
 		int count = 0;
@@ -96,17 +100,7 @@ public class FlowPaperLayout {
 			if (relInchesX + currRegionWidthInInches + hPaddingInInches > widthOfLayoutAreaInInches) {
 
 				// center this row
-				final double slackSpace = widthOfLayoutAreaInInches - relInchesX;
-				final int numItemsInThisRow = currentRow.size();
-				final double extraSlackBetweenItems = slackSpace / (numItemsInThisRow - 1);
-				double totalSlack = 0;
-				for (Region regionToAdjust : currentRow) {
-					Coordinates regionOffset = sheet.getRegionOffset(regionToAdjust);
-					sheet.setRegionOffset(regionToAdjust, new Inches(regionOffset.getX()
-							.getValueInInches()
-							+ totalSlack), regionOffset.getY());
-					totalSlack += extraSlackBetweenItems;
-				}
+				centerRow(sheet, currentRow, widthOfLayoutAreaInInches, relInchesX);
 
 				// clear the cache of items for this row
 				currentRow.clear();
@@ -125,16 +119,43 @@ public class FlowPaperLayout {
 					break;
 				}
 			}
+
 			maxHeightOfRow = Math.max(maxHeightOfRow, currRegionHeightInInches);
 
 			sheet.addRegion(currRegion, // add it to the sheet
-					new Inches(relInchesX + xOffset), // 
-					new Inches(relInchesY + yOffset));// 
+					new Inches(relInchesX + xOffset), // absolute X
+					new Inches(relInchesY + yOffset)); // absolute Y
+
 			currentRow.add(currRegion); // add it to the current row
+
 			relInchesX += currRegionWidthInInches + hPaddingInInches;
 			count++;
 		}
+		
+		centerRow(sheet, currentRow, widthOfLayoutAreaInInches, relInchesX);
+
+		// align the last row that we laid out
+
 		DebugUtils.println("Laid out " + count + " items.");
+	}
+
+	/**
+	 * @param sheet
+	 * @param currentRow
+	 * @param extraSlackBetweenItems
+	 */
+	private static void centerRow(Sheet sheet, final List<Region> currentRow, double widthOfLayoutAreaInInches, double relInchesX) {
+		final double slackSpace = widthOfLayoutAreaInInches - relInchesX;
+		final int numItemsInThisRow = currentRow.size();
+		final double extraSlackBetweenItems = slackSpace / (numItemsInThisRow - 1);
+		double totalSlack = 0;
+
+		for (Region regionToAdjust : currentRow) {
+			Coordinates regionOffset = sheet.getRegionOffset(regionToAdjust);
+			sheet.setRegionOffset(regionToAdjust, new Inches(regionOffset.getX().getValueInInches()
+					+ totalSlack), regionOffset.getY());
+			totalSlack += extraSlackBetweenItems;
+		}
 	}
 
 	/**
@@ -207,8 +228,8 @@ public class FlowPaperLayout {
 			}
 			maxHeightOfRow = Math.max(maxHeightOfRow, currRegionHeightInInches);
 
-			addRegionGroupToSheet(sheet, currRegionGroup, new Inches(relInchesX + xOffset),
-					new Inches(relInchesY + yOffset));
+			addRegionGroupToSheet(sheet, currRegionGroup, new Inches(relInchesX + xOffset), new Inches(
+					relInchesY + yOffset));
 
 			currentRow.add(currRegionGroup); // add it to the current row
 			relInchesX += currRegionWidthInInches + hPaddingInInches;

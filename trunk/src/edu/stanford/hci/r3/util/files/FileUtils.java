@@ -62,6 +62,10 @@ public class FileUtils {
 	 */
 	private static JFileChooser fileChooser;
 
+	/**
+	 * @param srcFileOrDir
+	 * @param targetFileOrDir
+	 */
 	public static void copy(File srcFileOrDir, File targetFileOrDir) {
 		try {
 			copy(srcFileOrDir, targetFileOrDir, false);
@@ -268,6 +272,21 @@ public class FileUtils {
 
 		return year + "_" + monthStr + "_" + dateStr + "__" + //
 				hourStr + "_" + minuteStr + "_" + secondsStr;
+	}
+
+	/**
+	 * @return on a Windows System, the user's Desktop Directory
+	 */
+	public static File getDesktopDirectory() {
+		return FileSystemView.getFileSystemView().getHomeDirectory();
+	}
+
+	
+	/**
+	 * @return on a Windows System, the My Documents Directory
+	 */
+	public static File getMyDocumentsDirectory() {
+		return FileSystemView.getFileSystemView().getDefaultDirectory();
 	}
 
 	/**
