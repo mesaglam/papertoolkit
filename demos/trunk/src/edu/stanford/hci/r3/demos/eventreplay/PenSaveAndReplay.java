@@ -1,6 +1,5 @@
 package edu.stanford.hci.r3.demos.eventreplay;
 
-import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.debug.DebuggingPenListener;
 
@@ -28,8 +27,6 @@ public class PenSaveAndReplay {
 		pen = new Pen("Remote Pen", "solaria.stanford.edu", 11104);
 		pen.addLivePenListener(new DebuggingPenListener(pen));
 		pen.startLiveMode();
-		
-		new PaperToolkit();
 	}
 
 	/**
