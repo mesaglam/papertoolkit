@@ -134,6 +134,9 @@ public class Ink {
 		updateMinAndMax(s);
 	}
 
+	/**
+	 * @param pageInk
+	 */
 	public void append(Ink pageInk) {
 		for (InkStroke stroke : pageInk.getStrokes()) {
 			addStroke(stroke);
@@ -193,10 +196,16 @@ public class Ink {
 		return maxY;
 	}
 
+	/**
+	 * @return
+	 */
 	public double getMinX() {
 		return minX;
 	}
 
+	/**
+	 * @return
+	 */
 	public double getMinY() {
 		return minY;
 	}
