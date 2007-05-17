@@ -17,8 +17,12 @@ import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 /**
  * <p>
  * Renders Ink in a JPanel using catmull-rom splines. You may swap in simpler renderers if this becomes slow.
- * Also, this provides some customization that allows you to zoom in and out, pan, and align the ink with
- * imagery. =)
+ * TODO: Also, this provides some customization that allows you to zoom in and out, pan, and align the ink
+ * with imagery. =)
+ * </p>
+ * <p>
+ * If you find that nothing appears, you may want to check whether the ink color and your panel's background
+ * color are in fact the same color!
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -42,7 +46,18 @@ public class InkPanel extends JPanel {
 	 */
 	protected List<Ink> inkWell = Collections.synchronizedList(new LinkedList<Ink>());
 
+	/**
+	 * 
+	 */
 	private boolean invertInkColors = false;
+
+	private double minX = Double.MAX_VALUE;
+
+	private double minY = Double.MAX_VALUE;
+
+	private double paddingLeft = 15;
+
+	private double paddingTop = 25;
 
 	/**
 	 * 
@@ -53,7 +68,7 @@ public class InkPanel extends JPanel {
 	 * Default Catmull-Rom method.
 	 */
 	public InkPanel() {
-		this(new InkRenderer(), Color.WHITE);
+		this(new InkRenderer(), new Color(250, 250, 250));
 	}
 
 	/**
@@ -68,22 +83,26 @@ public class InkPanel extends JPanel {
 	}
 
 	/**
+	 * Add an Ink object to the internal rendering list.
+	 * 
 	 * @param ink
 	 */
 	public void addInk(Ink ink) {
 		currentInk = ink;
 		inkWell.add(ink);
+		minX = Math.min(minX, ink.getMinX());
+		minY = Math.min(minY, ink.getMinY());
 		repaint();
 	}
 
 	/**
-	 * @return the newly added Ink object.
+	 * @return the newly added Ink object. Feel free to add strokes to the returned Ink object... as long as
+	 *         you refresh this InkPanel occasionally, it should show up!
 	 */
 	public Ink addNewInk() {
-		currentInk = new Ink();
-		inkWell.add(currentInk);
-		repaint();
-		return currentInk;
+		final Ink newInk = new Ink();
+		addInk(newInk);
+		return newInk;
 	}
 
 	/**
@@ -91,6 +110,8 @@ public class InkPanel extends JPanel {
 	 */
 	public void clear() {
 		inkWell.clear();
+		minX = Double.MAX_VALUE;
+		minY = Double.MAX_VALUE;
 		repaint();
 	}
 
@@ -108,6 +129,9 @@ public class InkPanel extends JPanel {
 		return inkWell;
 	}
 
+	/**
+	 * @return
+	 */
 	public double getScale() {
 		return inkScale;
 	}
@@ -126,16 +150,27 @@ public class InkPanel extends JPanel {
 		final AffineTransform transform = g2d.getTransform();
 		g2d.scale(inkScale, inkScale);
 
+		recenter(g2d);
+
 		// the drawing of ink is "atomic" with respect to
 		// adding and removing from the inkWell
 		synchronized (inkWell) {
 			for (Ink ink : inkWell) {
 				renderer.setInk(ink);
-				renderer.useInvertedInkColors();
+				if (invertInkColors) {
+					renderer.useInvertedInkColors();
+				}
 				renderer.renderToG2D(g2d);
 			}
 		}
 		g2d.setTransform(transform);
+	}
+
+	/**
+	 * @param g2d
+	 */
+	private void recenter(Graphics2D g2d) {
+		g2d.translate(-(minX - paddingLeft), -(minY - paddingTop));
 	}
 
 	/**

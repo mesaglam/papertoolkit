@@ -34,12 +34,11 @@ import edu.stanford.hci.r3.util.graphics.JAIUtils;
  */
 public class InkRenderer {
 
-
 	private Ink ink;
 
-	private RenderingTechnique renderingTechnique = new RenderingTechniqueHybrid();
-
 	private boolean invertedColors = false;
+
+	private RenderingTechnique renderingTechnique = new RenderingTechniqueHybrid();
 
 	public InkRenderer() {
 
@@ -65,11 +64,13 @@ public class InkRenderer {
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 		Color inkColor = ink.getColor();
 		if (invertedColors) {
-			g2d.setColor(new Color(255 - inkColor.getRed(), 255 - inkColor.getGreen(), 255 - inkColor
-					.getBlue()));
-		} else {
-			g2d.setColor(inkColor);
+			Color newColor = new Color(255 - inkColor.getRed(), //
+					255 - inkColor.getGreen(), //
+					255 - inkColor.getBlue());
+			inkColor = newColor;
 		}
+		DebugUtils.println("Rendering Ink with Color == " + inkColor);
+		g2d.setColor(inkColor);
 
 		final List<InkStroke> strokes = ink.getStrokes();
 		renderingTechnique.render(g2d, strokes);
@@ -159,23 +160,38 @@ public class InkRenderer {
 		ink = theInk;
 	}
 
+	/**
+	 * @param rt
+	 */
 	public void setRenderingTechnique(RenderingTechnique rt) {
 		renderingTechnique = rt;
 	}
 
+	/**
+	 * 
+	 */
 	public void useCatmullRomRendering() {
 		setRenderingTechnique(new RenderingTechniqueCatmullRom());
 	}
 
+	/**
+	 * 
+	 */
+	public void useInvertedInkColors() {
+		invertedColors = true;
+	}
+
+	/**
+	 * 
+	 */
 	public void useLineRendering() {
 		setRenderingTechnique(new RenderingTechniqueLinear());
 	}
 
+	/**
+	 * 
+	 */
 	public void useQuadraticRendering() {
 		setRenderingTechnique(new RenderingTechniqueCatmullRom());
-	}
-
-	public void useInvertedInkColors() {
-		invertedColors = true;
 	}
 }
