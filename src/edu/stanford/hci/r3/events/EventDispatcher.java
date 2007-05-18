@@ -217,49 +217,46 @@ public class EventDispatcher {
 			for (final PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
 
 				// this is a key step!
-				// the event engine figures out which pattern region contains
+				// the event engine figures out which patterned regions contains
 				// this sample. This determines the set of event handlers the event
-				// should be sent to
-				final PatternCoordinateConverter coordinateConverter = pmap
-						.getCoordinateConverterForSample(penEvent.getOriginalSample());
+				// should be sent to...
+				List<PatternCoordinateConverter> coordinateConvertersForSample = pmap
+						.getCoordinateConvertersForSample(penEvent.getOriginalSample());
 
-				// this map doesn't know about this sample; next!
-				if (coordinateConverter == null) {
-					continue;
-				}
+				for (final PatternCoordinateConverter coordinateConverter : coordinateConvertersForSample) {
 
-				// which sheet are we on?
-				final Sheet sheet = pmap.getSheet();
+					// which sheet are we on?
+					final Sheet sheet = pmap.getSheet();
 
-				// which region are we on?
-				final String regionName = coordinateConverter.getRegionName();
-				final Region region = sheet.getRegion(regionName);
+					// which region are we on?
+					final String regionName = coordinateConverter.getRegionName();
+					final Region region = sheet.getRegion(regionName);
 
-				// where are we on this region?
-				final PercentageCoordinates relativeLocation = coordinateConverter
-						.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
-				penEvent.setPercentageLocation(relativeLocation);
+					// where are we on this region?
+					final PercentageCoordinates relativeLocation = coordinateConverter
+							.getRelativeLocation(penEvent.getStreamedPatternCoordinate());
+					penEvent.setPercentageLocation(relativeLocation);
 
-				lastKnownLocation = relativeLocation;
+					lastKnownLocation = relativeLocation;
 
-				// does this region have any event handler?
-				// if not, just go onto the next region
-				final List<EventHandler> eventHandlers = region.getEventHandlers();
-				// send the event to every event handler!
-				// so long as the event is not consumed
-				for (EventHandler eh : eventHandlers) {
-					eh.handleEvent(penEvent);
-					eventHandledAtLeastOnce = true;
-					mostRecentEventHandlers.add(eh);
-					if (penEvent.isConsumed()) {
-						// we are done handling this event
-						// look at no more event handlers
-						// look at no more pattern maps
-						// DebugUtils.println("Event Consumed");
-						return;
-					}
-				} // check the next event handler
-
+					// does this region have any event handler?
+					// if not, just go onto the next region
+					final List<EventHandler> eventHandlers = region.getEventHandlers();
+					// send the event to every event handler!
+					// so long as the event is not consumed
+					for (EventHandler eh : eventHandlers) {
+						eh.handleEvent(penEvent);
+						eventHandledAtLeastOnce = true;
+						mostRecentEventHandlers.add(eh);
+						if (penEvent.isConsumed()) {
+							// we are done handling this event
+							// look at no more event handlers
+							// look at no more pattern maps
+							// DebugUtils.println("Event Consumed");
+							return;
+						}
+					} // check the next event handler
+				} // check the next coordinate converter / matching region
 			} // check the next pattern map
 
 			if (!eventHandledAtLeastOnce) {
@@ -278,7 +275,7 @@ public class EventDispatcher {
 					// there is no pattern map that matches the incoming pen event!
 					// we dump it in a trash bin, and notify the user of this situation
 					// perhaps the developer would like to register a mapping at run time?
-					if (numTrashedPenEvents % 29 == 0) {
+					if (numTrashedPenEvents % 31 == 0) {
 						// print out this warning once in a while...
 						System.err
 								.println("The event engine cannot map these pen events to any active region. "
@@ -365,8 +362,8 @@ public class EventDispatcher {
 	 */
 	public void registerPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
-		DebugUtils
-				.println("Registering the (Pattern Location --> Sheet Location) Maps [" + patternMaps + "]");
+		DebugUtils.println("Registering the (Pattern Location --> Sheet Location) Maps " + "[" + patternMaps
+				+ "]");
 		patternToSheetMaps.addAll(patternMaps);
 		DebugUtils.println("Registered " + patternMaps.size() + " New Maps");
 	}
@@ -390,7 +387,7 @@ public class EventDispatcher {
 	}
 
 	/**
-	 * To reset the event engine at runtime.
+	 * To reset the event engine/dispatcher at runtime.
 	 */
 	public void unregisterAllPatternMaps() {
 		patternToSheetMaps.clear();
@@ -398,6 +395,7 @@ public class EventDispatcher {
 
 	/**
 	 * @param patternMap
+	 *            forget about this pattern map for this session...
 	 */
 	public void unregisterPatternMapForEventHandling(PatternLocationToSheetLocationMapping patternMap) {
 		patternToSheetMaps.remove(patternMap);
