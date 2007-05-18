@@ -14,6 +14,7 @@ import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMap
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.tools.design.acrobat.RegionConfiguration;
 import edu.stanford.hci.r3.units.Inches;
+import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Size;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.Coordinates;
@@ -62,6 +63,8 @@ public class Sheet {
 	 */
 	private String name = "A Sheet";
 
+	private Application parentApp;
+
 	/**
 	 * For each sheet, we need to keep the pattern to sheet location map. Each sheet has one mapping object.
 	 * This lets us know, given some physical coordinate, where we are on the sheet (i.e., which regions we
@@ -89,8 +92,6 @@ public class Sheet {
 	 * Represents the rectangular size of this Sheet.
 	 */
 	private Size size = new Size();
-
-	private Application parentApp;
 
 	/**
 	 * Defaults to US Letter.
@@ -138,6 +139,19 @@ public class Sheet {
 		regions.add(r);
 		regionNameToRegionObject.put(r.getName(), r);
 		r.setParentSheet(this);
+	}
+
+	/**
+	 * @param r
+	 *            the region to add
+	 * @param topLeft
+	 *            (x, y) in PatternDots
+	 * @param bottomRight
+	 *            (x, y) in PatternDots
+	 */
+	public void addRegion(Region r, PatternDots x, PatternDots y, PatternDots w, PatternDots h) {
+		addRegion(r);
+		getPatternLocationToSheetLocationMapping().setPatternInformationOfRegion(r, x, y, w, h);
 	}
 
 	/**
@@ -203,14 +217,22 @@ public class Sheet {
 	}
 
 	/**
-	 * @return
+	 * @return the name of this Sheet object.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return only one of these per any sheet.
+	 * @return the Application object that owns this Sheet.
+	 */
+	public Application getParentApplication() {
+		return parentApp;
+	}
+
+	/**
+	 * @return only one of these per any sheet. This maps the location on the sheet (the region coordinates)
+	 *         to physical pattern coordinates.
 	 */
 	public PatternLocationToSheetLocationMapping getPatternLocationToSheetLocationMapping() {
 		if (patternLocationToSheetLocationMapping == null) {
@@ -243,7 +265,7 @@ public class Sheet {
 	}
 
 	/**
-	 * @return
+	 * @return a list of region names
 	 */
 	public List<String> getRegionNames() {
 		final List<String> names = new ArrayList<String>();
@@ -254,12 +276,12 @@ public class Sheet {
 	}
 
 	/**
-	 * @param r
+	 * @param region
 	 *            if it doesn't exist, that implies a 0,0 offset.
 	 * @return
 	 */
-	public Coordinates getRegionOffset(Region r) {
-		final Coordinates coordinates = regionsAndRelativeLocations.get(r);
+	public Coordinates getRegionOffset(Region region) {
+		final Coordinates coordinates = regionsAndRelativeLocations.get(region);
 		if (coordinates == null) {
 			return new Coordinates(new Inches(0), new Inches(0));
 		}
@@ -299,6 +321,14 @@ public class Sheet {
 	 */
 	public void setName(String n) {
 		name = n;
+	}
+
+	/**
+	 * @param application
+	 *            the application that owns this sheet...
+	 */
+	public void setParentApplication(Application application) {
+		parentApp = application;
 	}
 
 	/**
@@ -370,12 +400,5 @@ public class Sheet {
 	 */
 	public String toXML() {
 		return PaperToolkit.toXML(this);
-	}
-
-	public void setParentApplication(Application application) {
-		parentApp = application;
-	}
-	public Application getParentApplication() {
-		return parentApp;
 	}
 }

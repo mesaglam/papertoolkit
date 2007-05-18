@@ -132,7 +132,7 @@ public class Application {
 	 * WARNING: The current design REQUIRES you to add the sheet AFTER you have added regions to the sheet.
 	 * This is an unfortunate design (ordering constraints), and should be changed _if possible_.
 	 * 
-	 * Alternative, we can warn when there is ambiguity in loading patternInfo files.
+	 * Alternatively, we can warn when there is ambiguity in loading patternInfo files.
 	 * 
 	 * @param sheet
 	 */

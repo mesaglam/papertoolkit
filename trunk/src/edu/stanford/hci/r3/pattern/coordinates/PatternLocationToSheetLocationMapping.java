@@ -3,6 +3,7 @@ package edu.stanford.hci.r3.pattern.coordinates;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,9 @@ public class PatternLocationToSheetLocationMapping {
 	 * @param sample
 	 * @return
 	 */
-	public PatternCoordinateConverter getCoordinateConverterForSample(PenSample sample) {
+	public List<PatternCoordinateConverter> getCoordinateConvertersForSample(PenSample sample) {
+		List<PatternCoordinateConverter> coordinateConverters = new ArrayList<PatternCoordinateConverter>();
+		
 		for (Region r : regionToPatternBounds.keySet()) {
 			PatternCoordinateConverter converter = regionToPatternBounds.get(r);
 			final StreamedPatternCoordinates coord = new StreamedPatternCoordinates(sample);
@@ -118,11 +121,11 @@ public class PatternLocationToSheetLocationMapping {
 							+ "Going on to check the next region...");
 					continue;
 				} else {
-					return converter;
+					coordinateConverters.add(converter);
 				}
 			}
 		}
-		return null; // couldn't find any
+		return coordinateConverters;
 	}
 
 	/**
@@ -279,6 +282,7 @@ public class PatternLocationToSheetLocationMapping {
 		} else {
 			System.err.println("PatternLocationToSheetLocationMapping.java: Region unknown. "
 					+ "Please add it to the sheet before updating this mapping.");
+			// TODO... should we add it automatically, if the user has not?
 		}
 	}
 
