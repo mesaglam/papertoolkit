@@ -3,8 +3,6 @@
 <title>Anoto SDK</title>
 <link href="../../resources/styles.css" rel="stylesheet" type="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<style type="text/css">
-</style>
 </head>
 <body>
 <script language="javascript" type="text/javascript" 
@@ -20,10 +18,32 @@
   <li>This is my quick sketch of how the systems interact with each other.<br>
     The sketch is actually misleading (at the moment) because R3 is a much newer and smaller project than GIGAprints or BNet. However, as R3 grows and incorporates the best features from GIGAprints and BNet, the role that R3 plays will become larger over time. Ideally, a designer or developer will not need to build on top of GIGAprints or BNet. <br>
     <br>
-      <img src="SystemDiagram.jpg" alt="System Diagram" width="640" height="439"><br>
-    <br>
-  </li>
+  <img src="SystemDiagram.jpg" alt="System Diagram" width="640" height="439"></li>
 </ol>
+<p>&nbsp;</p>
+<p><span class="Heading">Anoto Forms Development Tools (FDT)</span></p>
+<p>One approach when prototyping paper + digital interactions is to use a preprinted notebook. I personally like the Esselte notepads best (<a href="http://esseltebrand.esselte.com/enGB/Solutions/Esselte_s_notepad_enables_Anoto_functionality.html">A5 and B7</a>), but they are pretty difficult to buy. The only way I've been able to acquire Esselte pads is to buy a Nokia SU-1B digital pen. One A5 and one B7 come packaged in the box. In our research, we use Mead/Cambridge pads, because they are cheap and easy to come by (<a href="http://www.tmis.org/cgi-script/csArticles/articles/000004/000479.htm">Mead 5x8</a>). </p>
+<p>The second approach is to print your own patterned paper. This is the most flexible approach, but requires more work on your part. You will need to buy the FDT from Anoto, and get a printing license for a pattern segment, in the form of an <span class="Code">*.oal</span> file. Then, you need to use Adobe Acrobat Professional (v 7.0 at least), because the FDT is an Acrobat plug-in.</p>
+<ol>
+  <li>Create a PDF in a tool of your choice (<em>e.g.</em>, Word, Visio, Illustrator). </li>
+  <li>Open the PDF with Adobe Acrobat Professional, with the FDT plug-in. </li>
+  <li>Add Pattern to it, using your Anoto license.<br>
+    <br>
+  <img src="EnableForm.png" alt="Add Pattern" width="1054" height="635"><br>
+  </li>
+  <li>Generate a Postscript file.<br>
+    To do this successfully, you'll need to make sure you have Ghostscript installed, and <span class="Code">C:\Program Files\gs\gs8.51\bin;C:\Program Files\gs\gs8.51\lib</span> in your system path. <br>
+      <br>
+        <img src="GeneratePostScriptFiles.png" alt="GeneratePS" width="532" height="430"><br>
+    <br>
+  At this point, you can print the PS file and use it for streaming applications. However, there are other steps to take if you want to use it with batched-mode applications.<br>
+  </li>
+  <li>Generate a PAD file.</li>
+  <li>Modify it to include the <span class="Code">anoto::notepad</span> tag if you want your pattern space to work with the Nokia software.<br>
+  Modify it to include <span class="Code">fieldtools::R3</span> if you want your pattern to work with the R3 toolkit. </li>
+</ol>
+<p>&lt;more to come&gt; </p>
+<p>&nbsp;</p>
 <hr noshade size=1/>
 <p class="Author">Ron B. Yeh<br>
 Stanford University </p>
