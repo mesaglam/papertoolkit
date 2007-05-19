@@ -153,6 +153,7 @@ public class TiledPattern {
 		}
 
 		if (advanceToNextPatternPage) {
+			DebugUtils.println("Going to the next Pattern File.");
 			// move to the next file! because we were out of bounds
 			initialDotXOffset = 0;
 			initialDotYOffset = 0;

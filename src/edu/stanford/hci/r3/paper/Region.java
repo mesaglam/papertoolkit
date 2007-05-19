@@ -88,6 +88,9 @@ public class Region {
 	 */
 	private double opacity = 0;
 
+	/**
+	 * 
+	 */
 	private Sheet parentSheet;
 
 	/**
@@ -232,7 +235,7 @@ public class Region {
 	}
 
 	/**
-	 * @return
+	 * @return the name of this region
 	 */
 	public String getName() {
 		return name;
