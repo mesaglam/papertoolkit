@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
+import edu.stanford.hci.r3.events.handlers.ClickAdapter;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.layout.FlowPaperLayout;
@@ -35,7 +35,7 @@ public class Grid {
 	 * 
 	 */
 	public Grid() {
-		application = new Application("A Grid of Pattern Boxes");
+		application = new Application("A Grid of Patterned Boxes");
 	}
 
 	/**
@@ -48,23 +48,11 @@ public class Grid {
 		List<Region> regions = new ArrayList<Region>();
 		for (int i = 0; i < 1400; i++) {
 			final Region r = new Region("Box_" + i, 0, 0, .75, .75);
-			r.addEventHandler(new ClickHandler() {
-
+			r.addEventHandler(new ClickAdapter() {
 				@Override
 				public void clicked(PenEvent e) {
 					System.out.println("Clicked on " + r.getName());
 				}
-
-				@Override
-				public void pressed(PenEvent e) {
-
-				}
-
-				@Override
-				public void released(PenEvent e) {
-
-				}
-
 			});
 			regions.add(r);
 		}

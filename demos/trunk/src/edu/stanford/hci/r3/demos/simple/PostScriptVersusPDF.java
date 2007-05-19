@@ -10,6 +10,7 @@ import edu.stanford.hci.r3.paper.layout.FlowPaperLayout;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.coordinates.Coordinates;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -33,7 +34,9 @@ public class PostScriptVersusPDF {
 		List<Region> postIts = new ArrayList<Region>();
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 4; j++) {
-				Region region = new Region("PostIt_" + i * 4 + j, 0, 0, 2.5, 2.5);
+				String name = "PostIt_" + ((i * 4) + j);
+				DebugUtils.println(name);
+				Region region = new Region(name, 0, 0, 2.5, 2.5);
 				region.setActive(true);
 				postIts.add(region);
 			}
@@ -45,8 +48,11 @@ public class PostScriptVersusPDF {
 				new Inches(0), new Inches(0.2));
 
 		SheetRenderer sheetRenderer = new SheetRenderer(sheet);
-		// sheetRenderer.renderToPDF(new File(FileUtils.getDesktopDirectory(), "Sheet.pdf"));
+		sheetRenderer.renderToPDF(new File(FileUtils.getDesktopDirectory(), "Sheet.pdf"));
 		sheetRenderer.renderToPostScript(new File(FileUtils.getDesktopDirectory(), "Sheet.ps"));
+		sheetRenderer.setRenderActiveRegionsWithPattern(false);
+		sheetRenderer.renderToPDF(new File(FileUtils.getDesktopDirectory(), "SheetNoPattern.pdf"));
+		sheetRenderer.renderToPostScript(new File(FileUtils.getDesktopDirectory(), "SheetNoPattern.ps"));
 	}
 
 	public static void main(String[] args) {
