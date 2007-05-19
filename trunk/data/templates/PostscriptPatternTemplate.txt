@@ -1,0 +1,74 @@
+%!PS-Adobe-3.0
+<< /PageSize [__WIDTH_POINTS__ __HEIGHT_POINTS__]
+   /ProcessColorModel (DeviceCMYK)
+>> setpagedevice
+
+
+__INSERT_SHEET_POSTSCRIPT_HERE__
+
+
+% BEGIN Anoto font definition
+/ngo	0.050000 def	% offset from grid in mm
+/nprad	0.030000 def	% point radius in mm
+/ngs	0.300000 def	% Spacing between grid in mm
+/ngsh	0.128571 def
+/n {2 index 2 index moveto show ngs sub} bind def
+
+8 dict begin
+/FontType 3 def
+/FontMatrix [1 0 0 1 0 0] def
+/FontName (AnotoFont)
+/FontBBox [0 0 ngs ngs] def
+
+/Encoding 256 array def
+0 1 255 {Encoding exch /.notdef put} for
+Encoding 117 /d_u put
+Encoding 100 /d_d put
+Encoding 108 /d_l put
+Encoding 114 /d_r put
+Encoding 46 /d_n put
+
+/CharProcs 6 dict def
+CharProcs begin
+ /.notdef { } def
+ /d_u {ngsh ngsh ngo add nprad 0 360 arc closepath fill} bind def
+ /d_d {ngsh ngsh ngo sub nprad 0 360 arc closepath fill} bind def
+ /d_l {ngsh ngo sub ngsh nprad 0 360 arc closepath fill} bind def
+ /d_r {ngsh ngo add ngsh nprad 0 360 arc closepath fill} bind def
+ /d_n {ngsh ngsh nprad 0 360 arc closepath fill} bind def
+end
+
+/BuildGlyph
+{
+ngs 0
+0 0 ngs ngs
+setcachedevice
+exch /CharProcs get exch
+2 copy known not {pop /.notdef} if
+get exec
+} bind def
+/BuildChar { 1 index /Encoding get exch get
+1 index /BuildGlyph get exec} bind def
+currentdict
+end
+/AnotoFont exch definefont pop 
+% END Anoto font definition
+% BEGIN Anoto pattern
+0 0 0 1 setcmykcolor % set color to black
+true setoverprint % make sure we print over everything else
+/AnotoFont findfont setfont % open up the font
+0.987778 2.8346456692913385826771653543307 mul dup scale % scale factor for anoto font
+
+% set location for pattern to start
+0 0.987778 2.8346456692913385826771653543307 mul div % first item is starting x in points
+__HEIGHT_POINTS__ 0.987778 2.8346456692913385826771653543307 mul div % first item is starting y in points
+
+
+__INSERT_PATTERN_HERE__
+
+
+pop pop % removes starting coordinates
+
+% END Anoto Pattern
+
+showpage  % We're done... eject the page

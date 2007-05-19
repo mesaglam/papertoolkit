@@ -191,12 +191,12 @@ public class TiledPatternGenerator {
 		// if we only need one tile....
 		// we would like to stay on the same pattern file if we still have space
 		// calculate this from numDotsXFromRightMostTiles and numDotsYFromBottomMostTiles...
-		// DebugUtils.println("NumTilesNeeded: " + numTilesNeededX + ", " + numTilesNeededY);
+		DebugUtils.println("NumTilesNeeded: " + numTilesNeededX + ", " + numTilesNeededY);
 		if (numTilesNeededX == 1 && numTilesNeededY == 1) {
-			// DebugUtils.println("DotsNeeded: x: " + numDotsXFromRightMostTiles + ", "
-			// + numDotsYFromBottomMostTiles);
+			DebugUtils.println("DotsNeeded: x: " + numDotsXFromRightMostTiles + ", y: "
+					+ numDotsYFromBottomMostTiles);
 			// if we WILL exceed the horizontal bounds....
-			if (lastDotUsedX + numDotsXFromRightMostTiles + BUFFER >= numPatternColsPerFile) {
+			if (lastDotUsedX + numDotsXFromRightMostTiles > numPatternColsPerFile) {
 
 				// wrap back to the left side of the page
 				lastDotUsedX = 0;
@@ -204,9 +204,11 @@ public class TiledPatternGenerator {
 			}
 
 			// if we WILL exceed the height bounds...
-			if (lastDotUsedY + numDotsYFromBottomMostTiles + BUFFER >= numPatternRowsPerFile) {
+			if (lastDotUsedY + numDotsYFromBottomMostTiles > numPatternRowsPerFile) {
 				lastDotUsedY = 0;
-				// next time, get pattern from a new file!
+
+				DebugUtils.println("Incrementing Pattern File Number.");
+				// get pattern from a new file!
 				patternFileNumber++;
 			}
 		} else {

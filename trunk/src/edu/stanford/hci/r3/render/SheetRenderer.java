@@ -19,8 +19,10 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
+import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
+import edu.stanford.hci.r3.pattern.PatternJitter;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -32,6 +34,7 @@ import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.units.coordinates.Coordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
+import edu.stanford.hci.r3.util.files.FileUtils;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 import edu.stanford.hci.r3.util.graphics.ImageUtils;
 import edu.stanford.hci.r3.util.graphics.JAIUtils;
@@ -132,7 +135,7 @@ public class SheetRenderer {
 	 *            a content layer returned by iText
 	 * 
 	 */
-	private void renderPattern(PdfContentByte cb) {
+	private void renderPatternToPDF(PdfContentByte cb) {
 		// for each region, overlay pattern if it is an active region
 		final List<Region> regions = sheet.getRegions();
 
@@ -199,7 +202,7 @@ public class SheetRenderer {
 		// }
 		// 
 		// MUST REARCHITECT Pattern Rendering & Event Handling if we are to allow Compound Regions
-		// This is for R3 version 0.2 =\ AFTER September 29th...
+		// This is for a future R3 version =\
 	}
 
 	/**
@@ -339,7 +342,7 @@ public class SheetRenderer {
 			// regions; This is only for PDF rendering.
 
 			// top layer for pattern
-			renderPattern(topLayer);
+			renderPatternToPDF(topLayer);
 		}
 	}
 
@@ -349,23 +352,62 @@ public class SheetRenderer {
 	 * @param file
 	 */
 	public void renderToPostScript(File file) {
-
-		final Units width = sheet.getWidth();
-		final Units height = sheet.getHeight();
-		final float wPoints = (float) width.getValueInPoints();
-		final float hPoints = (float) height.getValueInPoints();
-
 		// layer for regions
-		EpsGraphics2D g2d;
-		try {
-			g2d = new EpsGraphics2D("PostScript Render", file, 0, 0, (int)wPoints, (int)hPoints);
-			// now that we have a G2D, we can just use our other G2D rendering method
-			renderToG2D(g2d);
-			g2d.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		EpsGraphics2D g2d = new EpsGraphics2D("PostScript Render");
+		
+		// set the bounding box, and draw it, so that the PS file will be the right size
+		g2d.drawRect(0, 0, (int)sheet.getWidth().getValueInPoints(), (int)sheet.getHeight().getValueInPoints());
+		
+		// now that we have a G2D, we can just use our other G2D rendering method
+		renderToG2D(g2d);
+		String graphicsPostscript = g2d.toString();
+
+		// create an associated pattern file
+		if (renderActiveRegionsWithPattern) {
+			String patternPostscript = renderPatternToPostScript();
+
+			// then, merge the two!
+
+			// remove the junk from graphicsPostscript
+			// remove the opening junk
+			graphicsPostscript = graphicsPostscript.replaceAll("(?s)%.*EndComments", "");
+			// remove the closing junk, including the showpage
+			graphicsPostscript = graphicsPostscript.replaceAll("(?s)showpage.*EOF", "");
+			// DebugUtils.println(graphicsPostscript);
+
+			// paste these graphics into our pattern
+			String output = patternPostscript.replace("__INSERT_SHEET_POSTSCRIPT_HERE__", graphicsPostscript);
+			FileUtils.writeStringToFile(output, file);
+		} else {
+			// just write the graphics to a file
+			FileUtils.writeStringToFile(graphicsPostscript, file);
+		}
+	}
+
+	/**
+	 * @param file
+	 */
+	private String renderPatternToPostScript() {
+		// read in the template file
+		String template = FileUtils.readFileIntoStringBuffer(
+				PaperToolkit.getResourceFile("/templates/PostscriptPatternTemplate.txt"), true).toString();
+
+		// add the width, height, and margin
+		template = template.replaceAll("__WIDTH_POINTS__", sheet.getWidth().getValueInPoints() + "");
+		template = template.replaceAll("__HEIGHT_POINTS__", sheet.getHeight().getValueInPoints() + "");
+
+		// get a large block of pattern the size of this sheet
+		final TiledPattern pattern = generator.getPattern(sheet.getWidth(), sheet.getHeight());
+
+		// for now, create a string buffer and write to it...
+		StringBuilder patternString = new StringBuilder();
+		for (int row = 0; row < pattern.getNumTotalRows(); row++) {
+			final String patternRow = pattern.getPatternOnRow(row);
+			patternString.append("(" + patternRow + ") n\n");
 		}
 
+		template = template.replaceAll("__INSERT_PATTERN_HERE__", patternString.toString());
+		return template;
 	}
 
 	/**
@@ -423,6 +465,8 @@ public class SheetRenderer {
 	}
 
 	/**
+	 * Used for debugging. If you set this to false, then we will not render any pattern at all.
+	 * 
 	 * @param activeWithPattern
 	 */
 	public void setRenderActiveRegionsWithPattern(boolean activeWithPattern) {
