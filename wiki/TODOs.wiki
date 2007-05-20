@@ -1,4 +1,4 @@
 #summary TODO items for the toolkit.
 
 = TODOs =
-  * Analyze CS160 Projects for Design Patterns
+* Handle Batched Interactions & Realtime Interactions similarly.
