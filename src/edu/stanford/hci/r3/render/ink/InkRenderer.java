@@ -15,6 +15,7 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.MathUtils;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
@@ -101,12 +102,13 @@ public class InkRenderer {
 	/**
 	 * Looks very similar to SheetRenderer's. TODO: Can we integrate this?
 	 */
-	public void renderToJPEG(File destJPEGFile, Pixels resolutionPixelsPerInch, Units width, Units height) {
-		final double scale = Points.ONE.getConversionTo(resolutionPixelsPerInch);
+	public void renderToJPEG(File destJPEGFile, PixelsPerInch resolutionPixelsPerInch, Units width, Units height) {
+		Pixels pixels = new Pixels(1, resolutionPixelsPerInch);
+		final double scale = Points.ONE.getConversionTo(pixels);
 
-		final int w = MathUtils.rint(width.getValueIn(resolutionPixelsPerInch));
-		final int h = MathUtils.rint(height.getValueIn(resolutionPixelsPerInch));
-		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(w, h);
+		final int wPixels = MathUtils.rint(width.getValueIn(pixels));
+		final int hPixels = MathUtils.rint(height.getValueIn(pixels));
+		final TiledImage image = JAIUtils.createWritableBufferWithoutAlpha(wPixels, hPixels);
 		final Graphics2D graphics2D = image.createGraphics();
 		graphics2D.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 
@@ -120,7 +122,7 @@ public class InkRenderer {
 
 		// render a white canvas
 		graphics2D.setColor(Color.WHITE);
-		graphics2D.fillRect(0, 0, w, h);
+		graphics2D.fillRect(0, 0, wPixels, hPixels);
 
 		renderToG2D(graphics2D);
 		graphics2D.dispose();

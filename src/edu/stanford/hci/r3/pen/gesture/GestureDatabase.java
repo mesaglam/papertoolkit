@@ -36,6 +36,7 @@ import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
+import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
 import edu.stanford.hci.r3.util.WindowUtils;
 
 public class GestureDatabase implements ActionListener, FocusListener {
@@ -496,8 +497,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 			ink.addStroke(new InkStroke(context.controlPoints, new Points()));
 		}
 		InkRenderer renderer = new InkRenderer(ink);
-		renderer.renderToJPEG(new File("best.jpg"), new Pixels(300), new Points(max_range_x * 7), new Points(
-				max_range_y * 7));
+		renderer.renderToJPEG(new File("best.jpg"), new PixelsPerInch(300), new Points(max_range_x * 7),
+				new Points(max_range_y * 7));
 	}
 
 	public void determineClassParameters() {
@@ -646,8 +647,8 @@ public class GestureDatabase implements ActionListener, FocusListener {
 				ink.addStroke(new InkStroke(testExample.controlPoints, new Points()));
 				InkRenderer renderer = new InkRenderer(ink);
 				renderer.renderToJPEG(new File(databaseName + "_generated_" + (i / 100) + ".jpg"),
-						new Pixels(300), new Points(max_points * max_points * 3), new Points(max_points
-								* max_points * 3));
+						new PixelsPerInch(300), new Points(max_points * max_points * 3), new Points(
+								max_points * max_points * 3));
 			}
 		}
 	}

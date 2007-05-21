@@ -72,3 +72,4 @@ pop pop % removes starting coordinates
 % END Anoto Pattern
 
 showpage  % We're done... eject the page
+ % This newline is MUCHO IMPORTANTE! Otherwise, the showpage never gets executed.. :(

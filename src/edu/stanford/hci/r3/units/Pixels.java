@@ -4,6 +4,7 @@
 package edu.stanford.hci.r3.units;
 
 import edu.stanford.hci.r3.config.Configuration;
+import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
 
 /**
  * <p>
@@ -23,8 +24,17 @@ public class Pixels extends Units {
 	 */
 	public static final String CONFIG_FILE_KEY = "pixels.pixelsperinch.file";
 
+	/**
+	 * The location of the config file is PaperToolkit/data/config/PixelsPerInch.xml. The default is
+	 * approximately 95 (my current monitor's physical ppi). That is, an inch on my monitor is about 95
+	 * pixels.
+	 */
 	public static final String CONFIG_FILE_VALUE = "/config/PixelsPerInch.xml";
 
+	/**
+	 * The config file specifies our default pixels per inch on this system. You can customize that file if
+	 * you want to map it to your screen dpi, for example.
+	 */
 	private static final double DEFAULT_PIXELS_PER_INCH = readPixelsPerInchFromConfigFile();
 
 	/**
@@ -38,22 +48,13 @@ public class Pixels extends Units {
 	private static final String PROPERTY_NAME = "pixelsPerInch";
 
 	/**
-	 * @param ppi
-	 * @return
-	 */
-	public static Pixels getPixelsPerInchObject(int ppi) {
-		return new Pixels(1, ppi);
-	}
-
-	/**
-	 * The interpretation of distance varies depending on the specifications of your monitor. We
-	 * store the value in an XML file that you can customize.
+	 * The interpretation of distance varies depending on the specifications of your monitor. We store the
+	 * value in an XML file that you can customize.
 	 * 
 	 * @return
 	 */
 	private static double readPixelsPerInchFromConfigFile() {
-		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
-				CONFIG_FILE_KEY);
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE_KEY);
 		final double ppi = Double.parseDouble(property);
 		return ppi;
 	}
@@ -80,9 +81,9 @@ public class Pixels extends Units {
 	/**
 	 * @param numPixels
 	 */
-	public Pixels(double numPixels, double pixPerInch) {
+	public Pixels(double numPixels, PixelsPerInch pixPerInch) {
 		super(numPixels);
-		pixelsPerInch = pixPerInch;
+		pixelsPerInch = pixPerInch.getValue();
 	}
 
 	/**
