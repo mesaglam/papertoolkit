@@ -22,6 +22,7 @@ import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -107,7 +108,7 @@ public abstract class CommentCollector extends InkCollector {
 		final File commentImage = new File(CommentCollector.COMMENT_DIR + commentFileName);
 
 		final InkRenderer r = new InkRenderer(commentInk);
-		r.renderToJPEG(commentImage, new Pixels(1), new Inches(8.5), new Inches(8.5));
+		r.renderToJPEG(commentImage, new PixelsPerInch(72), new Inches(8.5), new Inches(8.5));
 
 		SyndEntry entry;
 		SyndContent description;

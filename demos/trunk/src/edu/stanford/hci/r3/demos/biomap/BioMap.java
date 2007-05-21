@@ -21,13 +21,13 @@ import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Millimeters;
-import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Create a GIGAprint of a JRBP Project's map. Enable some cool functionality in action bars at the
- * top and bottom of the map.
+ * Create a GIGAprint of a JRBP Project's map. Enable some cool functionality in action bars at the top and
+ * bottom of the map.
  * 
  * TODO: Fix the Pattern Rendering Bug...
  * </p>
@@ -146,8 +146,7 @@ public class BioMap extends Application {
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				String[] fields = line.split("\t");
-				System.out.println("Site #" + fields[0] + " at UTM: " + fields[1] + ", "
-						+ fields[2]);
+				System.out.println("Site #" + fields[0] + " at UTM: " + fields[1] + ", " + fields[2]);
 
 				final int siteNum = Integer.parseInt(fields[0]);
 				final float utmX = Float.parseFloat(fields[1]);
@@ -163,8 +162,8 @@ public class BioMap extends Application {
 				double yOfThisSite = topStartInches + rowsDown * 1.18;
 
 				// add a region
-				Region rSite = new Region("Site_" + siteNum, new Inches(xOfThisSite), new Inches(
-						yOfThisSite), new Inches(.85), new Inches(.85));
+				Region rSite = new Region("Site_" + siteNum, new Inches(xOfThisSite),
+						new Inches(yOfThisSite), new Inches(.85), new Inches(.85));
 				rSite.addEventHandler(new ClickHandler() {
 
 					@Override
@@ -245,9 +244,8 @@ public class BioMap extends Application {
 				// argh... we need to specify that we are rendering in dots somehow!
 				// right now, we can only customize the pixels per inch....
 				// TODO: FIX THIS
-				renderer.renderToJPEG(new File("data/BioMap/Output/Ink_" + inkOnThisPage.getName()
-						+ ".jpg"), new Pixels(), new Millimeters(148 + 20), new Millimeters(
-						210 + 20));
+				renderer.renderToJPEG(new File("data/BioMap/Output/Ink_" + inkOnThisPage.getName() + ".jpg"),
+						new PixelsPerInch(), new Millimeters(148 + 20), new Millimeters(210 + 20));
 			}
 			// nothing for now...
 		});

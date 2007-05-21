@@ -20,6 +20,7 @@ import edu.stanford.hci.r3.paper.regions.ImageRegion;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
 import edu.stanford.hci.r3.units.coordinates.Coordinates;
 
 /**
@@ -52,7 +53,7 @@ public class SquaredCircle extends Application {
 
 	private static final double PHOTO_WIDTH_IN_PIXELS = 500;
 
-	private static final Pixels PPI = new Pixels(1, PHOTO_WIDTH_IN_PIXELS / PHOTO_WIDTH_IN_INCHES /* ppi */);
+	private static final PixelsPerInch PPI = new PixelsPerInch(PHOTO_WIDTH_IN_PIXELS / PHOTO_WIDTH_IN_INCHES /* ppi */);
 
 	private static final double WIDTH_IN_INCHES = 43;
 

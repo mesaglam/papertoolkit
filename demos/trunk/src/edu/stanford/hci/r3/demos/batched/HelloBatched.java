@@ -9,6 +9,7 @@ import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;
+import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
 import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
@@ -53,7 +54,7 @@ public class HelloBatched extends Application {
 					DebugUtils.println("Ink Arrived" + inkOnThisPage.getName());
 					new InkRenderer(inkOnThisPage).renderToJPEG(new File("data/Batched/"
 							+ inkOnThisPage.getName() + ".jpeg"), //
-							Pixels.getPixelsPerInchObject(80), new Inches(5.375), new Inches(8));
+							new PixelsPerInch(80), new Inches(5.375), new Inches(8));
 				}
 			};
 		}
