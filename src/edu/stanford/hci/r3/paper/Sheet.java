@@ -277,17 +277,34 @@ public class Sheet {
 
 	/**
 	 * @param region
-	 *            if it doesn't exist, that implies a 0,0 offset.
-	 * @return
+	 *            if it doesn't exist, that implies a (0,0) offset.
+	 * @return the offset. Don't modify it directly, as you will mess up the stored offsets!
 	 */
 	public Coordinates getRegionOffset(Region region) {
-		final Coordinates coordinates = regionsAndRelativeLocations.get(region);
+		Coordinates coordinates = regionsAndRelativeLocations.get(region);
 		if (coordinates == null) {
-			return new Coordinates(new Inches(0), new Inches(0));
+			regionsAndRelativeLocations.put(region, new Coordinates(new Inches(0), new Inches(0)));
+			coordinates = regionsAndRelativeLocations.get(region);
 		}
 		return coordinates;
 	}
 
+	/**
+	 * Where is the region on this sheet? Add the region's internal location, plus the external offset stored in this sheet object.
+	 * @param region
+	 * @return
+	 */
+	public Coordinates getRegionLocationRelativeToSheet(Region region) {
+		Coordinates rOffset = getRegionOffset(region);
+		Units offsetX = rOffset.getX();
+		Units offsetY = rOffset.getY();
+
+		Coordinates location = new Coordinates();
+		location.setX(Units.add(offsetX, region.getOriginX()));
+		location.setY(Units.add(offsetY, region.getOriginY()));
+		return location;
+	}
+	
 	/**
 	 * @return the internal list of regions
 	 */

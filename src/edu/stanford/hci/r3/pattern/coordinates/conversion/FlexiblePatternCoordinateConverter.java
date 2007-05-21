@@ -114,6 +114,11 @@ public class FlexiblePatternCoordinateConverter implements PatternCoordinateConv
 				new Percentage(pctY, height)); // fraction of height
 	}
 
+	/**
+	 * We need an upper left corner... The anchor will be the minX,minY of the region.
+	 * 
+	 * @param coord
+	 */
 	private void setAnchor(StreamedPatternCoordinates coord) {
 		anchor = coord;
 		anchorXVal = anchor.getXVal();

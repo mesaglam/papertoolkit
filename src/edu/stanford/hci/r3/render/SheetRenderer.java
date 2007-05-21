@@ -6,7 +6,6 @@ import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import javax.media.jai.TiledImage;
@@ -22,7 +21,6 @@ import com.lowagie.text.pdf.PdfWriter;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.pattern.PatternJitter;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
@@ -62,9 +60,9 @@ public class SheetRenderer {
 	private TiledPatternGenerator generator;
 
 	/**
-	 * Allows us to save the pattern info to the same directory as the most recently rendered pdf.
+	 * Allows us to save the pattern info to the same directory as the most recently rendered pdf or ps.
 	 */
-	private File mostRecentlyRenderedPDFFile;
+	private File mostRecentlyRenderedFile;
 
 	/**
 	 * What color should we render the pattern in?
@@ -206,6 +204,51 @@ public class SheetRenderer {
 	}
 
 	/**
+	 * @param file
+	 */
+	private String renderPatternToPostScript() {
+		// read in the template file
+		String template = FileUtils.readFileIntoStringBuffer(
+				PaperToolkit.getResourceFile("/templates/PostscriptPatternTemplate.txt"), true).toString();
+
+		// add the width, height, and margin
+		template = template.replaceAll("__WIDTH_POINTS__", sheet.getWidth().getValueInPoints() + "");
+		template = template.replaceAll("__HEIGHT_POINTS__", sheet.getHeight().getValueInPoints() + "");
+
+		// get a large block of pattern the size of this sheet
+		final TiledPattern pattern = generator.getPattern(sheet.getWidth(), sheet.getHeight());
+
+		// for each region, figure out where it is on the sheet, and calculate the pattern coordinates
+		final List<Region> regions = sheet.getRegions();
+		for (Region r : regions) {
+			// We retrieve it from the HashMap so we can SET the values in the line below
+			final TiledPatternCoordinateConverter patternCoordinateConverter = (TiledPatternCoordinateConverter) patternInformation
+					.getPatternBoundsOfRegion(r);
+
+			Coordinates regionLocation = sheet.getRegionLocationRelativeToSheet(r);
+
+			// the tiledPattern encompasses the whole sheet
+			// we set the information of for the converter, by setting the information for the whole pattern,
+			// with a clipping bounds, defined by the region's location relative to
+			// the sheet's upper left corner
+			patternCoordinateConverter.setPatternInformationByReadingItFrom(pattern, regionLocation, r
+					.getWidth(), r.getHeight());
+		}
+
+		// xxx figure out the coordinates of the pattern here
+
+		// for now, create a string buffer and write to it...
+		StringBuilder patternString = new StringBuilder();
+		for (int row = 0; row < pattern.getNumTotalRows(); row++) {
+			final String patternRow = pattern.getPatternOnRow(row);
+			patternString.append("(" + patternRow + ") n\n");
+		}
+
+		template = template.replaceAll("__INSERT_PATTERN_HERE__", patternString.toString());
+		return template;
+	}
+
+	/**
 	 * We assume the g2d is big enough for us to draw this Sheet to.
 	 * 
 	 * By default, the transforms works at 72 dots per inch. Scale the transform beforehand if you would like
@@ -320,7 +363,7 @@ public class SheetRenderer {
 	 */
 	protected void renderToPDFContentLayers(File destPDFFile, PdfContentByte topLayer,
 			PdfContentByte bottomLayer) {
-		mostRecentlyRenderedPDFFile = destPDFFile;
+		mostRecentlyRenderedFile = destPDFFile;
 
 		final Units width = sheet.getWidth();
 		final Units height = sheet.getHeight();
@@ -352,12 +395,15 @@ public class SheetRenderer {
 	 * @param file
 	 */
 	public void renderToPostScript(File file) {
+		mostRecentlyRenderedFile = file;
+		
 		// layer for regions
-		EpsGraphics2D g2d = new EpsGraphics2D("PostScript Render");
-		
+		final EpsGraphics2D g2d = new EpsGraphics2D("PostScript Render");
+
 		// set the bounding box, and draw it, so that the PS file will be the right size
-		g2d.drawRect(0, 0, (int)sheet.getWidth().getValueInPoints(), (int)sheet.getHeight().getValueInPoints());
-		
+		g2d.drawRect(0, 0, (int) sheet.getWidth().getValueInPoints(), (int) sheet.getHeight()
+				.getValueInPoints());
+
 		// now that we have a G2D, we can just use our other G2D rendering method
 		renderToG2D(g2d);
 		String graphicsPostscript = g2d.toString();
@@ -382,32 +428,9 @@ public class SheetRenderer {
 			// just write the graphics to a file
 			FileUtils.writeStringToFile(graphicsPostscript, file);
 		}
-	}
 
-	/**
-	 * @param file
-	 */
-	private String renderPatternToPostScript() {
-		// read in the template file
-		String template = FileUtils.readFileIntoStringBuffer(
-				PaperToolkit.getResourceFile("/templates/PostscriptPatternTemplate.txt"), true).toString();
-
-		// add the width, height, and margin
-		template = template.replaceAll("__WIDTH_POINTS__", sheet.getWidth().getValueInPoints() + "");
-		template = template.replaceAll("__HEIGHT_POINTS__", sheet.getHeight().getValueInPoints() + "");
-
-		// get a large block of pattern the size of this sheet
-		final TiledPattern pattern = generator.getPattern(sheet.getWidth(), sheet.getHeight());
-
-		// for now, create a string buffer and write to it...
-		StringBuilder patternString = new StringBuilder();
-		for (int row = 0; row < pattern.getNumTotalRows(); row++) {
-			final String patternRow = pattern.getPatternOnRow(row);
-			patternString.append("(" + patternRow + ") n\n");
-		}
-
-		template = template.replaceAll("__INSERT_PATTERN_HERE__", patternString.toString());
-		return template;
+		// save the pattern info to the same directory automatically
+		savePatternInformation(); // do this automatically
 	}
 
 	/**
@@ -415,15 +438,17 @@ public class SheetRenderer {
 	 * PDF file.
 	 */
 	public void savePatternInformation() {
-		if (mostRecentlyRenderedPDFFile == null) {
+		if (mostRecentlyRenderedFile == null) {
 			System.err.println("SheetRenderer: We cannot save the pattern information "
-					+ "without a destination file. Please render a PDF first "
+					+ "without a destination file. Please render a PDF or PS first "
 					+ "so we know where to put the pattern configuration file!");
 		} else {
-			File parentDir = mostRecentlyRenderedPDFFile.getParentFile();
-			String fileName = mostRecentlyRenderedPDFFile.getName();
+			File parentDir = mostRecentlyRenderedFile.getParentFile();
+			String fileName = mostRecentlyRenderedFile.getName();
 			if (fileName.contains(".pdf")) {
 				fileName = fileName.replace(".pdf", ".patternInfo.xml");
+			} else if (fileName.contains(".ps")) {
+				fileName = fileName.replace(".ps", ".patternInfo.xml");
 			} else {
 				fileName = fileName + ".patternInfo.xml";
 			}
