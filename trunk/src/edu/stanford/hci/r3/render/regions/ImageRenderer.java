@@ -10,7 +10,9 @@ import edu.stanford.hci.r3.paper.regions.ImageRegion;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.graphics.ImageCache;
+import edu.stanford.hci.r3.util.graphics.JAIUtils;
 
 /**
  * <p>
@@ -47,24 +49,32 @@ public class ImageRenderer extends RegionRenderer {
 		if (RegionRenderer.DEBUG_REGIONS) {
 			super.renderToG2D(g2d);
 		}
-		// final AffineTransform oldTransform = new AffineTransform(g2d.getTransform());
 		final File file = imgRegion.getFile();
 		final Units units = imgRegion.getUnits();
 		final double ppi = imgRegion.getPixelsPerInch(); // default is 72
 		final double ppiConversion = 72 / ppi;
 		final double conv = units.getConversionTo(new Points());
-		final PlanarImage image = ImageCache.loadPlanarImage(file);
+		
+		// load the image
+		PlanarImage image = ImageCache.loadPlanarImage(file);
+		if (imgRegion.isActive()) {
+			DebugUtils.println("Image an Active Region. Blurring the Image to Increase Contrast w/ Pattern Dots.");
+			image = JAIUtils.blur(image);
+		}
+		
 		final AffineTransform transform = new AffineTransform();
 
-		// System.out.println(imgRegion);
+		// System.out.println("Rendering " + imgRegion);
 
 		// translate to the origin first!
 		transform.translate(imgRegion.getX() * conv, imgRegion.getY() * conv);
+
 		// resize the image based on its scale
 		transform.scale(imgRegion.getScaleX(), imgRegion.getScaleY());
+
 		// resize the image based on its pixelsPerInch
 		transform.scale(ppiConversion, ppiConversion);
+		
 		g2d.drawRenderedImage(image, transform);
-		// g2d.setTransform(oldTransform);
 	}
 }

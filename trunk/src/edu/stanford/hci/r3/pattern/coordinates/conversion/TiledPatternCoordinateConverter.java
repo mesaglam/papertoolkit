@@ -3,6 +3,8 @@ package edu.stanford.hci.r3.pattern.coordinates.conversion;
 import edu.stanford.hci.r3.pattern.TiledPattern;
 import edu.stanford.hci.r3.units.PatternDots;
 import edu.stanford.hci.r3.units.Percentage;
+import edu.stanford.hci.r3.units.Units;
+import edu.stanford.hci.r3.units.coordinates.Coordinates;
 import edu.stanford.hci.r3.units.coordinates.PercentageCoordinates;
 import edu.stanford.hci.r3.units.coordinates.StreamedPatternCoordinates;
 import edu.stanford.hci.r3.util.DebugUtils;
@@ -22,6 +24,14 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 
 	private int bottomMostVoidSpaceInDots;
 
+	private double clipH;
+
+	private double clipW;
+
+	private double clipX;
+
+	private double clipY;
+
 	/**
 	 * The Width of a Tile, in dots.
 	 */
@@ -33,8 +43,12 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	private int dotsPerTileVertical;
 
 	/**
-	 * Right Boundary in Physical Coordinates. Thus, even if your tiling looks like this:
-	 * <blockquote><code>
+	 * Whether the region actually takes up only a small portion of this tiled pattern block.
+	 */
+	private boolean hasClippingBounds = false;
+
+	/**
+	 * Right Boundary in Physical Coordinates. Thus, even if your tiling looks like this: <blockquote><code>
 	 *  [0][1][2]<br>
 	 *  [3][4][5]
 	 * </code></blockquote>
@@ -141,10 +155,10 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	 * A constructor for when you need to set the information later (The Lazy Approach).
 	 * 
 	 * @param regionName
-	 *            the Region that this coordinate converter was created for. The reason we don't
-	 *            pass in the whole region object is because this converter WILL be serialized and
-	 *            unserialized. Due to XStream's limitations, we will have to resolve the region at
-	 *            runtime using the region's name instead.
+	 *            the Region that this coordinate converter was created for. The reason we don't pass in the
+	 *            whole region object is because this converter WILL be serialized and unserialized. Due to
+	 *            XStream's limitations, we will have to resolve the region at runtime using the region's name
+	 *            instead.
 	 */
 	public TiledPatternCoordinateConverter(String regionName) {
 		this(regionName, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -166,12 +180,11 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 
 	/**
 	 * <p>
-	 * This object deals with physical coordinates (the type that you get when you stream
-	 * coordinates from the Nokia SU-1B). They are all huge numbers, but we store them in
-	 * PatternDots objects. Although we can convert the PatternDots objects into other Units, it
-	 * doesn't really make sense, as the dots are specified in the world of Anoto's gargantuan
-	 * pattern space. For example, if you converted the xOrigin to inches, you would get a beast of
-	 * a number.
+	 * This object deals with physical coordinates (the type that you get when you stream coordinates from the
+	 * Nokia SU-1B). They are all huge numbers, but we store them in PatternDots objects. Although we can
+	 * convert the PatternDots objects into other Units, it doesn't really make sense, as the dots are
+	 * specified in the world of Anoto's gargantuan pattern space. For example, if you converted the xOrigin
+	 * to inches, you would get a beast of a number.
 	 * </p>
 	 * <p>
 	 * We precompute the boundaries so that we can do contains(...) tests faster.
@@ -203,10 +216,9 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	 *            the vertical padding between adjacent tiles (tends to be 0, in our experience)
 	 */
 	public TiledPatternCoordinateConverter(String theRegionName, int startTile, int nTilesAcross,
-			int nTilesDown, int dotsPerTileHoriz, int dotsPerTileVert,
-			double numHorizDotsBetweenTiles, double numVertDotsBetweenTiles,
-			double leftMostPatternX, double topMostPatternY, double numDotsAcross,
-			double numDotsDown) {
+			int nTilesDown, int dotsPerTileHoriz, int dotsPerTileVert, double numHorizDotsBetweenTiles,
+			double numVertDotsBetweenTiles, double leftMostPatternX, double topMostPatternY,
+			double numDotsAcross, double numDotsDown) {
 		setRegionName(theRegionName);
 		setStartingTile(startTile);
 		setTileConfiguration(nTilesAcross, nTilesDown);
@@ -217,19 +229,19 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
-	 * To make it easier to use this class, this method will be called EVERY TIME one of the input
-	 * values is updated, to keep internal state consistent.
+	 * To make it easier to use this class, this method will be called EVERY TIME one of the input values is
+	 * updated, to keep internal state consistent.
 	 * 
-	 * Unfortunately, have this flexible design, the main constructor will call this method a total
-	 * of four times. The values will be finally correct once the last call, to
-	 * setTileToTileOffsetInDots(...) is called.
+	 * Unfortunately, have this flexible design, the main constructor will call this method a total of four
+	 * times. The values will be finally correct once the last call, to setTileToTileOffsetInDots(...) is
+	 * called.
 	 * 
-	 * ASSUMPTION: Either the dots between tiles is larger than a single tile OR it is 0. Weird
-	 * things can happen if the tiles are staggered, such that the dots between tiles is smaller
-	 * than the width or height of a tile.
+	 * ASSUMPTION: Either the dots between tiles is larger than a single tile OR it is 0. Weird things can
+	 * happen if the tiles are staggered, such that the dots between tiles is smaller than the width or height
+	 * of a tile.
 	 * 
-	 * This is an OK assumption because in all the Anoto pattern we have seen, Y values don't seem
-	 * to change from page to page.
+	 * This is an OK assumption because in all the Anoto pattern we have seen, Y values don't seem to change
+	 * from page to page.
 	 */
 	private void calculateCachedDimensions() {
 
@@ -266,9 +278,9 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
-	 * For performance, we precompute the boundaries and store just those numbers. This method's
-	 * likely faster than the other contains test, especially if you already have the x and y values
-	 * and do not need to create a StreamedPatternLocation object.
+	 * For performance, we precompute the boundaries and store just those numbers. This method's likely faster
+	 * than the other contains test, especially if you already have the x and y values and do not need to
+	 * create a StreamedPatternLocation object.
 	 * 
 	 * @param xValPatternDots
 	 *            x value of the location, in PatternDots (physical/streamed coordinates)
@@ -277,10 +289,12 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	 * @return
 	 * 
 	 * 
-	 * WARNING: POSSIBLY BUGGY, Due to New way of iterating through Pattern TODO: Fix Bug ~Here....
+	 * WARNING: POSSIBLY BUGGY, Due to New way of iterating through Pattern
 	 * 
-	 * TODO: Implement a FASTER reject. Contains is called many many times. We want to reject as
-	 * soon as is possible. Also, rejects happen a lot more than accepts.
+	 * TODO: Fix Bug ~Here....
+	 * 
+	 * TODO: Implement a FASTER reject. Contains is called many many times. We want to reject as soon as is
+	 * possible. Also, rejects happen a lot more than accepts.
 	 */
 	public boolean contains(final double xValPatternDots, final double yValPatternDots) {
 		// has to be to the right of the leftmost border
@@ -299,13 +313,54 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 		final boolean notInHorizontalGap = ((xValPatternDots - originX) % tileWidthIncludingPadding) < dotsPerTileHorizontal;
 		final boolean notInVerticalGap = ((yValPatternDots - originY) % tileHeightIncludingPadding) < dotsPerTileVertical;
 
-		return insideLeftBoundary && insideTopBoundary && insideRightBoundary
-				&& insideBottomBoundary && notInHorizontalGap && notInVerticalGap;
+		// if there is a clipping bounds, it has to fall inside the clip
+		boolean inClip = true;
+		if (hasClippingBounds) {
+			// DebugUtils.println("Origin: " + originX + ", " + originY);
+			// DebugUtils.println("Incoming X,Y: " + xValPatternDots + ", " + yValPatternDots);
+
+			// basically a call to get relative location
+
+			final double xOffset = xValPatternDots - originX;
+			final double yOffset = yValPatternDots - originY;
+
+			// DebugUtils.println("Relative X & Y: " + xOffset + ", " + yOffset);
+
+			final int tileNumHoriz = getTileNumHorizontal(xValPatternDots);
+			final int tileNumVert = getTileNumVertical(yValPatternDots);
+
+			// DebugUtils.println("Tile X & Y: " + tileNumHoriz + ", " + tileNumVert);
+
+			final double xRelativeToTile = xOffset - (tileNumHoriz * numDotsHorizontalBetweenTiles);
+			final double yRelativeToTile = yOffset - (tileNumVert * numDotsVerticalBetweenTiles);
+
+			final int tileOffset = Math.max(tileNumHoriz, tileNumVert);
+
+			// DebugUtils.println("Tile Offset: " + tileOffset);
+
+			final int tileRow = tileOffset / numTilesAcross;
+			final int tileCol = tileOffset % numTilesAcross;
+
+			// how many dots are we in x & y
+			// this is the coordinate in absolute dots, relative to the upper left corner of the region
+			final double totalDotsX = tileCol * dotsPerTileHorizontal + xRelativeToTile;
+			final double totalDotsY = tileRow * dotsPerTileVertical + yRelativeToTile;
+
+			// DebugUtils.println(totalDotsX + " in X: [" + clipX + " " + (clipX + clipW) + "]");
+			// DebugUtils.println(totalDotsY + " in Y: [" + clipY + " " + (clipY + clipH) + "]");
+
+			inClip = (totalDotsX >= clipX) && (totalDotsX <= clipX + clipW) && (totalDotsY >= clipY)
+					&& (totalDotsY <= clipY + clipH);
+			// DebugUtils.println("In Clip? " + inClip);
+		}
+
+		return insideLeftBoundary && insideTopBoundary && insideRightBoundary && insideBottomBoundary
+				&& notInHorizontalGap && notInVerticalGap && inClip;
 	}
 
 	/**
-	 * If you have the values and do not need to create a StreamedPatternCoordinates object, use the
-	 * other contains(...) method.
+	 * If you have the values and do not need to create a StreamedPatternCoordinates object, use the other
+	 * contains(...) method.
 	 * 
 	 * @param location
 	 * @return whether the tile configuration contains this location
@@ -328,6 +383,8 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
+	 * The name of the SINGLE REGION that this coordinate converter handles.
+	 * 
 	 * @return
 	 */
 	public String getRegionName() {
@@ -335,8 +392,8 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
-	 * Convert the input coordinate into a percentage location relative to this tile configuration
-	 * (a region that has tiled pattern)
+	 * Convert the input coordinate into a percentage location relative to this tile configuration (a region
+	 * that has tiled pattern)
 	 * 
 	 * @return
 	 */
@@ -347,8 +404,7 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 
 		final double xRelativeToTile = xOffset
 				- (getTileNumHorizontal(coord) * numDotsHorizontalBetweenTiles);
-		final double yRelativeToTile = yOffset
-				- (getTileNumVertical(coord) * numDotsVerticalBetweenTiles);
+		final double yRelativeToTile = yOffset - (getTileNumVertical(coord) * numDotsVerticalBetweenTiles);
 
 		final int tileOffset = getTileNumber(coord) - startingTile;
 
@@ -356,15 +412,28 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 		final int tileCol = tileOffset % numTilesAcross;
 
 		// how many dots are we in x & y
+		// this is the coordinate in absolute dots, relative to the upper left corner of the region
 		final double totalDotsX = tileCol * dotsPerTileHorizontal + xRelativeToTile;
 		final double totalDotsY = tileRow * dotsPerTileVertical + yRelativeToTile;
 
-		final double pctX = totalDotsX / numTotalDotsAcross * 100;
-		final double pctY = totalDotsY / numTotalDotsDown * 100;
+		if (hasClippingBounds) {
+			// DebugUtils.println(totalDotsX + " in X: [" + clipX + " " + (clipX + clipW) + "]");
+			// DebugUtils.println(totalDotsY + " in Y: [" + clipY + " " + (clipY + clipH) + "]");
 
-		return new PercentageCoordinates( // 
-				new Percentage(pctX, numTotalDotsAcrossObj), // fraction of width
-				new Percentage(pctY, numTotalDotsDownObj)); // fraction of height
+			final double pctX = (totalDotsX - clipX) / clipW * 100;
+			final double pctY = (totalDotsY - clipY) / clipH * 100;
+
+			return new PercentageCoordinates( // 
+					new Percentage(pctX, numTotalDotsAcrossObj), // fraction of width
+					new Percentage(pctY, numTotalDotsDownObj)); // fraction of height
+		} else {
+			final double pctX = totalDotsX / numTotalDotsAcross * 100;
+			final double pctY = totalDotsY / numTotalDotsDown * 100;
+
+			return new PercentageCoordinates( // 
+					new Percentage(pctX, numTotalDotsAcrossObj), // fraction of width
+					new Percentage(pctY, numTotalDotsDownObj)); // fraction of height
+		}
 	}
 
 	/**
@@ -378,8 +447,8 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	 * This should work if the pattern space is short and wide, or thin and tall...
 	 * 
 	 * @param coord
-	 * @return the tile number of this coordinate. Returns -1 if this coordinate is not contained by
-	 *         this tile configuration.
+	 * @return the tile number of this coordinate. Returns -1 if this coordinate is not contained by this tile
+	 *         configuration.
 	 */
 	public int getTileNumber(StreamedPatternCoordinates coord) {
 		if (!contains(coord)) {
@@ -396,11 +465,17 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
+	 * Works on Raw Coordinates
+	 * 
 	 * @param coord
 	 * @return
 	 */
 	private int getTileNumHorizontal(StreamedPatternCoordinates coord) {
 		return (int) Math.floor((coord.getXVal() - originX) / tileWidthIncludingPadding);
+	}
+
+	private int getTileNumHorizontal(double xVal) {
+		return (int) Math.floor((xVal - originX) / tileWidthIncludingPadding);
 	}
 
 	/**
@@ -409,6 +484,25 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	 */
 	private int getTileNumVertical(StreamedPatternCoordinates coord) {
 		return (int) Math.floor((coord.getYVal() - originY) / tileHeightIncludingPadding);
+	}
+
+	private int getTileNumVertical(double yVal) {
+		return (int) Math.floor((yVal - originY) / tileHeightIncludingPadding);
+	}
+
+	/**
+	 * @param origin
+	 * @param width
+	 * @param height
+	 */
+	private void setClippingBounds(Coordinates origin, Units width, Units height) {
+		hasClippingBounds = true;
+		clipX = origin.getX().getValueInPatternDots();
+		clipY = origin.getY().getValueInPatternDots();
+		clipW = width.getValueInPatternDots();
+		clipH = height.getValueInPatternDots();
+		DebugUtils.println("The Clipping Bounds is set to: x=" + clipX + ", y=" + clipY + " w=" + clipW
+				+ " h=" + clipH);
 	}
 
 	/**
@@ -462,27 +556,35 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 		setTotalSizeInDots(p.getNumTotalColumns(), p.getNumTotalRows());
 
 		DebugUtils.println("");
-		System.out.println("=========================");
+		System.out.println("=====================================");
 		System.out.println(p);
 		System.out.println(this);
-		System.out.println("=========================");
+		System.out.println("=====================================");
+	}
 
+	/**
+	 * @param pattern
+	 * @param regionLocation
+	 */
+	public void setPatternInformationByReadingItFrom(TiledPattern p, Coordinates regionOrigin,
+			Units regionWidth, Units regionHeight) {
+		setPatternInformationByReadingItFrom(p);
+		setClippingBounds(regionOrigin, regionWidth, regionHeight);
 	}
 
 	/**
 	 * @param rName
-	 *            the name of the region that this converter manages. It's important to keep your
-	 *            regions uniquely identifiable.
+	 *            the name of the region that this converter manages. It's important to keep your regions
+	 *            uniquely identifiable.
 	 */
 	public void setRegionName(String rName) {
 		regionName = rName;
 	}
 
 	/**
-	 * The number of the first (top-left) tile; this is largely arbitrary, but _may_ correlate with
-	 * a pattern file number N.pattern --> N as a starting tile number. This makes calculations
-	 * easier for certain operations, such as finding out which page of a notebook your user has
-	 * written on.
+	 * The number of the first (top-left) tile; this is largely arbitrary, but _may_ correlate with a pattern
+	 * file number N.pattern --> N as a starting tile number. This makes calculations easier for certain
+	 * operations, such as finding out which page of a notebook your user has written on.
 	 * 
 	 * @param startTile
 	 */
@@ -491,9 +593,9 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
-	 * The number of tiles owned by this converter. Usually, this converter will map to a region on
-	 * a sheet. This means that the tiledPatternConverter will need to know how many tiles of
-	 * pattern the region contains. It will then help us find out where on the region we are.
+	 * The number of tiles owned by this converter. Usually, this converter will map to a region on a sheet.
+	 * This means that the tiledPatternConverter will need to know how many tiles of pattern the region
+	 * contains. It will then help us find out where on the region we are.
 	 * 
 	 * @param nTilesAcross
 	 * @param nTilesDown
@@ -505,8 +607,8 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
-	 * How wide and tall are these tiles? We assume uniform tiles (except for the rightmost and
-	 * bottommost tiles)
+	 * How wide and tall are these tiles? We assume uniform tiles (except for the rightmost and bottommost
+	 * tiles)
 	 * 
 	 * @param dotsPerTileHoriz
 	 * @param dotsPerTileVert
@@ -523,8 +625,7 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	 * @param numHorizDotsBetweenTiles
 	 * @param numVertDotsBetweenTiles
 	 */
-	public void setTileToTileOffsetInDots(double numHorizDotsBetweenTiles,
-			double numVertDotsBetweenTiles) {
+	public void setTileToTileOffsetInDots(double numHorizDotsBetweenTiles, double numVertDotsBetweenTiles) {
 		// what is the x offset between the origins of two adjacent tiles?
 		// this is the width of a tile, plus a padding that anoto creates when you use the FDK to
 		// generate pattern
@@ -538,8 +639,8 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
-	 * Set the size of this tile configuration, irrespective of the tiling. This SHOULD be able to
-	 * calculate the extra space on the last tile that is NOT a part of our configuration.
+	 * Set the size of this tile configuration, irrespective of the tiling. This SHOULD be able to calculate
+	 * the extra space on the last tile that is NOT a part of our configuration.
 	 * 
 	 * @param numDotsAcross
 	 * @param numDotsDown

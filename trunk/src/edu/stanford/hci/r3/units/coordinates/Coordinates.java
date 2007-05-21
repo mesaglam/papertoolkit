@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.units.coordinates;
 
+import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Units;
 
 /**
@@ -26,6 +27,21 @@ public class Coordinates {
 	protected Units y;
 
 	/**
+	 * 
+	 */
+	public Coordinates() {
+		this(0, 0);
+	}
+
+	/**
+	 * @param xInches
+	 * @param yInches
+	 */
+	public Coordinates(double xInches, double yInches) {
+		this(new Inches(xInches), new Inches(yInches));
+	}
+
+	/**
 	 * @param x
 	 * @param y
 	 */
@@ -35,14 +51,14 @@ public class Coordinates {
 	}
 
 	/**
-	 * @return
+	 * @return the x value of this 2D coordinate
 	 */
 	public Units getX() {
 		return x;
 	}
 
 	/**
-	 * @return
+	 * @return the y value of this 2D coordinate
 	 */
 	public Units getY() {
 		return y;

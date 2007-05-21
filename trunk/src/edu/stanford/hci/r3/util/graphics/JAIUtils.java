@@ -16,6 +16,7 @@ import java.io.File;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.JAI;
+import javax.media.jai.KernelJAI;
 import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.TiledImage;
@@ -23,19 +24,104 @@ import javax.swing.SwingUtilities;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt"> BSD
- * License</a>.
+ * Allows you to manipulate and work with images in Java Advanced Imaging (JAI).
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class JAIUtils {
 
+	// different "kernels" for convolution and interpolation, etc...
+	public enum Kernel {
+		Bicubic, Bilinear, Box, Gaussian, Laplacian, Nearest, Peak, Triangle
+	}
+
+	/**
+	 * Flat top, 1/9 all around... Averages the nine pixels and deposits the result into the center pixel.
+	 */
+	public static final KernelJAI KERNEL_BOX = new KernelJAI(3, 3, //
+			new float[] { 1 / 9f, 1 / 9f, 1 / 9f, //
+					1 / 9f, 1 / 9f, 1 / 9f, //
+					1 / 9f, 1 / 9f, 1 / 9f });
+
+	/**
+	 * Comment for <code>kernelGaussian</code>
+	 */
+	public static final KernelJAI KERNEL_GAUSSIAN = new KernelJAI(3, 3, //
+			new float[] { 0.0105f, 0.0812f, 0.0105f, //
+					0.0812f, 0.6332f, 0.0812f, //
+					0.0105f, 0.0812f, 0.0105f });
+
+	/**
+	 * Comment for <code>kernelLaplacian</code>
+	 */
+	public static final KernelJAI KERNEL_LAPLACIAN = new KernelJAI(3, 3, //
+			new float[] { 1, -2, 1, //
+					-2, 5, -2, //
+					1, -2, 1 });
+
 	/**
 	 * border extender, reflects the pixels like a mirror.
 	 */
 	private static final RenderingHints RH_BORDER_REFLECT = new RenderingHints(JAI.KEY_BORDER_EXTENDER,
 			BorderExtender.createInstance(BorderExtender.BORDER_REFLECT));
+
+	/**
+	 * Blur this image with a box filter.
+	 * 
+	 * @param img
+	 * @return
+	 */
+	public static PlanarImage blur(PlanarImage img) {
+		return convolve(img, Kernel.Box);
+	}
+
+	/**
+	 * Hopefully, this complicated way to convolve fixes the border issues...
+	 * 
+	 * @param image
+	 * @param kernel
+	 * @return
+	 */
+	public static PlanarImage convolve(PlanarImage image, Kernel kernel) {
+		KernelJAI k = null;
+
+		switch (kernel) {
+		case Gaussian:
+			k = KERNEL_GAUSSIAN;
+			break;
+		case Laplacian:
+			k = KERNEL_LAPLACIAN;
+			break;
+		case Box:
+			k = KERNEL_BOX;
+			break;
+		default:
+			k = KERNEL_LAPLACIAN;
+		}
+
+		// the kernels have their default required padding
+		int top = k.getTopPadding();
+		int left = k.getLeftPadding();
+		int right = k.getRightPadding();
+		int bottom = k.getBottomPadding();
+
+		// SystemUtilities.println(top + " " + left + " " + right + " " + bottom);
+
+		final PlanarImage paddedImage = pad(image, left, right, top, bottom, BorderExtender.BORDER_REFLECT);
+		final PlanarImage convolved = JAI.create("convolve", paddedImage, k, RH_BORDER_REFLECT);
+
+		// SystemUtilities.println(image.getWidth() + " " + image.getHeight());
+		// SystemUtilities.println(paddedImage.getWidth() + " " + paddedImage.getHeight());
+
+		// we don't want the border, though, in the final result
+		final PlanarImage result = JAIUtils.crop(convolved, left, top, image.getWidth(), image.getHeight());
+		return result;
+	}
 
 	/**
 	 * returns a writable buffer that is compatible with and (depending on the boolean flag) contains the same
@@ -187,6 +273,27 @@ public class JAIUtils {
 		pb.add(new Float(width));
 		pb.add(new Float(height));
 		return JAI.create("crop", pb);
+	}
+
+	/**
+	 * BorderExtender... This adds pixels all around the image.
+	 * 
+	 * @param src
+	 * @param left
+	 * @param right
+	 * @param top
+	 * @param bottom
+	 * @return
+	 */
+	public static PlanarImage pad(PlanarImage src, int left, int right, int top, int bottom, int extenderType) {
+		final ParameterBlock pb = new ParameterBlock();
+		pb.addSource(src);
+		pb.add(new Integer(left)); // left
+		pb.add(new Integer(right)); // right
+		pb.add(new Integer(top)); // top
+		pb.add(new Integer(bottom)); // bottom
+		pb.add(BorderExtender.createInstance(extenderType));
+		return translate(JAI.create("border", pb), left, top);
 	}
 
 	/**

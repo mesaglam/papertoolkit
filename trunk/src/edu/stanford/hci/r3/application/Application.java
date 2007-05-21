@@ -135,6 +135,7 @@ public class Application {
 	 * Alternatively, we can warn when there is ambiguity in loading patternInfo files.
 	 * 
 	 * @param sheet
+	 * @deprecated until we can find out a better way to load a patternInfo.xml file
 	 */
 	public void addSheet(Sheet sheet) {
 		// ensure that a mapping object is created

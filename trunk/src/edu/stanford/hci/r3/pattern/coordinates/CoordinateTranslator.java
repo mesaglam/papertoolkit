@@ -1,6 +1,5 @@
 package edu.stanford.hci.r3.pattern.coordinates;
 
-import edu.stanford.hci.r3.pattern.PatternPackage;
 
 /**
  * <p>

@@ -24,19 +24,17 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * This class stores mappings from regions of pattern (and their coordinates in Anoto space) to
- * Sheets and locations on those sheets. This mapping works both ways. Given a location on the
- * sheet, we should be able to find the pattern coordinate. Given a coordinate, we should be able to
- * find the location on the sheet.
+ * This class stores mappings from regions of pattern (and their coordinates in Anoto space) to Sheets and
+ * locations on those sheets. This mapping works both ways. Given a location on the sheet, we should be able
+ * to find the pattern coordinate. Given a coordinate, we should be able to find the location on the sheet.
  * </p>
  * <p>
- * An instance of this object should be built when a PDF is rendered with pattern. At that moment,
- * regions on a sheet are bound to specific physical coordinates. Each application should store this
- * mapping per sheet.
+ * An instance of this object should be built when a PDF is rendered with pattern. At that moment, regions on
+ * a sheet are bound to specific physical coordinates. Each application should store this mapping per sheet.
  * </p>
  * <p>
- * The SheetRenderer class uses this class to save the mapping to disk, so that a future instance
- * can load the mapping and run the application.
+ * The SheetRenderer class uses this class to save the mapping to disk, so that a future instance can load the
+ * mapping and run the application.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -51,8 +49,7 @@ public class PatternLocationToSheetLocationMapping {
 	private static final String[] PATTERN_INFO_EXTENSION_FILTER = new String[] { "patternInfo.xml" };
 
 	/**
-	 * Binds regions to pattern bounds, specified in logical (batched) and physical (streamed)
-	 * coordinates.
+	 * Binds regions to pattern bounds, specified in logical (batched) and physical (streamed) coordinates.
 	 */
 	private Map<Region, PatternCoordinateConverter> regionToPatternBounds = new HashMap<Region, PatternCoordinateConverter>();
 
@@ -62,13 +59,13 @@ public class PatternLocationToSheetLocationMapping {
 	private Sheet sheet;
 
 	/**
-	 * One mapping object per sheet. Create this object after you have added all the regions that
-	 * you need to the sheet. This class will maintain a mapping of Regions to physical (streaming)
-	 * and logical (batched) pen coordinates.
+	 * One mapping object per sheet. Create this object after you have added all the regions that you need to
+	 * the sheet. This class will maintain a mapping of Regions to physical (streaming) and logical (batched)
+	 * pen coordinates.
 	 * 
-	 * This constructor will try to load the pattern configuration automatically. If you want to set
-	 * the mapping manually, you will need to load the map with TiledPatternCoordinateConverters so
-	 * that active regions can be accessed.
+	 * This constructor will try to load the pattern configuration automatically. If you want to set the
+	 * mapping manually, you will need to load the map with TiledPatternCoordinateConverters so that active
+	 * regions can be accessed.
 	 * 
 	 * @param s
 	 */
@@ -95,15 +92,15 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * Checks whether this mapping contains the pen sample (streamed coordinates). If it does, it
-	 * returns the TiledPatternCoordinateConverter object for that sample. If not, it returns null.
+	 * Checks whether this mapping contains the pen sample (streamed coordinates). If it does, it returns the
+	 * TiledPatternCoordinateConverter object for that sample. If not, it returns null.
 	 * 
 	 * @param sample
 	 * @return
 	 */
 	public List<PatternCoordinateConverter> getCoordinateConvertersForSample(PenSample sample) {
 		List<PatternCoordinateConverter> coordinateConverters = new ArrayList<PatternCoordinateConverter>();
-		
+
 		for (Region r : regionToPatternBounds.keySet()) {
 			PatternCoordinateConverter converter = regionToPatternBounds.get(r);
 			final StreamedPatternCoordinates coord = new StreamedPatternCoordinates(sample);
@@ -134,15 +131,15 @@ public class PatternLocationToSheetLocationMapping {
 	 * @return the converter that enables you to figure out where on the region a sample falls.
 	 */
 	public PatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
-		DebugUtils.println(regionToPatternBounds.size() + " " + r.getName() + " "
+		DebugUtils.println("Pattern Bounds: " + regionToPatternBounds.size() + " " + r.getName() + " "
 				+ regionToPatternBounds);
 
 		return regionToPatternBounds.get(r);
 	}
 
 	/**
-	 * An advanced method, to allow us to inspect the region <--> pattern mapping. We can tell if
-	 * the pattern map has an area of 0, which probably means it is uninitialized!
+	 * An advanced method, to allow us to inspect the region <--> pattern mapping. We can tell if the pattern
+	 * map has an area of 0, which probably means it is uninitialized!
 	 * 
 	 * @return
 	 */
@@ -158,9 +155,9 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * For all ACTIVE regions, we need a coordinate converter that will enable us to find out where
-	 * the pen is on the region. We should be able to add new regions to a sheet after the fact, so
-	 * we should have the ability to reinitialize this map later on.
+	 * For all ACTIVE regions, we need a coordinate converter that will enable us to find out where the pen is
+	 * on the region. We should be able to add new regions to a sheet after the fact, so we should have the
+	 * ability to reinitialize this map later on.
 	 * 
 	 * @param regions
 	 */
@@ -196,8 +193,7 @@ public class PatternLocationToSheetLocationMapping {
 
 		for (File path : configurationPaths) {
 			// System.out.println(path);
-			List<File> patternInfoFiles = FileUtils.listVisibleFiles(path,
-					PATTERN_INFO_EXTENSION_FILTER);
+			List<File> patternInfoFiles = FileUtils.listVisibleFiles(path, PATTERN_INFO_EXTENSION_FILTER);
 			// System.out.println(patternInfoFiles.size());
 			for (File f : patternInfoFiles) {
 				DebugUtils.println("Trying to automatically load " + f.getName());
@@ -207,8 +203,8 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * On Nov 9, 2006, I changed this to use the interface... I'll need to run some regression tests
-	 * to make sure I didn't break anything.
+	 * On Nov 9, 2006, I changed this to use the interface... I'll need to run some regression tests to make
+	 * sure I didn't break anything.
 	 * 
 	 * @param xmlFile
 	 */
@@ -238,8 +234,8 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * Due to xstream's inability to serial/unserialize really complicated classes, we will save
-	 * only a regionName+origin --> pattern info mapping
+	 * Due to xstream's inability to serial/unserialize really complicated classes, we will save only a
+	 * regionName+origin --> pattern info mapping
 	 * 
 	 * @param xmlFile
 	 */
@@ -267,9 +263,9 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * For a region on our sheet, update the coordinate information so that it can be accessed at
-	 * runtime by our EventEngine. The coordinateInfo object will translate incoming samples to
-	 * coordinates relative to the region.
+	 * For a region on our sheet, update the coordinate information so that it can be accessed at runtime by
+	 * our EventEngine. The coordinateInfo object will translate incoming samples to coordinates relative to
+	 * the region.
 	 * 
 	 * @param r
 	 * @param coordinateInfo
@@ -287,8 +283,7 @@ public class PatternLocationToSheetLocationMapping {
 	}
 
 	/**
-	 * A convenience function for mapping a contiguous (single-tile) patterned area to a region
-	 * object.
+	 * A convenience function for mapping a contiguous (single-tile) patterned area to a region object.
 	 * 
 	 * @param region
 	 * @param x
@@ -298,8 +293,8 @@ public class PatternLocationToSheetLocationMapping {
 	 */
 	public void setPatternInformationOfRegion(Region region, //
 			PatternDots x, PatternDots y, PatternDots width, PatternDots height) {
-		setPatternInformationOfRegion(region, new TiledPatternCoordinateConverter(region.getName(),
-				x.getValue(), y.getValue(), //
+		setPatternInformationOfRegion(region, new TiledPatternCoordinateConverter(region.getName(), x
+				.getValue(), y.getValue(), //
 				MathUtils.rint(width.getValue()), MathUtils.rint(height.getValue())));
 	}
 
