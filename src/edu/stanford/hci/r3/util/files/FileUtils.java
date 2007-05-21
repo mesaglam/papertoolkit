@@ -1,6 +1,7 @@
 package edu.stanford.hci.r3.util.files;
 
 import java.awt.Component;
+import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
@@ -61,6 +63,18 @@ public class FileUtils {
 	 * one that we keep around, for reuse
 	 */
 	private static JFileChooser fileChooser;
+
+	/**
+	 * @param htmlFile
+	 */
+	public static void browseToLocalHTMLFile(File htmlFile) {
+		final URI uri = htmlFile.toURI();
+		try {
+			Desktop.getDesktop().browse(uri);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * @param srcFileOrDir
@@ -281,7 +295,6 @@ public class FileUtils {
 		return FileSystemView.getFileSystemView().getHomeDirectory();
 	}
 
-	
 	/**
 	 * @return on a Windows System, the My Documents Directory
 	 */
