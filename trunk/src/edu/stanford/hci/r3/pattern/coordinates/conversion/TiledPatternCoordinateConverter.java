@@ -563,6 +563,9 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	}
 
 	/**
+	 * The region only occupies a portion of the large block of pattern p. The clipping bounds defines the
+	 * area that the region occupies.
+	 * 
 	 * @param pattern
 	 * @param regionLocation
 	 */

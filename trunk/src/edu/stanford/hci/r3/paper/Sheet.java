@@ -101,6 +101,16 @@ public class Sheet {
 	}
 
 	/**
+	 * @param width
+	 * @param height
+	 * @param unitsClass
+	 */
+	public Sheet(double width, double height, Units units) {
+		this(units.getUnitsObjectOfSameTypeWithValue(width), 
+			 units.getUnitsObjectOfSameTypeWithValue(height));
+	}
+	
+	/**
 	 * A convenience method for our American friends. =)
 	 * 
 	 * @param widthInches

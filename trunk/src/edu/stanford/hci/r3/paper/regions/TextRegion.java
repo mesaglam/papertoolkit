@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.render.RegionRenderer;
 import edu.stanford.hci.r3.render.regions.TextRenderer;
+import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
 import edu.stanford.hci.r3.util.StringUtils;
@@ -25,8 +26,10 @@ import edu.stanford.hci.r3.util.StringUtils;
  */
 public class TextRegion extends Region {
 
+	private static final Font DEFAULT_FONT = new Font("Trebuchet MS", Font.PLAIN, 12);
+
 	/**
-	 * 
+	 * The bounds of the text region... in the units of referenceUnit.
 	 */
 	private Rectangle2D bounds;
 
@@ -46,9 +49,20 @@ public class TextRegion extends Region {
 	private Points heightInPoints;
 
 	/**
+	 * True if the text should be automatically line wrapped to the width of the region. If this is true, the
+	 * lines will not go beyond the region in either dimension.
+	 */
+	private boolean isLineWrapped = false;
+
+	/**
 	 * In case the 'text' variable is multiline, we store each individual line in this array.
 	 */
 	private String[] lines;
+
+	/**
+	 * Maximum number of lines to typeset. If <= 0, all lines will be typeset (up to the size of the region)
+	 */
+	private int maxLines = -1;
 
 	/**
 	 * 
@@ -65,29 +79,29 @@ public class TextRegion extends Region {
 	 */
 	private String text;
 
+	/**
+	 * 
+	 */
 	private Points widthInPoints;
 
 	/**
-	 * True if the text should be automatically line wrapped to the width
-	 * of the region.  If this is true, the lines will not go beyond the region
-	 * in either dimension.
+	 * The quick and dirty constructor... 12 Point, Trebuchet MS
+	 * 
+	 * @param theText
+	 * @param xInches
+	 * @param yInches
 	 */
-	private boolean isLineWrapped = false;
-	
-	/**
-	 * Maximum number of lines to typeset.  If <= 0, all lines will be
-	 * typeset (up to the size of the region)
-	 */
-	private int maxLines = -1;
-	
+	public TextRegion(String theText, double xInches, double yInches) {
+		this("Text_" + theText, theText, DEFAULT_FONT, new Inches(xInches), new Inches(yInches));
+	}
+
 	/**
 	 * 
 	 * @param theText
 	 *            What text is displayed.
 	 * @param theFont
-	 *            The Font Family. Specify the size in points through the font object. We will
-	 *            consider the point size of the font as an exact 1/72nd of an inch translation,
-	 *            regardless of the device.
+	 *            The Font Family. Specify the size in points through the font object. We will consider the
+	 *            point size of the font as an exact 1/72nd of an inch translation, regardless of the device.
 	 * @param origX
 	 * @param origY
 	 */
@@ -106,9 +120,8 @@ public class TextRegion extends Region {
 		final Dimension stringSize = StringUtils.getStringSize(text, font);
 		heightInPoints = new Points(stringSize.getHeight());
 		widthInPoints = new Points(stringSize.getWidth());
-		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY
-				.getValueIn(referenceUnits), widthInPoints.getValueIn(referenceUnits),
-				heightInPoints.getValueIn(referenceUnits));
+		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY.getValueIn(referenceUnits),
+				widthInPoints.getValueIn(referenceUnits), heightInPoints.getValueIn(referenceUnits));
 		bounds = rect;
 		setShape(rect);
 	}
@@ -124,8 +137,8 @@ public class TextRegion extends Region {
 	 * @param height
 	 *            override the text's actual height with this value
 	 */
-	public TextRegion(String name, String theText, Font theFont, Units origX, Units origY,
-			Units width, Units height) {
+	public TextRegion(String name, String theText, Font theFont, Units origX, Units origY, Units width,
+			Units height) {
 		super(name, origX);
 		text = theText;
 		font = theFont;
@@ -140,9 +153,8 @@ public class TextRegion extends Region {
 		final Dimension stringSize = StringUtils.getStringSize(text, font);
 		heightInPoints = new Points(stringSize.getHeight());
 		widthInPoints = new Points(stringSize.getWidth());
-		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY
-				.getValueIn(referenceUnits), width.getValueIn(referenceUnits), height
-				.getValueIn(referenceUnits));
+		final Rectangle2D rect = new Rectangle2D.Double(origX.getValue(), origY.getValueIn(referenceUnits),
+				width.getValueIn(referenceUnits), height.getValueIn(referenceUnits));
 		bounds = rect;
 		setShape(rect);
 	}
@@ -166,6 +178,13 @@ public class TextRegion extends Region {
 	 */
 	public String[] getLinesOfText() {
 		return lines;
+	}
+
+	/**
+	 * @return the maximum number of lines to be set. If <= 0, all lines will be set.
+	 */
+	public int getMaxLines() {
+		return maxLines;
 	}
 
 	/**
@@ -197,6 +216,14 @@ public class TextRegion extends Region {
 	}
 
 	/**
+	 * @return whether automatic line wrapping should occur. If true, the text will be constrained to the
+	 *         region boundaries.
+	 */
+	public boolean isLineWrapped() {
+		return isLineWrapped;
+	}
+
+	/**
 	 * @param c
 	 */
 	public void setColor(Color c) {
@@ -204,42 +231,28 @@ public class TextRegion extends Region {
 	}
 
 	/**
-	 * @param b whether automatic line wrapping should occur.  If ture, the text will be
-	 * constrained to the region boundaries.
+	 * @param b
+	 *            whether automatic line wrapping should occur. If ture, the text will be constrained to the
+	 *            region boundaries.
 	 */
 	public void setLineWrapped(boolean b) {
 		isLineWrapped = b;
 	}
-	
+
 	/**
-	 * @return whether automatic line wrapping should occur.  If true, the text will be
-	 * constrained to the region boundaries.
-	 */
-	public boolean isLineWrapped() {
-		return isLineWrapped;
-	}
-	
-	/**
-	 * @param i the maximum number of lies to set.  If <= 0, all lines will be set.
+	 * @param i
+	 *            the maximum number of lies to set. If <= 0, all lines will be set.
 	 */
 	public void setMaxLines(int i) {
 		maxLines = i;
 	}
-	
-	/**
-	 * @return the maximum number of lines to be set.  If <= 0, all lines will be set.
-	 */
-	public int getMaxLines() {
-		return maxLines;
-	}
-	
+
 	/**
 	 * @see edu.stanford.hci.r3.paper.Region#toString()
 	 */
 	public String toString() {
-		return "Text: {" + text + "} " + font.getSize() + "pt " + font.getName()
-				+ " at Bounds: [x=" + originX.getValue() + " y=" + originY.getValue() + " w="
-				+ bounds.getWidth() + " h=" + bounds.getHeight() + "] in "
-				+ referenceUnits.getUnitName();
+		return "Text: {" + text + "} " + font.getSize() + "pt " + font.getName() + " at Bounds: [x="
+				+ originX.getValue() + " y=" + originY.getValue() + " w=" + bounds.getWidth() + " h="
+				+ bounds.getHeight() + "] in " + referenceUnits.getUnitName();
 	}
 }

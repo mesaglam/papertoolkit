@@ -104,7 +104,7 @@ public class InkRenderer {
 	 */
 	public void renderToJPEG(File destJPEGFile, PixelsPerInch resolutionPixelsPerInch, Units width, Units height) {
 		Pixels pixels = new Pixels(1, resolutionPixelsPerInch);
-		final double scale = Points.ONE.getConversionTo(pixels);
+		final double scale = Points.ONE.getScalarMultipleToConvertTo(pixels);
 
 		final int wPixels = MathUtils.rint(width.getValueIn(pixels));
 		final int hPixels = MathUtils.rint(height.getValueIn(pixels));

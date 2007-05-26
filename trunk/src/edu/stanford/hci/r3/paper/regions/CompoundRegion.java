@@ -72,7 +72,7 @@ public class CompoundRegion extends Region {
 		final Units childUnits = childRegion.getUnits();
 
 		// change the child's bounds into bounds that can be interpreted in OUR units
-		final double c = childUnits.getConversionTo(myUnits);
+		final double c = childUnits.getScalarMultipleToConvertTo(myUnits);
 		// DebugUtils.println("Conversion is: " + c);
 		final Rectangle2D childBoundsInOurUnits = new Rectangle2D.Double( //
 				childBounds.getX() * c, childBounds.getY() * c, //

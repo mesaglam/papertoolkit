@@ -1,4 +1,5 @@
 %!PS-Adobe-3.0
+%%BoundingBox: 0 0 __WIDTH_POINTS_INT__ __HEIGHT_POINTS_INT__
 << /PageSize [__WIDTH_POINTS__ __HEIGHT_POINTS__]
    /ProcessColorModel (DeviceCMYK)
 >> setpagedevice
@@ -9,7 +10,7 @@ __INSERT_SHEET_POSTSCRIPT_HERE__
 
 % BEGIN Anoto font definition
 /ngo	0.050000 def	% offset from grid in mm
-/nprad	0.030000 def	% point radius in mm
+/nprad	__DOT_RADIUS__ def	% point radius in mm
 /ngs	0.300000 def	% Spacing between grid in mm
 /ngsh	0.128571 def
 /n {2 index 2 index moveto show ngs sub} bind def

@@ -1,5 +1,6 @@
 package edu.stanford.hci.r3.render;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -18,7 +19,6 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
-import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.paper.Region;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.TiledPattern;
@@ -26,6 +26,7 @@ import edu.stanford.hci.r3.pattern.TiledPatternGenerator;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pattern.output.PDFPatternGenerator;
+import edu.stanford.hci.r3.pattern.output.PostscriptPatternGenerator;
 import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.units.Units;
@@ -207,16 +208,10 @@ public class SheetRenderer {
 	 * @param file
 	 */
 	private String renderPatternToPostScript() {
-		// read in the template file
-		String template = FileUtils.readFileIntoStringBuffer(
-				PaperToolkit.getResourceFile("/templates/PostscriptPatternTemplate.txt"), true).toString();
+		Units width = sheet.getWidth();
+		Units height = sheet.getHeight();
 
-		// add the width, height, and margin
-		template = template.replaceAll("__WIDTH_POINTS__", sheet.getWidth().getValueInPoints() + "");
-		template = template.replaceAll("__HEIGHT_POINTS__", sheet.getHeight().getValueInPoints() + "");
-
-		// get a large block of pattern the size of this sheet
-		final TiledPattern pattern = generator.getPattern(sheet.getWidth(), sheet.getHeight());
+		final PostscriptPatternGenerator pgen = new PostscriptPatternGenerator(width, height, generator);
 
 		// for each region, figure out where it is on the sheet, and calculate the pattern coordinates
 		final List<Region> regions = sheet.getRegions();
@@ -227,25 +222,20 @@ public class SheetRenderer {
 
 			Coordinates regionLocation = sheet.getRegionLocationRelativeToSheet(r);
 
+			if (patternCoordinateConverter == null) {
+				DebugUtils.println("Null Converter. Is this region not active? " + r);
+				continue;
+			}
+			
 			// the tiledPattern encompasses the whole sheet
 			// we set the information of for the converter, by setting the information for the whole pattern,
 			// with a clipping bounds, defined by the region's location relative to
 			// the sheet's upper left corner
-			patternCoordinateConverter.setPatternInformationByReadingItFrom(pattern, regionLocation, r
+			patternCoordinateConverter.setPatternInformationByReadingItFrom(pgen.getPattern(), regionLocation, r
 					.getWidth(), r.getHeight());
 		}
 
-		// xxx figure out the coordinates of the pattern here
-
-		// for now, create a string buffer and write to it...
-		StringBuilder patternString = new StringBuilder();
-		for (int row = 0; row < pattern.getNumTotalRows(); row++) {
-			final String patternRow = pattern.getPatternOnRow(row);
-			patternString.append("(" + patternRow + ") n\n");
-		}
-
-		template = template.replaceAll("__INSERT_PATTERN_HERE__", patternString.toString());
-		return template;
+		return pgen.getPostscriptPattern();
 	}
 
 	/**
@@ -301,7 +291,7 @@ public class SheetRenderer {
 		final Units width = sheet.getWidth();
 		final Units height = sheet.getHeight();
 
-		final double scale = Points.ONE.getConversionTo(destUnits);
+		final double scale = Points.ONE.getScalarMultipleToConvertTo(destUnits);
 
 		final int w = MathUtils.rint(width.getValueIn(destUnits));
 		final int h = MathUtils.rint(height.getValueIn(destUnits));
@@ -396,11 +386,12 @@ public class SheetRenderer {
 	 */
 	public void renderToPostScript(File file) {
 		mostRecentlyRenderedFile = file;
-		
+
 		// layer for regions
 		final EpsGraphics2D g2d = new EpsGraphics2D("PostScript Render");
 
-		// set the bounding box, and draw it, so that the PS file will be the right size
+		// set the bounding box, and draw it, so that the PS file will be the right size\
+		g2d.setStroke(new BasicStroke(0.1f));
 		g2d.drawRect(0, 0, (int) sheet.getWidth().getValueInPoints(), (int) sheet.getHeight()
 				.getValueInPoints());
 

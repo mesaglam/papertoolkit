@@ -123,7 +123,7 @@ public class GraphicsUtils {
 			Point2D... points) {
 		final int length = points.length;
 		final Point2D[] dest = new Point2D[length];
-		final double conversion = sourceUnit.getConversionTo(destUnit); // the multiplier
+		final double conversion = sourceUnit.getScalarMultipleToConvertTo(destUnit); // the multiplier
 
 		for (int i = 0; i < length; i++) {
 			dest[i] = new Point2D.Double(points[i].getX() * conversion, points[i].getY()

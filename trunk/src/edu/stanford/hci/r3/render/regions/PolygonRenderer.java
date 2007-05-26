@@ -62,7 +62,7 @@ public class PolygonRenderer extends RegionRenderer {
 		final Units u = polyRegion.getUnits();
 
 		// convert the graphis transform to the Java2D standard (72 pts per inch)
-		final double conv = u.getConversionTo(Points.ONE);
+		final double conv = u.getScalarMultipleToConvertTo(Points.ONE);
 		final AffineTransform transform = new AffineTransform();
 		// this has to be first, so we are operating in Java2D points
 		transform.scale(conv, conv);
