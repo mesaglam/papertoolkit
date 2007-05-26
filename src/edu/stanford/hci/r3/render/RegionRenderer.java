@@ -98,7 +98,7 @@ public class RegionRenderer {
 		final float scaleY = (float) region.getScaleY();
 
 		final Units units = region.getUnits();
-		final double conv = units.getConversionTo(Points.ONE);
+		final double conv = units.getScalarMultipleToConvertTo(Points.ONE);
 
 		final float xPts = (float) Math.round(conv * b.getX());
 		final float yPts = (float) Math.round(conv * b.getY());

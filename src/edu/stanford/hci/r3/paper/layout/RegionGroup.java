@@ -76,7 +76,7 @@ public class RegionGroup {
 		final Units childUnits = childRegion.getUnits();
 
 		// change the child's bounds into bounds that can be interpreted in OUR units
-		final double c = childUnits.getConversionTo(MY_UNITS);
+		final double c = childUnits.getScalarMultipleToConvertTo(MY_UNITS);
 		// DebugUtils.println("Conversion is: " + c);
 		final Rectangle2D childBoundsInOurUnits = new Rectangle2D.Double( //
 				childBounds.getX() * c, childBounds.getY() * c, //

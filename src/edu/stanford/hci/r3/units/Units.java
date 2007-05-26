@@ -14,8 +14,7 @@ package edu.stanford.hci.r3.units;
 public abstract class Units implements Cloneable {
 
 	/**
-	 * Java handles everything in 1/72nd of an inch (1 point). We should do the same to be
-	 * compatible.
+	 * Java handles everything in 1/72nd of an inch (1 point). We should do the same to be compatible.
 	 */
 	public static final double POINTS_PER_INCH = 72;
 
@@ -40,8 +39,8 @@ public abstract class Units implements Cloneable {
 	private String unitName;
 
 	/**
-	 * The Unit is immutable. To protect it, we will prevent access to the value. You can only set
-	 * it upon construction of the object.
+	 * The Unit is immutable. To protect it, we will prevent access to the value. You can only set it upon
+	 * construction of the object.
 	 */
 	private double value;
 
@@ -56,8 +55,8 @@ public abstract class Units implements Cloneable {
 	}
 
 	/**
-	 * Used when you want to create (and name) an anonymous unit. This is useful in situations where
-	 * you need a temporary unit.
+	 * Used when you want to create (and name) an anonymous unit. This is useful in situations where you need
+	 * a temporary unit.
 	 * 
 	 * @param val
 	 * @param name
@@ -97,21 +96,8 @@ public abstract class Units implements Cloneable {
 	}
 
 	/**
-	 * @param destUnits
-	 * @return the number of destination Units that fit into this Unit. Alternatively, the number n
-	 *         that we would need to multiply the current value to in order to achieve the same
-	 *         length in the destination unit. For example, if we are one inch, and the destination
-	 *         is Points, then the number we need is 72, because we would have to multiply our value
-	 *         (1) by 72 to achieve 72 points, which is the same physical length.
-	 * @note we flipped the definition of this from Diamond's Edge.
-	 */
-	public double getConversionTo(Units destUnits) {
-		return destUnits.getNumberOfUnitsInOneInch() / getNumberOfUnitsInOneInch();
-	}
-
-	/**
-	 * Returns a copy of this unit. WARNING: If you have a unit that depends on other factors, you
-	 * should override this method. This is particularly true for Screen Pixels and Printer Dots.
+	 * Returns a copy of this unit. WARNING: If you have a unit that depends on other factors, you should
+	 * override this method. This is particularly true for Screen Pixels and Printer Dots.
 	 * 
 	 * TODO (Implement override for Pixels and PrinterDots)
 	 * 
@@ -128,6 +114,21 @@ public abstract class Units implements Cloneable {
 	protected abstract double getNumberOfUnitsInOneInch();
 
 	/**
+	 * TODO: Anybody have a better name? =)
+	 * 
+	 * @param destUnits
+	 * @return the number of destination Units that fit into this Unit. Alternatively, the number n that we
+	 *         would need to multiply the current value to in order to achieve the same length in the
+	 *         destination unit. For example, if we are one inch, and the destination is Points, then the
+	 *         number we need is 72, because we would have to multiply our value (1) by 72 to achieve 72
+	 *         points, which is the same physical length.
+	 * @note we flipped the definition of this from Diamond's Edge.
+	 */
+	public double getScalarMultipleToConvertTo(Units destUnits) {
+		return destUnits.getNumberOfUnitsInOneInch() / getNumberOfUnitsInOneInch();
+	}
+
+	/**
 	 * @return Inches, Points, Pixels...
 	 */
 	public String getUnitName() {
@@ -135,8 +136,7 @@ public abstract class Units implements Cloneable {
 	}
 
 	/**
-	 * Gets a new Units object of the same type as destUnits, with the same physical length as this
-	 * object.
+	 * Gets a new Units object of the same type as destUnits, with the same physical length as this object.
 	 * 
 	 * @param destUnits
 	 * @return
@@ -169,14 +169,14 @@ public abstract class Units implements Cloneable {
 	/**
 	 * Gets the value in a new unit.
 	 * 
-	 * For example, you have a Units object that represents 2 Inches. You want to see what the value
-	 * will be in Points. getConversionTo(new Points()) will return 72. 2 * 72 is 144.
+	 * For example, you have a Units object that represents 2 Inches. You want to see what the value will be
+	 * in Points. getConversionTo(new Points()) will return 72. 2 * 72 is 144.
 	 * 
 	 * @param destUnits
 	 * @return
 	 */
 	public double getValueIn(Units destUnits) {
-		return value * getConversionTo(destUnits);
+		return value * getScalarMultipleToConvertTo(destUnits);
 	}
 
 	/**
@@ -187,10 +187,9 @@ public abstract class Units implements Cloneable {
 	}
 
 	/**
-	 * This is a CONVENIENCE method. Yes, Yes... it's probably poor programming style to have the
-	 * Units class be aware of its subclass (Inches). However, it makes code a lot more readable.
-	 * Plus, if you implement your own Units class, you can use the generic method
-	 * getValueIn(Units).
+	 * This is a CONVENIENCE method. Yes, Yes... it's probably poor programming style to have the Units class
+	 * be aware of its subclass (Inches). However, it makes code a lot more readable. Plus, if you implement
+	 * your own Units class, you can use the generic method getValueIn(Units).
 	 * 
 	 * @return the double value of this unit, converted to Inches.
 	 */
@@ -215,8 +214,8 @@ public abstract class Units implements Cloneable {
 	}
 
 	/**
-	 * CONVENIENCE method for converting to Pixels. This uses the DEFAULT pixelsPerInch as specified
-	 * by the configuration xml file. Unfortunately, Java cannot detect this value yet.
+	 * CONVENIENCE method for converting to Pixels. This uses the DEFAULT pixelsPerInch as specified by the
+	 * configuration xml file. Unfortunately, Java cannot detect this value yet.
 	 * 
 	 * @return the value after converting to pixels.
 	 */

@@ -53,7 +53,7 @@ public class ImageRenderer extends RegionRenderer {
 		final Units units = imgRegion.getUnits();
 		final double ppi = imgRegion.getPixelsPerInch(); // default is 72
 		final double ppiConversion = 72 / ppi;
-		final double conv = units.getConversionTo(new Points());
+		final double conv = units.getScalarMultipleToConvertTo(new Points());
 		
 		// load the image
 		PlanarImage image = ImageCache.loadPlanarImage(file);

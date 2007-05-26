@@ -35,8 +35,12 @@ public class PatternDots extends Units {
 	 * 
 	 * I picked a number slightly closer to the vertical value, because it makes tiling better (it won't spill
 	 * over by one dot in the vertical direction)
+	 * 
+	 * Hrmm.... The old value I used is 84.7727. Now, using the "0.3 mm" as in the documentation, I get
+	 * 84.66667... Let's give it a try to see how it does. However, in practice, it seems that 85.8 works
+	 * better... as the number of dots fills out a 1 meter width nicely...
 	 */
-	private static final double PATTERN_UNITS_PER_INCH = 84.7727;
+	private static final double PATTERN_UNITS_PER_INCH = 85.8;
 
 	/**
 	 * Default Constructor for Doing unit conversions, etc...
