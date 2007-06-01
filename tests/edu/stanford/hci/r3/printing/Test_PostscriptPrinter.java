@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.printing.postscript;
+package edu.stanford.hci.r3.printing;
 
 import java.io.File;
 

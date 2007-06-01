@@ -10,7 +10,6 @@ import javax.print.PrintServiceLookup;
 
 import edu.stanford.hci.r3.units.Points;
 import edu.stanford.hci.r3.util.ArrayUtils;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
@@ -29,10 +28,29 @@ import edu.stanford.hci.r3.util.DebugUtils;
 public class Printer {
 
 	/**
-	 * @return
+	 * @param pageFormat
 	 */
-	public static Printer getDefaultPrinter() {
-		return new Printer(PrintServiceLookup.lookupDefaultPrintService());
+	public static void displayPageFormat(PageFormat pageFormat) {
+		System.out.println("Page Format {");
+		System.out.println("\tPage Width: " + new Points(pageFormat.getWidth()).toInches() + " Height: "
+				+ new Points(pageFormat.getHeight()).toInches());
+		System.out.println("\tImageable X: " + new Points(pageFormat.getImageableX()).toInches() + " Y: "
+				+ new Points(pageFormat.getImageableY()).toInches());
+		System.out.println("\tImageable W: " + new Points(pageFormat.getImageableWidth()).toInches() + " H: "
+				+ new Points(pageFormat.getImageableHeight()).toInches());
+		System.out.print("\tMatrix: ");
+		ArrayUtils.printArray(pageFormat.getMatrix());
+		System.out.println("} End Page Format");
+		System.out.flush();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "Printer: " + service.getName();
 	}
 
 	/**
@@ -54,27 +72,6 @@ public class Printer {
 		}
 	}
 
-	public static void main(String[] args) {
-		DebugUtils.println(Printer.getDefaultPrinter());
-	}
-
-	/**
-	 * @param pageFormat
-	 */
-	public static void displayPageFormat(PageFormat pageFormat) {
-		System.out.println("Page Format {");
-		System.out.println("\tPage Width: " + new Points(pageFormat.getWidth()).toInches() + " Height: "
-				+ new Points(pageFormat.getHeight()).toInches());
-		System.out.println("\tImageable X: " + new Points(pageFormat.getImageableX()).toInches() + " Y: "
-				+ new Points(pageFormat.getImageableY()).toInches());
-		System.out.println("\tImageable W: " + new Points(pageFormat.getImageableWidth()).toInches() + " H: "
-				+ new Points(pageFormat.getImageableHeight()).toInches());
-		System.out.print("\tMatrix: ");
-		ArrayUtils.printArray(pageFormat.getMatrix());
-		System.out.println("} End Page Format");
-		System.out.flush();
-	}
-
 	private PrintService service;
 
 	private boolean showPageSetupDialog = false;
@@ -83,6 +80,14 @@ public class Printer {
 
 	/**
 	 * Creates a Printer that points to the default print service.
+	 * 
+	 */
+	public Printer() {
+		this(PrintServiceLookup.lookupDefaultPrintService());
+	}
+
+	/**
+	 * A printer initialized with some Java print service object.
 	 * 
 	 * @param serv
 	 */

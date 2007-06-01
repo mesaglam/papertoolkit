@@ -30,7 +30,8 @@ public class PrinterDots extends Units {
 	 */
 	public PrinterDots(double val) {
 		super(val);
-		printer = Printer.getDefaultPrinter();
+		// the default printer
+		printer = new Printer();
 	}
 
 	/**
