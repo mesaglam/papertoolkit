@@ -1,12 +1,9 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.units;
 
 import edu.stanford.hci.r3.printing.Printer;
-import edu.stanford.hci.r3.printing.Printers;
 
 /**
+ * <p>Represents dimensions that relate to your printer.</p>
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
  * BSD License</a>.
@@ -33,7 +30,7 @@ public class PrinterDots extends Units {
 	 */
 	public PrinterDots(double val) {
 		super(val);
-		printer = Printers.getDefaultPrinter();
+		printer = Printer.getDefaultPrinter();
 	}
 
 	/**
