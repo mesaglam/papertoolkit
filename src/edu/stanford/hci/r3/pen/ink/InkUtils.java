@@ -12,7 +12,8 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Integrate all the nice features that we can use to analyze ink into this class.
+ * Some features that we can use to analyze ink strokes. This is one of the classes used by the InkAPIBrowser
+ * to provide visual feedback on different methods you can use to work with Ink.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -20,7 +21,6 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  */
 public class InkUtils {
 

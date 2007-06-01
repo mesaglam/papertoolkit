@@ -172,6 +172,9 @@ public class InkAPIBrowser {
 		flash.sendMessage(sb.toString());
 	}
 
+	/**
+	 * 
+	 */
 	public void showFlashView() {
 		// start the Flash GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
