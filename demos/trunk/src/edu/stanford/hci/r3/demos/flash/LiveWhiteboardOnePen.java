@@ -22,16 +22,29 @@ import edu.stanford.hci.r3.util.graphics.ColorUtils;
  */
 public class LiveWhiteboardOnePen {
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// Open Four Whiteboards attached to One Pen
 		// new LiveWhiteboardOnePen(4);
+		
+		// Open One Whiteboard attached to One Pen
 		new LiveWhiteboardOnePen();
 	}
 
+	/**
+	 * Just use one pen (the local one)
+	 */
 	public LiveWhiteboardOnePen() {
 		this(1);
 	}
 
+	/**
+	 * Open possibly more than whiteboard UI with a single pen.
+	 * 
+	 * @param numWhiteboards
+	 */
 	public LiveWhiteboardOnePen(int numWhiteboards) {
 		if (numWhiteboards < 1) {
 			numWhiteboards = 1;
@@ -55,6 +68,7 @@ public class LiveWhiteboardOnePen {
 			whiteboard.setInkColor(Color.WHITE);
 			whiteboard.setSwatchColor(uniqueColors.get(i));
 			whiteboard.setTitle("Whiteboard" + i);
+			whiteboard.setRotation(-90);
 			whiteboard.load();
 		}
 	}

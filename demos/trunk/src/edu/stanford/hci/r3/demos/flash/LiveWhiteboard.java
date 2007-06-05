@@ -23,11 +23,15 @@ public class LiveWhiteboard {
 		new LiveWhiteboard();
 	}
 
+	/**
+	 * Multiple Whiteboard Objects.
+	 */
 	private FlashWhiteboard flashWhiteboard1;
 	private FlashWhiteboard flashWhiteboard2;
 	private FlashWhiteboard flashWhiteboard3;
 	private FlashWhiteboard flashWhiteboard4;
 
+	// Connect Multiple Pens to Multiple Flash Whiteboards
 	public LiveWhiteboard() {
 		// in R3, there are two ways to make real-time pen and paper applications... One is to use
 		// the Application framework. A second one, which we will use here, is to just attach a pen
@@ -37,7 +41,7 @@ public class LiveWhiteboard {
 		// Pen pen1 = new Pen(); // local pen
 		// Pen pen2 = new Pen("Laptop", "171.66.51.122");
 
-		// Connect to two remote pens, both accessible through the network (and hosted 
+		// Connect to two remote pens, both accessible through the network (and hosted
 		// on computers behind a NAT box)
 		Pen pen1 = new Pen("Pen 1", "solaria.stanford.edu"); // remote pen
 		pen1.setPenServerPort(11100); // forwarded through the nat to machine 1
