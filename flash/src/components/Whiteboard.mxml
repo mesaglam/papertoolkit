@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Whiteboard" 
-	creationComplete="constructWhiteboard();" backgroundColor="#000000">
+	initialize="constructWhiteboard();"
+	backgroundColor="#000000" >
 	<mx:Script>
 		<![CDATA[
+			import tools.ToolWrapperBackend;
 			import tools.Tool;
 			import java.JavaIntegration;
 			import tools.WhiteboardBackend;
@@ -12,6 +14,9 @@
 			private var whitebd:WhiteboardBackend;
 			private var container:UIComponent;
 		 	
+		 	// if this reference is set, we need to set our tool ourselves
+		 	private var toolWrapper:ToolWrapperBackend;
+		 	
 			//
 			public function constructWhiteboard():void {
 				trace("WhiteBoard Init");
@@ -19,6 +24,10 @@
 				container = new UIComponent();
 				container.addChild(whitebd);				
 				inkCanvas.addChild(container);
+				
+				if (toolWrapper != null) {
+					toolWrapper.tool = tool;
+				}
 			}
 
 			// forward the message onto the actionscript object backing this mxml GUI
@@ -33,6 +42,11 @@
 			// retrieve the r3 tool (the actionscript class)
 			public function get tool():Tool {
 				return whitebd;
+			}
+			
+			// sets the wrapper, so we know to manually set the tool object
+			public function set toolWrapperBackend(twb:ToolWrapperBackend):void {
+				toolWrapper = twb;				
 			}
 		]]>
 	</mx:Script>

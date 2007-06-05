@@ -8,13 +8,14 @@
   src="../../resources/header.js"></script>
 <p class="Heading"> Get R3 and Compile it </p>
 <ol>
+  <li>Install an SVN client, such as <a href="http://tortoisesvn.net/downloads">TortoiseSVN</a>. For most machines, grab the 32-Bit MSI installer file.</li>
   <li>Go to <a href="http://code.google.com/p/papertoolkit/">http://code.google.com/p/papertoolkit/</a>. That is where the R3 open-source project is hosted.</li>
   <li>Create a directory for R3. For convenience, I tend to put all my projects in subdirectories of my Eclipse Workspace. You can set the workspace path under <span class="Code">File &gt; Switch Workspace...</span><br>
     <br>
     <img src="Workspace.png" alt="Workspace" width="491" height="244"><br>
     <br>
-  With the above Workspace path, I would create a new directory at <span class="Code">C:\Documents and Settings\Ron Yeh\My Documents\Projects\R3</span>. Some of my colleagues like shorter paths, and will use something like <span class="Code">C:\Dev\R3</span>. It's your call. </li>
-  <li>In the google hosting page, you can find the SVN URL for downloading R3.<br>
+  With the above Workspace path, I would create a new directory at <span class="Code">C:\Documents and Settings\Ron Yeh\My Documents\Projects\PaperToolkit</span>. Some of my colleagues like shorter paths, and will use something like <span class="Code">C:\Dev\PaperToolkit</span>. It's your call. </li>
+  <li>In the google hosting page, you can find the SVN URL for downloading R3. For anonymous access, use <span class="Code"><strong><em>http</em></strong>://papertoolkit.googlecode.com/svn/trunk/</span>. <br>
     <br>
   <img src="GoogleCode.png" alt="Google Code" width="775" height="380"><br>
   <br>
@@ -26,8 +27,8 @@
     <br>
     <img src="NewJavaProject.png" alt="NewProject" width="500" height="576"> <img src="PackageExp.png" alt="Package Explorer" width="420" height="535"><br>
     <br>
-  For the Project Name, you should use the name of the folder that contains R3. The above figure is misleading because I actually renamed my Projects\R3 folder to Projects\PaperToolkit. =) In any case, once you type the name, Eclipse will recognize that this folder already exists. You can just click Finish and Eclipse will import the project. </li>
-  <li>You will probably want to create your own Eclipse project that references R3. That way, you can leverage any of the services that the toolkit provides. Use the New Java Project command again. This time, type the name of your project. I like to choose the option &quot;Create separate source and output folders.&quot; Click Next.<br>
+  For the Project Name, you should use the name of the folder that contains R3 (<em>e.g.</em>, PaperToolkit). Once you type the name, Eclipse will recognize that this folder already exists. You can just click Finish and Eclipse will import the project. </li>
+  <li>If you are developing a project that will take advantage of R3, you will want to create your own Eclipse project that <em>references </em>R3. That way, you can leverage any of the services that the toolkit provides. Use the New Java Project command again. This time, type the name of your project. I like to choose the option &quot;Create separate source and output folders.&quot; Click Next.<br>
     <br>
       <img src="NewMyProj.png" alt="My Project" width="500" height="601"> <img src="RefR3.png" alt="Reference R3" width="500" height="455"><br>
   </li>

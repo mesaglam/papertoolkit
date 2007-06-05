@@ -14,6 +14,7 @@ package tools {
 	import components.DesignTools;
 	import components.Whiteboard;
 	import flash.display.LoaderInfo;
+	import flash.display.DisplayObject;
 	
 	
 	// Helps developers navigate the Paper Toolkit visually...
@@ -38,7 +39,13 @@ package tools {
 		private var portNum:int;
 		private var javaBackend:JavaIntegration;
 
+		// the tool that this Flash object wraps
 		private var theTool:Tool;
+
+		// Based on this string, we select the correct component to load into this wrapper
+		private var toolToLoad:String = "None";
+
+
 
 		// constructor
 		public function ToolWrapperBackend(appObj:ToolWrapper):void {
@@ -47,6 +54,7 @@ package tools {
 			start();
 		}			
 
+		// sets the tool to use with this wrapper
 		public function set tool(t:Tool):void {
 			theTool = t;
 			theTool.javaBackend = javaBackend;
@@ -59,6 +67,30 @@ package tools {
 			javaBackend = new JavaIntegration(portNum);	
 			javaBackend.addMessageListener(msgListener);
 			trace("Created Java Connection.");
+
+			loadTool();
+		}
+
+		// 
+		private function loadTool():void {
+			trace("Loading Tool: " + toolToLoad);
+			var toolComponent:DisplayObject;
+			switch(toolToLoad) {
+				case "Whiteboard":
+					trace("Adding a Whiteboard");
+					toolComponent = new Whiteboard();
+					var wb:Whiteboard = Whiteboard(toolComponent);
+					wb.setStyle("left", 0);
+					wb.setStyle("top", 0);
+					wb.setStyle("right", 0);
+					wb.setStyle("bottom", 0);
+					wb.toolWrapperBackend = this;
+					app.addChild(toolComponent);
+				break;
+				
+				default:
+				break;
+			}			
 		}
 
 		// handle messages
@@ -85,6 +117,9 @@ package tools {
 					trace(keyStr + ":\t" + valueStr);
 					if (keyStr=="port") {
 						portNum = parseInt(valueStr);
+					}
+					else if (keyStr=="toolToLoad") {
+						toolToLoad = valueStr;
 					}
 				}
 			} catch (error:Error) {

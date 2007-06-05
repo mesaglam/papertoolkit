@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
-	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Tool Wrapper" addedToStage="init();" xmlns:components="components.*">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute"
+	backgroundGradientColors="[0x333333, 0x333333]" 
+	pageTitle="Tool Wrapper" 
+	addedToStage="init();" 
+	xmlns:components="components.*">
+	
 	<mx:Style source="styles/styles.css"/>
+
 	<mx:Script>
 		<![CDATA[
 			import tools.ToolWrapperBackend;
@@ -10,12 +16,10 @@
 
 			private var wrapper:ToolWrapperBackend;
 			
+			// the AS3 class does all the work, adding components to this stage, etc...
 			public function init():void {
 				wrapper = new ToolWrapperBackend(this);
-				wrapper.tool = whiteboard.tool;
 			}
 		]]>
 	</mx:Script>
-	<components:Whiteboard id="whiteboard" left="0" right="0" top="0" bottom="0">
-	</components:Whiteboard>
 </mx:Application>
