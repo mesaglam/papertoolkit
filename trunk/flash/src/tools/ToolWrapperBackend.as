@@ -15,6 +15,7 @@ package tools {
 	import components.Whiteboard;
 	import flash.display.LoaderInfo;
 	import flash.display.DisplayObject;
+	import components.APIBrowser;
 	
 	
 	// Helps developers navigate the Paper Toolkit visually...
@@ -71,22 +72,34 @@ package tools {
 			loadTool();
 		}
 
-		// 
+		// Based on a string that is passed in, load the corresponding tool into this wrapper (Flash/HTML)
+		// Alternatively, the tools can be selected in the ToolExplorer (Apollo Application)
 		private function loadTool():void {
 			trace("Loading Tool: " + toolToLoad);
-			var toolComponent:DisplayObject;
 			switch(toolToLoad) {
+				// add support for different components here
+				
 				case "Whiteboard":
 					trace("Adding a Whiteboard");
-					toolComponent = new Whiteboard();
-					var wb:Whiteboard = Whiteboard(toolComponent);
+					var wb:Whiteboard = new Whiteboard();
 					wb.setStyle("left", 0);
 					wb.setStyle("top", 0);
 					wb.setStyle("right", 0);
 					wb.setStyle("bottom", 0);
 					wb.toolWrapperBackend = this;
-					app.addChild(toolComponent);
+					app.addChild(wb);
 				break;
+				
+				case "APIBrowser":
+					trace("Adding the Ink API Browser");
+					var apib:APIBrowser = new APIBrowser();
+					apib.setStyle("left", 5);
+					apib.setStyle("top", 5);
+					apib.setStyle("right", 5);
+					apib.setStyle("bottom", 5);
+					apib.toolWrapperBackend = this;
+					app.addChild(apib);
+				break;				
 				
 				default:
 				break;

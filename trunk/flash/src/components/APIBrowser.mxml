@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Ink API Browser" creationComplete="startBrowser();">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" pageTitle="Ink API Browser" 
+	creationComplete="startBrowser();">
 	<mx:Script>
 		<![CDATA[
+			import tools.ToolWrapperBackend;
 			import tools.Tool;
 			import tools.APIBrowserBackend;
-
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 			import flash.display.StageDisplayState;
 
 
+
 			private var browser:APIBrowserBackend;
 			private var container:UIComponent;
 
+		 	// if this reference is set, we need to set our tool ourselves
+		 	private var toolWrapper:ToolWrapperBackend;
 	
 			// more or less all the code! =)			
 			public function startBrowser():void {
@@ -20,6 +24,10 @@
 				container = new UIComponent();
 				container.addChild(browser);
 				inkCanvas.addChild(container);
+
+				if (toolWrapper != null) {
+					toolWrapper.tool = tool;
+				}
 			}
 
 			// forward the message onto the actionscript object backing this mxml GUI
@@ -36,16 +44,22 @@
 				trace("APIBrowser's Tool is: " + browser);
 				return browser;
 			}
+
+			// sets the wrapper, so we know to manually set the tool object
+			public function set toolWrapperBackend(twb:ToolWrapperBackend):void {
+				toolWrapper = twb;				
+			}
+
 		]]>
 	</mx:Script>
 
-	<!-- The Real Effects, for when we aren't working on the video
 	<mx:Fade id="brighten" alphaFrom="1" alphaTo="1" duration="100"/>
 	<mx:Fade id="dim" startDelay="600" alphaFrom="1" alphaTo=".15" duration="1000"/>
-	-->
 
+	<!-- The Effects for doing screen capture
 	<mx:Fade id="brighten" alphaTo="1" duration="0"/>
 	<mx:Fade id="dim" startDelay="600" alphaTo=".15" duration="0"/>
+	// -->
 
 	<mx:HDividedBox width="100%" height="100%" liveDragging="true">
 		<mx:Canvas width="25%" height="100%">
