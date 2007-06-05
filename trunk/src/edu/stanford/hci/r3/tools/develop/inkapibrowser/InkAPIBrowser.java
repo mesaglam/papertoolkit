@@ -24,19 +24,19 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
  * <p>
- * Flash GUI, Java Server backend. It exposes a number of ink-related methods, and allows us to call
+ * The API browser allows you to play with ink methods so that you can learn about them visually. It comprises
+ * a Flash GUI and a Java server backend. It exposes a number of ink-related methods, and allows us to call
  * them through Flash.
  * 
- * BIG IDEA... the method calls all happen in java, and we send XML over to decorate the Ink in the
- * right way, so that the Ink API Browser can present it!
+ * The method calls all happen in java, and we send XML over to decorate or display Ink in the right way, so
+ * that the Ink API Browser can present it!
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
- * 1) create a simple one for highlighting all strokes that go UP, LEFT, DOWN, RIGHT... Add this to
- * InkUtils
+ * 1) create a simple one for highlighting all strokes that go UP, LEFT, DOWN, RIGHT... Add this to InkUtils
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
@@ -48,16 +48,20 @@ public class InkAPIBrowser {
 	}
 
 	private int currentSynchedFileIndex = -1;
-	private FlashCommunicationServer flash;
-	private List<File> synchedFiles;
 	private List<Method> exposedMethods;
+	private FlashCommunicationServer flash;
 	private HashMap<String, Method> methodsHashMap = new HashMap<String, Method>();
 	private Ink mostRecentInkObject;
+	private List<File> synchedFiles;
 
 	/**
+	 * The Ink API Browser should ideally work with both synched pen files, and in real-time.
+	 * 
 	 * @param paperApp
 	 */
 	public InkAPIBrowser() {
+
+		// retrieve the synched files
 		PenSynchManager penSynchManager = new PenSynchManager();
 		synchedFiles = penSynchManager.getFiles();
 		// DebugUtils.println(synchedFiles);
@@ -67,6 +71,44 @@ public class InkAPIBrowser {
 	}
 
 	/**
+	 * The Flash GUI tells us to call a series of methods, and then return the results to the GUI...
+	 * Basically, we end up applying a list of methods to the Ink, and get a resulting ink object that we send
+	 * back to the GUI.
+	 * 
+	 * @param commands
+	 */
+	private void callTheseMethods(String[] commands) {
+		ArrayUtils.printArray(commands);
+
+		Ink ink = mostRecentInkObject;
+		if (ink == null) {
+			return;
+		}
+
+		Ink inkResult = new Ink();
+		for (String methodName : commands) {
+			Method method = methodsHashMap.get(methodName);
+			try {
+				inkResult = (Ink) method.invoke(null, ink);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+
+		DebugUtils.println("Original Ink: " + ink.getNumStrokes());
+		DebugUtils.println("New Ink: " + inkResult.getNumStrokes());
+
+		// send this ink back to the Flash GUI, to highlight in red!
+		flash.sendMessage("<highlight>" + inkResult.toXMLString(false) + "</highlight>");
+	}
+
+	/**
+	 * Allows us to get the current synched file... from the penSynch directory.
+	 * 
 	 * @return
 	 */
 	private File getCurrentFile() {
@@ -78,7 +120,7 @@ public class InkAPIBrowser {
 	}
 
 	/**
-	 * 
+	 * Navigate to the next synch file.
 	 */
 	private void nextFile() {
 		currentSynchedFileIndex++;
@@ -89,7 +131,7 @@ public class InkAPIBrowser {
 	}
 
 	/**
-	 * 
+	 * Navigate to the previous synch file.
 	 */
 	private void prevFile() {
 		currentSynchedFileIndex--;
@@ -100,7 +142,8 @@ public class InkAPIBrowser {
 	}
 
 	/**
-	 * 
+	 * This allows us to preview the ink, by rendering it to a JPEG, and putting it in a temporary HTML file
+	 * for display in our browser.
 	 */
 	protected void saveInkFromCurrentFileToDiskAndDisplayIt() {
 		PenSynch penSynch = new PenSynch(getCurrentFile());
@@ -121,8 +164,7 @@ public class InkAPIBrowser {
 				PaperToolkit.getResourceFile("/templates/Preview.html")).toString();
 		StringBuilder sb = new StringBuilder();
 		for (File f : renderedImages) {
-			sb.append("<img src=\"file:///C|/Documents and Settings/Ron Yeh/Desktop/" + f.getName()
-					+ "\"/>");
+			sb.append("<img src=\"file:///C|/Documents and Settings/Ron Yeh/Desktop/" + f.getName() + "\"/>");
 		}
 		html = html.replace("__IMAGES__", sb.toString());
 
@@ -137,21 +179,22 @@ public class InkAPIBrowser {
 	}
 
 	/**
-	 * 
+	 * Sends the current synch file's ink to the Flash GUI.
 	 */
 	private void sendInkFromCurrentFile() {
-		PenSynch penSynch = new PenSynch(getCurrentFile());
-		List<Ink> importedInk = penSynch.getImportedInk();
+		final PenSynch penSynch = new PenSynch(getCurrentFile());
+		final List<Ink> importedInk = penSynch.getImportedInk();
 		for (Ink ink : importedInk) {
 			DebugUtils.println("Sending ink from: " + ink.getSourcePageAddress());
 			flash.sendMessage(ink.toXMLString(false));
 
+			// keep track of this ink object
 			mostRecentInkObject = ink;
 		}
 	}
 
 	/**
-	 * 
+	 * Forwards a list of method names to the Flash GUI.
 	 */
 	private void sendListOfExposedMethods() {
 		StringBuilder sb = new StringBuilder();
@@ -173,7 +216,8 @@ public class InkAPIBrowser {
 	}
 
 	/**
-	 * 
+	 * Launches the Flash GUI. This is the standard HTML/Flash version... The apollo version is launched from
+	 * ToolExplorer.exe. We should make sure this can work with both Apollo and HTML/Flash.
 	 */
 	public void showFlashView() {
 		// start the Flash GUI
@@ -201,8 +245,7 @@ public class InkAPIBrowser {
 					saveInkFromCurrentFileToDiskAndDisplayIt();
 					return CONSUMED;
 				} else if (command.startsWith("callmethods")) {
-					String listOfCommands = command.substring(command.indexOf("[") + 1, command
-							.indexOf("]"));
+					String listOfCommands = command.substring(command.indexOf("[") + 1, command.indexOf("]"));
 					String[] commands = listOfCommands.split(",");
 					callTheseMethods(commands);
 					return CONSUMED;
@@ -216,39 +259,7 @@ public class InkAPIBrowser {
 	}
 
 	/**
-	 * @param commands
-	 */
-	private void callTheseMethods(String[] commands) {
-		ArrayUtils.printArray(commands);
-
-		Ink ink = mostRecentInkObject;
-		if (ink == null) {
-			return;
-		}
-
-		Ink inkResult = new Ink();
-		for (String methodName : commands) {
-			Method method = methodsHashMap.get(methodName);
-			try {
-				inkResult = (Ink) method.invoke(null, ink);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-		}
-
-		DebugUtils.println("Original Ink: " + ink.getNumStrokes());
-		DebugUtils.println("New Ink: " + inkResult.getNumStrokes());
-		
-		// send this ink back to the Flash GUI, to highlight in red!
-		flash.sendMessage("<highlight>" + inkResult.toXMLString(false) + "</highlight>");
-	}
-
-	/**
-	 * 
+	 * Launches the HTML/Flash version.
 	 */
 	private void startFlashAPIBrowser() {
 		// Start the local messaging server

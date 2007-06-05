@@ -33,18 +33,39 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class FlashWhiteboard {
 
-	private Color bgColor;
+	/**
+	 * Default to Black background.
+	 */
+	private Color bgColor = Color.BLACK;
 
-	private InkStroke currInkStroke;
+	/**
+	 * Initialize it with an empty stroke...
+	 */
+	private InkStroke currInkStroke = new InkStroke();
 
+	/**
+	 * The object that we use to communicate with the Flash GUI.
+	 */
 	private FlashCommunicationServer flash;
 
+	/**
+	 * Default to white Ink.
+	 */
 	private Color inkColor = Color.WHITE;
 
+	/**
+	 * Stores the ink strokes.
+	 */
 	private Ink inkWell = new Ink();
 
+	/**
+	 * A list of the active pens. Their strokes are displayed in this whiteboard.
+	 */
 	private List<Pen> pens = new ArrayList<Pen>();
 
+	/**
+	 * 
+	 */
 	private int port;
 
 	/**
@@ -53,10 +74,22 @@ public class FlashWhiteboard {
 	 */
 	private Color swatchColor;
 
+	/**
+	 * Displayed in the GUI.
+	 */
 	private String title;
 
+	/**
+	 * 
+	 */
 	private ToolExplorer toolExplorer;
 
+	/**
+	 * 
+	 */
+	private double rotation = 0;
+
+	
 	/**
 	 * @param portNum
 	 */
@@ -65,6 +98,8 @@ public class FlashWhiteboard {
 	}
 
 	/**
+	 * We should be able to add multiple pens to a single whiteboard.
+	 * 
 	 * @param pen
 	 */
 	public void addPen(Pen pen) {
@@ -149,6 +184,7 @@ public class FlashWhiteboard {
 		flash.addFlashClientListener(getFlashListener());
 		final File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File inputWhiteBoardHTML = new File(r3RootPath, "flash/bin/ToolWrapper.html");
+		flash.addQueryParameter("toolToLoad=Whiteboard");
 		flash.openFlashHTMLGUI(inputWhiteBoardHTML);
 	}
 
@@ -162,6 +198,9 @@ public class FlashWhiteboard {
 		toolExplorer.addFlashClientListener(getFlashListener());
 	}
 
+	/**
+	 * @param c
+	 */
 	public void setBackgroundColor(Color c) {
 		bgColor = c;
 	}
@@ -187,5 +226,12 @@ public class FlashWhiteboard {
 	 */
 	public void setTitle(String titleStr) {
 		title = titleStr;
+	}
+
+	/**
+	 * @param numDegrees
+	 */
+	public void setRotation(double numDegrees) {
+		rotation = numDegrees;
 	}
 }

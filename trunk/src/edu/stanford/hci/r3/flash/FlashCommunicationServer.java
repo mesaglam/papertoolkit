@@ -77,6 +77,11 @@ public class FlashCommunicationServer {
 	private boolean verbose = false;
 
 	/**
+	 * Replaces OTHER_PARAMS in the HTML/Flash template with other query parameters.
+	 */
+	private String queryParameters = "";
+
+	/**
 	 * Allows us to send messages to the Flash GUI.
 	 */
 	public FlashCommunicationServer() {
@@ -211,12 +216,19 @@ public class FlashCommunicationServer {
 	 */
 	public void openFlashHTMLGUI(File flashGUIFile) {
 		try {
+			// replace the template with a port and other query parameters, such as the tool's name (which
+			// tells the ToolWrapper which tool to load)
 			String fileStr = FileUtils.readFileIntoStringBuffer(flashGUIFile, true).toString();
-			fileStr = fileStr.replace("PORT_NUM", serverPort + "");
+			fileStr = fileStr.replace("PORT_NUM", Integer.toString(serverPort));
+			fileStr = fileStr.replace("OTHER_PARAMS", queryParameters);
+
+			// create a new/temporary file in the same location as the template
 			final File outputTempHTML = new File(flashGUIFile.getParentFile(), flashGUIFile.getName() + "_"
 					+ serverPort + ".html");
 			FileUtils.writeStringToFile(fileStr, outputTempHTML);
 			final URI uri = outputTempHTML.toURI();
+			
+			// browse to this new file
 			DebugUtils.println("Loading the Flash GUI...");
 			Desktop.getDesktop().browse(uri);
 		} catch (IOException e) {
@@ -250,7 +262,21 @@ public class FlashCommunicationServer {
 		}
 	}
 
+	/**
+	 * @param v
+	 */
 	public void setVerbose(boolean v) {
 		verbose = v;
+	}
+
+	/**
+	 * @param params
+	 */
+	public void addQueryParameter(String params) {
+		if (queryParameters.equals("")) {
+			queryParameters = params;
+		} else {
+			queryParameters = queryParameters + "&" + params;
+		}
 	}
 }

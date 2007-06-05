@@ -9,6 +9,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import edu.stanford.hci.r3.pattern.coordinates.PageAddress;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
+import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.files.FileUtils;
 
 /**
@@ -382,6 +383,11 @@ public class Ink {
 	 * @param s
 	 */
 	private void updateMinAndMax(InkStroke s) {
+		if (s == null) {
+			DebugUtils.println("Warning: Detected a NULL Ink stroke.");
+			return;
+		}
+		
 		// update maxs and mins
 		minX = Math.min(s.getMinX(), minX);
 		minY = Math.min(s.getMinY(), minY);
