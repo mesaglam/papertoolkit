@@ -14,6 +14,8 @@ import javax.swing.filechooser.FileSystemView;
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.flash.FlashCommunicationServer;
 import edu.stanford.hci.r3.flash.FlashListener;
+import edu.stanford.hci.r3.flash.FlashPenListener;
+import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.batch.PenSynch;
 import edu.stanford.hci.r3.pen.batch.PenSynchManager;
 import edu.stanford.hci.r3.pen.ink.Ink;
@@ -43,8 +45,13 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  */
 public class InkAPIBrowser {
 
+	/**
+	 * Opens the HTML/Flash version... the tool can also be accessed through ToolExplorer.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		new InkAPIBrowser();
+		InkAPIBrowser inkAPIBrowser = new InkAPIBrowser();
 	}
 
 	private int currentSynchedFileIndex = -1;
@@ -68,8 +75,13 @@ public class InkAPIBrowser {
 
 		// use Flash as our GUI
 		startFlashAPIBrowser();
+
+		Pen p = new Pen(); // local pen
+		p.addLivePenListener(new FlashPenListener(flash));
+		p.startLiveMode();
 	}
 
+	
 	/**
 	 * The Flash GUI tells us to call a series of methods, and then return the results to the GUI...
 	 * Basically, we end up applying a list of methods to the Ink, and get a resulting ink object that we send
@@ -164,6 +176,8 @@ public class InkAPIBrowser {
 				PaperToolkit.getResourceFile("/templates/Preview.html")).toString();
 		StringBuilder sb = new StringBuilder();
 		for (File f : renderedImages) {
+			
+			// TODO / XXX: Change this to the actual Desktop's file path
 			sb.append("<img src=\"file:///C|/Documents and Settings/Ron Yeh/Desktop/" + f.getName() + "\"/>");
 		}
 		html = html.replace("__IMAGES__", sb.toString());
@@ -222,10 +236,12 @@ public class InkAPIBrowser {
 	public void showFlashView() {
 		// start the Flash GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
-		final File apiBrowserTML = new File(r3RootPath, "flash/bin/APIBrowserDefault.html");
-		flash.openFlashHTMLGUI(apiBrowserTML);
-		flash.removeAllFlashClientListeners(); // HACK: for now..., so we always have one flash
-		// listener
+		final File apiBrowserHTML = new File(r3RootPath, "flash/bin/ToolWrapper.html");
+		flash.addQueryParameter("toolToLoad=APIBrowser");
+		flash.openFlashHTMLGUI(apiBrowserHTML);
+
+		// HACK: for now..., so we always have one flash listener
+		flash.removeAllFlashClientListeners();
 		flash.addFlashClientListener(new FlashListener() {
 			@Override
 			public boolean messageReceived(String command) {

@@ -36,6 +36,7 @@
 		// a circle to remind us where the pen was last seen
 		private var penTipCrossHair:Sprite = new Sprite();
 
+		// add ink strokes to this component
 		private var inkCanvas:Canvas;
 
 		private var javaServer:JavaIntegration;
@@ -184,6 +185,8 @@
 				penTipCrossHair.y = yVal;
 			}	
 		}
+
+
 
 		// make the ink easier to read by zooming in
 		public function zoomIn():void {
