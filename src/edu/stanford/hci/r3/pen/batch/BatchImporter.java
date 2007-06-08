@@ -11,7 +11,6 @@ import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
 
-import edu.stanford.hci.r3.demos.batched.monitor.BatchedMonitor;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.SystemUtils;
 
@@ -87,11 +86,36 @@ public class BatchImporter {
 	}
 
 	/**
-	 * Adds a monitor into the configuration file. This monitor
+	 * Adds a monitor into the configuration file. This monitor will be run every time a digital pen is docked.
 	 */
 	public static void registerMonitor(BatchImportMonitor monitor) {
 		DebugUtils.println("Registering " + monitor.getName());
 
+		// this is the name of the class
+		DebugUtils.println(monitor.getClass());
+		
+		// this should be the run dir
+		DebugUtils.println(monitor.getClass().getResource("/"));
+		
+		// create a new instance of this, and run the handler....
+		// do it by name...
+		try {
+	
+			Class<?> c = Class.forName("edu.stanford.hci.r3.demos.batched.monitor.BatchedMonitor");
+			Object newInstance = c.newInstance();
+			
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		// figure out its path / classpath...
 
 		// save it to our configuration file
@@ -102,13 +126,24 @@ public class BatchImporter {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new BatchImporter(args);
+		
+		
+		
+		
+		
+		// new BatchImporter(args);
 	}
 
+	/**
+	 * 
+	 */
 	public static void listRegisteredMonitors() {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * @param monitor
+	 */
 	public static void removeMonitor(BatchImportMonitor monitor) {
 		// TODO Auto-generated method stub
 	}
