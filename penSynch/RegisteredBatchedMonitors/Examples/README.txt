@@ -1,0 +1,2 @@
+To test the registration of batched monitors, move any of these apps up one directory, to the RegisteredBatchdMonitors/ directory.
+All (exe, bat, jar) apps in that directory will be invoked with a single argument (the path pointing to the most-recently synchronized pen XML file).
