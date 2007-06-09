@@ -1,8 +1,15 @@
 package edu.stanford.hci.r3.util;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Map;
+
+import edu.stanford.hci.r3.util.jar.JarClassLoader;
 
 /**
  * <p>
@@ -17,6 +24,9 @@ import java.net.URL;
  */
 public class SystemUtils {
 
+	/**
+	 * 
+	 */
 	private static final double BYTES_PER_MB = (1024.0 * 1024.0);
 
 	/**
@@ -35,6 +45,9 @@ public class SystemUtils {
 	 */
 	public static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
+	/**
+	 * 
+	 */
 	private static long previousTime;
 
 	/**
@@ -72,6 +85,17 @@ public class SystemUtils {
 	}
 
 	/**
+	 * @param f
+	 */
+	public static void open(File f) {
+		try {
+			Desktop.getDesktop().open(f);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * http://developer.apple.com/technotes/tn2002/tn2110.html
 	 * 
 	 * @return true if the jvm is running on mac os x
@@ -85,8 +109,58 @@ public class SystemUtils {
 	 * @return if the jvm is running on windows 9x/NT/2000/XP/Vista
 	 */
 	public static boolean operatingSystemIsWindowsVariant() {
-		String lcOSName = System.getProperty("os.name").toLowerCase();
-		return lcOSName.startsWith("windows");
+		final String lowercaseOSName = System.getProperty("os.name").toLowerCase();
+		return lowercaseOSName.startsWith("windows");
+	}
+
+	/**
+	 * Run an executable file.
+	 */
+	public static void run(File executableFile, String[] args) {
+		try {
+			String command = null;
+			if (!executableFile.exists()) {
+				// this probably means it is in the path, instead of in the local directory
+				command = executableFile.getName();
+			} else {
+				// run this file!
+				command = executableFile.getAbsolutePath();
+			}
+			DebugUtils.println("Command: " + command);
+			DebugUtils.println("Arguments: " + Arrays.asList(args));
+
+			String[] cmdWithArguments = new String[1 + args.length];
+			cmdWithArguments[0] = command;
+			for (int i = 0; i < args.length; i++) {
+				cmdWithArguments[i + 1] = args[i];
+			}
+			ProcessBuilder builder = new ProcessBuilder(cmdWithArguments);
+			Map<String, String> env = builder.environment();
+			final String envPath = env.get("PATH");
+			String append = null;
+			if (envPath == null) {
+				append = "";
+			} else {
+				append = System.getProperty("path.separator") + envPath;
+			}
+			env.put("PATH", System.getProperty("java.library.path") + append);
+			builder.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param f
+	 * @param strings
+	 */
+	public static void runJar(File f, String[] args) {
+		try {
+			JarClassLoader jar = new JarClassLoader(f);
+			jar.invokeClass(jar.getMainClassName(), args);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
