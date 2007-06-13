@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:ApolloApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
 	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Tool Explorer" addedToStage="init();" xmlns:components="components.*">
+	
+
+
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
@@ -187,4 +190,4 @@
 		<mx:Button label="Exit" click="explorer.exit();" paddingBottom="2" paddingLeft="25" paddingTop="2" paddingRight="25"/>
 	</mx:VBox>
 	<mx:LinkButton label="?" click="explorer.browseToDocumentationWebsite();" fontWeight="bold" fontSize="23" color="#666668" left="117" bottom="10" height="41"/>
-</mx:ApolloApplication>
+</mx:WindowedApplication>
