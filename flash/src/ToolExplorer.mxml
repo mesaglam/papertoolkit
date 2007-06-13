@@ -137,41 +137,41 @@
 	
 	<mx:HBox horizontalCenter="0" verticalCenter="0" id="toolButtonsContainer" hideEffect="{fadeOut}" showEffect="{fadeIn}">
 		<mx:Button label="Design" labelPlacement="bottom" paddingBottom="5" click="explorer.designClicked();">
-			<mx:icon>@Embed('../icons/Design.png')</mx:icon>
+			<mx:icon>@Embed('icons/Design.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="17"/>
 		<mx:Button label="API Explorer" labelPlacement="bottom" paddingBottom="5" click="explorer.apiExplorerClicked();">
-			<mx:icon>@Embed('../icons/Directions.png')</mx:icon>
+			<mx:icon>@Embed('icons/Directions.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="17"/>
 		<mx:Button label="Code &amp; Debug" labelPlacement="bottom" paddingBottom="5" click="explorer.codeAndDebugClicked();">
-			<mx:icon>@Embed('../icons/YinYang.png')</mx:icon>
+			<mx:icon>@Embed('icons/YinYang.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="17"/>
 		<mx:Button label="Paper UIs" labelPlacement="bottom" paddingBottom="5" click="explorer.paperUIsClicked();">
-			<mx:icon>@Embed('../icons/Stickies.png')</mx:icon>
+			<mx:icon>@Embed('icons/Stickies.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="17"/>
 		<mx:Button label="Toolbox" labelPlacement="bottom" paddingBottom="5" click="explorer.toolboxClicked();">
-			<mx:icon>@Embed('../icons/Toolbox.png')</mx:icon>
+			<mx:icon>@Embed('icons/Toolbox.png')</mx:icon>
 		</mx:Button>
 	</mx:HBox>
 	
 
 	<mx:Image right="10" top="10" id="topRightImageDesign" visible="false">
-		<mx:source>@Embed('../icons/Design.png')</mx:source>
+		<mx:source>@Embed('icons/Design.png')</mx:source>
 	</mx:Image>
 	<mx:Image right="10" top="10" id="topRightImageDirections" visible="false">
-		<mx:source>@Embed('../icons/Directions.png')</mx:source>
+		<mx:source>@Embed('icons/Directions.png')</mx:source>
 	</mx:Image>
 	<mx:Image right="10" top="10" id="topRightImageYinYang" visible="false">
-		<mx:source>@Embed('../icons/YinYang.png')</mx:source>
+		<mx:source>@Embed('icons/YinYang.png')</mx:source>
 	</mx:Image>
 	<mx:Image right="10" top="10" id="topRightImageStickies" visible="false">
-		<mx:source>@Embed('../icons/Stickies.png')</mx:source>
+		<mx:source>@Embed('icons/Stickies.png')</mx:source>
 	</mx:Image>
 	<mx:Image right="10" top="10" id="topRightImageToolbox" visible="false">
-		<mx:source>@Embed('../icons/Toolbox.png')</mx:source>
+		<mx:source>@Embed('icons/Toolbox.png')</mx:source>
 	</mx:Image>
 	
 	<mx:VBox id="dropDownContainer" alpha="0.1" rollOverEffect="{brighten}" rollOutEffect="{dim}" right="10" bottom="10">
