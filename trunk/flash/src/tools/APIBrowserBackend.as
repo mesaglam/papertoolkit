@@ -1,33 +1,24 @@
 package tools {
 	
-	import flash.events.MouseEvent;
-	import flash.display.StageDisplayState;
-	import flash.display.Stage;
-	import flash.display.Sprite;
-	import flash.display.Graphics;
-
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.events.ProgressEvent;
-	import flash.events.SecurityErrorEvent;
-	import flash.events.DataEvent;
-	import flash.events.IEventDispatcher;
-
-	import flash.net.XMLSocket;
-	import ink.InkRawXMLParser;
-	import ink.Ink;
-	import mx.controls.Label;
-	import mx.controls.ComboBox;
-	import mx.controls.TextArea;
-	import flash.system.System;
-	import flash.text.TextField;
 	import components.APIBrowser;
-	import java.JavaIntegration;
-	import java.Constants;
+	
+	import flash.display.Graphics;
+	import flash.display.Sprite;
+	import flash.display.Stage;
+	import flash.display.StageScaleMode;
+	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
+	import flash.system.System;
+	
+	import ink.Ink;
+	import ink.InkRawXMLParser;
 	import ink.InkStroke;
 	import ink.InkUtils;
-	import mx.containers.Canvas;
-	import flash.geom.Rectangle;	
+	
+	import java.Constants;
+	import java.JavaIntegration;
+	
+	import mx.containers.Canvas;	
 	
 	public class APIBrowserBackend extends Sprite implements Tool {
 
@@ -77,6 +68,7 @@ package tools {
 			g = inkContainer.graphics;
 			addChild(inkContainer);
 
+
 			inkWell = new Ink();
 			addChild(inkWell);
 			currInkStroke = new InkStroke();
@@ -110,9 +102,10 @@ package tools {
 		public function toggleFullScreen(event:MouseEvent):void {
 			trace("toggleFullScreen");
 			if (fullScreen) {
-				stage.displayState = StageDisplayState.NORMAL;
+				stage.displayState = "normal";
 			} else {
-				stage.displayState = StageDisplayState.FULL_SCREEN;
+				stage.displayState = "fullscreen";
+				
 			}
 			fullScreen = !fullScreen;
 		}
