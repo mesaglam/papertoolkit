@@ -2,9 +2,6 @@ package tools {
 	
 	import flash.display.Stage;
 	import flash.display.Sprite;
-	import flash.display.StageDisplayState;
-	import flash.events.InvokeEvent;
-	import flash.filesystem.File;
 	import flash.net.navigateToURL;
 	import flash.net.URLRequest;
 	
@@ -143,10 +140,10 @@ package tools {
 		// Switches between full screen and restored window state.
 		public function toggleFullScreen():void {
 			trace("toggleFullScreen");
-			if (stageObj.displayState == StageDisplayState.FULL_SCREEN) {
-				stageObj.displayState = StageDisplayState.NORMAL;
+			if (stageObj.displayState == "fullscreen") {
+				stageObj.displayState = "normal";
 			} else {
-				stageObj.displayState = StageDisplayState.FULL_SCREEN;
+				stageObj.displayState = "fullscreen";
 			}
 		}
 
