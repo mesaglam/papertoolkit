@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application xmlns="http://ns.adobe.com/air/application/1.0.M4" appId="santiagoSoft.FreshAir" version="1.0 Beta">
+<application xmlns="http://ns.adobe.com/air/application/1.0.M4" appId="r3.ToolExplorer" version=".9">
 
 <!-- 
     AIR Application Descriptor File: 
@@ -25,7 +25,7 @@
         The name displayed by the operating system when the application is 
         running. (Required.)
     -->
-    <name>Fresh Air</name>
+    <name>PaperToolkit Explorer</name>
     
     <!--
         The title displayed in the AIR application installer.
@@ -35,12 +35,12 @@
     <!--
         The description displayed in the AIR application installer.
     -->
-    <description>Free Stuff</description>
+    <description>PaperToolkit Explorer</description>
     
     <!--
         The application copyright information.
     -->
-    <copyright>SantiagoSoft, Inc.</copyright>
+    <copyright>Stanford University</copyright>
     
     <!--
         The main content file of the application, which must be a SWF or 
@@ -81,14 +81,12 @@
         must be included in the AIR package.
     -->
 	
-	<!--
         <icon>
-            <image16x16>icons/AIRApp_16.png</image16x16>     
-            <image32x32>icons/AIRApp_32.png</image32x32>   
-            <image48x48>icons/AIRApp_48.png</image48x48>    
-            <image128x128>icons/AIRApp_128.png</image128x128>
+            <image16x16>icons/Toolbox.16.png</image16x16>     
+            <image32x32>icons/Toolbox.32.png</image32x32>   
+            <image48x48>icons/Toolbox.48.png</image48x48>    
+            <image128x128>icons/Toolbox.png</image128x128>
         </icon>
-    -->
 	
     <!-- 
         If the handleUpdates element is present in the application descriptor, 
