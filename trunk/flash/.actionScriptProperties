@@ -4,8 +4,7 @@
   warn="true" htmlGenerate="true" htmlPlayerVersionCheck="true" htmlPlayerVersion="9.0.28" htmlExpressInstall="true" 
   htmlHistoryManagement="true" 
   outputFolderPath="bin" sourceFolderPath="src"
-  useApolloConfig="true" verifyDigests="true" enableModuleDebug="true" 
-  >
+  useApolloConfig="true" verifyDigests="true" enableModuleDebug="true">
 
 
 
