@@ -80,7 +80,6 @@ public class FlexiblePatternCoordinateConverter implements PatternCoordinateConv
 	 * 
 	 * @see edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter#getArea()
 	 */
-	@Override
 	public double getArea() {
 		return widthInDots * heightInDots;
 	}

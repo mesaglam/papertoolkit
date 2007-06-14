@@ -32,7 +32,6 @@ public class Inches extends Units {
 	/**
 	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
-	@Override
 	protected double getNumberOfUnitsInOneInch() {
 		return 1.0;
 	}

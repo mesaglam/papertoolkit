@@ -88,7 +88,6 @@ public class CodeGenerator {
 			increaseIndent();
 			addLine("region.addEventHandler(new ClickAdapter() {");
 			increaseIndent();
-			addLine("@Override");
 			addLine("public void clicked(PenEvent e) {");
 			increaseIndent();
 			addLine("DebugUtils.println(\"You clicked on " + regionName + ".\");");

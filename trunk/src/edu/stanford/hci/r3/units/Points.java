@@ -35,7 +35,6 @@ public class Points extends Units {
 	/**
 	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
-	@Override
 	protected double getNumberOfUnitsInOneInch() {
 		return 72.0;
 	}

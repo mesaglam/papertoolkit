@@ -281,7 +281,6 @@ public class ApplicationManager {
 			});
 
 			listOfApps.addHighlighter(new ConditionalHighlighter(Color.WHITE, Color.LIGHT_GRAY, 0, -1) {
-				@Override
 				protected boolean test(ComponentAdapter c) {
 					if (c.getValue() instanceof Application) {
 						Application app = (Application) c.getValue();

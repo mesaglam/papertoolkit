@@ -42,7 +42,6 @@ public class Test_Units {
 	@Test
 	public void customUnits() {
 		Units cubit = new Units(1, "Cubits") {
-			@Override
 			protected double getNumberOfUnitsInOneInch() {
 				return 1/18.0;
 			}

@@ -60,19 +60,13 @@ public class SketchToPaperUI {
 		// set up the pen, and a pen listener...
 		pen.startLiveMode();
 		pen.addLivePenListener(new PenListener() {
-			@Override
 			public void penDown(PenSample sample) {
-
 			}
 
-			@Override
 			public void penUp(PenSample sample) {
-
 			}
 
-			@Override
 			public void sample(PenSample sample) {
-
 			}
 		});
 	}

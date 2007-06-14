@@ -37,7 +37,6 @@ public class FlashClient {
 		fromClient = readerIn;
 
 		clientThread = new Thread(new Runnable() {
-			@Override
 			public void run() {
 				DebugUtils.println("New Flash Client: ID == " + clientID);
 

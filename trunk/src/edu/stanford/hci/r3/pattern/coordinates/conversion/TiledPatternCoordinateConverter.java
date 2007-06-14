@@ -377,7 +377,6 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 	 * 
 	 * @see edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConverter#getArea()
 	 */
-	@Override
 	public double getArea() {
 		return numTotalDotsAcross * numTotalDotsDown;
 	}

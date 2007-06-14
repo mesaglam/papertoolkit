@@ -71,11 +71,9 @@ public class PenSimulator extends PenInput implements MouseListener, MouseMotion
 		return inputPanel;
 	}
 
-	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
 
-	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (SwingUtilities.isRightMouseButton(e)) {
 			return;
@@ -91,19 +89,15 @@ public class PenSimulator extends PenInput implements MouseListener, MouseMotion
 		inputPanel.repaint();
 	}
 
-	@Override
 	public void mouseEntered(MouseEvent arg0) {
 	}
 
-	@Override
 	public void mouseExited(MouseEvent arg0) {
 	}
 
-	@Override
 	public void mouseMoved(MouseEvent arg0) {
 	}
 
-	@Override
 	public void mousePressed(MouseEvent e) {
 		if (SwingUtilities.isRightMouseButton(e)) {
 			return;
@@ -120,7 +114,6 @@ public class PenSimulator extends PenInput implements MouseListener, MouseMotion
 		inputPanel.repaint();
 	}
 
-	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (SwingUtilities.isRightMouseButton(e)) {
 			// clear the board!
@@ -151,7 +144,9 @@ public class PenSimulator extends PenInput implements MouseListener, MouseMotion
 		listeners.remove(penListener);
 	}
 
-	@Override
+	/* (non-Javadoc)
+	 * @see edu.stanford.hci.r3.pen.PenInput#startLiveMode()
+	 */
 	public void startLiveMode() {
 		// start up a JFrame w/ GUI to get mouse input...
 		frame = new JFrame("Pen Simulator");
@@ -164,7 +159,9 @@ public class PenSimulator extends PenInput implements MouseListener, MouseMotion
 		liveMode = true;
 	}
 
-	@Override
+	/* (non-Javadoc)
+	 * @see edu.stanford.hci.r3.pen.PenInput#stopLiveMode()
+	 */
 	public void stopLiveMode() {
 		frame.dispose();
 		frame = null;

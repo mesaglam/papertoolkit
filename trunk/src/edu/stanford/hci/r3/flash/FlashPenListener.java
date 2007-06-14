@@ -31,7 +31,6 @@ public class FlashPenListener implements PenListener {
 	/* (non-Javadoc)
 	 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penDown(edu.stanford.hci.r3.pen.PenSample)
 	 */
-	@Override
 	public void penDown(PenSample sample) {
 		flash.sendMessage("<penDownEvent/>");
 		flash.sendMessage(sample.toXMLString());
@@ -40,7 +39,6 @@ public class FlashPenListener implements PenListener {
 	/* (non-Javadoc)
 	 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penUp(edu.stanford.hci.r3.pen.PenSample)
 	 */
-	@Override
 	public void penUp(PenSample sample) {
 		flash.sendMessage(sample.toXMLString());
 		flash.sendMessage("<penUpEvent/>");
@@ -49,7 +47,6 @@ public class FlashPenListener implements PenListener {
 	/* (non-Javadoc)
 	 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#sample(edu.stanford.hci.r3.pen.PenSample)
 	 */
-	@Override
 	public void sample(PenSample sample) {
 		flash.sendMessage(sample.toXMLString());
 	}

@@ -46,7 +46,6 @@ public class FileTransferHandler extends TransferHandler {
 	 * @see javax.swing.TransferHandler#canImport(javax.swing.JComponent,
 	 *      java.awt.datatransfer.DataFlavor[])
 	 */
-	@Override
 	public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
 		if (hasFileFlavor(transferFlavors)) {
 			return true;
@@ -91,7 +90,6 @@ public class FileTransferHandler extends TransferHandler {
 	/**
 	 * @see javax.swing.TransferHandler#getSourceActions(javax.swing.JComponent)
 	 */
-	@Override
 	public int getSourceActions(JComponent c) {
 		System.out.println("Getting Source Actions");
 		return COPY_OR_MOVE;
@@ -100,7 +98,6 @@ public class FileTransferHandler extends TransferHandler {
 	/**
 	 * @see javax.swing.TransferHandler#getVisualRepresentation(java.awt.datatransfer.Transferable)
 	 */
-	@Override
 	public Icon getVisualRepresentation(Transferable t) {
 		System.out.println("Get Visual Representation");
 		return super.getVisualRepresentation(t);
@@ -114,7 +111,6 @@ public class FileTransferHandler extends TransferHandler {
 	 *      java.awt.datatransfer.Transferable)
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
 	public boolean importData(JComponent comp, Transferable t) {
 		if (!canImport(comp, t.getTransferDataFlavors())) {
 			return false;

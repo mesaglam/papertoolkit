@@ -76,7 +76,6 @@ public class PenServerTrayApp {
 		serialPortTextField.setText(Constants.Ports.PEN_SERVER_JAVA + "");
 		JButton button = new JButton("OK");
 		button.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				COMPort selectedCOMPort = (COMPort) comPortComboBox.getSelectedItem();
 				int selectedTCPIPPort = Integer.parseInt(serialPortTextField.getText());

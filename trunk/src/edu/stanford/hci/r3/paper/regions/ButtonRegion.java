@@ -23,17 +23,14 @@ public class ButtonRegion extends Region {
 	public ButtonRegion(String name, double x, double y, double w, double h) {
 		super(name, x, y, w, h);
 		clickHandler = new ClickHandler() {
-			@Override
 			public void clicked(PenEvent e) {
 				onClick(e);
 			}
 
-			@Override
 			public void pressed(PenEvent e) {
 
 			}
 
-			@Override
 			public void released(PenEvent e) {
 
 			}

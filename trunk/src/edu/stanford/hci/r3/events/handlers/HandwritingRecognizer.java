@@ -115,7 +115,6 @@ public abstract class HandwritingRecognizer extends EventHandler {
 	/**
 	 * @see edu.stanford.hci.r3.events.ContentFilter#toString()
 	 */
-	@Override
 	public String toString() {
 		return "Handwriting Recognizer: " + strokes.size() + " strokes.";
 	}

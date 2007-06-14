@@ -243,7 +243,6 @@ public class InkAPIBrowser {
 		// HACK: for now..., so we always have one flash listener
 		flash.removeAllFlashClientListeners();
 		flash.addFlashClientListener(new FlashListener() {
-			@Override
 			public boolean messageReceived(String command) {
 				if (command.equals("apibrowserclient connected")) {
 					DebugUtils.println("Flash Client Connected!");

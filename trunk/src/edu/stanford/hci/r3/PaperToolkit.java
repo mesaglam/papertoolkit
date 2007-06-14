@@ -437,6 +437,8 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * TODO: Make the look and feel default to OFF, or somehow research a mixed look and feel solution...
+	 * 
 	 * @param useAppManager
 	 */
 	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager, boolean useHandwritingRecognitionServer) {
@@ -499,14 +501,12 @@ public class PaperToolkit {
 						+ r.getName() + "]");
 
 				bindPatternToRegionItem.addActionListener(new ActionListener() {
-					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						DebugUtils.println("Binding " + r);
 
 						// Runtime Pattern to Region Binding
 						// adds a listener for trashed events in the Event Engine
 						eventEngine.addEventHandlerForUnmappedEvents(new StrokeHandler() {
-							@Override
 							public void strokeArrived(PenEvent e) {
 								Rectangle2D bounds = getStroke().getBounds();
 								// determine the bounds of the region in pattern space
@@ -551,7 +551,6 @@ public class PaperToolkit {
 	 */
 	private ActionListener getDebugListener(final Application app) {
 		return new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				DebuggingEnvironment debuggingEnvironment = app.getDebuggingEnvironment();
 				if (debuggingEnvironment == null) {
@@ -621,8 +620,7 @@ public class PaperToolkit {
 	private ActionListener getLoadRecentPatternMappingsActionListener(
 			final PatternLocationToSheetLocationMapping map) {
 		// add it to the list, so we can invoke them later!
-		ActionListener actionListener = new ActionListener() {
-			@Override
+		final ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent nullActionEvent) {
 				map.loadConfigurationFromXML(getLastRunPatternInfoFile());
 			}
@@ -642,7 +640,6 @@ public class PaperToolkit {
 	 */
 	private ActionListener getRenderListener(final Application app) {
 		return new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				app.renderToPDF();
 			}
@@ -670,7 +667,6 @@ public class PaperToolkit {
 					SystemTray.getSystemTray().add(trayIcon);
 
 					Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-						@Override
 						public void run() {
 							DebugUtils.println("Running Shutdown Services...");
 							// Buggy for some reason... Can stop the shutdown =\
