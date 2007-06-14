@@ -235,7 +235,6 @@ public abstract class InkCollector extends EventHandler {
 	 * 
 	 * @see edu.stanford.hci.r3.events.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
-	@Override
 	public void handleEvent(PenEvent event) {
 
 		final PercentageCoordinates percentageLocation = event.getPercentageLocation();
@@ -339,7 +338,6 @@ public abstract class InkCollector extends EventHandler {
 	/**
 	 * @see edu.stanford.hci.r3.events.ContentFilter#toString()
 	 */
-	@Override
 	public String toString() {
 		return "Ink Collector [" + strokes.size() + " strokes]";
 	}

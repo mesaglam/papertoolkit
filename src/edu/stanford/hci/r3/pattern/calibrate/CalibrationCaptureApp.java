@@ -124,7 +124,6 @@ public class CalibrationCaptureApp {
 	private BatchedEventHandler getBatchedEventHandler() {
 		if (beh == null) {
 			beh = new BatchedEventHandler("Calibration") {
-				@Override
 				public void inkArrived(Ink inkOnThisPage) {
 					saveBatchedStrokes(inkOnThisPage);
 				}
@@ -184,7 +183,6 @@ public class CalibrationCaptureApp {
 	private PenListener getPenListener() {
 		if (listener == null) {
 			listener = new PenStrokeListener() {
-				@Override
 				public void penStroke(InkStroke stroke) {
 					if (currStreamedInk == null) {
 						currStreamedInk = new Ink();

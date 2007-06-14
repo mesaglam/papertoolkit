@@ -76,7 +76,6 @@ public class ToolExplorer implements FlashListener {
 	/*
 	 * @see edu.stanford.hci.r3.flash.FlashListener#messageReceived(java.lang.String)
 	 */
-	@Override
 	public boolean messageReceived(String command) {
 		DebugUtils.println(command);
 		if (command.equals("Connected")) {

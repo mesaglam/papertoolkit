@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import edu.stanford.hci.r3.util.graphics.GraphicsUtils;
 
 public class TestPanel extends JPanel {
-	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		final Graphics2D g2d = (Graphics2D) g;

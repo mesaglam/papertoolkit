@@ -91,7 +91,6 @@ public class DisplayGraphicsAction implements R3Action {
 		private JPanel getMainPanel() {
 			if (mainPanel == null) {
 				mainPanel = new JPanel() {
-					@Override
 					protected void paintComponent(Graphics g) {
 						super.paintComponent(g);
 						final Graphics2D g2d = (Graphics2D) g;

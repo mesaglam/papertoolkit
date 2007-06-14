@@ -61,7 +61,6 @@ public class PatternDots extends Units {
 	 * 
 	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
-	@Override
 	protected double getNumberOfUnitsInOneInch() {
 		return PATTERN_UNITS_PER_INCH;
 	}

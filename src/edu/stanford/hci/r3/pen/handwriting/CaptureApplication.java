@@ -254,7 +254,6 @@ public class CaptureApplication extends Application {
 
 		// for displaying ink
 		inkCollector = new InkCollector() {
-			@Override
 			public void contentArrived() {
 				// DebugUtils.println(getInk().getNumStrokes());
 				gui.getInkPanel().addInk(getNewInkOnly());
@@ -263,8 +262,6 @@ public class CaptureApplication extends Application {
 
 		// for recognizing the strokes
 		handwritingRecognizer = new HandwritingRecognizer() {
-
-			@Override
 			public void contentArrived() {
 				lastTimeNewInkArrived = System.currentTimeMillis();
 

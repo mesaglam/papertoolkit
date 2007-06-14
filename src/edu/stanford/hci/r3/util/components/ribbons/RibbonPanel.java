@@ -63,7 +63,6 @@ public class RibbonPanel extends JPanel implements RibbonConstants {
 	 * 
 	 * @see java.awt.Container#add(java.awt.Component, int)
 	 */
-	@Override
 	public Component add(Component comp, int index) {
 		return getToolPanel().add(comp, index);
 	}
@@ -73,7 +72,6 @@ public class RibbonPanel extends JPanel implements RibbonConstants {
 	 * 
 	 * @see java.awt.Container#add(java.awt.Component, java.lang.Object)
 	 */
-	@Override
 	public void add(Component comp, Object constraints) {
 		getToolPanel().add(comp, constraints);
 	}
@@ -83,7 +81,6 @@ public class RibbonPanel extends JPanel implements RibbonConstants {
 	 * 
 	 * @see java.awt.Container#add(java.awt.Component, java.lang.Object, int)
 	 */
-	@Override
 	public void add(Component comp, Object constraints, int index) {
 		getToolPanel().add(comp, constraints, index);
 	}
@@ -100,7 +97,6 @@ public class RibbonPanel extends JPanel implements RibbonConstants {
 				private final GradientPaint gradient = new GradientPaint(0, 0, PANEL_BEGIN_COLOR, 0,
 						getHeight(), PANEL_END_COLOR, false);
 
-				@Override
 				protected void paintComponent(Graphics g) {
 					super.paintComponent(g);
 					final Graphics2D g2d = (Graphics2D) g;

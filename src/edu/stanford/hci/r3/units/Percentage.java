@@ -61,7 +61,6 @@ public class Percentage extends Units {
 	/**
 	 * @see edu.stanford.hci.r3.units.Units#getNumberOfUnitsInOneInch()
 	 */
-	@Override
 	protected double getNumberOfUnitsInOneInch() {
 		return actualValue.getNumberOfUnitsInOneInch() * 100.0 / maximumValue.getValue();
 	}

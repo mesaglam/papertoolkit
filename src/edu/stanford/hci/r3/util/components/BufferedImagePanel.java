@@ -79,7 +79,6 @@ public class BufferedImagePanel extends JPanel {
 	/**
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
-	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		final Graphics2D g2d = (Graphics2D) g;

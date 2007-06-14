@@ -342,7 +342,6 @@ public class SuperJTextField extends JTextField {
 	 * 
 	 * @see javax.swing.text.JTextComponent#setText(java.lang.String)
 	 */
-	@Override
 	public void setText(String t) {
 		super.setText(t);
 

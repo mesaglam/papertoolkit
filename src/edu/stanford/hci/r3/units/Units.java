@@ -83,7 +83,6 @@ public abstract class Units implements Cloneable {
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Units) {
 			final Units other = (Units) o;

@@ -27,7 +27,6 @@ public abstract class DragHandler extends EventHandler {
 
 	protected abstract void handleDragMinMax(double minX, double minY, double maxX, double maxY);
 
-	@Override
 	public void handleEvent(PenEvent event) {
 		// collect the min and max
 
@@ -59,7 +58,6 @@ public abstract class DragHandler extends EventHandler {
 		}
 	}
 
-	@Override
 	public String toString() {
 		return "Drag Handler";
 	}

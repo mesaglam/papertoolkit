@@ -112,7 +112,6 @@ public class FlashWhiteboard {
 	 */
 	private FlashListener getFlashListener() {
 		return new FlashListener() {
-			@Override
 			public boolean messageReceived(String command) {
 				if (command.equals("Whiteboard")) {
 					DebugUtils.println("Whiteboard Connected!");
@@ -157,18 +156,13 @@ public class FlashWhiteboard {
 	 */
 	private PenListener getInkListener() {
 		return new PenListener() {
-			@Override
 			public void penDown(PenSample sample) {
 				currInkStroke = new InkStroke();
 				currInkStroke.addSample(sample);
 			}
-
-			@Override
 			public void penUp(PenSample sample) {
 				inkWell.addStroke(currInkStroke);
 			}
-
-			@Override
 			public void sample(PenSample sample) {
 				currInkStroke.addSample(sample);
 			}

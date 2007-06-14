@@ -46,7 +46,6 @@ public class RibbonPanelHeader extends JPanel {
 	/**
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
-	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		final Graphics2D g2d = (Graphics2D) g;
