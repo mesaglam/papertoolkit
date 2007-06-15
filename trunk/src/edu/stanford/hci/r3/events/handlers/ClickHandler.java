@@ -5,8 +5,8 @@ import edu.stanford.hci.r3.events.PenEvent;
 
 /**
  * <p>
- * Unlike Java Swing's MouseListener, the Pen & Paper Click Handler cannot sense mouseover.
- * Therefore, there is no analogue to mouseEntered, Exited.
+ * Unlike Java Swing's MouseListener, the Pen & Paper Click Handler cannot sense mouseover. Therefore, there
+ * is no analogue to mouseEntered, Exited.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -19,6 +19,7 @@ public abstract class ClickHandler extends EventHandler {
 
 	/**
 	 * <p>
+	 * Does not notify a click until after a sufficiently long delay.
 	 * </p>
 	 */
 	private class ClickNotifier implements Runnable {
@@ -59,7 +60,8 @@ public abstract class ClickHandler extends EventHandler {
 	}
 
 	/**
-	 * 
+	 * We assume a human cannot pen up and down within a 30 ms span.
+	 * TODO: Move this functionality down into the PenServer...
 	 */
 	private static final long MILLIS_TO_DELAY = 30;
 
@@ -69,7 +71,7 @@ public abstract class ClickHandler extends EventHandler {
 	protected int clickCount = 1;
 
 	/**
-	 * 
+	 * Whether we should filter out bad data received from bad streaming pens or poorly printed dot patterns.
 	 */
 	private boolean filterJitteryPenEvents = true;
 
@@ -79,14 +81,13 @@ public abstract class ClickHandler extends EventHandler {
 	private ClickNotifier lastClickNotifier;
 
 	/**
-	 * If the current click time is really close to the last click time, we can signal a double
-	 * click.
+	 * If the current click time is really close to the last click time, we can signal a double click.
 	 */
 	private long lastClickTime = 0;
 
 	/**
-	 * Keeps the most recent event, so that when pen up happens, we can give it an event that does
-	 * not have ZERO coordinates.
+	 * Keeps the most recent event, so that when pen up happens, we can give it an event that does not have
+	 * ZERO coordinates.
 	 */
 	private PenEvent lastEvent;
 
@@ -108,11 +109,11 @@ public abstract class ClickHandler extends EventHandler {
 	public abstract void clicked(PenEvent e);
 
 	/**
-	 * This method does the hard work of figuring out when a pen pressed, released, and clicked. It
-	 * is up to the subclass to do something interesting with it once the events are triggered.
+	 * This method does the hard work of figuring out when a pen pressed, released, and clicked. It is up to
+	 * the subclass to do something interesting with it once the events are triggered.
 	 * 
-	 * We also use the 20 ms filter heuristic that the InkCollector uses. We assume people can't
-	 * click faster than 20ms.
+	 * We also use the 20 ms filter heuristic that the InkCollector uses. We assume people can't click faster
+	 * than 20ms.
 	 * 
 	 * @see edu.stanford.hci.r3.events.EventHandler#handleEvent(edu.stanford.hci.r3.events.PenEvent)
 	 */
@@ -125,8 +126,7 @@ public abstract class ClickHandler extends EventHandler {
 				pressed(event);
 				penDownHappened = true;
 			} else {
-				// just filter this out
-				// cancel the notifier
+				// just filter this out by cancelling the notifier
 				if (lastClickNotifier != null) {
 					lastClickNotifier.setDoNotNotify(true);
 					lastClickNotifier = null;

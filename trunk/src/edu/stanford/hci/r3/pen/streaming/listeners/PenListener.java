@@ -18,6 +18,7 @@ public interface PenListener {
 
 	/**
 	 * The first callback that is fired when a pen touches patterned paper.
+	 * This is basically an event that occurs on the first sample the pen receives.
 	 * 
 	 * @param sample
 	 */

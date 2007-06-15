@@ -8,6 +8,7 @@ import java.util.List;
 
 import edu.stanford.hci.r3.config.Constants;
 import edu.stanford.hci.r3.pen.PenSample;
+import edu.stanford.hci.r3.pen.streaming.PenJitterFilter.PenUpCallback;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerJavaObjectXMLSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerPlainTextSender;
 import edu.stanford.hci.r3.pen.streaming.data.PenServerSender;
@@ -17,6 +18,9 @@ import edu.stanford.hci.r3.util.communications.COMPort;
 import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
+ * <p>
+ * The PenServer also implements a simple filtering to clean up stray penUps that may come from bad pens/pattern.
+ * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
@@ -84,18 +88,30 @@ public class PenServer implements PenListener {
 	 */
 	public static final int DEFAULT_JAVA_PORT = Constants.Ports.PEN_SERVER_JAVA;
 
+	/**
+	 * 
+	 */
 	public static final int DEFAULT_PLAINTEXT_PORT = Constants.Ports.PEN_SERVER_PLAINTEXT;
 
+	/**
+	 * 
+	 */
 	public static final COMPort DEFAULT_SERIAL_PORT = COMPort.COM5;
 
+	/**
+	 * 
+	 */
 	private static PenServer javaPenServer;
-
-	private static PenServer textPenServer;
 
 	/**
 	 * A connection to the local COM port.
 	 */
 	private static PenStreamingConnection penConnection;
+
+	/**
+	 * 
+	 */
+	private static PenServer textPenServer;
 
 	/**
 	 * @return whether there is a local Java server running.
@@ -238,8 +254,14 @@ public class PenServer implements PenListener {
 		return textPenServer != null;
 	}
 
+	/**
+	 * 
+	 */
 	private boolean exitFlag = false;
 
+	/**
+	 * 
+	 */
 	private List<PenServerSender> outputs;
 
 	/**
@@ -247,9 +269,17 @@ public class PenServer implements PenListener {
 	 */
 	private boolean penUp = true;
 
+	/**
+	 * 
+	 */
 	private ServerSocket serverSocket;
 
+	/**
+	 * 
+	 */
 	private ClientServerType serverType;
+
+	private PenJitterFilter jitterFilter;
 
 	/**
 	 * @param ss
@@ -260,6 +290,13 @@ public class PenServer implements PenListener {
 		serverType = type;
 		outputs = new ArrayList<PenServerSender>();
 
+		jitterFilter = new PenJitterFilter(new PenUpCallback() {
+			public void penUp(PenSample s) {
+				penUp = true;
+				sample(s);
+			}
+		});
+		
 		// start thread to accept connections
 		new Thread(new ServerThread()).start();
 	}
@@ -279,8 +316,13 @@ public class PenServer implements PenListener {
 	 * @author Ron Yeh
 	 */
 	public void penDown(PenSample s) {
-		penUp = false;
-		sample(s);
+		if (jitterFilter.happenedTooCloseToLastPenUp()) {
+			DebugUtils.println("Cancelling Last PenUp");
+			jitterFilter.cancelLastPenUp();
+		} else {
+			penUp = false;
+			sample(s);
+		}
 	}
 
 	/**
@@ -288,9 +330,8 @@ public class PenServer implements PenListener {
 	 * @author Ron Yeh
 	 */
 	public void penUp(PenSample s) {
-		penUp = true;
-		// log("Pen UP Detected by Server " + serverType);
-		sample(s);
+		// let the filter to figure this out
+		jitterFilter.triggerPenUpAfterADelay(s);
 	}
 
 	/**
