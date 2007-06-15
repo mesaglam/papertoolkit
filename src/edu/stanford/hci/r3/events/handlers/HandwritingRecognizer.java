@@ -112,8 +112,8 @@ public abstract class HandwritingRecognizer extends EventHandler {
 		return recognizerService.getAlternatives();
 	}
 
-	/**
-	 * @see edu.stanford.hci.r3.events.ContentFilter#toString()
+	/* (non-Javadoc)
+	 * @see edu.stanford.hci.r3.events.EventHandler#toString()
 	 */
 	public String toString() {
 		return "Handwriting Recognizer: " + strokes.size() + " strokes.";

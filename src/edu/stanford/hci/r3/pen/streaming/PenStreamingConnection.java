@@ -22,13 +22,18 @@ import edu.stanford.hci.r3.util.communications.COMPort;
 /**
  * <p>
  * This class reads from a COM port (connected to a Bluetooth transceiver). It streams data from the Nokia
- * SU-1B pen and converts it according to the Nokia Document.
- * 
+ * SU-1B pen and converts it according to the Nokia Specification Document. The application developer should
+ * NOT need to use this class.... If someone wants to extend the toolkit to handle Logitech IO2BT, Nokia
+ * SU-27W, and Maxell Penit pens, then you will need to create a class similar to this one, and plug it into
+ * the PenServer instead... (i.e., we'll need to modify the PenServer to swap between different pens).
+ * </p>
+ * <p>
  * The idea for this class is that it reports low-level pen events. It does not do any bit of gesture
  * recognition.
  * </p>
  * <p>
- * Example code is taken from: http://java.sun.com/products/javacomm/javadocs/API_users_guide.html
+ * Some example code for reading serial ports is taken from:
+ * http://java.sun.com/products/javacomm/javadocs/API_users_guide.html
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -39,18 +44,33 @@ import edu.stanford.hci.r3.util.communications.COMPort;
  */
 public class PenStreamingConnection implements SerialPortEventListener {
 
+	/**
+	 * <p>
+	 * Different fields in the serial protocol.
+	 * </p>
+	 */
 	private static enum StreamingField {
 		FORCE, HEADER, X, X_FRACTION, Y, Y_FRACTION
 	}
 
+	/**
+	 * 
+	 */
 	private static final boolean DEBUG = false;
 
+	/**
+	 * 
+	 */
 	public static final COMPort DEFAULT_PORT = COMPort.COM5;
 
-	// PenUP Identifier
+	/**
+	 * PenUP Identifier
+	 */
 	private static final byte ID_PEN_UP = 0x01;
 
-	// SimpleCoord Identifier
+	/**
+	 * SimpleCoord Identifier
+	 */
 	private static final byte ID_SIMPLE_COORD = 0x00;
 
 	/**
@@ -58,20 +78,20 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	 */
 	private static PenStreamingConnection instance = null;
 
-	// length of the PenUP Packet
+	/**
+	 * length of the PenUP Packet
+	 */
 	private static final byte LENGTH_PEN_UP = 0x00;
 
-	// length of the Simple Coordinate Packet
+	/**
+	 * length of the Simple Coordinate Packet
+	 */
 	private static final byte LENGTH_SIMPLE_COORD = 0x0B;
 
-	private static CommPortIdentifier portID;
-
 	/**
-	 * @return use COM5
+	 * 
 	 */
-	public static PenStreamingConnection getInstance() {
-		return getInstance(null);
-	}
+	private static CommPortIdentifier portID;
 
 	/**
 	 * @param port
@@ -118,37 +138,84 @@ public class PenStreamingConnection implements SerialPortEventListener {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	private byte bCurrent;
 
+	/**
+	 * 
+	 */
 	private byte bLast;
 
+	/**
+	 * 
+	 */
 	private byte bLastLast;
 
+	/**
+	 * 
+	 */
 	private int force = 0;
 
+	/**
+	 * 
+	 */
 	private InputStream inputStream;
 
+	/**
+	 * 
+	 */
 	private PenSample lastSample;
 
-	// list of listeners; add a PenListener to this list to listen to pen events
+	/**
+	 * list of listeners; add a PenListener to this list to listen to pen events
+	 */
 	private List<PenListener> listeners = new ArrayList<PenListener>();
 
+	/**
+	 * 
+	 */
 	private StreamingField nextUp = StreamingField.HEADER;
 
+	/**
+	 * 
+	 */
 	private int numBytesCoord;
 
+	/**
+	 * 
+	 */
 	private boolean penIsUp = true;
 
+	/**
+	 * 
+	 */
 	private SerialPort serialPort;
 
+	/**
+	 * 
+	 */
 	private long timestamp;
 
+	/**
+	 * 
+	 */
 	private int x = 0;
 
+	/**
+	 * 
+	 */
 	private int xFraction = 0;
 
+	/**
+	 * 
+	 */
 	private int y = 0;
 
+	/**
+	 * 
+	 */
 	private int yFraction = 0;
 
 	/**

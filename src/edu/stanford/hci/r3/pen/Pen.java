@@ -104,8 +104,9 @@ public class Pen extends PenInput {
 	 * @see edu.stanford.hci.r3.pen.PenInput#addLivePenListener(edu.stanford.hci.r3.pen.streaming.listeners.PenListener)
 	 */
 	public void addLivePenListener(PenListener penListener) {
-		// cache if necessary
+		// keep one around in the cache if the pen is not currently live
 		super.addLivePenListener(penListener);
+		
 		if (isLive()) {
 			// if we're live, then listen to the PenClient
 			livePenClient.addPenListener(penListener);

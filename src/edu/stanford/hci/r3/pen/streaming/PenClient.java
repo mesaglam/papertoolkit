@@ -38,10 +38,19 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
  */
 public class PenClient {
 
+	/**
+	 * 
+	 */
 	private Socket clientSocket;
 
+	/**
+	 * This either listens for Java objects (Default) or Plain Text.
+	 */
 	private ClientServerType clientType;
 
+	/**
+	 * Set this to true (call disconnect()) to tell the PenClient to stop listening for incoming pen data.
+	 */
 	private boolean exitFlag = false;
 
 	/**
@@ -54,14 +63,22 @@ public class PenClient {
 	 */
 	private String machineName;
 
+	/**
+	 * The PenClient and PenServer will communicate through a socket connection, over this port.
+	 */
 	private int portNumber;
 
+	/**
+	 * 
+	 */
 	private Thread socketListenerThread;
 
 	/**
 	 * @param serverName
 	 * @param port
+	 *            any
 	 * @param type
+	 *            in general, you want to use JAVA
 	 */
 	public PenClient(String serverName, int port, ClientServerType type) {
 		machineName = serverName;
@@ -125,11 +142,13 @@ public class PenClient {
 							final PenSample sample = (PenSample) xml.fromXML(line);
 							final boolean penIsUp = sample.isPenUp();
 
-							// TODO: Should we replace the time field in the sample with the time we received this sample?
-							// The old way is that the sample's time field is set to whatever the pen server's time is set to
+							// TODO: Should we replace the time field in the sample with the time we received
+							// this sample?
+							// The old way is that the sample's time field is set to whatever the pen server's
+							// time is set to
 							// this might result in some clock skew between different pens...
 							// should there be an option to do this?
-							
+
 							// basically implements a state machine... =)
 							if (!penIsDown && !penIsUp) {
 								penIsDown = true;
@@ -141,8 +160,7 @@ public class PenClient {
 								// tell my listeners!
 								// June 12, 2006 & Nov 2, 2006
 								// the behavior here is the same as in pen connection
-								// where a .sample event is NOT generated when penUp or penDown
-								// happen
+								// where a .sample event is NOT generated when penUp or penDown happen
 								// samples are only generated while the pen is down
 								// (but not if it just came down)
 								if (penIsDown) {
@@ -173,13 +191,8 @@ public class PenClient {
 						final BufferedReader br = setupSocketAndReader();
 						String line = null;
 						while ((line = br.readLine()) != null) {
-							// System.out.println(line);
-
-							// reconstruct the sample
-
-							// tell my listeners!
-							System.out.println(line);
-
+							// print the text of the pen sample to the console
+							DebugUtils.println(line);
 							if (exitFlag) {
 								break;
 							}
@@ -196,6 +209,7 @@ public class PenClient {
 
 	/**
 	 * Pass this sample on to the listeners...
+	 * 
 	 * @param sample
 	 */
 	private synchronized void notifyListenersOfPenDown(final PenSample sample) {
@@ -206,6 +220,7 @@ public class PenClient {
 
 	/**
 	 * Pass this sample on to the listeners...
+	 * 
 	 * @param sample
 	 */
 	private synchronized void notifyListenersOfPenSample(final PenSample sample) {
@@ -216,6 +231,7 @@ public class PenClient {
 
 	/**
 	 * Pass this sample on to the listeners...
+	 * 
 	 * @param sample
 	 */
 	private synchronized void notifyListenersOfPenUp(final PenSample sample) {

@@ -6,8 +6,8 @@ import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
 
 /**
  * <p>
- * Allows us to debug one or more pens, to see if they are streaming properly. Add an instance to a Pen object
- * using pen.addLivePenListener().
+ * Allows us to debug one or more pens, to see if they are streaming properly. Add an instance of this class
+ * to a Pen object using pen.addLivePenListener(DebugingPenListener dbpl).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -29,6 +29,7 @@ public class DebuggingPenListener implements PenListener {
 
 	/**
 	 * Uses the pen's name, so we can identify which pen we are attached to...
+	 * 
 	 * @param pen
 	 */
 	public DebuggingPenListener(Pen pen) {
