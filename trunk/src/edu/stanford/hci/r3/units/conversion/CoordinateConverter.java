@@ -15,7 +15,6 @@ import java.util.Set;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  */
 public class CoordinateConverter {
 
@@ -25,6 +24,9 @@ public class CoordinateConverter {
 	private Set<Double> As = new HashSet<Double>();
 	private Set<Double> Bs = new HashSet<Double>();
 
+	/**
+	 * 
+	 */
 	public CoordinateConverter() {
 
 	}
@@ -40,6 +42,10 @@ public class CoordinateConverter {
 		Bs.add(b);
 	}
 
+	/**
+	 * @param a
+	 * @return
+	 */
 	public double convertAtoB(double a) {
 		double[] closestAndFarthestValues = getClosestAndFarthestValues(As, a);
 
@@ -59,6 +65,10 @@ public class CoordinateConverter {
 		return closestB + dBFromTarget;
 	}
 
+	/**
+	 * @param b
+	 * @return
+	 */
 	public double convertBtoA(double b) {
 		double[] closestAndFarthestValues = getClosestAndFarthestValues(Bs, b);
 
@@ -78,6 +88,11 @@ public class CoordinateConverter {
 		return closestA + dAFromTarget;
 	}
 
+	/**
+	 * @param testSet
+	 * @param target
+	 * @return
+	 */
 	private double[] getClosestAndFarthestValues(Set<Double> testSet, double target) {
 		double minDiff = Double.MAX_VALUE;
 		double maxDiff = Double.MIN_VALUE;
