@@ -6,7 +6,7 @@ import edu.stanford.hci.r3.events.PenEvent;
 /**
  * <p>
  * Unlike Java Swing's MouseListener, the Pen & Paper Click Handler cannot sense mouseover. Therefore, there
- * is no analogue to mouseEntered, Exited.
+ * is no analogue to mouseEntered, mouseExited.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

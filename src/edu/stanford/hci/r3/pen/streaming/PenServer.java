@@ -316,7 +316,7 @@ public class PenServer implements PenListener {
 	 * @author Ron Yeh
 	 */
 	public void penDown(PenSample s) {
-		if (jitterFilter.happenedTooCloseToLastPenUp()) {
+		if (jitterFilter.happenedTooCloseToLastPenUp() && false) { // HACK: For Samsung Demo..., remove false and fix this!
 			DebugUtils.println("Cancelling Last PenUp");
 			jitterFilter.cancelLastPenUp();
 		} else {
