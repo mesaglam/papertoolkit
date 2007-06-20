@@ -55,10 +55,16 @@ public abstract class EventHandler {
 	 */
 	protected List<Region> parentRegions = new ArrayList<Region>();
 
+	/**
+	 * @param r
+	 */
 	public void addParentRegion(Region r) {
 		parentRegions.add(r);
 	}
 
+	/**
+	 * @return
+	 */
 	public List<Region> getParentRegions() {
 		return parentRegions;
 	}
