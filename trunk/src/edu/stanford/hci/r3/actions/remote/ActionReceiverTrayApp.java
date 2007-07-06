@@ -45,16 +45,28 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
  */
 public class ActionReceiverTrayApp {
 
+	/**
+	 * 
+	 */
 	private static final String DESCRIPTION = "Action Receiver (right-click for options; double-click to turn ON/OFF)\n";
 
+	/**
+	 * 
+	 */
 	private static final String DIRECTIONS_FOR_SETTING_LIST_OF_TRUSTED_CLIENTS = "<html>Enter a comma-separated list of trusted machines. "
 			+ "You may use whole or partial <b>DNS names</b> or <b>IP Addresses</b>.<br/>"
 			+ "\tExample: <b>localhost, .stanford.edu, 192.168, 128.123.*.*</b><br/><br/>"
 			+ "Press Enter to save the value. Then, double click the Action Receiver "
 			+ "(Saturn icon) in your System Tray to connect.</html>";
 
+	/**
+	 * 
+	 */
 	private static final String START_MSG = "Start the Action Receiver";
 
+	/**
+	 * 
+	 */
 	private static final String STATUS_OFF = "The Action Receiver is off.";
 
 	/**
@@ -110,6 +122,9 @@ public class ActionReceiverTrayApp {
 	 */
 	private boolean receiverRunning = false;
 
+	/**
+	 * 
+	 */
 	private CheckboxMenuItem setShowConnectionMessageItem;
 
 	/**
@@ -170,6 +185,9 @@ public class ActionReceiverTrayApp {
 		trustedClientsFrame.setVisible(true);
 	}
 
+	/**
+	 * @return Notifies us of new connections...
+	 */
 	private ActionReceiverConnectionListener getConnectionListener() {
 		return new ActionReceiverConnectionListener() {
 			public void newConnectionFrom(String hostName, String ipAddr) {
@@ -302,7 +320,7 @@ public class ActionReceiverTrayApp {
 	}
 
 	/**
-	 * 
+	 * Start the Tray App.... and wait for commands.
 	 */
 	private void startRunning() {
 		String trustedClientsList = trustedClientsTextField.getText();

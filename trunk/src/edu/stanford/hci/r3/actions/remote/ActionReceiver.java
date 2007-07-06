@@ -24,7 +24,8 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>
- * A daemon that sits and waits for actions to come in over the wire. It then invokes those actions.
+ * A daemon that sits and waits for actions to come in over the wire. It then invokes those actions. You can
+ * run an ActionReceiver on any external devices to receive program output.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -41,7 +42,9 @@ public class ActionReceiver {
 	public static final String CONFIG_FILE_KEY = "actionreceiver.trustedsenders";
 
 	/**
-	 * 
+	 * This file is found in PaperToolkit/data/config/. You can edit it to restrict the devices that can send
+	 * you actions. By default, we will allow all computers to send you R3Actions to the port you are
+	 * listening on. We use a wildcard * to designate this.
 	 */
 	public static final String CONFIG_FILE_VALUE = "/config/ActionReceiver.xml";
 
@@ -132,7 +135,7 @@ public class ActionReceiver {
 	private String hostAddress;
 
 	/**
-	 * 
+	 * The local hostname of the computer running this ActionReceiver.
 	 */
 	private String hostName;
 
@@ -168,11 +171,11 @@ public class ActionReceiver {
 
 	/**
 	 * @param trusted
-	 *           a list of IPs, DNSs, or (todo) subnets that we trust...
+	 *            a list of IPs, DNSs, or (todo) subnets that we trust...
 	 */
 	public ActionReceiver(int tcpipPort, ClientServerType type, String... trusted) {
 		trustedSenders.addAll(Arrays.asList(trusted));
-		readTrustedClientsFromConfigFile();
+		readTrustedSendersFromConfigFile();
 		DebugUtils.println("Trusted Client Set: " + trustedSenders);
 
 		try {
@@ -282,14 +285,14 @@ public class ActionReceiver {
 	}
 
 	/**
-	 * @return
+	 * @return the local IP address
 	 */
 	public String getHostAddress() {
 		return hostAddress;
 	}
 
 	/**
-	 * @return
+	 * @return the local computer's name
 	 */
 	public String getHostName() {
 		return hostName;
@@ -397,11 +400,10 @@ public class ActionReceiver {
 	}
 
 	/**
-	 * Stored in the XML.
+	 * Reads the list of trusted senders, that is stored in the XML configuration file.
 	 */
-	private void readTrustedClientsFromConfigFile() {
-		final String trustedClients = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
-				CONFIG_FILE_KEY);
+	private void readTrustedSendersFromConfigFile() {
+		final String trustedClients = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE_KEY);
 		final String[] clients = trustedClients.split("[,]");
 		for (String client : clients) {
 			trustedSenders.add(client.trim());
@@ -416,7 +418,7 @@ public class ActionReceiver {
 	}
 
 	/**
-	 * Tell the server to stop sending actions.
+	 * Tell the local receiver to stop processing actions from the remote senders.
 	 */
 	public void stopDaemon() {
 		try {
@@ -424,8 +426,8 @@ public class ActionReceiver {
 			for (Socket client : clients) {
 				client.close();
 			}
-			System.out.println("ActionReceiver :: " + serverType + " on port "
-					+ serverSocket.getLocalPort() + " is stopping...");
+			DebugUtils.println("ActionReceiver :: " + serverType + " on port " + serverSocket.getLocalPort()
+					+ " is stopping...");
 			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
