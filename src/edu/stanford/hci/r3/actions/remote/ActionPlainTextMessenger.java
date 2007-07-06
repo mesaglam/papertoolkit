@@ -18,15 +18,17 @@ import edu.stanford.hci.r3.actions.R3Action;
 public class ActionPlainTextMessenger extends ActionMessenger {
 
 	/**
-	 * @param sock
+	 * @param sock Communicate over this socket.
 	 */
 	public ActionPlainTextMessenger(Socket sock) {
 		super(sock);
 	}
 
 	/**
+	 * Just returns the string representation of this action.
+	 * 
 	 * @param action
-	 * @return
+	 * @return the toString() of this action object. Useful for debugging.
 	 */
 	public byte[] getMessage(R3Action action) {
 		return (action.toString() + LINE_SEPARATOR).getBytes();
