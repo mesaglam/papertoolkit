@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.stanford.hci.r3.actions.remote;
 
 import edu.stanford.hci.r3.actions.R3Action;
