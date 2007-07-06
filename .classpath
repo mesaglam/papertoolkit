@@ -4,11 +4,7 @@
 	<classpathentry excluding="**/.svn/|testFiles/private/" kind="src" path="data"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="tests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/epsgraphics.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/C:/PaperToolkit/lib/epsgraphics.jar!/javadocs"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="lib/epsgraphics.jar"/>
 	<classpathentry kind="lib" path="lib/jpedal/bcprov-jdk15-133.jar"/>
 	<classpathentry kind="lib" path="lib/jpedal/jai_codec.jar"/>
 	<classpathentry kind="lib" path="lib/jpedal/jai_core.jar"/>
@@ -29,7 +25,7 @@
 	<classpathentry kind="lib" path="lib/freetts/jsapi.jar"/>
 	<classpathentry kind="lib" path="lib/colt/colt.jar"/>
 	<classpathentry kind="lib" path="lib/colt/concurrent.jar"/>
-	<classpathentry kind="lib" path="lib/piccolo/piccolo.jar" sourcepath="C:/Documents and Settings/Ron Yeh/My Documents/Projects/piccolo-1.2/src"/>
+	<classpathentry kind="lib" path="lib/piccolo/piccolo.jar"/>
 	<classpathentry kind="lib" path="lib/piccolo/piccolox.jar"/>
 	<classpathentry kind="lib" path="lib/forms-1.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/prefuse.jar"/>
