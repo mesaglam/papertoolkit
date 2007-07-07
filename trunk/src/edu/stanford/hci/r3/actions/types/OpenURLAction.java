@@ -2,6 +2,7 @@ package edu.stanford.hci.r3.actions.types;
 
 import java.awt.Desktop;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -10,15 +11,15 @@ import edu.stanford.hci.r3.actions.R3Action;
 
 /**
  * <p>
- * Uses the default browser to launch the specified URL. WARNING: This seems really really slow on
- * Java 6 on my desktop. It is slow (a minute??) on both Firefox and IE7. It used to work well
- * through JDIC on Java 5. We may implement an alternative.
+ * Uses the default browser to launch the specified URL. WARNING: This seems really really slow on Java 6 on
+ * my desktop. It is slow (a minute??) on both Firefox and IE7. It used to work well through JDIC on Java 5.
+ * We may implement an alternative.
  * 
- * UPDATE: This seems to work perfectly fine on my laptop. So yeah, just be aware that it might not
- * work consistently across machines.
+ * UPDATE: This seems to work perfectly fine on my laptop. So yeah, just be aware that it might not work
+ * consistently across machines.
  * 
- * UPDATE2: HEY, this seems to work now on my desktop. Perhaps it was Google Desktop that was making
- * it slow???
+ * UPDATE2: HEY, this seems to work now on my desktop. Perhaps it was Google Desktop that was making it
+ * slow???
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -30,6 +31,17 @@ import edu.stanford.hci.r3.actions.R3Action;
 public class OpenURLAction implements R3Action {
 
 	private URL url;
+
+	/**
+	 * @param urlString
+	 */
+	public OpenURLAction(String urlString) {
+		try {
+			url = new URL(urlString);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * @param theURL
