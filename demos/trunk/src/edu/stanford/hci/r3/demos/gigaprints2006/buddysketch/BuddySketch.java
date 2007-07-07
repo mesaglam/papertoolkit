@@ -209,7 +209,7 @@ public class BuddySketch extends Application {
 		buddySketchGUI = new BuddySketchGUI(this);
 
 		// connect!
-		device.connect();
+		device.start();
 	}
 
 	/**
