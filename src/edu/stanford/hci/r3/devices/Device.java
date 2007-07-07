@@ -21,13 +21,13 @@ import edu.stanford.hci.r3.util.networking.ClientServerType;
 
 /**
  * <p>
- * Applications can also include devices, which can supply input and receive output. Since devices
- * may not be attached to the local machine where you are running the program, we need to assign a
- * hostname to each device.
+ * Applications can also include devices, which can supply input and receive output. Since devices may not be
+ * attached to the local machine where you are running the program, we need to assign a hostname to each
+ * device.
  * </p>
  * <p>
- * Devices work closely with the Actions API. Basically, devices are constructs that allow us to
- * send events and actions to remote machines...
+ * Devices work closely with the Actions API. Basically, devices are constructs that allow us to send events
+ * and actions to remote machines...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -49,7 +49,6 @@ public class Device {
 	 */
 	// private static LinkedList<PlaySoundAction> queuedSounds = new LinkedList<PlaySoundAction>();
 	//
-
 	/**
 	 * Plays a sound file. Returns the object in case you need to stop it.
 	 */
@@ -71,11 +70,34 @@ public class Device {
 	//
 	// return playSoundAction;
 	// }
-
 	/**
 	 * 
 	 */
 	private static PlaySoundAction playSoundAction;
+
+	/**
+	 * Opens a file on the local device, using the default file editor.
+	 * 
+	 * @param file
+	 * @return
+	 */
+	public static OpenFileAction doOpenFile(File file) {
+		final OpenFileAction ofa = new OpenFileAction(file);
+		ofa.invoke();
+		return ofa;
+	}
+
+	/**
+	 * Opens a URL on the local machine.
+	 */
+	public static void doOpenURL(String urlString) {
+		try {
+			final URL u = new URL(urlString);
+			new OpenURLAction(u).invoke();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Plays the sound file on the local device.
@@ -90,6 +112,13 @@ public class Device {
 		playSoundAction = new PlaySoundAction(soundFile);
 		playSoundAction.invoke();
 		return playSoundAction;
+	}
+
+	/**
+	 * @param textToSpeak
+	 */
+	public static void doSpeakText(String textToSpeak) {
+		TextToSpeechAction.getInstance().speak(textToSpeak);
 	}
 
 	/**
@@ -113,14 +142,22 @@ public class Device {
 	private String hostNameOrIPAddr;
 
 	/**
-	 * 
+	 * A descriptive name for this device.
 	 */
 	private String name;
 
 	/**
-	 * 
+	 * This sends commands to a remote receiver.
 	 */
 	private ActionSender sender;
+
+	/**
+	 * 
+	 */
+	public Device() {
+		this("localhost", "This Computer");
+		start();
+	}
 
 	/**
 	 * Provide an IP address of a remote device that is listening for actions.
@@ -133,15 +170,14 @@ public class Device {
 	/**
 	 * Once we have connected, we can start sending this device commands....
 	 */
-	public void connect() {
-		sender = new ActionSender(hostNameOrIPAddr, ActionReceiver.DEFAULT_JAVA_PORT,
-				ClientServerType.JAVA);
+	public void start() {
+		sender = new ActionSender(hostNameOrIPAddr, ActionReceiver.DEFAULT_JAVA_PORT, ClientServerType.JAVA);
 	}
 
 	/**
-	 * 
+	 * Disconnects from the sender. This device becomes useless afterward, until you reconnect.
 	 */
-	public void disconnect() {
+	public void stop() {
 		sender.disconnect();
 		sender = null;
 	}
@@ -157,9 +193,8 @@ public class Device {
 	}
 
 	/**
-	 * The audio channel provides convenience functions to easily play audio or read text on this
-	 * device. But, if you need to access the sender directly, you can always call the lower level
-	 * invokeAction(...).
+	 * The audio channel provides convenience functions to easily play audio or read text on this device. But,
+	 * if you need to access the sender directly, you can always call the lower level invokeAction(...).
 	 * 
 	 * @return a channel that allows us to send audio to this device...
 	 */
@@ -218,36 +253,5 @@ public class Device {
 			DebugUtils.println(e);
 		}
 		return false;
-	}
-
-	/**
-	 * @param textToSpeak
-	 */
-	public static void doSpeakText(String textToSpeak) {
-		TextToSpeechAction.getInstance().speak(textToSpeak);
-	}
-
-	/**
-	 * Opens a URL on the local machine.
-	 */
-	public static void doOpenURL(String urlString) {
-		try {
-			final URL u = new URL(urlString);
-			new OpenURLAction(u).invoke();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Opens a file on the local device, using the default file editor.
-	 * 
-	 * @param file
-	 * @return 
-	 */
-	public static OpenFileAction doOpenFile(File file) {
-		final OpenFileAction ofa = new OpenFileAction(file);
-		ofa.invoke();
-		return ofa;
 	}
 }

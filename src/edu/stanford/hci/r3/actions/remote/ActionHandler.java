@@ -19,6 +19,8 @@ public class ActionHandler {
 
 	/**
 	 * Invoke the action object that was received over the wire.
+	 * Override this method if you want to do something other than invoke the action immediately.
+	 * Add an instance of this to your ActionReceiver.
 	 * 
 	 * @param action
 	 *            sent from a remote machine (or possibly from the localhost)

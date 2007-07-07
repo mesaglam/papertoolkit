@@ -99,12 +99,12 @@ public class ActionReceiver {
 	public static void stopDaemons() {
 		DebugUtils.println("Stopping Action Receiver Daemons.");
 		if (javaDaemon != null) {
-			javaDaemon.stopDaemon();
+			javaDaemon.stop();
 			javaDaemon = null;
 		}
 
 		if (textDaemon != null) {
-			textDaemon.stopDaemon();
+			textDaemon.stop();
 			textDaemon = null;
 		}
 	}
@@ -158,6 +158,20 @@ public class ActionReceiver {
 	 * Will only accept actions from this list of remote senders.
 	 */
 	private Set<String> trustedSenders = new HashSet<String>();
+
+	/**
+	 * A Default ActionReceiver, with a default connection listener and handler (which invokes all incoming
+	 * actions immediately)...
+	 */
+	public ActionReceiver() {
+		this(ActionReceiver.DEFAULT_JAVA_PORT, ClientServerType.JAVA, new String[] { "*" });
+		setConnectionListener(new ActionReceiverConnectionListener() {
+			public void newConnectionFrom(String hostName, String ipAddr) {
+				DebugUtils.println("New Connection From: " + hostName + " " + ipAddr);
+			}
+		});
+		addActionHandler(new ActionHandler());
+	}
 
 	/**
 	 * Will only accept actions from the localhost.
@@ -225,7 +239,7 @@ public class ActionReceiver {
 							break;
 						}
 
-						log("ActionReceiver :: Waiting for a " + serverType + " connection on port ["
+						DebugUtils.println("Waiting for a " + serverType + " connection on port ["
 								+ serverPort + "]");
 
 						client = serverSocket.accept();
@@ -235,8 +249,8 @@ public class ActionReceiver {
 						final String dnsName = inetAddress.getHostName();
 
 						// we got a connection with the client
-						log("ActionReceiver :: Got a connection on server port " + serverPort);
-						log("               from client: " + ipAddr + " :: " + dnsName);
+						DebugUtils.println("Got a connection on server port " + serverPort);
+						DebugUtils.println("               from client: " + ipAddr + " :: " + dnsName);
 						if (connectionListener != null) {
 							connectionListener.newConnectionFrom(dnsName, ipAddr);
 						}
@@ -269,7 +283,7 @@ public class ActionReceiver {
 						// keep it around
 						clients.add(client);
 					} catch (IOException ioe) {
-						log("ActionReceiver :: Error with server socket: " + ioe.getLocalizedMessage());
+						DebugUtils.println("Error with server socket: " + ioe.getLocalizedMessage());
 					}
 
 					if (client != null) {
@@ -391,15 +405,6 @@ public class ActionReceiver {
 	}
 
 	/**
-	 * To make the code in this class look a little cleaner.
-	 * 
-	 * @param msg
-	 */
-	private void log(String msg) {
-		System.out.println(msg);
-	}
-
-	/**
 	 * Reads the list of trusted senders, that is stored in the XML configuration file.
 	 */
 	private void readTrustedSendersFromConfigFile() {
@@ -420,7 +425,7 @@ public class ActionReceiver {
 	/**
 	 * Tell the local receiver to stop processing actions from the remote senders.
 	 */
-	public void stopDaemon() {
+	public void stop() {
 		try {
 			exitFlag = true;
 			for (Socket client : clients) {
