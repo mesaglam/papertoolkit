@@ -1,6 +1,5 @@
 package edu.stanford.hci.r3.pen.batch;
 
-import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,11 +35,28 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class BatchImporter {
+public class BatchedDataImporter {
 
+	/**
+	 * 
+	 */
 	private static final boolean DEBUG = true;
 
-	public BatchImporter(String[] args) {
+	/**
+	 * @param args
+	 */
+	public BatchedDataImporter(String[] args) {
+
+		listRegisteredMonitors();
+
+		// The OLD WAY. We should preserve it...
+		// sendToBatchedDataServer(args);
+	}
+
+	/**
+	 * @param args
+	 */
+	private void sendToBatchedDataServer(String[] args) {
 		PrintWriter pw = null;
 		try {
 			if (DEBUG) {
@@ -59,13 +75,13 @@ public class BatchImporter {
 			// open a socket connection to the batch importer / event handler
 			// if an app is running, it will handle the incoming batched ink...
 			// if not, this will simply throw an exception and fall through...
-			final Socket socket = new Socket("localhost", BatchServer.DEFAULT_PLAINTEXT_PORT);
+			final Socket socket = new Socket("localhost", BatchedDataServer.DEFAULT_PLAINTEXT_PORT);
 			final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 			// send over the xml file! =)
 			bw.write("XML: " + args[0] + SystemUtils.LINE_SEPARATOR); // the
 			// path!
-			bw.write(BatchServer.EXIT_COMMAND + SystemUtils.LINE_SEPARATOR);
+			bw.write(BatchedDataServer.EXIT_COMMAND + SystemUtils.LINE_SEPARATOR);
 			bw.flush();
 			bw.close();
 
@@ -85,14 +101,13 @@ public class BatchImporter {
 			pw.flush();
 			pw.close();
 		}
-
 	}
 
 	/**
 	 * Adds a monitor into the configuration file. This monitor will be run every time a digital pen is
 	 * docked.
 	 */
-	public static void registerMonitor(BatchImportMonitor monitor) {
+	public static void registerMonitor(BatchedDataImportMonitor monitor) {
 		DebugUtils.println("Registering " + monitor.getName());
 
 		// this is the name of the class
@@ -109,13 +124,10 @@ public class BatchImporter {
 			Object newInstance = c.newInstance();
 
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -126,11 +138,12 @@ public class BatchImporter {
 	}
 
 	/**
+	 * The BatchImporter.exe calls this through a wrapper JAR...
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// new BatchImporter(args);
-		listRegisteredMonitors();
+		new BatchedDataImporter(args);
 	}
 
 	/**
@@ -145,8 +158,8 @@ public class BatchImporter {
 	 */
 	public static void listRegisteredMonitors() {
 		// find all files in PaperToolkit/penSynch/RegisteredBatchedMonitors/
-		File monitorsDir = new File(PaperToolkit.getToolkitRootPath(), "/penSynch/RegisteredBatchedMonitors/");
-		List<File> monitors = FileUtils.listVisibleFiles(monitorsDir);
+		final File monitorsDir = new File(PaperToolkit.getToolkitRootPath(), "/penSynch/RegisteredBatchedMonitors/");
+		final List<File> monitors = FileUtils.listVisibleFiles(monitorsDir);
 		for (File f : monitors) {
 			// DebugUtils.println(f.getAbsolutePath());
 			String fileName = f.getName().toLowerCase();
@@ -157,6 +170,10 @@ public class BatchImporter {
 			} else if (fileName.endsWith(".bat") || fileName.endsWith(".exe")) {
 				DebugUtils.println("Running BAT/EXE: " + fileName);
 				SystemUtils.run(f, new String[] { '"' + new File("penSynch/RegisteredBatchedMonitors/Examples/Example.txt").getAbsolutePath() + '"' });
+			} else if (fileName.endsWith(".monitor")) {
+				DebugUtils.println("Running Monitor: " + f.getAbsolutePath());
+			} else {
+				// unhandled file
 			}
 		}
 	}
@@ -164,7 +181,7 @@ public class BatchImporter {
 	/**
 	 * @param monitor
 	 */
-	public static void removeMonitor(BatchImportMonitor monitor) {
+	public static void removeMonitor(BatchedDataImportMonitor monitor) {
 		// TODO Auto-generated method stub
 	}
 }

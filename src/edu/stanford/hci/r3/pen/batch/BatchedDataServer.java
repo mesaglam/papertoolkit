@@ -34,7 +34,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class BatchServer {
+public class BatchedDataServer {
 
 	/**
 	 * Will listen on this port for text commands.
@@ -74,16 +74,21 @@ public class BatchServer {
 			.getAvailablePatternPackages(PaperToolkit.getPatternPath());
 
 	/**
-	 * Wait for
+	 * Wait for communication on a socket at this port.
 	 */
 	private int serverPort;
 
+	/**
+	 * The socket over which we receive incoming pen data.
+	 */
 	private ServerSocket serverSocket;
 
+	
+	
 	/**
 	 * @param eventEngine
 	 */
-	public BatchServer(EventDispatcher theEventEngine) {
+	public BatchedDataServer(EventDispatcher theEventEngine) {
 		try {
 			eventEngine = theEventEngine;
 			serverSocket = new ServerSocket(DEFAULT_PLAINTEXT_PORT);
