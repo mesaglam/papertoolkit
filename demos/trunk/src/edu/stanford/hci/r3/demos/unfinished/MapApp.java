@@ -19,7 +19,7 @@ public class MapApp extends Application {
 		r.addEventHandler(new ClickHandler() {
 			@Override
 			public void clicked(PenEvent e) {
-				device.display(....)
+				// device.display(....)
 				
 			}
 
