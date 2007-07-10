@@ -41,5 +41,6 @@
 	<classpathentry kind="lib" path="/PaperToolkit/lib/forms-1.0.7.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/jpedal/jpedalSTD.jar"/>
 	<classpathentry kind="lib" path="/PaperToolkit/lib/itext-1.4.3.jar"/>
+	<classpathentry kind="lib" path="lib/SantiagoSoftTest.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

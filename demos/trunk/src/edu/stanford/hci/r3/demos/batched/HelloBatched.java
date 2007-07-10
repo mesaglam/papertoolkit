@@ -4,8 +4,8 @@ import java.io.File;
 
 import edu.stanford.hci.r3.PaperToolkit;
 import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.synch.BatchedEventHandler;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
 import edu.stanford.hci.r3.units.Pixels;

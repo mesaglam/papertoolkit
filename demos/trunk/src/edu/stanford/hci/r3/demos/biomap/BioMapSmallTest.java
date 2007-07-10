@@ -7,8 +7,8 @@ import edu.stanford.hci.r3.application.Application;
 import edu.stanford.hci.r3.paper.Bundle;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.paper.sheets.PDFSheet;
-import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
 import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.pen.synch.BatchedEventHandler;
 import edu.stanford.hci.r3.units.Millimeters;
 
 /**

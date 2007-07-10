@@ -4,8 +4,8 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
-import edu.stanford.hci.r3.pen.batch.BatchImportMonitor;
-import edu.stanford.hci.r3.pen.batch.BatchImporter;
+import edu.stanford.hci.r3.pen.synch.BatchedDataImportMonitor;
+import edu.stanford.hci.r3.pen.synch.BatchedDataImporter;
 
 /**
  * <p>
@@ -19,17 +19,14 @@ import edu.stanford.hci.r3.pen.batch.BatchImporter;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class BatchedMonitor implements BatchImportMonitor {
+public class BatchedMonitor implements BatchedDataImportMonitor {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		BatchImporter.registerMonitor(new BatchedMonitor());
-		BatchImporter.listRegisteredMonitors();
-		BatchImporter.removeMonitor(new BatchedMonitor());
-		BatchImporter.listRegisteredMonitors();
-		
+		BatchedDataImporter.registerMonitor(new BatchedMonitor());
+		BatchedDataImporter.removeMonitor(new BatchedMonitor());
 		new BatchedMonitor().handleBatchedData(new File("."));
 	}
 
