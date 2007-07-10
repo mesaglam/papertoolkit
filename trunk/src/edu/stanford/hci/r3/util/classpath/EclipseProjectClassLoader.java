@@ -32,6 +32,8 @@ public class EclipseProjectClassLoader extends ClassLoader {
 	 * @param projectDir
 	 */
 	public EclipseProjectClassLoader(File projectDir) {
+		//DebugUtils.println(projectDir);
+		
 		// determine the paths we will look in
 		EclipseProjectClassPath cp = new EclipseProjectClassPath(new File(projectDir, ".classpath"));
 		List<String> paths = cp.parseFile();
@@ -58,20 +60,21 @@ public class EclipseProjectClassLoader extends ClassLoader {
 		Class<?> result = null;
 		byte[] classData;
 
-		DebugUtils.println("Load Class: " + className);
 		result = classes.get(className);
 		if (result != null) {
-			DebugUtils.println("Returning Cached Result.");
+			// DebugUtils.println("Returning Cached Result.");
 			return result;
 		}
 
 		try {
 			result = super.findSystemClass(className);
-			DebugUtils.println("Returning System class (in CLASSPATH)");
+			// DebugUtils.println("Returning System class (in CLASSPATH)");
 			return result;
 		} catch (ClassNotFoundException cnfe) {
-			DebugUtils.println("Not a System Class");
+			// DebugUtils.println("Not a System Class");
 		}
+		
+		// DebugUtils.println("Load Custom Class: " + className);
 
 		// security check
 		if (className.startsWith("java.")) {
@@ -80,6 +83,7 @@ public class EclipseProjectClassLoader extends ClassLoader {
 		}
 
 		classData = getClassImplementationFromDirectory(className);
+		
 
 		if (classData == null) {
 			// we didn't find it in the directories
@@ -100,7 +104,7 @@ public class EclipseProjectClassLoader extends ClassLoader {
 		}
 
 		classes.put(className, result);
-		DebugUtils.println("Returning Newly Loaded Class");
+		// DebugUtils.println("Returning Newly Loaded Class");
 		return result;
 	}
 
@@ -132,14 +136,16 @@ public class EclipseProjectClassLoader extends ClassLoader {
 	 * @return
 	 */
 	private byte[] getClassImplementationFromDirectory(String className) {
-		DebugUtils.println("Fetching the implementation of " + className);
+		// DebugUtils.println("Fetching the implementation of " + className);
 		byte[] result;
 
+		// DebugUtils.println(dirClassPaths);
 		// Find the File in our JARs or bin/
 		for (File path : dirClassPaths) {
 			File classFile = new File(path, className.replace(".", "/") + ".class");
+			// DebugUtils.println("Trying to Load: " + classFile.getAbsolutePath());
 			if (classFile.exists()) {
-				DebugUtils.println("Loading " + classFile.getAbsolutePath());
+				// DebugUtils.println("Loading " + classFile.getAbsolutePath());
 
 				FileInputStream fi;
 				try {
