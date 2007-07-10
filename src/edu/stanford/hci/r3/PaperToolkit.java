@@ -207,6 +207,7 @@ public class PaperToolkit {
 		try {
 			URL resource = PaperToolkit.class.getResource("/config");
 			file = new File(resource.toURI()).getParentFile();
+			
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

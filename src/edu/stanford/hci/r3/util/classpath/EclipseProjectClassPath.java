@@ -72,6 +72,8 @@ public class EclipseProjectClassPath {
 	 */
 	public EclipseProjectClassPath(File cpFile) {
 		classpathFile = cpFile;
+		
+		DebugUtils.println(classpathFile.getAbsolutePath());
 	}
 
 	/**
@@ -200,7 +202,7 @@ public class EclipseProjectClassPath {
 	private void processTag(XMLStreamReader xmlr, TagType beginOrEnd) {
 		if (xmlr.hasName()) {
 			final String localName = xmlr.getLocalName();
-			DebugUtils.println(localName);
+			// DebugUtils.println(localName);
 			final Nodes type = Nodes.valueOf(localName.toUpperCase());
 			if (beginOrEnd == TagType.BEGIN_TAG) {
 				switch (type) {
@@ -236,7 +238,7 @@ public class EclipseProjectClassPath {
 								if (referencePaths.contains(currentPath)) {
 									// System.out.println("Has it already!");
 								} else {
-									System.out.println(currentNode);
+									// System.out.println(currentNode);
 
 									referencePaths.add(currentPath);
 									File cpFile = null;
@@ -246,7 +248,7 @@ public class EclipseProjectClassPath {
 									} catch (IOException e1) {
 										e1.printStackTrace();
 									}
-									System.out.println(cpFile.getAbsolutePath());
+									// System.out.println(cpFile.getAbsolutePath());
 
 									try {
 										// get classpaths recursively
@@ -261,7 +263,7 @@ public class EclipseProjectClassPath {
 									}
 								}
 							} else {
-								DebugUtils.println("Unknown: " + currentPath);
+								// DebugUtils.println("Unknown: " + currentPath);
 							}
 						} else if (currentKind.equals("lib") && currentPath.startsWith("/")) {
 							// e.g., /HCILib/lib/mlibwrapper_jai.jar
@@ -272,11 +274,11 @@ public class EclipseProjectClassPath {
 							} else {
 								listOfClassPaths.add(prefix + ".." + currentPath);
 
-								System.out.println(currentNode);
+								// System.out.println(currentNode);
 								referencePaths.add(currentPath);
 							}
 						} else {
-							System.out.println(currentNode);
+							// System.out.println(currentNode);
 
 							// otherwise, add it to the current classpath string
 							listOfClassPaths.add(prefix + currentPath);

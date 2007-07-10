@@ -4,12 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -44,7 +46,7 @@ import edu.stanford.hci.r3.util.files.FileUtils;
 public class BatchedDataImporter {
 
 	/**
-	 * 
+	 * Pops up a Dialog to tell us this Importer was run...
 	 */
 	private static final boolean DEBUG = true;
 
@@ -52,10 +54,29 @@ public class BatchedDataImporter {
 	 * @param args
 	 */
 	public BatchedDataImporter(String[] args) {
+		try {
+			// redirect system output to a log file
+			System.setOut(new PrintStream(new FileOutputStream(new File(PaperToolkit
+					.getToolkitRootPath(), "penSynch/bin/BatchImporter.log"))));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		if (DEBUG) {
+			JOptionPane.showMessageDialog(null, "Batched Pen Data saved to penSynch/Data/XML/."
+					+ "\nClick OK to Notify Registered Listeners...");
+		}
+
+		// The simpler way figures out which app to run...
 		sendToRegisteredMonitors(args);
 
-		// The OLD WAY. We should preserve it...
-		// sendToBatchedDataServer(args);
+		if (DEBUG) {
+			JOptionPane.showMessageDialog(null, "Batched Pen Data saved to penSynch/Data/XML/."
+					+ "\nClick OK to Notify Live Listeners...");
+		}
+
+		// This alternative way talks to an already-running application. We should preserve it...
+		sendToBatchedDataServer(args);
 	}
 
 	/**
@@ -95,17 +116,11 @@ public class BatchedDataImporter {
 	 * @param args
 	 */
 	private void sendToBatchedDataServer(String[] args) {
-		PrintWriter pw = null;
-		try {
-			if (DEBUG) {
-				JOptionPane.showMessageDialog(null, "Batched Pen Data saved to penSynch/Data/XML/."
-						+ "Notifying Registered Listeners...");
-			}
 
-			pw = new PrintWriter(new File("BatchImporter.log"));
-			pw.println("Running the Batched Pen Data Importer");
+		try {
+			DebugUtils.println("Running the Batched Pen Data Importer");
 			for (String arg : args) {
-				pw.println("Argument: " + arg);
+				DebugUtils.println("Argument: " + arg);
 			}
 
 			// find all registered listeners, and run them in sequence, with the correct arguments
@@ -126,19 +141,18 @@ public class BatchedDataImporter {
 
 			// close the socket connection...
 			socket.close();
+		} catch (ConnectException e) {
+			DebugUtils.println("No Batched Importer is Currently Listening to Port: "
+					+ BatchedDataServer.DEFAULT_PLAINTEXT_PORT);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			pw.println(e.getLocalizedMessage());
+			DebugUtils.println(e.getLocalizedMessage());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-			pw.println(e.getLocalizedMessage());
+			DebugUtils.println(e.getLocalizedMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
-			pw.println(e.getLocalizedMessage());
-		}
-		if (pw != null) {
-			pw.flush();
-			pw.close();
+			DebugUtils.println(e.getLocalizedMessage());
 		}
 	}
 
@@ -204,8 +218,17 @@ public class BatchedDataImporter {
 			DebugUtils.println(mainClass);
 			DebugUtils.println(eclipseProjectDirectory);
 
-			EclipseProjectClassLoader eclipesProjectClassLoader = new EclipseProjectClassLoader(new File(
-					eclipseProjectDirectory));
+			// either a relative, or absolute path...
+			File resolvedProjectDirectory = new File(eclipseProjectDirectory);
+			if (resolvedProjectDirectory.exists()) {
+				// assume it's absolute, do nothing
+			} else {
+				resolvedProjectDirectory = new File(PaperToolkit.getToolkitRootPath(), eclipseProjectDirectory);
+			}
+			
+			
+			EclipseProjectClassLoader eclipesProjectClassLoader = new EclipseProjectClassLoader(
+					resolvedProjectDirectory);
 			try {
 				Class<?> classObj = eclipesProjectClassLoader.loadClass(mainClass);
 				Method m = classObj.getMethod("main", new Class[] { args.getClass() });
