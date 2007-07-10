@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pen.batch;
+package edu.stanford.hci.r3.pen.synch;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,8 +25,7 @@ import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>
- * Represents a single pen synch (i.e., one xml file in the penSynch XML directory). This class is used for
- * backwards compatibility with files that are created by Dissect.exe.
+ * Represents a single pen synch (i.e., one xml file in the penSynch XML directory).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -35,13 +34,13 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PenSynchAnotoDissect {
+public class PenSynch {
 
 	/**
 	 * 
 	 */
 	private static final String PAGE = "page";
-	
+
 	/**
 	 * 
 	 */
@@ -57,22 +56,42 @@ public class PenSynchAnotoDissect {
 	 */
 	public static void main(String[] args) {
 		File xmlFile = new File("penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml");
-		new PenSynchAnotoDissect(xmlFile);
+		new PenSynch(xmlFile);
 	}
 
 	/**
 	 * Ink on a per page basis... corresponds to <page></page> tags.
 	 */
 	private List<Ink> importedInk = new ArrayList<Ink>();
+
+	/**
+	 * 
+	 */
 	private Date localTime;
+
+	/**
+	 * 
+	 */
 	private int numPages;
+
+	/**
+	 * 
+	 */
 	private String penID;
+
+	/**
+	 * 
+	 */
 	private Date universalTime;
 
-	public PenSynchAnotoDissect(File penSynchXMLFile) {
+	/**
+	 * @param penSynchXMLFile
+	 */
+	public PenSynch(File penSynchXMLFile) {
 		XMLInputFactory xmlInput = XMLInputFactory.newInstance();
 		try {
-			XMLEventReader eventReader = xmlInput.createXMLEventReader(new FileInputStream(penSynchXMLFile));
+			XMLEventReader eventReader = xmlInput.createXMLEventReader(new FileInputStream(
+					penSynchXMLFile));
 
 			while (eventReader.hasNext()) {
 				XMLEvent nextEvent = eventReader.nextEvent();
@@ -149,9 +168,10 @@ public class PenSynchAnotoDissect {
 	public void printOutDetails() {
 		DebugUtils.println(importedInk.size() + " page synchronized.");
 		for (Ink ink : importedInk) {
-			DebugUtils.println(ink.getNumStrokes() + " strokes on page " + ink.getSourcePageAddress());
-			DebugUtils.println("Ink Boundaries: " + ink.getMinX() + " " + ink.getMinY() + " " + ink.getMaxX()
-					+ " " + ink.getMaxY());
+			DebugUtils.println(ink.getNumStrokes() + " strokes on page "
+					+ ink.getSourcePageAddress());
+			DebugUtils.println("Ink Boundaries: " + ink.getMinX() + " " + ink.getMinY() + " "
+					+ ink.getMaxX() + " " + ink.getMaxY());
 
 			List<InkStroke> strokes = ink.getStrokes();
 			for (InkStroke s : strokes) {
@@ -170,7 +190,8 @@ public class PenSynchAnotoDissect {
 	 * @param page
 	 * @throws XMLStreamException
 	 */
-	private void processPage(XMLEventReader eventReader, StartElement page) throws XMLStreamException {
+	private void processPage(XMLEventReader eventReader, StartElement page)
+			throws XMLStreamException {
 
 		Ink pageInk = new Ink();
 		pageInk.setSourcePageAddress(page.getAttributeByName(new QName("address")).getValue());
@@ -269,7 +290,8 @@ public class PenSynchAnotoDissect {
 	 * @param stroke
 	 * @throws XMLStreamException
 	 */
-	private void processStroke(XMLEventReader eventReader, InkStroke stroke) throws XMLStreamException {
+	private void processStroke(XMLEventReader eventReader, InkStroke stroke)
+			throws XMLStreamException {
 		while (eventReader.hasNext()) {
 			XMLEvent nextEvent = eventReader.nextEvent();
 			String elementName;
