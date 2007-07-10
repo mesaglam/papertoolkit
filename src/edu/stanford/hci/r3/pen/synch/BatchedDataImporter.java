@@ -48,7 +48,7 @@ public class BatchedDataImporter {
 	/**
 	 * Pops up a Dialog to tell us this Importer was run...
 	 */
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	/**
 	 * @param args
