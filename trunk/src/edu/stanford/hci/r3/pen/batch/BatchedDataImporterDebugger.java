@@ -18,13 +18,18 @@ import edu.stanford.hci.r3.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class BatchImporterDebugger {
+public class BatchedDataImporterDebugger {
 
 	public static void main(String[] args) {
 		PaperToolkit.initializeLookAndFeel();
-		// calls the BatchImporter with a path to a file, to simulate a pen synch...
-		JFileChooser chooser = FileUtils.createNewFileChooser(new String[] { "xml" });
+		
+		// calls the BatchedDataImporter with a path to a file, to simulate a pen synch...
+		// normally, the C# Pen Monitor does this...
+		// manually choose an xml file
+		final JFileChooser chooser = FileUtils.createNewFileChooser(new String[] { "xml" });
 		final File r3Root = PaperToolkit.getToolkitRootPath();
+		
+		// look in the default data directory
 		chooser.setCurrentDirectory(new File(r3Root, "penSynch/data/XML"));
 		chooser.setDialogTitle("Import an XML File");
 		chooser.setMultiSelectionEnabled(true);
@@ -35,7 +40,7 @@ public class BatchImporterDebugger {
 				// DebugUtils.println(f.getAbsoluteFile());
 				
 				// Import the chosen file
-				BatchImporter.main(new String[] { f.getAbsolutePath() });
+				BatchedDataImporter.main(new String[] { f.getAbsolutePath() });
 			}
 		}
 

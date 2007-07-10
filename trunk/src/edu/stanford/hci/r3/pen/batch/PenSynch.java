@@ -36,10 +36,24 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class PenSynch {
 
+	/**
+	 * 
+	 */
 	private static final String PAGE = "page";
+
+	/**
+	 * 
+	 */
 	private static final String REQUEST_INFORMATION = "requestInformation";
+
+	/**
+	 * 
+	 */
 	private static final String STROKE = "stroke";
 
+	/**
+	 * 
+	 */
 	public static void main(String[] args) {
 		File xmlFile = new File("penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml");
 		new PenSynch(xmlFile);
@@ -49,9 +63,25 @@ public class PenSynch {
 	 * Ink on a per page basis... corresponds to <page></page> tags.
 	 */
 	private List<Ink> importedInk = new ArrayList<Ink>();
+
+	/**
+	 * 
+	 */
 	private Date localTime;
+
+	/**
+	 * 
+	 */
 	private int numPages;
+
+	/**
+	 * 
+	 */
 	private String penID;
+
+	/**
+	 * 
+	 */
 	private Date universalTime;
 
 	/**
@@ -60,7 +90,8 @@ public class PenSynch {
 	public PenSynch(File penSynchXMLFile) {
 		XMLInputFactory xmlInput = XMLInputFactory.newInstance();
 		try {
-			XMLEventReader eventReader = xmlInput.createXMLEventReader(new FileInputStream(penSynchXMLFile));
+			XMLEventReader eventReader = xmlInput.createXMLEventReader(new FileInputStream(
+					penSynchXMLFile));
 
 			while (eventReader.hasNext()) {
 				XMLEvent nextEvent = eventReader.nextEvent();
@@ -96,32 +127,51 @@ public class PenSynch {
 		// printOutDetails();
 	}
 
+	/**
+	 * @return
+	 */
 	public List<Ink> getImportedInk() {
 		return importedInk;
 	}
 
+	/**
+	 * @return
+	 */
 	public Date getLocalTime() {
 		return localTime;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getNumPages() {
 		return numPages;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getPenID() {
 		return penID;
 	}
 
+	/**
+	 * @return
+	 */
 	public Date getUniversalTime() {
 		return universalTime;
 	}
 
+	/**
+	 * 
+	 */
 	public void printOutDetails() {
 		DebugUtils.println(importedInk.size() + " page synchronized.");
 		for (Ink ink : importedInk) {
-			DebugUtils.println(ink.getNumStrokes() + " strokes on page " + ink.getSourcePageAddress());
-			DebugUtils.println("Ink Boundaries: " + ink.getMinX() + " " + ink.getMinY() + " " + ink.getMaxX()
-					+ " " + ink.getMaxY());
+			DebugUtils.println(ink.getNumStrokes() + " strokes on page "
+					+ ink.getSourcePageAddress());
+			DebugUtils.println("Ink Boundaries: " + ink.getMinX() + " " + ink.getMinY() + " "
+					+ ink.getMaxX() + " " + ink.getMaxY());
 
 			List<InkStroke> strokes = ink.getStrokes();
 			for (InkStroke s : strokes) {
@@ -135,7 +185,13 @@ public class PenSynch {
 		}
 	}
 
-	private void processPage(XMLEventReader eventReader, StartElement page) throws XMLStreamException {
+	/**
+	 * @param eventReader
+	 * @param page
+	 * @throws XMLStreamException
+	 */
+	private void processPage(XMLEventReader eventReader, StartElement page)
+			throws XMLStreamException {
 
 		Ink pageInk = new Ink();
 		pageInk.setSourcePageAddress(page.getAttributeByName(new QName("address")).getValue());
@@ -229,7 +285,13 @@ public class PenSynch {
 		}
 	}
 
-	private void processStroke(XMLEventReader eventReader, InkStroke stroke) throws XMLStreamException {
+	/**
+	 * @param eventReader
+	 * @param stroke
+	 * @throws XMLStreamException
+	 */
+	private void processStroke(XMLEventReader eventReader, InkStroke stroke)
+			throws XMLStreamException {
 		while (eventReader.hasNext()) {
 			XMLEvent nextEvent = eventReader.nextEvent();
 			String elementName;

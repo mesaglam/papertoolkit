@@ -37,10 +37,24 @@ import edu.stanford.hci.r3.util.DebugUtils;
  */
 public class PenSynchAnotoDissect {
 
+	/**
+	 * 
+	 */
 	private static final String PAGE = "page";
+	
+	/**
+	 * 
+	 */
 	private static final String REQUEST_INFORMATION = "requestInformation";
+
+	/**
+	 * 
+	 */
 	private static final String STROKE = "stroke";
 
+	/**
+	 * 
+	 */
 	public static void main(String[] args) {
 		File xmlFile = new File("penSynch/data/XML/2007_03_10__01_09_38_SketchedPaperUI.xml");
 		new PenSynchAnotoDissect(xmlFile);
@@ -94,26 +108,44 @@ public class PenSynchAnotoDissect {
 		// printOutDetails();
 	}
 
+	/**
+	 * @return
+	 */
 	public List<Ink> getImportedInk() {
 		return importedInk;
 	}
 
+	/**
+	 * @return
+	 */
 	public Date getLocalTime() {
 		return localTime;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getNumPages() {
 		return numPages;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getPenID() {
 		return penID;
 	}
 
+	/**
+	 * @return
+	 */
 	public Date getUniversalTime() {
 		return universalTime;
 	}
 
+	/**
+	 * 
+	 */
 	public void printOutDetails() {
 		DebugUtils.println(importedInk.size() + " page synchronized.");
 		for (Ink ink : importedInk) {
@@ -133,6 +165,11 @@ public class PenSynchAnotoDissect {
 		}
 	}
 
+	/**
+	 * @param eventReader
+	 * @param page
+	 * @throws XMLStreamException
+	 */
 	private void processPage(XMLEventReader eventReader, StartElement page) throws XMLStreamException {
 
 		Ink pageInk = new Ink();
@@ -227,6 +264,11 @@ public class PenSynchAnotoDissect {
 		}
 	}
 
+	/**
+	 * @param eventReader
+	 * @param stroke
+	 * @throws XMLStreamException
+	 */
 	private void processStroke(XMLEventReader eventReader, InkStroke stroke) throws XMLStreamException {
 		while (eventReader.hasNext()) {
 			XMLEvent nextEvent = eventReader.nextEvent();

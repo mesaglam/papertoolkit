@@ -18,13 +18,22 @@ import edu.stanford.hci.r3.util.files.SortDirection;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  */
 public class PenSynchManager {
 
+	/**
+	 * 
+	 */
 	private File penSynchDataPath;
+	
+	/**
+	 * 
+	 */
 	private List<File> xmlFiles;
 
+	/**
+	 * 
+	 */
 	public PenSynchManager() {
 		// get the XML data path, and check to see if there are any new files since we last checked.
 		// All we do is maintain a modification time of the last file we have processed, and we
@@ -37,6 +46,9 @@ public class PenSynchManager {
 		// DebugUtils.println(xmlFiles);
 	}
 
+	/**
+	 * @return
+	 */
 	public List<File> getFiles() {
 		SortDirection sortDir = SortDirection.NEW_TO_OLD;
 		List<File> files = new ArrayList<File>();

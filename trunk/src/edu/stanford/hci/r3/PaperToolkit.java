@@ -46,7 +46,7 @@ import edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConve
 import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenInput;
-import edu.stanford.hci.r3.pen.batch.BatchServer;
+import edu.stanford.hci.r3.pen.batch.BatchedDataServer;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.streaming.PenServerTrayApp;
 import edu.stanford.hci.r3.tools.ToolExplorer;
@@ -66,9 +66,10 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
 
 /**
  * <p>
- * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the system. A
- * PaperToolkit can run one or more Applications at the same time. You can also deactivate applications (to
- * pause them). Or, you can remove them altogether. (These features are not yet fully implemented.)
+ * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the
+ * system. A PaperToolkit can run one or more Applications at the same time. You can also deactivate
+ * applications (to pause them). Or, you can remove them altogether. (These features are not yet
+ * fully implemented.)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -82,12 +83,24 @@ import edu.stanford.hci.r3.util.graphics.ImageCache;
  */
 public class PaperToolkit {
 
+	/**
+	 * 
+	 */
 	public static final String CONFIG_FILE_KEY = "papertoolkit.startupinformation";
 
+	/**
+	 * 
+	 */
 	public static final String CONFIG_FILE_VALUE = "/config/PaperToolkit.xml";
 
+	/**
+	 * 
+	 */
 	public static final String CONFIG_PATTERN_PATH_KEY = "tiledpatterngenerator.patternpath";
 
+	/**
+	 * 
+	 */
 	public static final String CONFIG_PATTERN_PATH_VALUE = "/pattern/";
 
 	/**
@@ -112,8 +125,8 @@ public class PaperToolkit {
 	 * The version of the PaperToolkit. Not that it really means anything. =)
 	 * 
 	 * <p>
-	 * Version 0.4 was tagged on April 5, 2007. Version 0.5 will include the major refactoring based on our
-	 * findings for UIST. <br>
+	 * Version 0.4 was tagged on April 5, 2007. <br>
+	 * Version 0.5 will include refactoring based on our findings for UIST. <br>
 	 * Future Versions should include:
 	 * <ul>
 	 * <li>Better Batched Event Support</li>
@@ -122,7 +135,7 @@ public class PaperToolkit {
 	 * </ul>
 	 * </p>
 	 */
-	private static String versionString = "0.5";
+	private static String versionString = "0.6";
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
@@ -183,11 +196,11 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently, this does
-	 * NOT work as a packaged jar.
+	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently,
+	 * this does NOT work as a packaged jar.
 	 * 
-	 * @return the root path to the toolkit (or some other canonical path where we can expect to find certain
-	 *         resources, like the HandwritingRecognition Server)
+	 * @return the root path to the toolkit (or some other canonical path where we can expect to
+	 *         find certain resources, like the HandwritingRecognition Server)
 	 */
 	public static File getToolkitRootPath() {
 		File file = null;
@@ -220,7 +233,8 @@ public class PaperToolkit {
 			xmlEngine.alias("RegionConfiguration", RegionConfiguration.class);
 			xmlEngine.alias("Region", Region.class);
 			xmlEngine.alias("Rectangle2DDouble", Rectangle2D.Double.class);
-			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
+			xmlEngine.alias("TiledPatternCoordinateConverter",
+					TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 			xmlEngine.alias("PenEvent", PenEvent.class);
 
@@ -229,9 +243,9 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external class. If you
-	 * use the default PaperToolkit() constructor, it will also use the custom look and feel. All PaperToolkit
-	 * utility classes will also use this look and feel.
+	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external
+	 * class. If you use the default PaperToolkit() constructor, it will also use the custom look
+	 * and feel. All PaperToolkit utility classes will also use this look and feel.
 	 */
 	public static void initializeLookAndFeel() {
 		if (!lookAndFeelInitialized) {
@@ -263,7 +277,8 @@ public class PaperToolkit {
 	 */
 	public static void main(String[] args) {
 		if (args.length == 0) {
-			// the 0 args branch will run the Paper Toolkit GUI, which helps designers learn what you
+			// the 0 args branch will run the Paper Toolkit GUI, which helps designers learn what
+			// you
 			// can do with this toolkit. It integrates with the documentation and stuff too!
 			printUsage();
 			new PaperToolkit().startToolExplorer();
@@ -279,9 +294,11 @@ public class PaperToolkit {
 	 */
 	private static void printInitializationMessages() {
 		final String dashes = StringUtils.repeat("-", versionString.length());
-		System.out.println("-----------------------------------------------------------" + dashes);
-		System.out.println("Reduce/Reuse/Recycle: A Paper Applications Toolkit ver. " + versionString);
-		System.out.println("-----------------------------------------------------------" + dashes);
+		System.out.println("-------------------------------------" + dashes);
+		System.out.println(" PaperToolkit version " + versionString);
+		System.out.println(" Copyright (c) 2007 Stanford University ");
+		System.out.println(" Ron B. Yeh [ronyeh@cs.stanford.edu] ");
+		System.out.println("-------------------------------------" + dashes);
 	}
 
 	/**
@@ -362,25 +379,25 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Allows us to manage multiple running applications. Showing this GUI is optional. It is useful during
-	 * the design/debugging stages.
+	 * Allows us to manage multiple running applications. Showing this GUI is optional. It is useful
+	 * during the design/debugging stages.
 	 */
 	private ApplicationManager appManager;
 
 	/**
 	 * Processes batched ink.
 	 */
-	private BatchServer batchServer;
+	private BatchedDataServer batchServer;
 
 	/**
-	 * The engine that processes all pen events, producing the correct outputs and calling the right event
-	 * handlers.
+	 * The engine that processes all pen events, producing the correct outputs and calling the right
+	 * event handlers.
 	 */
 	private EventDispatcher eventEngine;
 
 	/**
-	 * Store frequently used pens here... so that you can ask the toolkit for them instead of creating them
-	 * from scratch. This list is loaded up from the PaperToolkit.xml config file.
+	 * Store frequently used pens here... so that you can ask the toolkit for them instead of
+	 * creating them from scratch. This list is loaded up from the PaperToolkit.xml config file.
 	 */
 	private List<Pen> frequentlyUsedPens = new ArrayList<Pen>();
 
@@ -395,8 +412,9 @@ public class PaperToolkit {
 	private List<Application> loadedApplications = new ArrayList<Application>();
 
 	/**
-	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
-	 * your own program. Then, you can get the local properties from this properties object.
+	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration
+	 * properties for your own program. Then, you can get the local properties from this properties
+	 * object.
 	 */
 	private final Properties localProperties = new Properties();
 
@@ -410,8 +428,8 @@ public class PaperToolkit {
 	private TrayIcon trayIcon;
 
 	/**
-	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false. True is
-	 * useful for debugging and stopping apps that don't have a GUI.
+	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false.
+	 * True is useful for debugging and stopping apps that don't have a GUI.
 	 */
 	private boolean useAppManager = false;
 
@@ -421,9 +439,10 @@ public class PaperToolkit {
 	private boolean useHandwriting;
 
 	/**
-	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
-	 * (and between applications, ideally). There will be one event engine in the paper toolkit, and all
-	 * events that applications generate will be fed through this single event engine.
+	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
+	 * accordingly (and between applications, ideally). There will be one event engine in the paper
+	 * toolkit, and all events that applications generate will be fed through this single event
+	 * engine.
 	 */
 	public PaperToolkit() {
 		this(false);
@@ -437,11 +456,13 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * TODO: Make the look and feel default to OFF, or somehow research a mixed look and feel solution...
+	 * TODO: Make the look and feel default to OFF, or somehow research a mixed look and feel
+	 * solution...
 	 * 
 	 * @param useAppManager
 	 */
-	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager, boolean useHandwritingRecognitionServer) {
+	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager,
+			boolean useHandwritingRecognitionServer) {
 		loadStartupConfiguration();
 
 		if (useLookAndFeel) {
@@ -449,7 +470,7 @@ public class PaperToolkit {
 		}
 
 		eventEngine = new EventDispatcher();
-		batchServer = new BatchServer(eventEngine);
+		batchServer = new BatchedDataServer(eventEngine);
 
 		// Start the local server up whenever the paper toolkit is initialized.
 		// the either flag can override the other. They will both need to be TRUE to actually load
@@ -464,8 +485,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Check for uninitialized regions, and then populate the menu with options to bind these regions to
-	 * pattern at runtime!
+	 * Check for uninitialized regions, and then populate the menu with options to bind these
+	 * regions to pattern at runtime!
 	 * 
 	 * @param mappings
 	 */
@@ -484,10 +505,12 @@ public class PaperToolkit {
 			loadMappingItem.addActionListener(getLoadRecentPatternMappingsActionListener(map));
 			getTrayPopupMenu().add(loadMappingItem);
 
-			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map.getRegionToPatternMapping();
+			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map
+					.getRegionToPatternMapping();
 
 			for (final Region r : regionToPatternMapping.keySet()) {
-				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping.get(r);
+				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping
+						.get(r);
 				double area = patternCoordinateConverter.getArea();
 				DebugUtils.println("Area: " + area);
 				if (area > 0) {
@@ -524,10 +547,10 @@ public class PaperToolkit {
 								// unregister myself...
 								eventEngine.removeEventHandlerForUnmappedEvents(this);
 
-								DebugUtils.println("Bound the region [" + r.getName() + "] to Pattern "
-										+ bounds);
-								bindPatternToRegionItem.setLabel("Change Binding for " + r.getName()
-										+ ". Currently set to " + bounds);
+								DebugUtils.println("Bound the region [" + r.getName()
+										+ "] to Pattern " + bounds);
+								bindPatternToRegionItem.setLabel("Change Binding for "
+										+ r.getName() + ". Currently set to " + bounds);
 
 								// additionally... write this out to a file on the desktop
 								File destFile = getLastRunPatternInfoFile();
@@ -543,8 +566,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Attaches to the popup menu. Allows us to drop into the Debug mode of a paper application, with event
-	 * visualizations and stuff. =)
+	 * Attaches to the popup menu. Allows us to drop into the Debug mode of a paper application,
+	 * with event visualizations and stuff. =)
 	 * 
 	 * @param app
 	 * @return
@@ -701,10 +724,11 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Adds an application to the loaded list, and displays the application manager if the useAppManager flag
-	 * is set to true (default == false).
+	 * Adds an application to the loaded list, and displays the application manager if the
+	 * useAppManager flag is set to true (default == false).
 	 * 
-	 * If you would like to use the GUI launcher/App Manager then call PaperToolkit.useAppManager(true);
+	 * If you would like to use the GUI launcher/App Manager then call
+	 * PaperToolkit.useAppManager(true);
 	 * 
 	 * @param app
 	 */
@@ -784,7 +808,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default printer.
+	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
+	 * printer.
 	 * 
 	 * @param sheet
 	 */
@@ -799,7 +824,8 @@ public class PaperToolkit {
 	private void setStartupProperties(Properties props) {
 		if (props.containsKey(HW_REC_KEY)) {
 			String theProp = props.getProperty(HW_REC_KEY);
-			DebugUtils.println(HW_REC_KEY + " was: [" + useHandwriting + "] and is now [" + theProp + "]");
+			DebugUtils.println(HW_REC_KEY + " was: [" + useHandwriting + "] and is now [" + theProp
+					+ "]");
 			useHandwriting = Boolean.parseBoolean(theProp);
 		}
 
@@ -807,7 +833,8 @@ public class PaperToolkit {
 		frequentlyUsedPens.add(new Pen("Local Pen"));
 		if (props.containsKey(REMOTE_PENS_KEY)) {
 			String theProp = props.getProperty(REMOTE_PENS_KEY);
-			DebugUtils.println("Loading Frequently Used Remote Pens from PaperToolkit.xml: " + theProp);
+			DebugUtils.println("Loading Frequently Used Remote Pens from PaperToolkit.xml: "
+					+ theProp);
 			String[] pens = theProp.split(","); // comma delimited
 			for (String pen : pens) {
 				int colonIndex = pen.indexOf(":");
@@ -827,8 +854,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Start this application and register all live pens with the event engine. The event engine will then
-	 * start dispatching events for this application until the application is stopped.
+	 * Start this application and register all live pens with the event engine. The event engine
+	 * will then start dispatching events for this application until the application is stopped.
 	 * 
 	 * @param paperApp
 	 */
@@ -860,7 +887,8 @@ public class PaperToolkit {
 		}
 
 		// keep track of the pattern assigned to different sheets and regions
-		final Collection<PatternLocationToSheetLocationMapping> patternMappings = paperApp.getPatternMaps();
+		final Collection<PatternLocationToSheetLocationMapping> patternMappings = paperApp
+				.getPatternMaps();
 		eventEngine.registerPatternMapsForEventHandling(patternMappings);
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 
