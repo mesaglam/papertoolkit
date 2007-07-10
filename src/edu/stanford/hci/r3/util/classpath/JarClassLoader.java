@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.util.jar;
+package edu.stanford.hci.r3.util.classpath;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.jar.Attributes;
 
 /**
  * <p>
- * 
+ * Allows you to run a JAR file's main method, or load class files from the JAR.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -27,10 +27,17 @@ public class JarClassLoader extends URLClassLoader {
 
 	private URL url;
 
+	/**
+	 * @param jarFile
+	 * @throws MalformedURLException
+	 */
 	public JarClassLoader(File jarFile) throws MalformedURLException {
 		this(jarFile.toURI().toURL());
 	}
 
+	/**
+	 * @param theUrl
+	 */
 	public JarClassLoader(URL theUrl) {
 		super(new URL[] { theUrl });
 		url = theUrl;
@@ -55,9 +62,13 @@ public class JarClassLoader extends URLClassLoader {
 		return "";
 	}
 
+	/**
+	 * @param name
+	 * @param args
+	 */
 	public void invokeClass(String name, String[] args) {
 		try {
-			Class c = loadClass(name);
+			Class<?> c = loadClass(name);
 			Method m = c.getMethod("main", new Class[] { args.getClass() });
 			m.setAccessible(true);
 			int mods = m.getModifiers();

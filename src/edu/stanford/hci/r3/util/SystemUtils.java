@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
 
-import edu.stanford.hci.r3.util.jar.JarClassLoader;
+import edu.stanford.hci.r3.util.classpath.JarClassLoader;
 
 /**
  * <p>
@@ -151,12 +151,13 @@ public class SystemUtils {
 	}
 
 	/**
+	 * Runs a JAR file... using a custom classloader.
 	 * @param f
 	 * @param strings
 	 */
 	public static void runJar(File f, String[] args) {
 		try {
-			JarClassLoader jar = new JarClassLoader(f);
+			final JarClassLoader jar = new JarClassLoader(f);
 			jar.invokeClass(jar.getMainClassName(), args);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
