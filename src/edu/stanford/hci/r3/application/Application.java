@@ -12,7 +12,7 @@ import edu.stanford.hci.r3.devices.Device;
 import edu.stanford.hci.r3.paper.Sheet;
 import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import edu.stanford.hci.r3.pen.PenInput;
-import edu.stanford.hci.r3.pen.batch.BatchedEventHandler;
+import edu.stanford.hci.r3.pen.synch.BatchedEventHandler;
 import edu.stanford.hci.r3.render.SheetRenderer;
 import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
 import edu.stanford.hci.r3.util.DebugUtils;

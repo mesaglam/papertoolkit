@@ -46,9 +46,9 @@ import edu.stanford.hci.r3.pattern.coordinates.conversion.PatternCoordinateConve
 import edu.stanford.hci.r3.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import edu.stanford.hci.r3.pen.Pen;
 import edu.stanford.hci.r3.pen.PenInput;
-import edu.stanford.hci.r3.pen.batch.BatchedDataServer;
 import edu.stanford.hci.r3.pen.handwriting.HandwritingRecognitionService;
 import edu.stanford.hci.r3.pen.streaming.PenServerTrayApp;
+import edu.stanford.hci.r3.pen.synch.BatchedDataServer;
 import edu.stanford.hci.r3.tools.ToolExplorer;
 import edu.stanford.hci.r3.tools.debug.DebuggingEnvironment;
 import edu.stanford.hci.r3.tools.design.acrobat.AcrobatDesignerLauncher;

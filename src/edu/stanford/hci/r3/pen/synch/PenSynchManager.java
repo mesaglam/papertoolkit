@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.pen.batch;
+package edu.stanford.hci.r3.pen.synch;
 
 import java.io.File;
 import java.util.ArrayList;
