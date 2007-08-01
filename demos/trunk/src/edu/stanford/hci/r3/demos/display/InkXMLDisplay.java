@@ -4,8 +4,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import edu.stanford.hci.r3.components.InkPanel;
 import edu.stanford.hci.r3.pen.ink.Ink;
+import edu.stanford.hci.r3.tools.components.InkPanel;
 import edu.stanford.hci.r3.util.DebugUtils;
 import edu.stanford.hci.r3.util.WindowUtils;
 
