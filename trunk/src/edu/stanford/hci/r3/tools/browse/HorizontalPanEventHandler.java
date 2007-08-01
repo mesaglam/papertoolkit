@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.browse;
+package edu.stanford.hci.r3.tools.browse;
 
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;

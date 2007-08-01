@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.components;
+package edu.stanford.hci.r3.tools.components;
 
 import java.awt.Color;
 import java.awt.Graphics;

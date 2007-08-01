@@ -10,11 +10,11 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import edu.stanford.hci.r3.components.InkPanel;
 import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.ink.InkSimplification;
 import edu.stanford.hci.r3.pen.ink.InkStroke;
 import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
+import edu.stanford.hci.r3.tools.components.InkPanel;
 import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
