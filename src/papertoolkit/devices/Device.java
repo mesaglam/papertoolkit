@@ -6,7 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.actions.remote.ActionReceiver;
 import papertoolkit.actions.remote.ActionSender;
 import papertoolkit.actions.types.OpenFileAction;
@@ -230,7 +230,7 @@ public class Device {
 	 * 
 	 * @param action
 	 */
-	public void invokeAction(R3Action action) {
+	public void invokeAction(Action action) {
 		if (sender != null) {
 			sender.invokeRemoteAction(action);
 		} else {

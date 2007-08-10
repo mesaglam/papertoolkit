@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.media.*;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 import com.sun.media.codec.audio.mp3.JavaDecoder;
 
@@ -24,7 +24,7 @@ import com.sun.media.codec.audio.mp3.JavaDecoder;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PlaySoundAction implements R3Action {
+public class PlaySoundAction implements Action {
 
 	private List<PlaySoundListener> notifyOnStop = new ArrayList<PlaySoundListener>();
 
@@ -58,7 +58,7 @@ public class PlaySoundAction implements R3Action {
 	}
 
 	/**
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		// play it!

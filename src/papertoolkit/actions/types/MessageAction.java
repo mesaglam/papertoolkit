@@ -1,6 +1,6 @@
 package papertoolkit.actions.types;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.util.DebugUtils;
 
 /**
@@ -15,10 +15,11 @@ import papertoolkit.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ProcessInformationAction implements R3Action {
+public class MessageAction implements Action {
 
 	/**
-	 * The message to pass. It can be of any object.
+	 * The message to pass. It can be of any object (String is a good choice...).
+	 * TODO: change this to a generic?
 	 */
 	private Object information;
 
@@ -27,7 +28,7 @@ public class ProcessInformationAction implements R3Action {
 	/**
 	 * @param msgValue
 	 */
-	public ProcessInformationAction(String messageName, Object msgValue) {
+	public MessageAction(String messageName, Object msgValue) {
 		name = messageName;
 		information = msgValue;
 	}
@@ -42,7 +43,7 @@ public class ProcessInformationAction implements R3Action {
 	}
 
 	/**
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		DebugUtils.println("Got a message: " + name);

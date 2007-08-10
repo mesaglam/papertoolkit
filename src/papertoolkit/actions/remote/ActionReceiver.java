@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.config.Configuration;
 import papertoolkit.config.Constants;
 import papertoolkit.util.DebugUtils;
@@ -335,7 +335,7 @@ public class ActionReceiver {
 						}
 
 						// reconstruct the action
-						final R3Action action = (R3Action) xml.fromXML(line);
+						final Action action = (Action) xml.fromXML(line);
 
 						// tell my listeners!
 						for (ActionHandler ah : actionHandlers) {

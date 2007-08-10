@@ -4,7 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.util.DebugUtils;
 
 
@@ -20,7 +20,7 @@ import papertoolkit.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class OpenFileAction implements R3Action {
+public class OpenFileAction implements Action {
 
 	/**
 	 * The file to open. If this object is transmitted over the wire, an equivalent file must exist.
@@ -37,7 +37,7 @@ public class OpenFileAction implements R3Action {
 	}
 
 	/**
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		if (file == null || !file.exists()) {

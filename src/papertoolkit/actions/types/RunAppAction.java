@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 
 /**
@@ -18,7 +18,7 @@ import papertoolkit.actions.R3Action;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class RunAppAction implements R3Action {
+public class RunAppAction implements Action {
 
 	private String executablePath;
 
@@ -39,7 +39,7 @@ public class RunAppAction implements R3Action {
 	}
 
 	/**
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		try {

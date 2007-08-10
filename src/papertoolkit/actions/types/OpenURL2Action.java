@@ -2,7 +2,7 @@ package papertoolkit.actions.types;
 
 import java.net.URL;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 import net.sf.wraplog.SystemLogger;
 import edu.stanford.ejalbert.BrowserLauncher;
@@ -22,7 +22,7 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class OpenURL2Action implements R3Action {
+public class OpenURL2Action implements Action {
 
 	/**
 	 * Choose a specific browser using these strings.

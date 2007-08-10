@@ -11,7 +11,7 @@ import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.speech.synthesis.Voice;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 
 /**
@@ -25,7 +25,7 @@ import papertoolkit.actions.R3Action;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class TextToSpeechAction implements R3Action {
+public class TextToSpeechAction implements Action {
 
 	private static final String DEFAULT_FREETTS_VOICE = "kevin16";
 
@@ -138,7 +138,7 @@ public class TextToSpeechAction implements R3Action {
 	 * be more efficient to keep a TextToSpeechAction around, initialize it, and then call
 	 * speak(String) repeatedly.
 	 * 
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		initialize();
