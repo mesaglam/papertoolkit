@@ -50,7 +50,7 @@ import edu.stanford.hci.r3.util.layout.RiverLayout;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class SimpleBatched {
+public class ViewBatched {
 
 	private static final String DRAW_RECT_DIRECTIONS = "Draw one Rectangle on your Patterned Sheet. Press the Space Bar when you are done.";
 
@@ -63,7 +63,7 @@ public class SimpleBatched {
 	private static final Color CURRENT_STEP_COLOR = new Color(220, 110, 180);
 
 	public static void main(String[] args) {
-		SimpleBatched batched = new SimpleBatched();
+		ViewBatched batched = new ViewBatched();
 		batched.askForNewRectangularRegion();
 	}
 
@@ -130,7 +130,7 @@ public class SimpleBatched {
 	/**
 	 * 
 	 */
-	public SimpleBatched() {
+	public ViewBatched() {
 		app = new Application("Simple Batched Test");
 		app.addPenInput(getPen());
 		toolkit = new PaperToolkit();

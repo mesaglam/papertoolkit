@@ -8,7 +8,6 @@ import edu.stanford.hci.r3.pen.ink.Ink;
 import edu.stanford.hci.r3.pen.synch.BatchedEventHandler;
 import edu.stanford.hci.r3.render.ink.InkRenderer;
 import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.Pixels;
 import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
 import edu.stanford.hci.r3.util.DebugUtils;
 
@@ -23,10 +22,10 @@ import edu.stanford.hci.r3.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class HelloBatched extends Application {
+public class DetectBatched extends Application {
 
 	public static void main(String[] args) {
-		HelloBatched batched = new HelloBatched();
+		DetectBatched batched = new DetectBatched();
 		PaperToolkit paperToolkit = new PaperToolkit(true /* use the app manager */);
 		paperToolkit.startApplication(batched);
 	}
@@ -36,7 +35,7 @@ public class HelloBatched extends Application {
 	/**
 	 * Run this application first, then write on your notepad and plug it in...
 	 */
-	public HelloBatched() {
+	public DetectBatched() {
 		super("Hello World for Batch Processing of Ink");
 		addBatchEventHandler(getInkHandler());
 	}
