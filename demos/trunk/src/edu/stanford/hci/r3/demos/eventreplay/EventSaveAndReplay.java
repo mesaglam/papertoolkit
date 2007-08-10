@@ -1,17 +1,17 @@
 package edu.stanford.hci.r3.demos.eventreplay;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.conversion.FlexiblePatternCoordinateConverter;
+import papertoolkit.pen.Pen;
+import papertoolkit.units.Inches;
+import papertoolkit.util.DebugUtils;
 import edu.stanford.hci.r3.demos.simple.PPTAdvancer;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
-import edu.stanford.hci.r3.pattern.coordinates.conversion.FlexiblePatternCoordinateConverter;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>

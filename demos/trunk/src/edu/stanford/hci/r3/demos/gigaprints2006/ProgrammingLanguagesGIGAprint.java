@@ -2,9 +2,10 @@ package edu.stanford.hci.r3.demos.gigaprints2006;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.sheets.PDFSheet;
-import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.sheets.PDFSheet;
+import papertoolkit.render.sheets.PDFSheetRenderer;
+
 
 /**
  * <p>

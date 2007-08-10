@@ -4,9 +4,10 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.PenSample;
-import edu.stanford.hci.r3.pen.streaming.listeners.PenListener;
+import papertoolkit.pen.Pen;
+import papertoolkit.pen.PenSample;
+import papertoolkit.pen.streaming.listeners.PenListener;
+
 
 /**
  * <p>

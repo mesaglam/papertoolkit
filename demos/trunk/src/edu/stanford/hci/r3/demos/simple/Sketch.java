@@ -13,19 +13,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.events.handlers.GestureHandler;
-import edu.stanford.hci.r3.events.handlers.InkCollector;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.sheets.PDFSheet;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.render.sheets.PDFSheetRenderer;
-import edu.stanford.hci.r3.tools.components.InkPanel;
-import edu.stanford.hci.r3.util.WindowUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.GestureHandler;
+import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.sheets.PDFSheet;
+import papertoolkit.pen.Pen;
+import papertoolkit.pen.ink.Ink;
+import papertoolkit.render.sheets.PDFSheetRenderer;
+import papertoolkit.tools.components.InkPanel;
+import papertoolkit.util.WindowUtils;
+
 
 /**
  * <p>

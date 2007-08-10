@@ -7,10 +7,11 @@ import java.io.File;
 
 import javax.swing.*;
 
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.tools.components.InkPCanvas;
-import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.graphics.ImageCache;
+import papertoolkit.pen.ink.Ink;
+import papertoolkit.tools.components.InkPCanvas;
+import papertoolkit.util.DebugUtils;
+import papertoolkit.util.graphics.ImageCache;
+
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.PLayer;
 import edu.umd.cs.piccolo.nodes.PImage;

@@ -1,15 +1,16 @@
-package edu.stanford.hci.r3.demos.batched;
+package edu.stanford.hci.r3.demos.batched.monitor;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.synch.BatchedEventHandler;
-import edu.stanford.hci.r3.render.ink.InkRenderer;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
-import edu.stanford.hci.r3.util.DebugUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.pen.ink.Ink;
+import papertoolkit.pen.synch.BatchedEventHandler;
+import papertoolkit.render.ink.InkRenderer;
+import papertoolkit.units.Inches;
+import papertoolkit.units.conversion.PixelsPerInch;
+import papertoolkit.util.DebugUtils;
+
 
 /**
  * <p>

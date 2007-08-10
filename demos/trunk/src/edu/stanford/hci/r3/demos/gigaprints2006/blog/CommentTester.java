@@ -2,10 +2,11 @@ package edu.stanford.hci.r3.demos.gigaprints2006.blog;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+
 
 public class CommentTester extends Application {
 

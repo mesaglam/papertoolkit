@@ -3,22 +3,23 @@ package edu.stanford.hci.r3.demos.simple;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.actions.types.RobotAction;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.events.EventHandler;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.events.handlers.GestureHandler;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.PenSample;
-import edu.stanford.hci.r3.pen.streaming.PenAdapter;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.PatternDots;
-import edu.stanford.hci.r3.util.DebugUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.actions.types.RobotAction;
+import papertoolkit.application.Application;
+import papertoolkit.events.EventHandler;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.GestureHandler;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pen.Pen;
+import papertoolkit.pen.PenSample;
+import papertoolkit.pen.streaming.PenAdapter;
+import papertoolkit.units.Inches;
+import papertoolkit.units.PatternDots;
+import papertoolkit.util.DebugUtils;
+
 
 /**
  * <p>

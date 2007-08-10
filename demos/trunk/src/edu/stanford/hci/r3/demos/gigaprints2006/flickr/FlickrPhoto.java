@@ -5,7 +5,8 @@ import java.net.URL;
 
 import javax.media.jai.PlanarImage;
 
-import edu.stanford.hci.r3.util.graphics.ImageCache;
+import papertoolkit.util.graphics.ImageCache;
+
 
 /**
  * <p>

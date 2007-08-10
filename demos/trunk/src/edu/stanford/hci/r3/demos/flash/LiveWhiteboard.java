@@ -2,8 +2,9 @@ package edu.stanford.hci.r3.demos.flash;
 
 import java.awt.Color;
 
-import edu.stanford.hci.r3.flash.whiteboard.FlashWhiteboard;
-import edu.stanford.hci.r3.pen.Pen;
+import papertoolkit.flash.whiteboard.FlashWhiteboard;
+import papertoolkit.pen.Pen;
+
 
 /**
  * <p>

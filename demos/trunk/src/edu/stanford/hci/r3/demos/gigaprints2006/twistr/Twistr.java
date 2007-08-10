@@ -9,13 +9,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.devices.Device;
+import papertoolkit.pen.Pen;
+import papertoolkit.util.DebugUtils;
+
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.FlickrPhoto;
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.PhotoDownloadr;
-import edu.stanford.hci.r3.devices.Device;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>

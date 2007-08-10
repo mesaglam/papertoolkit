@@ -4,7 +4,8 @@ import java.awt.*;
 
 import javax.swing.*;
 
-import edu.stanford.hci.r3.util.WindowUtils;
+import papertoolkit.util.WindowUtils;
+
 
 /**
  * <p>

@@ -1,6 +1,6 @@
 package edu.stanford.hci.r3.demos.streaming;
 
-import edu.stanford.hci.r3.pen.debug.PenCoordinateDebugger;
+import papertoolkit.pen.debug.PenCoordinateDebugger;
 
 /**
  * <p>

@@ -10,7 +10,8 @@ import java.io.IOException;
 
 import org.jibble.epsgraphics.EpsGraphics2D;
 
-import edu.stanford.hci.r3.util.graphics.ImageUtils;
+import papertoolkit.util.graphics.ImageUtils;
+
 
 /**
  * <p>

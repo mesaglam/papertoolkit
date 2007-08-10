@@ -4,8 +4,9 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
-import edu.stanford.hci.r3.pen.synch.BatchedDataImportMonitor;
-import edu.stanford.hci.r3.pen.synch.BatchedDataImporter;
+import papertoolkit.pen.synch.BatchedDataImportMonitor;
+import papertoolkit.pen.synch.BatchedDataImporter;
+
 
 /**
  * <p>

@@ -5,13 +5,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import papertoolkit.util.files.FileUtils;
+
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
-import edu.stanford.hci.r3.util.files.FileUtils;
 
 public class BoingBoingReader {
 

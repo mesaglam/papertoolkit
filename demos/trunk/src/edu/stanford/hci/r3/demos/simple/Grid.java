@@ -4,15 +4,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.layout.FlowPaperLayout;
-import edu.stanford.hci.r3.render.SheetRenderer;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.coordinates.Coordinates;
+import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.layout.FlowPaperLayout;
+import papertoolkit.render.SheetRenderer;
+import papertoolkit.units.Inches;
+import papertoolkit.units.coordinates.Coordinates;
+
 
 /**
  * <p>
@@ -39,7 +40,7 @@ public class Grid {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.application.Application#initializeAfterConstructor()
+	 * @see papertoolkit.application.Application#initializeAfterConstructor()
 	 */
 	protected void initializePaperUI() {
 		sheet = new Sheet(44, 24);

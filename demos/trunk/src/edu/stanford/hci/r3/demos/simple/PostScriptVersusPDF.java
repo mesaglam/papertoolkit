@@ -4,14 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.layout.FlowPaperLayout;
-import edu.stanford.hci.r3.render.SheetRenderer;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.coordinates.Coordinates;
-import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.files.FileUtils;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.layout.FlowPaperLayout;
+import papertoolkit.render.SheetRenderer;
+import papertoolkit.units.Inches;
+import papertoolkit.units.coordinates.Coordinates;
+import papertoolkit.util.DebugUtils;
+import papertoolkit.util.files.FileUtils;
+
 
 /**
  * <p>

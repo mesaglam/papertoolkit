@@ -2,19 +2,20 @@ package edu.stanford.hci.r3.demos.simple;
 
 import java.awt.Font;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.events.handlers.HandwritingRecognizer;
-import edu.stanford.hci.r3.events.handlers.InkCollector;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.regions.TextRegion;
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.Units;
-import edu.stanford.hci.r3.util.DebugUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.HandwritingRecognizer;
+import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.regions.TextRegion;
+import papertoolkit.pen.ink.Ink;
+import papertoolkit.units.Inches;
+import papertoolkit.units.Units;
+import papertoolkit.util.DebugUtils;
+
 
 /**
  * <p>

@@ -2,7 +2,8 @@ package edu.stanford.hci.r3.demos.externallibs.pdf;
 
 import org.jpedal.examples.simpleviewer.SimpleViewer;
 
-import edu.stanford.hci.r3.util.WindowUtils;
+import papertoolkit.util.WindowUtils;
+
 
 /**
  * <p>

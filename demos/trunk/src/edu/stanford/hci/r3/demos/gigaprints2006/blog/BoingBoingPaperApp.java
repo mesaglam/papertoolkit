@@ -5,17 +5,18 @@ import java.awt.Font;
 import java.io.File;
 import java.util.List;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.devices.Device;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.regions.ImageRegion;
-import edu.stanford.hci.r3.paper.regions.TextRegion;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.util.DebugUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.devices.Device;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.regions.ImageRegion;
+import papertoolkit.paper.regions.TextRegion;
+import papertoolkit.units.Inches;
+import papertoolkit.util.DebugUtils;
+
 
 /**
  * <p>

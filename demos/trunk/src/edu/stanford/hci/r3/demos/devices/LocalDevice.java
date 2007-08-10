@@ -1,8 +1,8 @@
 package edu.stanford.hci.r3.demos.devices;
 
-import edu.stanford.hci.r3.actions.remote.ActionReceiver;
-import edu.stanford.hci.r3.actions.types.OpenURLAction;
-import edu.stanford.hci.r3.devices.Device;
+import papertoolkit.actions.remote.ActionReceiver;
+import papertoolkit.actions.types.OpenURLAction;
+import papertoolkit.devices.Device;
 
 /**
  * <p>

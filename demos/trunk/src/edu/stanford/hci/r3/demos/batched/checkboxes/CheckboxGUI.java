@@ -16,10 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import papertoolkit.PaperToolkit;
+import papertoolkit.util.WindowUtils;
+
 import com.jgoodies.looks.Options;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.util.WindowUtils;
 
 /**
  * <p>

@@ -1,14 +1,14 @@
 package edu.stanford.hci.r3.demos.debug;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.regions.ButtonRegion;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.util.DebugUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickHandler;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.regions.ButtonRegion;
+import papertoolkit.pen.Pen;
+import papertoolkit.util.DebugUtils;
 
 /**
  * <p>

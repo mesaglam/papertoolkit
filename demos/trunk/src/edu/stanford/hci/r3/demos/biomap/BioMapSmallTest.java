@@ -2,14 +2,15 @@ package edu.stanford.hci.r3.demos.biomap;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.paper.Bundle;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.sheets.PDFSheet;
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.synch.BatchedEventHandler;
-import edu.stanford.hci.r3.units.Millimeters;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.paper.Bundle;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.sheets.PDFSheet;
+import papertoolkit.pen.ink.Ink;
+import papertoolkit.pen.synch.BatchedEventHandler;
+import papertoolkit.units.Millimeters;
+
 
 /**
  * <p>
@@ -37,7 +38,7 @@ public class BioMapSmallTest extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.application.Application#initializeEventHandlers()
+	 * @see papertoolkit.application.Application#initializeEventHandlers()
 	 */
 	protected void initializeEventHandlers() {
 		addBatchEventHandler(new BatchedEventHandler("Note Pages Renderer") {
@@ -53,7 +54,7 @@ public class BioMapSmallTest extends Application {
 	/**
 	 * Called by the super(...) constructor
 	 * 
-	 * @see edu.stanford.hci.r3.application.Application#initializeAfterConstructor()
+	 * @see papertoolkit.application.Application#initializeAfterConstructor()
 	 */
 	protected void initializeAfterConstructor() {
 		sheet = new PDFSheet(new File("data/BioMap/SurveyLocationsTest.pdf"));

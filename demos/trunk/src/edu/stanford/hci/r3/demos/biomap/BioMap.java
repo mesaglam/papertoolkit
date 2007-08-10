@@ -6,23 +6,24 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
-import edu.stanford.hci.r3.events.handlers.InkCollector;
-import edu.stanford.hci.r3.paper.Bundle;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.sheets.PDFSheet;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.pen.synch.BatchedEventHandler;
-import edu.stanford.hci.r3.render.ink.InkRenderer;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.Millimeters;
-import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
-import edu.stanford.hci.r3.util.DebugUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickHandler;
+import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.paper.Bundle;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.sheets.PDFSheet;
+import papertoolkit.pen.Pen;
+import papertoolkit.pen.ink.Ink;
+import papertoolkit.pen.synch.BatchedEventHandler;
+import papertoolkit.render.ink.InkRenderer;
+import papertoolkit.units.Inches;
+import papertoolkit.units.Millimeters;
+import papertoolkit.units.conversion.PixelsPerInch;
+import papertoolkit.util.DebugUtils;
+
 
 /**
  * <p>
@@ -77,7 +78,7 @@ public class BioMap extends Application {
 	/**
 	 * Called by the super(...) constructor
 	 * 
-	 * @see edu.stanford.hci.r3.application.Application#initializeAfterConstructor()
+	 * @see papertoolkit.application.Application#initializeAfterConstructor()
 	 */
 	protected void initializeAfterConstructor() {
 		// sheet = new PDFSheet(new File("data/BioMap/SurveyLocations.pdf"));
@@ -232,7 +233,7 @@ public class BioMap extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.application.Application#initializeEventHandlers()
+	 * @see papertoolkit.application.Application#initializeEventHandlers()
 	 */
 	protected void initializeEventHandlers() {
 		addBatchEventHandler(new BatchedEventHandler("Note Pages Renderer") {

@@ -3,10 +3,11 @@ package edu.stanford.hci.r3.demos.flash;
 import java.awt.Color;
 import java.util.List;
 
-import edu.stanford.hci.r3.flash.whiteboard.FlashWhiteboard;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.graphics.ColorUtils;
+import papertoolkit.flash.whiteboard.FlashWhiteboard;
+import papertoolkit.pen.Pen;
+import papertoolkit.util.DebugUtils;
+import papertoolkit.util.graphics.ColorUtils;
+
 
 /**
  * <p>

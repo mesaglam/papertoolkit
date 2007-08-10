@@ -3,9 +3,10 @@ package edu.stanford.hci.r3.demos.simple;
 import java.awt.Color;
 import java.io.File;
 
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.render.SheetRenderer;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.render.SheetRenderer;
+
 
 /**
  * <p>

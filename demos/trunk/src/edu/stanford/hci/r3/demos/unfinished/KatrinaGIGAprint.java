@@ -20,7 +20,8 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import edu.stanford.hci.r3.util.graphics.ImageUtils;
+import papertoolkit.util.graphics.ImageUtils;
+
 
 /**
  * <p>

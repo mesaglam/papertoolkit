@@ -2,13 +2,14 @@ package edu.stanford.hci.r3.demos.gigaprints2006.posters;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.sheets.PDFSheet;
-import edu.stanford.hci.r3.util.DebugUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.sheets.PDFSheet;
+import papertoolkit.util.DebugUtils;
+
 
 /**
  * <p>
@@ -78,7 +79,7 @@ public class FlutterbyNet extends Application {
 	 * It's sort of weird we have to recompile in between designing, rendering, and running. Fix
 	 * this.
 	 * 
-	 * @see edu.stanford.hci.r3.application.Application#initializeAfterConstructor()
+	 * @see papertoolkit.application.Application#initializeAfterConstructor()
 	 */
 	protected void initializeAfterConstructor() {
 		poster = new PDFSheet(new File("data/Posters/FlutterbyNet.pdf"));

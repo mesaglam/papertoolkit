@@ -2,8 +2,9 @@ package edu.stanford.hci.r3.demos.batched.monitor;
 
 import java.util.Arrays;
 
+import papertoolkit.util.DebugUtils;
+
 import santiagosoft.TestClass;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>

@@ -6,22 +6,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.actions.types.OpenURL2Action;
-import edu.stanford.hci.r3.application.Application;
+import papertoolkit.PaperToolkit;
+import papertoolkit.actions.types.OpenURL2Action;
+import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.regions.CompoundRegion;
+import papertoolkit.paper.regions.ImageRegion;
+import papertoolkit.units.Inches;
+import papertoolkit.units.Pixels;
+import papertoolkit.units.Units;
+import papertoolkit.units.conversion.PixelsPerInch;
+import papertoolkit.units.coordinates.Coordinates;
+
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.FlickrPhoto;
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.PhotoDownloadr;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.regions.CompoundRegion;
-import edu.stanford.hci.r3.paper.regions.ImageRegion;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.Pixels;
-import edu.stanford.hci.r3.units.Units;
-import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
-import edu.stanford.hci.r3.units.coordinates.Coordinates;
 
 /**
  * <p>
@@ -144,7 +145,7 @@ public class SquaredCircle extends Application {
 	/**
 	 * Called by the constructor.
 	 * 
-	 * @see edu.stanford.hci.r3.application.Application#initializeAfterConstructor()
+	 * @see papertoolkit.application.Application#initializeAfterConstructor()
 	 */
 	@SuppressWarnings("unchecked")
 	protected void initializePaperUI() {

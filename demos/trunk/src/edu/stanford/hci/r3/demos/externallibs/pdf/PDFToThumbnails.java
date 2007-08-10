@@ -6,8 +6,9 @@ import java.io.File;
 import org.jpedal.PdfDecoder;
 import org.jpedal.exception.PdfException;
 
-import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.graphics.ImageUtils;
+import papertoolkit.util.DebugUtils;
+import papertoolkit.util.graphics.ImageUtils;
+
 
 /**
  * <p>

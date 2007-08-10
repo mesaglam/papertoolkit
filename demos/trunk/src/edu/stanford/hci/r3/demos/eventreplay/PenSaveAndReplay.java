@@ -1,7 +1,7 @@
 package edu.stanford.hci.r3.demos.eventreplay;
 
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.debug.DebuggingPenListener;
+import papertoolkit.pen.Pen;
+import papertoolkit.pen.debug.DebuggingPenListener;
 
 /**
  * <p>

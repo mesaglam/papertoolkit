@@ -8,6 +8,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.pen.ink.Ink;
+import papertoolkit.render.ink.InkRenderer;
+import papertoolkit.units.Inches;
+import papertoolkit.units.Pixels;
+import papertoolkit.units.conversion.PixelsPerInch;
+import papertoolkit.util.DebugUtils;
+
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -17,13 +25,6 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
-import edu.stanford.hci.r3.events.handlers.InkCollector;
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.render.ink.InkRenderer;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.Pixels;
-import edu.stanford.hci.r3.units.conversion.PixelsPerInch;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>

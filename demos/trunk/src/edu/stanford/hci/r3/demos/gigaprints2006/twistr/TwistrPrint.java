@@ -4,19 +4,20 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.hci.r3.PaperToolkit;
+import papertoolkit.PaperToolkit;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickHandler;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.layout.FlowPaperLayout;
+import papertoolkit.paper.layout.RegionGroup;
+import papertoolkit.paper.regions.ImageRegion;
+import papertoolkit.render.SheetRenderer;
+import papertoolkit.units.Inches;
+import papertoolkit.units.coordinates.Coordinates;
+import papertoolkit.util.DebugUtils;
+
 import edu.stanford.hci.r3.demos.gigaprints2006.flickr.FlickrPhoto;
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickHandler;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.layout.FlowPaperLayout;
-import edu.stanford.hci.r3.paper.layout.RegionGroup;
-import edu.stanford.hci.r3.paper.regions.ImageRegion;
-import edu.stanford.hci.r3.render.SheetRenderer;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.coordinates.Coordinates;
-import edu.stanford.hci.r3.util.DebugUtils;
 
 /**
  * <p>

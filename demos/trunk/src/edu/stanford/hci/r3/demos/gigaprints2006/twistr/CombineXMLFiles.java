@@ -2,8 +2,9 @@ package edu.stanford.hci.r3.demos.gigaprints2006.twistr;
 
 import java.io.File;
 
-import edu.stanford.hci.r3.util.SystemUtils;
-import edu.stanford.hci.r3.util.files.FileUtils;
+import papertoolkit.util.SystemUtils;
+import papertoolkit.util.files.FileUtils;
+
 
 /**
  * <p>

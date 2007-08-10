@@ -1,4 +1,4 @@
-package edu.stanford.hci.r3.demos.batched;
+package edu.stanford.hci.r3.demos.batched.inkmanipulation;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,20 +21,21 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.events.handlers.InkCollector;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.pattern.coordinates.PatternLocationToSheetLocationMapping;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.PenSample;
-import edu.stanford.hci.r3.pen.streaming.PenAdapter;
-import edu.stanford.hci.r3.tools.components.InkPCanvas;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.PatternDots;
-import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.layout.RiverLayout;
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pen.Pen;
+import papertoolkit.pen.PenSample;
+import papertoolkit.pen.streaming.PenAdapter;
+import papertoolkit.tools.components.InkPCanvas;
+import papertoolkit.units.Inches;
+import papertoolkit.units.PatternDots;
+import papertoolkit.util.DebugUtils;
+import papertoolkit.util.layout.RiverLayout;
+
 
 /**
  * <p>

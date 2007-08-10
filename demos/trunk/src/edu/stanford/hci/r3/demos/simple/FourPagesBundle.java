@@ -4,12 +4,13 @@ import java.awt.Font;
 import java.io.File;
 import java.util.List;
 
-import edu.stanford.hci.r3.paper.Bundle;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.regions.TextRegion;
-import edu.stanford.hci.r3.render.BundleRenderer;
-import edu.stanford.hci.r3.units.Inches;
+import papertoolkit.paper.Bundle;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.regions.TextRegion;
+import papertoolkit.render.BundleRenderer;
+import papertoolkit.units.Inches;
+
 
 /**
  * <p>

@@ -3,11 +3,12 @@ package edu.stanford.hci.r3.demos.simple;
 import java.awt.Font;
 import java.io.File;
 
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.regions.TextRegion;
-import edu.stanford.hci.r3.render.SheetRenderer;
-import edu.stanford.hci.r3.units.Inches;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.regions.TextRegion;
+import papertoolkit.render.SheetRenderer;
+import papertoolkit.units.Inches;
+
 
 /**
  * <p>

@@ -4,15 +4,16 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.stanford.hci.r3.events.PenEvent;
-import edu.stanford.hci.r3.events.handlers.ClickAdapter;
-import edu.stanford.hci.r3.events.handlers.InkCollector;
-import edu.stanford.hci.r3.paper.Region;
-import edu.stanford.hci.r3.paper.Sheet;
-import edu.stanford.hci.r3.paper.regions.ImageRegion;
-import edu.stanford.hci.r3.units.Inches;
-import edu.stanford.hci.r3.units.Pixels;
-import edu.stanford.hci.r3.util.DebugUtils;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
+import papertoolkit.paper.regions.ImageRegion;
+import papertoolkit.units.Inches;
+import papertoolkit.units.Pixels;
+import papertoolkit.util.DebugUtils;
+
 
 /**
  * <p>

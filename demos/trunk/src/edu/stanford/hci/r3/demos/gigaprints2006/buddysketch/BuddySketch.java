@@ -10,19 +10,20 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import edu.stanford.hci.r3.PaperToolkit;
-import edu.stanford.hci.r3.actions.R3Action;
-import edu.stanford.hci.r3.actions.remote.ActionHandler;
-import edu.stanford.hci.r3.actions.remote.ActionReceiver;
-import edu.stanford.hci.r3.actions.remote.ActionReceiverConnectionListener;
-import edu.stanford.hci.r3.actions.types.ProcessInformationAction;
-import edu.stanford.hci.r3.application.Application;
-import edu.stanford.hci.r3.devices.Device;
-import edu.stanford.hci.r3.pen.Pen;
-import edu.stanford.hci.r3.pen.ink.Ink;
-import edu.stanford.hci.r3.util.DebugUtils;
-import edu.stanford.hci.r3.util.components.EndlessProgressDialog;
-import edu.stanford.hci.r3.util.networking.ClientServerType;
+import papertoolkit.PaperToolkit;
+import papertoolkit.actions.R3Action;
+import papertoolkit.actions.remote.ActionHandler;
+import papertoolkit.actions.remote.ActionReceiver;
+import papertoolkit.actions.remote.ActionReceiverConnectionListener;
+import papertoolkit.actions.types.ProcessInformationAction;
+import papertoolkit.application.Application;
+import papertoolkit.devices.Device;
+import papertoolkit.pen.Pen;
+import papertoolkit.pen.ink.Ink;
+import papertoolkit.util.DebugUtils;
+import papertoolkit.util.components.EndlessProgressDialog;
+import papertoolkit.util.networking.ClientServerType;
+
 
 /**
  * <p>
@@ -195,7 +196,7 @@ public class BuddySketch extends Application {
 	}
 
 	/**
-	 * @see edu.stanford.hci.r3.application.Application#initializeBeforeStarting()
+	 * @see papertoolkit.application.Application#initializeBeforeStarting()
 	 */
 	@Override
 	public void initializeBeforeStarting() {
@@ -277,7 +278,7 @@ public class BuddySketch extends Application {
 	/**
 	 * Disregard the input...
 	 * 
-	 * @see edu.stanford.hci.r3.application.Application#renderToPDF(java.io.File, java.lang.String)
+	 * @see papertoolkit.application.Application#renderToPDF(java.io.File, java.lang.String)
 	 */
 	public void renderToPDF() {
 		buddySketchPUI.getRenderer().renderToPDF(new File("data/Sketch/BuddySketchUI.pdf"));
@@ -307,7 +308,7 @@ public class BuddySketch extends Application {
 		actionReceiver.addActionHandler(new ActionHandler() {
 
 			/**
-			 * @see edu.stanford.hci.r3.actions.remote.ActionHandler#receivedAction(edu.stanford.hci.r3.actions.R3Action)
+			 * @see papertoolkit.actions.remote.ActionHandler#receivedAction(papertoolkit.actions.R3Action)
 			 */
 			@Override
 			public void receivedAction(R3Action action) {
@@ -338,7 +339,7 @@ public class BuddySketch extends Application {
 			}
 
 			/**
-			 * @see edu.stanford.hci.r3.actions.remote.ActionHandler#receivedActionText(java.lang.String)
+			 * @see papertoolkit.actions.remote.ActionHandler#receivedActionText(java.lang.String)
 			 */
 			@Override
 			public void receivedActionText(String line) {
