@@ -3,7 +3,7 @@ package papertoolkit.actions.remote;
 import java.net.Socket;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 
 /**
@@ -36,9 +36,9 @@ public class ActionJavaObjectXMLMessenger extends ActionMessenger {
 	 * actions get turned into a single line of XML text. You cannot send anything with a \n, as it gets
 	 * replaced with an empty string.
 	 * 
-	 * @see papertoolkit.actions.remote.ActionMessenger#getMessage(papertoolkit.actions.R3Action)
+	 * @see papertoolkit.actions.remote.ActionMessenger#getMessage(papertoolkit.actions.Action)
 	 */
-	public byte[] getMessage(R3Action action) {
+	public byte[] getMessage(Action action) {
 		// serialize the object, and put it all on one line
 		String xmlString = PaperToolkit.toXML(action).replace("\n", "");
 

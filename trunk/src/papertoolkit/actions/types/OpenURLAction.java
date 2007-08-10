@@ -7,7 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 
 /**
@@ -29,7 +29,7 @@ import papertoolkit.actions.R3Action;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class OpenURLAction implements R3Action {
+public class OpenURLAction implements Action {
 
 	private URL url;
 
@@ -52,7 +52,7 @@ public class OpenURLAction implements R3Action {
 	}
 
 	/**
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		try {

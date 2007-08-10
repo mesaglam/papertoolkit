@@ -2,7 +2,7 @@ package papertoolkit.actions;
 
 /**
  * <p>
- * R3 Actions encompass high-level actions that can be invoked as the result of an event handler.
+ * Actions encompass high-level actions that can be invoked as the result of an event handler.
  * They can be arbitrarily complex, but the prepackaged R3Actions will be simple ones, like opening
  * a default browser, or playing a sound.
  * </p>
@@ -17,7 +17,7 @@ package papertoolkit.actions;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public interface R3Action {
+public interface Action {
 
 	/**
 	 * Invoke this action on the local machine. If you want to invoke this on a remote machine, you

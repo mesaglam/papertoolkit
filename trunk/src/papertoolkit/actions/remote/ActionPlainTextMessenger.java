@@ -2,7 +2,7 @@ package papertoolkit.actions.remote;
 
 import java.net.Socket;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 
 /**
@@ -31,7 +31,7 @@ public class ActionPlainTextMessenger extends ActionMessenger {
 	 * @param action
 	 * @return the toString() of this action object. Useful for debugging.
 	 */
-	public byte[] getMessage(R3Action action) {
+	public byte[] getMessage(Action action) {
 		return (action.toString() + LINE_SEPARATOR).getBytes();
 	}
 }

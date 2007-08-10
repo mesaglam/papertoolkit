@@ -4,7 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.SystemUtils;
 
@@ -75,14 +75,14 @@ public abstract class ActionMessenger {
 	 * @param action
 	 * @return
 	 */
-	public abstract byte[] getMessage(R3Action action);
+	public abstract byte[] getMessage(Action action);
 
 	/**
 	 * Sends the bytes over the wire.
 	 * 
 	 * @param action
 	 */
-	public void sendAction(R3Action action) {
+	public void sendAction(Action action) {
 		try {
 			bos.write(getMessage(action));
 			bos.flush();

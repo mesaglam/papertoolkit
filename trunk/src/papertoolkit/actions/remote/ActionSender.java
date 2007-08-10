@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.networking.ClientServerType;
 
@@ -75,7 +75,7 @@ public class ActionSender {
 	 * 
 	 * @param action
 	 */
-	public void invokeRemoteAction(R3Action action) {
+	public void invokeRemoteAction(Action action) {
 		if (messengerOutput != null) {
 			messengerOutput.sendAction(action);
 		} else {

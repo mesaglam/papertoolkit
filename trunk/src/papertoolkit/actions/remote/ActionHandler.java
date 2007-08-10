@@ -1,6 +1,6 @@
 package papertoolkit.actions.remote;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 /**
  * <p>
@@ -25,7 +25,7 @@ public class ActionHandler {
 	 * @param action
 	 *            sent from a remote machine (or possibly from the localhost)
 	 */
-	public void receivedAction(R3Action action) {
+	public void receivedAction(Action action) {
 		action.invoke();
 	}
 

@@ -14,7 +14,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.actions.types.graphicscommands.DrawImageCommand;
 import papertoolkit.actions.types.graphicscommands.DrawRectCommand;
 import papertoolkit.actions.types.graphicscommands.DrawShape;
@@ -40,7 +40,7 @@ import papertoolkit.util.graphics.GraphicsUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class DisplayGraphicsAction implements R3Action {
+public class DisplayGraphicsAction implements Action {
 
 	/**
 	 * <p>
@@ -195,7 +195,7 @@ public class DisplayGraphicsAction implements R3Action {
 	/**
 	 * Causes the graphics commands to be displayed on our local device's display channel.
 	 * 
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		LocalDisplay display = LocalDisplay.getInstance();

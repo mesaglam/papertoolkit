@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.util.graphics.ImageUtils;
 
 
@@ -32,7 +32,7 @@ import papertoolkit.util.graphics.ImageUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class RobotAction implements R3Action {
+public class RobotAction implements Action {
 
 	/**
 	 * multiply by these to set a direction
@@ -159,7 +159,7 @@ public class RobotAction implements R3Action {
 	/**
 	 * Run through our command list and invoke each command.
 	 * 
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		// need to get a local Robot every time, because we may have sent this across the wire...

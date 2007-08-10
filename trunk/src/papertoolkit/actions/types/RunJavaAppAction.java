@@ -3,7 +3,7 @@ package papertoolkit.actions.types;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 
 
 /**
@@ -17,7 +17,7 @@ import papertoolkit.actions.R3Action;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class RunJavaAppAction implements R3Action {
+public class RunJavaAppAction implements Action {
 
 	private Class<?> classToRun;
 
@@ -31,7 +31,7 @@ public class RunJavaAppAction implements R3Action {
 	/**
 	 * Invokes the main method of the given class.
 	 * 
-	 * @see papertoolkit.actions.R3Action#invoke()
+	 * @see papertoolkit.actions.Action#invoke()
 	 */
 	public void invoke() {
 		try {
