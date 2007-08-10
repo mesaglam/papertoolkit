@@ -4,13 +4,15 @@ import java.io.File;
 import java.util.List;
 
 import papertoolkit.application.Application;
-import papertoolkit.events.handlers.HandwritingRecognizer;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.HandwritingHandler;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.streaming.PenAdapter;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.units.PatternDots;
@@ -52,12 +54,12 @@ public class CaptureApplication extends Application {
 	/**
 	 * The Content Filter attached to the inkable region.
 	 */
-	private HandwritingRecognizer handwritingRecognizer;
+	private HandwritingHandler handwritingRecognizer;
 
 	/**
 	 * An Ink Collector attached to the SAME inkable region.
 	 */
-	private InkCollector inkCollector;
+	private InkHandler inkCollector;
 
 	private long lastTimeNewInkArrived = 0;
 
@@ -254,15 +256,15 @@ public class CaptureApplication extends Application {
 		final Region region = new Region("Handwriting Capture", 0, 0, 1, 1);
 
 		// for displaying ink
-		inkCollector = new InkCollector() {
-			public void contentArrived() {
+		inkCollector = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				// DebugUtils.println(getInk().getNumStrokes());
 				gui.getInkPanel().addInk(getNewInkOnly());
 			}
 		};
 
 		// for recognizing the strokes
-		handwritingRecognizer = new HandwritingRecognizer() {
+		handwritingRecognizer = new HandwritingHandler() {
 			public void contentArrived() {
 				lastTimeNewInkArrived = System.currentTimeMillis();
 

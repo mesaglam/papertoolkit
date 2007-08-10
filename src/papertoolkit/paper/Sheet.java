@@ -64,6 +64,9 @@ public class Sheet {
 	 */
 	private String name = "A Sheet";
 
+	/**
+	 * 
+	 */
 	private Application parentApp;
 
 	/**
@@ -428,5 +431,14 @@ public class Sheet {
 	 */
 	public String toXML() {
 		return PaperToolkit.toXML(this);
+	}
+
+	/**
+	 * @return
+	 */
+	public Region createRegion() {
+		Region regionToAdd = new Region("A Region", 0, 0, getWidth().getValueInInches(), getHeight().getValueInInches());
+		addRegion(regionToAdd);
+		return regionToAdd;
 	}
 }
