@@ -10,13 +10,14 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickHandler;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Bundle;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.ink.Ink;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.synch.BatchedEventHandler;
 import papertoolkit.render.ink.InkRenderer;
 import papertoolkit.units.Inches;
@@ -55,11 +56,11 @@ public class BioMap extends Application {
 
 	private AudioFeedback audioFeedback;
 
-	private InkCollector inkWellLowerLeft;
+	private InkHandler inkWellLowerLeft;
 
-	private InkCollector inkWellLowerRight;
+	private InkHandler inkWellLowerRight;
 
-	private InkCollector inkWellUpperRight;
+	private InkHandler inkWellUpperRight;
 
 	private int lastSite = 0;
 
@@ -88,24 +89,24 @@ public class BioMap extends Application {
 		sheet.addRegions(new File("data/BioMap/SurveyLocationsLighterGaussianBlur1_0.regions.xml"));
 
 		Region llRegion = sheet.getRegion("LowerLeft");
-		inkWellLowerLeft = new InkCollector() {
-			public void contentArrived() {
+		inkWellLowerLeft = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				DebugUtils.println("lower left");
 			}
 		};
 		llRegion.addEventHandler(inkWellLowerLeft);
 
 		Region lrRegion = sheet.getRegion("LowerRight");
-		inkWellLowerRight = new InkCollector() {
-			public void contentArrived() {
+		inkWellLowerRight = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				DebugUtils.println("lower right");
 			}
 		};
 		lrRegion.addEventHandler(inkWellLowerRight);
 
 		Region urRegion = sheet.getRegion("UpperRight");
-		inkWellUpperRight = new InkCollector() {
-			public void contentArrived() {
+		inkWellUpperRight = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				DebugUtils.println("upper right");
 				audioFeedback.speak("Notes Saved for Site" + lastSite);
 			}

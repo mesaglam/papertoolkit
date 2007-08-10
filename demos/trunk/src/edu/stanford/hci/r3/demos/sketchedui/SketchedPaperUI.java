@@ -7,9 +7,10 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.XMLSheet;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.tools.design.swing.SheetFrame;
 import papertoolkit.util.DebugUtils;
 
@@ -73,8 +74,8 @@ public class SketchedPaperUI extends Application {
 	}
 
 	private void setupRegion1(Region region) {
-		final InkCollector inkCollector = new InkCollector() {
-			public void contentArrived() {
+		final InkHandler inkCollector = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				DebugUtils.println("Content arrived in Region1.");
 			}
 		};

@@ -4,8 +4,10 @@ import java.io.File;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
+import papertoolkit.pen.ink.InkStroke;
 
 
 public class CommentTester extends Application {
@@ -27,9 +29,7 @@ public class CommentTester extends Application {
 
 		Region r = new Region("CommentTest", 0.5, 0.5, 7.5, 7.5);
 		CommentCollector cc = new CommentCollector(null, 0) {
-			@Override
-			public void contentArrived() {
-
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 			}
 		};
 		r.addEventHandler(cc);

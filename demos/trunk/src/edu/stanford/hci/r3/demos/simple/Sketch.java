@@ -18,11 +18,12 @@ import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
 import papertoolkit.events.handlers.GestureHandler;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.ink.Ink;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.render.sheets.PDFSheetRenderer;
 import papertoolkit.tools.components.InkPanel;
 import papertoolkit.util.WindowUtils;
@@ -88,7 +89,7 @@ public class Sketch {
 	/**
 	 * Captures ink from the streaming pen.
 	 */
-	private InkCollector inkWell;
+	private InkHandler inkWell;
 
 	private JPanel mainPanel;
 
@@ -136,8 +137,8 @@ public class Sketch {
 		// address regions by name (stored in the xml file)
 		// add some event handlers to the regions...
 		Region regionMain = sheet.getRegion("MainDrawingArea");
-		inkWell = new InkCollector() {
-			public void contentArrived() {
+		inkWell = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				statusText.setText("Writing... " + inkWell.getNumStrokesCollected()
 						+ " strokes have been collected");
 

@@ -6,10 +6,11 @@ import java.util.Map;
 
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.ImageRegion;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.units.Inches;
 import papertoolkit.units.Pixels;
 import papertoolkit.util.DebugUtils;
@@ -30,7 +31,7 @@ import papertoolkit.util.DebugUtils;
  */
 public class BuddySketchPaperUI extends Sheet {
 
-	private InkCollector inkWell;
+	private InkHandler inkWell;
 
 	private BuddySketch sketchApp;
 
@@ -50,8 +51,8 @@ public class BuddySketchPaperUI extends Sheet {
 	 */
 	private void addDrawingRegion() {
 		Region drawingRegion = new Region("Drawing Region", 0.5, 0.5, 39.5, 23);
-		inkWell = new InkCollector() {
-			public void contentArrived() {
+		inkWell = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				DebugUtils.println("Content Arrived");
 				DebugUtils.println("Num Strokes Total: " + inkWell.getNumStrokesCollected());
 

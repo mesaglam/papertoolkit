@@ -23,12 +23,14 @@ import javax.swing.SwingUtilities;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.streaming.PenAdapter;
 import papertoolkit.tools.components.InkPCanvas;
 import papertoolkit.units.Inches;
@@ -159,13 +161,14 @@ public class ViewBatched {
 		// create a sheet object
 		final Sheet sheet = new Sheet(wInchesD, hInchesD);
 		final Region region = new Region("Main Inking Area", 0, 0, wInchesD, hInchesD);
-		final InkCollector inkCollector = new InkCollector() {
-			public void contentArrived() {
+		final InkHandler inkCollector = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				// System.out.println("Last Stroke at: " + getTimestampOfMostRecentPenUp());
 				// System.out.println("Num Strokes: " + getNumStrokesCollected());
 				// display the ink in our Piccolo InkCanvas
 				inkCanvas.setInk(getInk());
 			}
+
 		};
 		region.addEventHandler(inkCollector);
 		sheet.addRegion(region);

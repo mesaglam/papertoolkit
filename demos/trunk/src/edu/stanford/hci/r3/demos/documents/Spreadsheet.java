@@ -4,10 +4,12 @@ import java.io.File;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.sheets.PDFSheet;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.util.DebugUtils;
 
 
@@ -30,10 +32,10 @@ public class Spreadsheet extends Application {
 
 	public Spreadsheet() {
 		super("Spreadsheet");
-		addSheet(createSheet());
+		addSheet(makeSheet());
 	}
 
-	private Sheet createSheet() {
+	private Sheet makeSheet() {
 		sheet = new PDFSheet(new File("data/Documents/DataSheet.pdf"));
 		sheet.addRegion(createRegion());
 		return sheet;
@@ -41,8 +43,8 @@ public class Spreadsheet extends Application {
 
 	private Region createRegion() {
 		region = new Region("Data", 0, 0, 8.5, 11);
-		final InkCollector inkCollector = new InkCollector() {
-			public void contentArrived() {
+		final InkHandler inkCollector = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				DebugUtils.println(getNumStrokesCollected());
 			}
 		};

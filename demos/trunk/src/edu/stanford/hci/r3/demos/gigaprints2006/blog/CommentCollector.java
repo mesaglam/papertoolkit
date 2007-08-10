@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.pen.ink.Ink;
 import papertoolkit.render.ink.InkRenderer;
 import papertoolkit.units.Inches;
@@ -37,7 +37,7 @@ import com.sun.syndication.io.SyndFeedOutput;
  * @author Joel Brandt
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class CommentCollector extends InkCollector {
+public abstract class CommentCollector extends InkHandler {
 
 	private static final String COMMENT_DIR = "C:/www/bbcomments/";
 

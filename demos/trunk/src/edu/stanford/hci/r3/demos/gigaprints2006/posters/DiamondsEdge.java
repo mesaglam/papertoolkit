@@ -7,10 +7,11 @@ import papertoolkit.application.Application;
 import papertoolkit.devices.Device;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.pen.Pen;
+import papertoolkit.pen.ink.InkStroke;
 
 
 /**
@@ -57,8 +58,8 @@ public class DiamondsEdge extends Application {
 	protected void initializeEventHandlers() {
 		// lower left side of the poster
 		final Region captureArea = poster.getRegion("CaptureArea");
-		final InkCollector inkCollector = new InkCollector() {
-			public void contentArrived() {
+		final InkHandler inkCollector = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				System.out.println("CaptureArea");
 				System.out.println("Got Ink in the Capture Area...");
 			}

@@ -6,12 +6,13 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
-import papertoolkit.events.handlers.HandwritingRecognizer;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.handlers.HandwritingHandler;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.TextRegion;
 import papertoolkit.pen.ink.Ink;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.units.Inches;
 import papertoolkit.units.Units;
 import papertoolkit.util.DebugUtils;
@@ -38,8 +39,8 @@ public class PostThis extends Application {
 		PaperToolkit.runApplication(new PostThis());
 	}
 
-	private HandwritingRecognizer handwritingRecognizer;
-	private InkCollector inkWell;
+	private HandwritingHandler handwritingRecognizer;
+	private InkHandler inkWell;
 	private Region inkingRegion;
 
 	public PostThis() {
@@ -53,10 +54,8 @@ public class PostThis extends Application {
 	 * @param inkingRegion
 	 */
 	private void addInkingHandler(Region inkingRegion) {
-		inkWell = new InkCollector() {
-			@Override
-			public void contentArrived() {
-
+		inkWell = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 			}
 		};
 		inkingRegion.addEventHandler(inkWell);
@@ -80,7 +79,7 @@ public class PostThis extends Application {
 	 * @param tagRegion
 	 */
 	private void addTagInkHandler(Region tagRegion) {
-		handwritingRecognizer = new HandwritingRecognizer() {
+		handwritingRecognizer = new HandwritingHandler() {
 			@Override
 			public void contentArrived() {
 				

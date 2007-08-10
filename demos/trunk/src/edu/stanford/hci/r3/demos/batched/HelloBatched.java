@@ -3,8 +3,11 @@ package edu.stanford.hci.r3.demos.batched;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.EventHandler;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
+import papertoolkit.pen.ink.InkStroke;
 
 /**
  * <p>
@@ -36,9 +39,11 @@ public class HelloBatched {
 		// bootstrap and run a paper + digital application
 		Application app = PaperToolkit.createApplication(); // default name
 		Sheet sheet = app.createSheet(); // default size is 8.5 x 11
-		Region region = sheet.createRegion(); // default name; default size is
-		// size of sheet
+
+		// default name; default size is size of sheet
+		Region region = sheet.createRegion();
 		region.addEventHandler(getInkHandler());
+		PaperToolkit.runApplication(app);
 	}
 
 	private static EventHandler getInkHandler() {
@@ -46,7 +51,7 @@ public class HelloBatched {
 			// renamed from InkCollector; has nicer methods for
 			// handling/collecting ink
 
-			handleInkStroke(PenEvent e) {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				// all handlers have a method called handleX, which gets a
 				// PenEvent; handlers also provide their subclasses access to
 				// internal variables
@@ -56,7 +61,7 @@ public class HelloBatched {
 						+ Thread.currentThread().getStackTrace()[1]);
 
 				System.out.print("This handler was triggered in ");
-				if (e.isRealTime()) {
+				if (event.isRealTime()) {
 					System.out.println("Real-time Mode..");
 				} else {
 					System.out.println("Batched Mode.");

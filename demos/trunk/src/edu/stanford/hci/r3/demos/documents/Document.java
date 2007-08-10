@@ -4,10 +4,12 @@ import java.io.File;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
-import papertoolkit.events.handlers.InkCollector;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.sheets.PDFSheet;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.util.DebugUtils;
 
 
@@ -41,7 +43,7 @@ public class Document extends Application {
 	 */
 	public Document() {
 		super("Word Document");
-		addSheet(createSheet());
+		addSheet(makeSheet());
 	}
 
 	/**
@@ -49,8 +51,8 @@ public class Document extends Application {
 	 */
 	private Region createRegion() {
 		region = new Region("Text", 0, 0, 8.5, 11);
-		final InkCollector inkCollector = new InkCollector() {
-			public void contentArrived() {
+		final InkHandler inkCollector = new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				DebugUtils.println(getNumStrokesCollected());
 			}
 		};
@@ -61,7 +63,7 @@ public class Document extends Application {
 	/**
 	 * @return
 	 */
-	private Sheet createSheet() {
+	private Sheet makeSheet() {
 		sheet = new PDFSheet(new File("data/Documents/Midsummer.pdf"));
 		sheet.addRegion(createRegion());
 		return sheet;

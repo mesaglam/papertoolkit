@@ -14,6 +14,7 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.ImageRegion;
 import papertoolkit.paper.regions.TextRegion;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.units.Inches;
 import papertoolkit.util.DebugUtils;
 
@@ -135,7 +136,7 @@ public class BoingBoingPaperApp extends Application {
 			});
 
 			CommentCollector cc = new CommentCollector(entries[i], i) {
-				public void contentArrived() {
+				public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 					DebugUtils.println("Comments are being made on story \"" + title + "\"");
 				}
 			};
