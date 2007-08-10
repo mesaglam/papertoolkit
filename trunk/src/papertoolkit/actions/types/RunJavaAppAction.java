@@ -24,7 +24,7 @@ public class RunJavaAppAction implements Action {
 	/**
 	 * @param classWithMainFunction
 	 */
-	public RunJavaAppAction(Class classWithMainFunction) {
+	public RunJavaAppAction(Class<?> classWithMainFunction) {
 		classToRun = classWithMainFunction;
 	}
 

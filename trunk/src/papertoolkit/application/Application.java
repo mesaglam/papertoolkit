@@ -413,4 +413,13 @@ public class Application {
 	public String toString() {
 		return name + " Application";
 	}
+
+	/**
+	 * @return
+	 */
+	public Sheet createSheet() {
+		Sheet sheetToAdd = new Sheet(8.5, 11);
+		addSheet(sheetToAdd); // how do we map this sheet to some pattern location?
+		return sheetToAdd;
+	}
 }

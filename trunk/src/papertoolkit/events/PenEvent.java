@@ -17,6 +17,11 @@ import papertoolkit.units.coordinates.StreamedPatternCoordinates;
  */
 public class PenEvent {
 
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	public enum PenEventModifier {
 		// a pen down event
 		DOWN,
@@ -66,6 +71,11 @@ public class PenEvent {
 	 * When was this event generated, in system time (milliseconds).
 	 */
 	private long timestamp;
+
+	/**
+	 * True if the event is dispatched in real-time. False if it is being read from a pen synchronization.
+	 */
+	private boolean realtimeFlag = true;
 
 	/**
 	 * @param thePenID
@@ -212,5 +222,9 @@ public class PenEvent {
 	 */
 	public String toString() {
 		return "PenEvent {Pen " + penID + " (" + penName + ") " + penSample + "}";
+	}
+
+	public boolean isRealTime() {
+		return realtimeFlag;
 	}
 }

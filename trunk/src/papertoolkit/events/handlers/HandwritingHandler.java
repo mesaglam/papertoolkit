@@ -26,7 +26,7 @@ import papertoolkit.units.coordinates.PercentageCoordinates;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class HandwritingRecognizer extends EventHandler {
+public abstract class HandwritingHandler extends EventHandler {
 
 	/**
 	 * For interpreting the samples.
@@ -52,7 +52,7 @@ public abstract class HandwritingRecognizer extends EventHandler {
 	 * Gets access to the HandwritingRecognitionService, which wraps the communication with the
 	 * Handwriting Recognition Server.
 	 */
-	public HandwritingRecognizer() {
+	public HandwritingHandler() {
 		recognizerService = HandwritingRecognitionService.getInstance();
 	}
 

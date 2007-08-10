@@ -56,7 +56,9 @@ import papertoolkit.units.Pixels;
 import papertoolkit.units.Points;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.StringUtils;
+import papertoolkit.util.SystemUtils;
 import papertoolkit.util.WindowUtils;
+import papertoolkit.util.files.FileUtils;
 import papertoolkit.util.graphics.ImageCache;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -64,23 +66,25 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.jgoodies.looks.plastic.theme.DarkStar;
 import com.thoughtworks.xstream.XStream;
 
-
 /**
  * <p>
- * Every PaperToolit has one EventEngine that handles input from users, and schedules output for the
- * system. A PaperToolkit can run one or more Applications at the same time. You can also deactivate
- * applications (to pause them). Or, you can remove them altogether. (These features are not yet
- * fully implemented.)
+ * Every PaperToolit has one EventEngine that handles input from users, and
+ * schedules output for the system. A PaperToolkit can run one or more
+ * Applications at the same time. You can also deactivate applications (to pause
+ * them). Or, you can remove them altogether. (These features are not yet fully
+ * implemented.)
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
- * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.
+ * </span>
  * </p>
  * <p>
  * TODOS:
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a>
+ *         (ronyeh(AT)cs.stanford.edu)
  */
 public class PaperToolkit {
 
@@ -188,7 +192,8 @@ public class PaperToolkit {
 	 */
 	public static File getResourceFile(String resourcePath) {
 		try {
-			File f = new File(PaperToolkit.class.getResource(resourcePath).toURI());
+			File f = new File(PaperToolkit.class.getResource(resourcePath)
+					.toURI());
 			return f;
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -197,18 +202,19 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently,
-	 * this does NOT work as a packaged jar.
+	 * Before 1.0, we will need to make sure this can work with a JAR-style
+	 * deployment. Currently, this does NOT work as a packaged jar.
 	 * 
-	 * @return the root path to the toolkit (or some other canonical path where we can expect to
-	 *         find certain resources, like the HandwritingRecognition Server)
+	 * @return the root path to the toolkit (or some other canonical path where
+	 *         we can expect to find certain resources, like the
+	 *         HandwritingRecognition Server)
 	 */
 	public static File getToolkitRootPath() {
 		File file = null;
 		try {
 			URL resource = PaperToolkit.class.getResource("/config");
 			file = new File(resource.toURI()).getParentFile();
-			
+
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -245,9 +251,10 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Sets up parameters for any Java Swing UI we need. Feel free to call this from an external
-	 * class. If you use the default PaperToolkit() constructor, it will also use the custom look
-	 * and feel. All PaperToolkit utility classes will also use this look and feel.
+	 * Sets up parameters for any Java Swing UI we need. Feel free to call this
+	 * from an external class. If you use the default PaperToolkit()
+	 * constructor, it will also use the custom look and feel. All PaperToolkit
+	 * utility classes will also use this look and feel.
 	 */
 	public static void initializeLookAndFeel() {
 		if (!lookAndFeelInitialized) {
@@ -279,9 +286,11 @@ public class PaperToolkit {
 	 */
 	public static void main(String[] args) {
 		if (args.length == 0) {
-			// the 0 args branch will run the Paper Toolkit GUI, which helps designers learn what
+			// the 0 args branch will run the Paper Toolkit GUI, which helps
+			// designers learn what
 			// you
-			// can do with this toolkit. It integrates with the documentation and stuff too!
+			// can do with this toolkit. It integrates with the documentation
+			// and stuff too!
 			printUsage();
 			new PaperToolkit().startToolExplorer();
 		} else if (args[0].startsWith("-actions")) {
@@ -381,8 +390,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Allows us to manage multiple running applications. Showing this GUI is optional. It is useful
-	 * during the design/debugging stages.
+	 * Allows us to manage multiple running applications. Showing this GUI is
+	 * optional. It is useful during the design/debugging stages.
 	 */
 	private ApplicationManager appManager;
 
@@ -392,14 +401,15 @@ public class PaperToolkit {
 	private BatchedDataServer batchServer;
 
 	/**
-	 * The engine that processes all pen events, producing the correct outputs and calling the right
-	 * event handlers.
+	 * The engine that processes all pen events, producing the correct outputs
+	 * and calling the right event handlers.
 	 */
 	private EventDispatcher eventEngine;
 
 	/**
-	 * Store frequently used pens here... so that you can ask the toolkit for them instead of
-	 * creating them from scratch. This list is loaded up from the PaperToolkit.xml config file.
+	 * Store frequently used pens here... so that you can ask the toolkit for
+	 * them instead of creating them from scratch. This list is loaded up from
+	 * the PaperToolkit.xml config file.
 	 */
 	private List<Pen> frequentlyUsedPens = new ArrayList<Pen>();
 
@@ -409,14 +419,15 @@ public class PaperToolkit {
 	private List<ActionListener> listenersToLoadRecentPatternMappings = new ArrayList<ActionListener>();
 
 	/**
-	 * A list of all applications loaded (but not necessarily running) in this system.
+	 * A list of all applications loaded (but not necessarily running) in this
+	 * system.
 	 */
 	private List<Application> loadedApplications = new ArrayList<Application>();
 
 	/**
-	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration
-	 * properties for your own program. Then, you can get the local properties from this properties
-	 * object.
+	 * Feel free to edit the PaperToolkit.xml in your local directory, to add
+	 * configuration properties for your own program. Then, you can get the
+	 * local properties from this properties object.
 	 */
 	private final Properties localProperties = new Properties();
 
@@ -430,21 +441,23 @@ public class PaperToolkit {
 	private TrayIcon trayIcon;
 
 	/**
-	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false.
-	 * True is useful for debugging and stopping apps that don't have a GUI.
+	 * Whether to show the application manager whenever an app is
+	 * loaded/started. Defaults to false. True is useful for debugging and
+	 * stopping apps that don't have a GUI.
 	 */
 	private boolean useAppManager = false;
 
 	/**
-	 * Whether or not to use handwriting recognition. It will start the HWRec Server...
+	 * Whether or not to use handwriting recognition. It will start the HWRec
+	 * Server...
 	 */
 	private boolean useHandwriting;
 
 	/**
-	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events
-	 * accordingly (and between applications, ideally). There will be one event engine in the paper
-	 * toolkit, and all events that applications generate will be fed through this single event
-	 * engine.
+	 * Start up a paper toolkit. A toolkit can load multiple applications, and
+	 * dispatch events accordingly (and between applications, ideally). There
+	 * will be one event engine in the paper toolkit, and all events that
+	 * applications generate will be fed through this single event engine.
 	 */
 	public PaperToolkit() {
 		this(false);
@@ -458,8 +471,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * TODO: Make the look and feel default to OFF, or somehow research a mixed look and feel
-	 * solution...
+	 * TODO: Make the look and feel default to OFF, or somehow research a mixed
+	 * look and feel solution...
 	 * 
 	 * @param useAppManager
 	 */
@@ -475,20 +488,22 @@ public class PaperToolkit {
 		batchServer = new BatchedDataServer(eventEngine);
 
 		// Start the local server up whenever the paper toolkit is initialized.
-		// the either flag can override the other. They will both need to be TRUE to actually load
+		// the either flag can override the other. They will both need to be
+		// TRUE to actually load
 		// it.
 		if (useHandwriting && useHandwritingRecognitionServer) {
 			HandwritingRecognitionService.getInstance();
 		}
 
-		// whether or not to show the app manager GUI when an application is loaded
+		// whether or not to show the app manager GUI when an application is
+		// loaded
 		// the idea is that one can load multiple applications (TODO)!
 		useApplicationManager(useAppManager);
 	}
 
 	/**
-	 * Check for uninitialized regions, and then populate the menu with options to bind these
-	 * regions to pattern at runtime!
+	 * Check for uninitialized regions, and then populate the menu with options
+	 * to bind these regions to pattern at runtime!
 	 * 
 	 * @param mappings
 	 */
@@ -503,8 +518,10 @@ public class PaperToolkit {
 
 		for (final PatternLocationToSheetLocationMapping map : mappings) {
 
-			final MenuItem loadMappingItem = new MenuItem("Load most recent Pattern Mappings");
-			loadMappingItem.addActionListener(getLoadRecentPatternMappingsActionListener(map));
+			final MenuItem loadMappingItem = new MenuItem(
+					"Load most recent Pattern Mappings");
+			loadMappingItem
+					.addActionListener(getLoadRecentPatternMappingsActionListener(map));
 			getTrayPopupMenu().add(loadMappingItem);
 
 			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map
@@ -522,44 +539,60 @@ public class PaperToolkit {
 
 				// the menu item for invoking the runtime binding
 				// We need to update the text later...
-				final MenuItem bindPatternToRegionItem = new MenuItem("Add Pattern Binding For ["
-						+ r.getName() + "]");
+				final MenuItem bindPatternToRegionItem = new MenuItem(
+						"Add Pattern Binding For [" + r.getName() + "]");
 
 				bindPatternToRegionItem.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						DebugUtils.println("Binding " + r);
 
 						// Runtime Pattern to Region Binding
-						// adds a listener for trashed events in the Event Engine
-						eventEngine.addEventHandlerForUnmappedEvents(new StrokeHandler() {
-							public void strokeArrived(PenEvent e) {
-								Rectangle2D bounds = getStroke().getBounds();
-								// determine the bounds of the region in pattern space
-								// this information was provided by the user
-								final double tlX = bounds.getX();
-								final double tlY = bounds.getY();
-								final double width = bounds.getWidth();
-								final double height = bounds.getHeight();
+						// adds a listener for trashed events in the Event
+						// Engine
+						eventEngine
+								.addEventHandlerForUnmappedEvents(new StrokeHandler() {
+									public void strokeArrived(PenEvent e) {
+										Rectangle2D bounds = getStroke()
+												.getBounds();
+										// determine the bounds of the region in
+										// pattern space
+										// this information was provided by the
+										// user
+										final double tlX = bounds.getX();
+										final double tlY = bounds.getY();
+										final double width = bounds.getWidth();
+										final double height = bounds
+												.getHeight();
 
-								// tie the pattern bounds to this region object
-								map.setPatternInformationOfRegion(r, //
-										new PatternDots(tlX), new PatternDots(tlY), // 
-										new PatternDots(width), new PatternDots(height));
+										// tie the pattern bounds to this region
+										// object
+										map.setPatternInformationOfRegion(
+												r, //
+												new PatternDots(tlX),
+												new PatternDots(tlY), // 
+												new PatternDots(width),
+												new PatternDots(height));
 
-								// unregister myself...
-								eventEngine.removeEventHandlerForUnmappedEvents(this);
+										// unregister myself...
+										eventEngine
+												.removeEventHandlerForUnmappedEvents(this);
 
-								DebugUtils.println("Bound the region [" + r.getName()
-										+ "] to Pattern " + bounds);
-								bindPatternToRegionItem.setLabel("Change Binding for "
-										+ r.getName() + ". Currently set to " + bounds);
+										DebugUtils.println("Bound the region ["
+												+ r.getName() + "] to Pattern "
+												+ bounds);
+										bindPatternToRegionItem
+												.setLabel("Change Binding for "
+														+ r.getName()
+														+ ". Currently set to "
+														+ bounds);
 
-								// additionally... write this out to a file on the desktop
-								File destFile = getLastRunPatternInfoFile();
-								map.saveConfigurationToXML(destFile);
-							}
+										// additionally... write this out to a
+										// file on the desktop
+										File destFile = getLastRunPatternInfoFile();
+										map.saveConfigurationToXML(destFile);
+									}
 
-						});
+								});
 					}
 				});
 				getTrayPopupMenu().add(bindPatternToRegionItem);
@@ -568,8 +601,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Attaches to the popup menu. Allows us to drop into the Debug mode of a paper application,
-	 * with event visualizations and stuff. =)
+	 * Attaches to the popup menu. Allows us to drop into the Debug mode of a
+	 * paper application, with event visualizations and stuff. =)
 	 * 
 	 * @param app
 	 * @return
@@ -577,7 +610,8 @@ public class PaperToolkit {
 	private ActionListener getDebugListener(final Application app) {
 		return new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DebuggingEnvironment debuggingEnvironment = app.getDebuggingEnvironment();
+				DebuggingEnvironment debuggingEnvironment = app
+						.getDebuggingEnvironment();
 				if (debuggingEnvironment == null) {
 					debuggingEnvironment = new DebuggingEnvironment();
 				}
@@ -684,23 +718,28 @@ public class PaperToolkit {
 	private void getSystemTrayIcon() {
 		if (trayIcon == null) {
 			// this is the icon that sits in our tray...
-			trayIcon = new TrayIcon(ImageCache.loadBufferedImage(PaperToolkit.class
-					.getResource("/icons/glue.png")), "Paper Toolkit", getTrayPopupMenu());
+			trayIcon = new TrayIcon(ImageCache
+					.loadBufferedImage(PaperToolkit.class
+							.getResource("/icons/glue.png")), "Paper Toolkit",
+					getTrayPopupMenu());
 			trayIcon.setImageAutoSize(true);
 			try {
 				if (SystemTray.isSupported()) {
 					SystemTray.getSystemTray().add(trayIcon);
 
-					Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-						public void run() {
-							DebugUtils.println("Running Shutdown Services...");
-							// Buggy for some reason... Can stop the shutdown =\
-							// if (trayIcon != null) {
-							// SystemTray.getSystemTray().remove(trayIcon);
-							// }
-							DebugUtils.println("Done with Shutdown!");
-						}
-					}));
+					Runtime.getRuntime().addShutdownHook(
+							new Thread(new Runnable() {
+								public void run() {
+									DebugUtils
+											.println("Running Shutdown Services...");
+									// Buggy for some reason... Can stop the
+									// shutdown =\
+									// if (trayIcon != null) {
+									// SystemTray.getSystemTray().remove(trayIcon);
+									// }
+									DebugUtils.println("Done with Shutdown!");
+								}
+							}));
 				}
 			} catch (AWTException e) {
 				e.printStackTrace();
@@ -726,8 +765,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Adds an application to the loaded list, and displays the application manager if the
-	 * useAppManager flag is set to true (default == false).
+	 * Adds an application to the loaded list, and displays the application
+	 * manager if the useAppManager flag is set to true (default == false).
 	 * 
 	 * If you would like to use the GUI launcher/App Manager then call
 	 * PaperToolkit.useAppManager(true);
@@ -752,14 +791,16 @@ public class PaperToolkit {
 		final MenuItem debugItem = new MenuItem("Debug [" + app.getName() + "]");
 		debugItem.addActionListener(getDebugListener(app));
 
-		final MenuItem renderItem = new MenuItem("Render Sheets for [" + app.getName() + "]");
+		final MenuItem renderItem = new MenuItem("Render Sheets for ["
+				+ app.getName() + "]");
 		renderItem.addActionListener(getRenderListener(app));
 
 		getTrayPopupMenu().add(debugItem);
 		getTrayPopupMenu().add(renderItem);
 
 		for (final Sheet s : app.getSheets()) {
-			MenuItem item = new MenuItem("Open JFrame for sheet [" + s.getName() + "]");
+			MenuItem item = new MenuItem("Open JFrame for sheet ["
+					+ s.getName() + "]");
 			item.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					SheetFrame sf = new SheetFrame(s, 640, 480);
@@ -784,18 +825,24 @@ public class PaperToolkit {
 	 * Load the configuration information on startup...
 	 */
 	private void loadStartupConfiguration() {
-		final Properties props = Configuration.getPropertiesFromConfigFile(CONFIG_FILE_KEY);
+		final Properties props = Configuration
+				.getPropertiesFromConfigFile(CONFIG_FILE_KEY);
 		setStartupProperties(props);
 
-		// also check for a custom PaperToolkit.xml in the run directory of the application
-		// properties in that file will override the ones we just loaded from the default location
-		// alternatively, you can just edit the default PaperToolkit.xml, located in
+		// also check for a custom PaperToolkit.xml in the run directory of the
+		// application
+		// properties in that file will override the ones we just loaded from
+		// the default location
+		// alternatively, you can just edit the default PaperToolkit.xml,
+		// located in
 		// data/config/PaperToolkit.xml
 		File localPropsFile = new File("PaperToolkit.xml");
 		if (localPropsFile.exists()) {
-			DebugUtils.println("Local Properties File Exists. Overriding Properties: ");
+			DebugUtils
+					.println("Local Properties File Exists. Overriding Properties: ");
 			try {
-				localProperties.loadFromXML(new FileInputStream(localPropsFile));
+				localProperties
+						.loadFromXML(new FileInputStream(localPropsFile));
 				setStartupProperties(localProperties);
 			} catch (InvalidPropertiesFormatException e) {
 				e.printStackTrace();
@@ -810,8 +857,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default
-	 * printer.
+	 * TODO: Figure out the easiest way to send a PDF (with or without regions)
+	 * to the default printer.
 	 * 
 	 * @param sheet
 	 */
@@ -826,8 +873,8 @@ public class PaperToolkit {
 	private void setStartupProperties(Properties props) {
 		if (props.containsKey(HW_REC_KEY)) {
 			String theProp = props.getProperty(HW_REC_KEY);
-			DebugUtils.println(HW_REC_KEY + " was: [" + useHandwriting + "] and is now [" + theProp
-					+ "]");
+			DebugUtils.println(HW_REC_KEY + " was: [" + useHandwriting
+					+ "] and is now [" + theProp + "]");
 			useHandwriting = Boolean.parseBoolean(theProp);
 		}
 
@@ -835,29 +882,35 @@ public class PaperToolkit {
 		frequentlyUsedPens.add(new Pen("Local Pen"));
 		if (props.containsKey(REMOTE_PENS_KEY)) {
 			String theProp = props.getProperty(REMOTE_PENS_KEY);
-			DebugUtils.println("Loading Frequently Used Remote Pens from PaperToolkit.xml: "
-					+ theProp);
+			DebugUtils
+					.println("Loading Frequently Used Remote Pens from PaperToolkit.xml: "
+							+ theProp);
 			String[] pens = theProp.split(","); // comma delimited
 			for (String pen : pens) {
 				int colonIndex = pen.indexOf(":");
 				String penServerName = pen.substring(0, colonIndex);
-				int penServerPort = Integer.parseInt(pen.substring(colonIndex + 1, pen.length()));
-				DebugUtils.println("Adding Pen " + penServerName + " : " + penServerPort);
+				int penServerPort = Integer.parseInt(pen.substring(
+						colonIndex + 1, pen.length()));
+				DebugUtils.println("Adding Pen " + penServerName + " : "
+						+ penServerPort);
 				String shortName = "";
 				if (penServerName.contains(".")) {
-					shortName = penServerName.substring(0, penServerName.indexOf("."));
+					shortName = penServerName.substring(0, penServerName
+							.indexOf("."));
 				} else {
 					shortName = penServerName;
 				}
-				frequentlyUsedPens.add(new Pen(shortName, penServerName, penServerPort));
+				frequentlyUsedPens.add(new Pen(shortName, penServerName,
+						penServerPort));
 			}
 		}
 
 	}
 
 	/**
-	 * Start this application and register all live pens with the event engine. The event engine
-	 * will then start dispatching events for this application until the application is stopped.
+	 * Start this application and register all live pens with the event engine.
+	 * The event engine will then start dispatching events for this application
+	 * until the application is stopped.
 	 * 
 	 * @param paperApp
 	 */
@@ -873,8 +926,9 @@ public class PaperToolkit {
 		// we assume we have decided where each pen server will run
 		// start live mode will connect to that pen server.
 		if (paperApp.getPenInputDevices().size() == 0) {
-			DebugUtils.println(paperApp.getName()
-					+ " does not have any pens! We will add a single streaming pen for you.");
+			DebugUtils
+					.println(paperApp.getName()
+							+ " does not have any pens! We will add a single streaming pen for you.");
 			final Pen aPen = new Pen();
 			paperApp.addPenInput(aPen);
 		}
@@ -882,7 +936,8 @@ public class PaperToolkit {
 		final List<PenInput> pens = paperApp.getPenInputDevices();
 		// add all the live pens to the eventEngine
 		for (PenInput pen : pens) {
-			pen.startLiveMode(); // starts live mode at the pen's default place
+			pen.startLiveMode(); // starts live mode at the pen's default
+			// place
 			if (pen.isLive()) {
 				eventEngine.register(pen);
 			}
@@ -892,17 +947,21 @@ public class PaperToolkit {
 		final Collection<PatternLocationToSheetLocationMapping> patternMappings = paperApp
 				.getPatternMaps();
 		eventEngine.registerPatternMapsForEventHandling(patternMappings);
-		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
+		batchServer
+				.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 
-		// will populate the system tray with a feature for runtime binding of regions... =)
+		// will populate the system tray with a feature for runtime binding of
+		// regions... =)
 		checkPatternMapsForUninitializedRegions(patternMappings);
 
 		// XXX
 		// Here, we should pass the event engine over...
-		// When the Batch Server gets in the data, it will translate it to streaming event
+		// When the Batch Server gets in the data, it will translate it to
+		// streaming event
 		// coordinates
 		// And then pass it to the Event Engine
-		// It will essentially "replay" the events as if it were through event save/replay
+		// It will essentially "replay" the events as if it were through event
+		// save/replay
 
 		DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);
@@ -936,8 +995,10 @@ public class PaperToolkit {
 			}
 		}
 
-		eventEngine.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
-		batchServer.unregisterBatchEventHandlers(paperApp.getBatchEventHandlers());
+		eventEngine.unregisterPatternMapsForEventHandling(paperApp
+				.getPatternMaps());
+		batchServer.unregisterBatchEventHandlers(paperApp
+				.getBatchEventHandlers());
 
 		DebugUtils.println("Stopping Application: " + paperApp.getName());
 		runningApplications.remove(paperApp);
@@ -958,9 +1019,19 @@ public class PaperToolkit {
 
 	/**
 	 * @param flag
-	 *            whether or not to load the app manager when you load an application.
+	 *            whether or not to load the app manager when you load an
+	 *            application.
 	 */
 	public void useApplicationManager(boolean flag) {
 		useAppManager = flag;
+	}
+
+	/**
+	 * @return a new application with a unique file name that is based on the
+	 *         current system time.
+	 */
+	public static Application createApplication() {
+		return new Application("Application_"
+				+ FileUtils.getCurrentTimeForUseInAFileName());
 	}
 }

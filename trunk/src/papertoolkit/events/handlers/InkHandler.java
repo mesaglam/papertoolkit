@@ -16,29 +16,28 @@ import papertoolkit.units.Units;
 import papertoolkit.units.coordinates.PercentageCoordinates;
 import papertoolkit.util.MathUtils;
 
-
 /**
  * <p>
- * Captures ink strokes, and allows access to them on demand. Notifies listeners every time a stroke
- * is written. We can set a flag that tells it to notify the listeners every time the pen moves a
- * sufficient distance...
+ * Captures ink strokes, and allows access to them on demand. Notifies listeners every time a stroke is
+ * written. We can set a flag that tells it to notify the listeners every time the pen moves a sufficient
+ * distance...
  * </p>
  * <p>
- * TODO: This class contains some filtering code to eliminate false Pen Ups, due to the fault of the
- * streaming digital pen. Should this filtering be done earlier? Should it be an option? Clearly, an
- * implementer of a ContentFilter should not need to manually filter events... =\
+ * TODO: This class contains some filtering code to eliminate false Pen Ups, due to the fault of the streaming
+ * digital pen. Should this filtering be done earlier? Should it be an option? Clearly, an implementer of a
+ * ContentFilter should not need to manually filter events... =\
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
  * </p>
  * 
- * TODO: Add a scale factor here??? Or maybe a scale factor somewhere in the event pipeline? Or
- * should we do it later on?
+ * TODO: Add a scale factor here??? Or maybe a scale factor somewhere in the event pipeline? Or should we do
+ * it later on?
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class InkCollector extends EventHandler {
+public abstract class InkHandler extends EventHandler {
 
 	/**
 	 * <p>
@@ -53,7 +52,11 @@ public abstract class InkCollector extends EventHandler {
 
 		private List<PenSample> strokeSamples;
 
-		public InkNotifier(List<PenSample> currentStrokeSamples, InkStroke tempStroke) {
+		private PenEvent event;
+
+		public InkNotifier(PenEvent mostRecentEvent, List<PenSample> currentStrokeSamples,
+				InkStroke tempStroke) {
+			event = mostRecentEvent;
 			strokeSamples = currentStrokeSamples;
 			lastTempStroke = tempStroke;
 		}
@@ -78,7 +81,7 @@ public abstract class InkCollector extends EventHandler {
 
 			// System.out.println(currentStrokeSamples.size() + " samples in
 			// this stroke.");
-			addStrokeAndNotifyListeners(strokeSamples);
+			addStrokeAndNotifyListeners(event, strokeSamples);
 		}
 
 		/**
@@ -100,8 +103,8 @@ public abstract class InkCollector extends EventHandler {
 	private static final int MAX_MILLIS_FOR_PEN_ERROR = 20;
 
 	/**
-	 * The notifier will wait for this many milliseconds before it notifies all listeners of the new
-	 * ink content. Ideally, this number should be a little longer than MAX_MILLIS_FOR_PEN_ERROR.
+	 * The notifier will wait for this many milliseconds before it notifies all listeners of the new ink
+	 * content. Ideally, this number should be a little longer than MAX_MILLIS_FOR_PEN_ERROR.
 	 */
 	private static final int MILLIS_TO_DELAY = 21;
 
@@ -110,8 +113,14 @@ public abstract class InkCollector extends EventHandler {
 	 */
 	private List<PenSample> currentStrokeSamples = new ArrayList<PenSample>();
 
+	/**
+	 * 
+	 */
 	private long currPenDownTime;
 
+	/**
+	 * 
+	 */
 	private double distanceThreshold = 0;
 
 	/**
@@ -119,6 +128,9 @@ public abstract class InkCollector extends EventHandler {
 	 */
 	private double distanceTraveled = 0;
 
+	/**
+	 * 
+	 */
 	private InkNotifier lastInkNotifier;
 
 	/**
@@ -126,12 +138,24 @@ public abstract class InkCollector extends EventHandler {
 	 */
 	private long lastPenUpTime;
 
+	/**
+	 * 
+	 */
 	private double lastXForDistanceMeasurements;
 
+	/**
+	 * 
+	 */
 	private double lastYForDistanceMeasurements;
 
+	/**
+	 * 
+	 */
 	private InkStroke mostRecentlyAddedStroke;
 
+	/**
+	 * 
+	 */
 	private InkStroke mostRecentlyAddedTemporaryStroke;
 
 	/**
@@ -140,8 +164,8 @@ public abstract class InkCollector extends EventHandler {
 	private int newInkMarker = 0;
 
 	/**
-	 * If true, we will notify our listeners on EVERY SINGLE SAMPLE. An alternate approach would be
-	 * to notify after the pen has moved sufficiently far...
+	 * If true, we will notify our listeners on EVERY SINGLE SAMPLE. An alternate approach would be to notify
+	 * after the pen has moved sufficiently far...
 	 */
 	private boolean notifyAfterEnoughDistance = false;
 
@@ -150,31 +174,35 @@ public abstract class InkCollector extends EventHandler {
 	 */
 	private List<InkStroke> strokes = Collections.synchronizedList(new ArrayList<InkStroke>());
 
+	/**
+	 * 
+	 */
 	private long timeDiffBetweenPenUpAndPenDown;
 
-	public InkCollector() {
-
-	};
-
-	/**
-	 * @param strokeSamples
-	 */
-	private synchronized void addStrokeAndNotifyListeners(List<PenSample> strokeSamples) {
-		mostRecentlyAddedStroke = new InkStroke(strokeSamples, DOTS);
-		strokes.add(mostRecentlyAddedStroke);
-		contentArrived();
+	public InkHandler() {
 	}
 
 	/**
 	 * @param strokeSamples
 	 */
-	private synchronized void addStrokeTemporarilyAndNotifyListeners(List<PenSample> strokeSamples) {
+	private synchronized void addStrokeAndNotifyListeners(PenEvent event, List<PenSample> strokeSamples) {
+		mostRecentlyAddedStroke = new InkStroke(strokeSamples, DOTS);
+		strokes.add(mostRecentlyAddedStroke);
+		handleInkStroke(event, mostRecentlyAddedStroke);
+	}
+
+	/**
+	 * @param event
+	 * @param strokeSamples
+	 */
+	private synchronized void addStrokeTemporarilyAndNotifyListeners(PenEvent event,
+			List<PenSample> strokeSamples) {
 		if (mostRecentlyAddedTemporaryStroke != null) {
 			strokes.remove(mostRecentlyAddedTemporaryStroke);
 		}
 		mostRecentlyAddedTemporaryStroke = new InkStroke(strokeSamples, DOTS);
 		strokes.add(mostRecentlyAddedTemporaryStroke);
-		contentArrived();
+		handleInkStroke(event, mostRecentlyAddedTemporaryStroke);
 	}
 
 	/**
@@ -186,7 +214,12 @@ public abstract class InkCollector extends EventHandler {
 		newInkMarker = 0;
 	}
 
-	public abstract void contentArrived();
+	/**
+	 * @param event
+	 * @param mostRecentStroke
+	 * 
+	 */
+	public abstract void handleInkStroke(PenEvent event, InkStroke mostRecentStroke);
 
 	/**
 	 * @return list of ALL the pen strokes.
@@ -199,8 +232,7 @@ public abstract class InkCollector extends EventHandler {
 	 * @return
 	 */
 	public Ink getNewInkOnly() {
-		Ink newInk = new Ink(
-				new ArrayList<InkStroke>(strokes.subList(newInkMarker, strokes.size())));
+		Ink newInk = new Ink(new ArrayList<InkStroke>(strokes.subList(newInkMarker, strokes.size())));
 		newInkMarker = strokes.size();
 		return newInk;
 	}
@@ -213,8 +245,7 @@ public abstract class InkCollector extends EventHandler {
 	}
 
 	/**
-	 * @return timestamp that last stroke was completed, in milliseconds, or -1 if there are no
-	 *         strokes.
+	 * @return timestamp that last stroke was completed, in milliseconds, or -1 if there are no strokes.
 	 */
 	public long getTimestampOfMostRecentInkStroke() {
 		if (strokes != null && strokes.size() >= 1) {
@@ -291,8 +322,7 @@ public abstract class InkCollector extends EventHandler {
 			// notify after a short delay, because we may actually update the
 			// current stroke
 			// if there is a pen error
-			lastInkNotifier = new InkNotifier(currentStrokeSamples,
-					mostRecentlyAddedTemporaryStroke);
+			lastInkNotifier = new InkNotifier(event, currentStrokeSamples, mostRecentlyAddedTemporaryStroke);
 			new Thread(lastInkNotifier).start();
 
 			// System.out.println("Collected " + strokes.size() + " strokes so
@@ -309,7 +339,7 @@ public abstract class InkCollector extends EventHandler {
 				lastYForDistanceMeasurements = yDots;
 
 				if (distanceTraveled > distanceThreshold) {
-					addStrokeTemporarilyAndNotifyListeners(currentStrokeSamples);
+					addStrokeTemporarilyAndNotifyListeners(event, currentStrokeSamples);
 				}
 			}
 		}
@@ -340,6 +370,6 @@ public abstract class InkCollector extends EventHandler {
 	 * @see papertoolkit.events.ContentFilter#toString()
 	 */
 	public String toString() {
-		return "Ink Collector [" + strokes.size() + " strokes]";
+		return "Ink Handler [" + strokes.size() + " strokes]";
 	}
 }
