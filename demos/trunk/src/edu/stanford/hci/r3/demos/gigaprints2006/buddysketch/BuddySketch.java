@@ -11,11 +11,11 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.actions.R3Action;
+import papertoolkit.actions.Action;
 import papertoolkit.actions.remote.ActionHandler;
 import papertoolkit.actions.remote.ActionReceiver;
 import papertoolkit.actions.remote.ActionReceiverConnectionListener;
-import papertoolkit.actions.types.ProcessInformationAction;
+import papertoolkit.actions.types.MessageAction;
 import papertoolkit.application.Application;
 import papertoolkit.devices.Device;
 import papertoolkit.pen.Pen;
@@ -180,7 +180,7 @@ public class BuddySketch extends Application {
 		buddySketchGUI.displayPhoto(imgFile);
 
 		// tell the OTHER device to display it too!
-		ProcessInformationAction a = new ProcessInformationAction(DISPLAY_PHOTO, imgFile);
+		MessageAction a = new MessageAction(DISPLAY_PHOTO, imgFile);
 		device.invokeAction(a);
 	}
 
@@ -291,7 +291,7 @@ public class BuddySketch extends Application {
 		buddySketchGUI.addInkToCanvas(newInkOnly);
 
 		// tell the OTHER device to display this ink too!
-		ProcessInformationAction a = new ProcessInformationAction(DISPLAY_INK, newInkOnly);
+		MessageAction a = new MessageAction(DISPLAY_INK, newInkOnly);
 		device.invokeAction(a);
 	}
 
@@ -308,12 +308,12 @@ public class BuddySketch extends Application {
 		actionReceiver.addActionHandler(new ActionHandler() {
 
 			/**
-			 * @see papertoolkit.actions.remote.ActionHandler#receivedAction(papertoolkit.actions.R3Action)
+			 * @see papertoolkit.actions.remote.ActionHandler#receivedAction(papertoolkit.actions.Action)
 			 */
 			@Override
-			public void receivedAction(R3Action action) {
-				if (action instanceof ProcessInformationAction) {
-					ProcessInformationAction p = (ProcessInformationAction) action;
+			public void receivedAction(Action action) {
+				if (action instanceof MessageAction) {
+					MessageAction p = (MessageAction) action;
 					Object msgVal = p.getInformation();
 					String msgName = p.getName();
 
