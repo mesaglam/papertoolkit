@@ -19,7 +19,6 @@ import papertoolkit.units.Size;
 import papertoolkit.units.Units;
 import papertoolkit.units.coordinates.Coordinates;
 
-
 /**
  * <p>
  * Represents one sheet of interactive/augmented paper. This sheet can be large (like a GIGAprint) or it can
@@ -54,8 +53,8 @@ public class Sheet {
 
 	/**
 	 * Any time we load regions from a configuration file, we will keep track of that path. Later on, we can
-	 * use this information to find other files, such as the .patternInfo.xml files or even the patterned pdf
-	 * file.
+	 * use this information to find other files, such as the .patternInfo.xml files or even the patterned
+	 * ps/pdf file.
 	 */
 	private Set<File> configurationPaths = new HashSet<File>();
 
@@ -110,10 +109,9 @@ public class Sheet {
 	 * @param unitsClass
 	 */
 	public Sheet(double width, double height, Units units) {
-		this(units.getUnitsObjectOfSameTypeWithValue(width), 
-			 units.getUnitsObjectOfSameTypeWithValue(height));
+		this(units.getUnitsObjectOfSameTypeWithValue(width), units.getUnitsObjectOfSameTypeWithValue(height));
 	}
-	
+
 	/**
 	 * A convenience method for our American friends. =)
 	 * 
@@ -264,8 +262,7 @@ public class Sheet {
 	 * @return
 	 */
 	public PatternToSheetMapping getPatternLocationToSheetLocationMapping(File patternInfoFile) {
-		setPatternLocationToSheetLocationMapping(new PatternToSheetMapping(this,
-				patternInfoFile));
+		setPatternLocationToSheetLocationMapping(new PatternToSheetMapping(this, patternInfoFile));
 		return patternLocationToSheetLocationMapping;
 	}
 
@@ -304,7 +301,9 @@ public class Sheet {
 	}
 
 	/**
-	 * Where is the region on this sheet? Add the region's internal location, plus the external offset stored in this sheet object.
+	 * Where is the region on this sheet? Add the region's internal location, plus the external offset stored
+	 * in this sheet object.
+	 * 
 	 * @param region
 	 * @return
 	 */
@@ -318,7 +317,7 @@ public class Sheet {
 		location.setY(Units.add(offsetY, region.getOriginY()));
 		return location;
 	}
-	
+
 	/**
 	 * @return the internal list of regions
 	 */
@@ -437,7 +436,8 @@ public class Sheet {
 	 * @return
 	 */
 	public Region createRegion() {
-		Region regionToAdd = new Region("A Region", 0, 0, getWidth().getValueInInches(), getHeight().getValueInInches());
+		Region regionToAdd = new Region("A Region", 0, 0, getWidth().getValueInInches(), getHeight()
+				.getValueInInches());
 		addRegion(regionToAdd);
 		return regionToAdd;
 	}

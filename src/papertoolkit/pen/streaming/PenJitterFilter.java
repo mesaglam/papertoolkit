@@ -4,7 +4,8 @@ import papertoolkit.pen.PenSample;
 
 /**
  * <p>
- * 
+ * Filter pens at the lowest level... The problem is that many of the newer Nokia pens have a jitter issue,
+ * resulting in many PENUPs interspersed with real data. We will try to weed out those PENUP events.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -12,19 +13,29 @@ import papertoolkit.pen.PenSample;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
  */
 public class PenJitterFilter {
 
-	private static final long MILLIS_TO_DELAY = 30;
-
+	/**
+	 * <p>
+	 * </p>
+	 */
 	public interface PenUpCallback {
+
+		/**
+		 * @param s
+		 */
 		public void penUp(PenSample s);
 	}
 
+	/**
+	 * <p>
+	 * </p>
+	 */
 	private class PenUpNotifier implements Runnable {
 
 		private boolean doNotNotify;
+
 		private PenSample s;
 
 		public PenUpNotifier(PenSample mySample) {
@@ -44,7 +55,6 @@ public class PenJitterFilter {
 				// someone told us to cancel
 				return;
 			}
-
 			penUpCallback.penUp(s);
 		}
 
@@ -56,8 +66,31 @@ public class PenJitterFilter {
 		}
 	}
 
-	private PenUpCallback penUpCallback;
+	/**
+	 * 
+	 */
+	private static final long MILLIS_TO_DELAY = 30;
+
+	/**
+	 * 
+	 */
+	private static final long FILTER_THRESHOLD_MILLIS = 20;
+	
+	/**
+	 * 
+	 */
 	private PenUpNotifier lastPenUpNotifier;
+
+	/**
+	 * 
+	 */
+	private PenUpCallback penUpCallback;
+
+	/**
+	 * The timestamp of the last penup trigger. It can be used to check if the newest penup event is too close
+	 * to the last triggered penup.
+	 */
+	private long lastPenUpTimeStamp = 0L;
 
 	/**
 	 * @param pucb
@@ -67,23 +100,29 @@ public class PenJitterFilter {
 	}
 
 	/**
-	 * @param s
+	 * 
 	 */
-	public void triggerPenUpAfterADelay(PenSample s) {
-		lastPenUpNotifier = new PenUpNotifier(s);
-		new Thread(lastPenUpNotifier).start();
-	}
-
-	public boolean happenedTooCloseToLastPenUp() {
-		// TODO: Turn this into a real time check later...
-		return true;
-	}
-
 	public void cancelLastPenUp() {
 		// just filter this out by canceling the notifier
 		if (lastPenUpNotifier != null) {
 			lastPenUpNotifier.setDoNotNotify(true);
 			lastPenUpNotifier = null;
 		}
+	}
+
+	/**
+	 * @return if we are still too close to the last call to triggerPenUpAfterADelay(...)
+	 */
+	public boolean happenedTooCloseToLastPenUp() {
+		return (System.currentTimeMillis() - lastPenUpTimeStamp < FILTER_THRESHOLD_MILLIS);
+	}
+
+	/**
+	 * @param s
+	 */
+	public void triggerPenUpAfterADelay(PenSample s) {
+		lastPenUpTimeStamp = System.currentTimeMillis();
+		lastPenUpNotifier = new PenUpNotifier(s);
+		new Thread(lastPenUpNotifier).start();
 	}
 }

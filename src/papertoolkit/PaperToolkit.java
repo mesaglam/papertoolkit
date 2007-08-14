@@ -197,11 +197,11 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * 
 	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently, this does
 	 * NOT work as a packaged jar.
 	 * 
-	 * @return the root path to the toolkit (or some other canonical path where we can expect to find certain
-	 *         resources, like the HandwritingRecognition Server)
+	 * @return the root path to the toolkit (e.g., C:\Documents and Settings\User Name\Projects\PaperToolkit\)
 	 */
 	public static File getToolkitRootPath() {
 		File file = null;
