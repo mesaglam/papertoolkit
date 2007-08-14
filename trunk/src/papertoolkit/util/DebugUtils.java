@@ -1,16 +1,15 @@
 package papertoolkit.util;
 
 /**
- * A utility for printing messages and seeing which file they originated from. This class will also
- * provide support for creating debug levels (not really implemented yet).
+ * A utility for printing messages and seeing which file they originated from. This class will also provide
+ * support for creating debug levels (not really implemented yet).
  * 
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt"> BSD
+ * License</a>.
  * </p>
  * 
- * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B. Yeh</a>
- *         (ronyeh(AT)cs.stanford.edu)
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B. Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
  * @date Sep 1, 2004 created at FSCA.
  * @date Jul 8, 2005 imported to HCILib.
@@ -20,15 +19,15 @@ package papertoolkit.util;
 public class DebugUtils {
 
 	/**
-	 * can be used to turn some debugging on, and others off by default, all messages will be
-	 * printed setting this to Integer.MAX_VALUE will hide all messages setting this to -1 will show
-	 * all messages (as long as your messages have nonnegative priorities)
+	 * can be used to turn some debugging on, and others off by default, all messages will be printed setting
+	 * this to Integer.MAX_VALUE will hide all messages setting this to -1 will show all messages (as long as
+	 * your messages have nonnegative priorities)
 	 */
 	private static int debugPriorityMask = -1;
 
 	/**
-	 * prints the line number and originating class. Feel free to turn this on or off as you see fit
-	 * for your application.
+	 * prints the line number and originating class. Feel free to turn this on or off as you see fit for your
+	 * application.
 	 */
 	private static boolean debugTraceOn = true;
 
@@ -67,14 +66,20 @@ public class DebugUtils {
 	/**
 	 * @param additionalStackOffset
 	 */
-	private static synchronized void printDebugTrace(int additionalStackOffset) {
+	private static synchronized String printDebugTrace(int additionalStackOffset) {
 		final Thread currThread = Thread.currentThread();
 		final int actualOffset = stackTraceOffset + additionalStackOffset;
 		final StackTraceElement[] ste = currThread.getStackTrace();
-		final String className = ste[actualOffset].getClassName();
-		final String trace = className.substring(className.lastIndexOf(".") + 1) + "."
-				+ ste[actualOffset].getMethodName() + "[" + ste[actualOffset].getLineNumber()
-				+ "]: ";
+		String className = ste[actualOffset].getClassName();
+		className = className.substring(className.lastIndexOf(".") + 1);
+
+		// get the stuff between the parentheses
+		String element = ste[actualOffset].toString();
+		element = element.substring(element.lastIndexOf("("), element.lastIndexOf(")")+1);
+		element = "[" + element + "]";
+		String methodName = ste[actualOffset].getMethodName();
+		final String trace = className + "." + methodName;
+
 		System.out.print(trace);
 		System.out.print("    ");
 		int padding = WHITESPACE.length() - trace.length();
@@ -82,6 +87,8 @@ public class DebugUtils {
 			padding = 0;
 		}
 		System.out.print(WHITESPACE.substring(0, padding));
+
+		return element;
 	}
 
 	/**
@@ -96,8 +103,8 @@ public class DebugUtils {
 	 * @param object
 	 * @param debugPriority
 	 *            an int that describes how important this message is. If it is greater than
-	 *            debugPriorityMask, then it will be printed out. If it is less than debugLevel,
-	 *            then it will be hidden.
+	 *            debugPriorityMask, then it will be printed out. If it is less than debugLevel, then it will
+	 *            be hidden.
 	 */
 	public synchronized static void println(Object object, int debugPriority) {
 		if (debugPriority <= debugPriorityMask) {
@@ -115,10 +122,12 @@ public class DebugUtils {
 	 */
 	public synchronized static void printlnWithStackOffset(Object object, int additionalStackOffset) {
 		final String s = (object == null) ? "null" : object.toString();
+		String linkToLineNumber = "";
 		if (DebugUtils.debugTraceOn) {
-			printDebugTrace(additionalStackOffset);
+			linkToLineNumber = printDebugTrace(additionalStackOffset);
 		}
-		System.out.println(s);
+		System.out.print(s);
+		System.out.println("\t" + linkToLineNumber);
 	}
 
 	/**

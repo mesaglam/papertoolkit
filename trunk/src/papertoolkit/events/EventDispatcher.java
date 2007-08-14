@@ -283,7 +283,7 @@ public class EventDispatcher {
 										+ "attaching a pattern mapping (even at runtime) to your regions.");
 					}
 					numTrashedPenEvents++;
-					DebugUtils.println("Cannot Map " + penEvent);
+					// DebugUtils.println("Cannot Map " + penEvent);
 				}
 			}
 		}
@@ -313,7 +313,7 @@ public class EventDispatcher {
 		} else {
 			penRegistrationCount.put(pen, count + 1);
 		}
-		DebugUtils.println("We have registered " + penRegistrationCount.get(pen) + " pens in total.");
+		// DebugUtils.println("We have registered " + penRegistrationCount.get(pen) + " pens in total.");
 	}
 
 	/**
@@ -420,7 +420,7 @@ public class EventDispatcher {
 	public void unregisterPen(PenInput pen) {
 		int newCount = decrementPenRegistrationCount(pen);
 		if (newCount == 0) {
-//			DebugUtils.println("Count is at Zero. Let's remove the pen and its listener...");
+			// DebugUtils.println("Count is at Zero. Let's remove the pen and its listener...");
 			PenListener listener = penToListener.get(pen);
 			removePenFromInternalLists(pen, listener);
 		}
