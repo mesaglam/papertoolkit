@@ -1,5 +1,6 @@
 package papertoolkit.pen.streaming;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.communications.COMPort;
-
 
 /**
  * <p>
@@ -98,7 +98,6 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	 * @param port
 	 *            if port is null, use the default port (COM5)
 	 */
-	@SuppressWarnings("unchecked")
 	public static PenStreamingConnection getInstance(COMPort port) {
 		if (instance != null) {
 			return instance;
@@ -113,7 +112,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 		StringBuilder msg = new StringBuilder();
 		msg.append("PenStreamingConnection: Looking for " + port + ". Found {");
 
-		final Enumeration<CommPortIdentifier> portList = CommPortIdentifier.getPortIdentifiers();
+		final Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers(); // CommPortIdentifier
 		while (portList.hasMoreElements()) {
 			portID = (CommPortIdentifier) portList.nextElement();
 			if (portID.getPortType() == CommPortIdentifier.PORT_SERIAL) {
@@ -129,13 +128,30 @@ public class PenStreamingConnection implements SerialPortEventListener {
 				}
 			}
 		}
-		msg.append(" }\n");
+		msg.append(" }\t");
 		msg.append("Port " + port + " not found.");
 		DebugUtils.println(msg.toString());
 		System.out.flush();
-		
-		
-		System.err.println("Potential Problems: JavaCOMM is not installed OR Your Bluetooth Dongle is unplugged OR A COM port, named ANOTO STREAMING doesn't exist.");
+
+		System.err.println("Several Potential Problems: JavaCOMM is not installed / "
+				+ "Your Bluetooth Dongle is unplugged / "
+				+ "A COM port, named ANOTO STREAMING doesn't exist.");
+
+		// make sure comm.jar and javax.comm.properties exists...
+		// e.g., C:\Program Files\Java\jre1.6.0_01
+		String pathToJava = System.getProperty("java.home");
+
+		// comm.jar should already be in our Eclipse build path... so we need not check here
+		// File commJar = new File(pathToJava, "lib/comm.jar");
+		// DebugUtils.println(commJar.exists());
+
+		File commProperties = new File(pathToJava, "lib/javax.comm.properties");
+		if (!commProperties.exists()) {
+			DebugUtils.println(commProperties.getPath()
+					+ " needs to be present for PaperToolkit to find your COM ports.");
+			System.err.println("Please copy the javax.comm.properties file into your JRE's lib directory.");
+		}
+
 		return null;
 	}
 
