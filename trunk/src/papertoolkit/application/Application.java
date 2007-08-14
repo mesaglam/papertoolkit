@@ -10,7 +10,7 @@ import javax.swing.filechooser.FileSystemView;
 import papertoolkit.PaperToolkit;
 import papertoolkit.devices.Device;
 import papertoolkit.paper.Sheet;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pen.PenInput;
 import papertoolkit.pen.synch.BatchedEventHandler;
 import papertoolkit.render.SheetRenderer;
@@ -139,7 +139,7 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet) {
 		// ensure that a mapping object is created
-		final PatternLocationToSheetLocationMapping mapping = sheet
+		final PatternToSheetMapping mapping = sheet
 				.getPatternLocationToSheetLocationMapping();
 		addSheetObjectToInternalList(sheet);
 		registerMappingWithEventEngineDuringRuntime(mapping);
@@ -156,7 +156,7 @@ public class Application {
 	 */
 	public void addSheet(Sheet sheet, File patternInfoFile) {
 		// ensure that a mapping object is created from this file
-		PatternLocationToSheetLocationMapping mapping = sheet
+		PatternToSheetMapping mapping = sheet
 				.getPatternLocationToSheetLocationMapping(patternInfoFile);
 		addSheetObjectToInternalList(sheet);
 		registerMappingWithEventEngineDuringRuntime(mapping);
@@ -169,7 +169,7 @@ public class Application {
 	 * @param sheet
 	 * @param patternInfoFile
 	 */
-	public void addSheet(Sheet sheet, PatternLocationToSheetLocationMapping patternToSheetMapping) {
+	public void addSheet(Sheet sheet, PatternToSheetMapping patternToSheetMapping) {
 		sheet.setPatternLocationToSheetLocationMapping(patternToSheetMapping);
 		addSheetObjectToInternalList(sheet);
 		registerMappingWithEventEngineDuringRuntime(patternToSheetMapping);
@@ -229,8 +229,8 @@ public class Application {
 	 * 
 	 * @return the information that maps a pattern location to a location on a sheet.
 	 */
-	public Collection<PatternLocationToSheetLocationMapping> getPatternMaps() {
-		Collection<PatternLocationToSheetLocationMapping> map = new ArrayList<PatternLocationToSheetLocationMapping>();
+	public Collection<PatternToSheetMapping> getPatternMaps() {
+		Collection<PatternToSheetMapping> map = new ArrayList<PatternToSheetMapping>();
 		for (Sheet s : getSheets()) {
 			map.add(s.getPatternLocationToSheetLocationMapping());
 		}
@@ -279,7 +279,7 @@ public class Application {
 	 * 
 	 * @param mapping
 	 */
-	private void registerMappingWithEventEngineDuringRuntime(PatternLocationToSheetLocationMapping mapping) {
+	private void registerMappingWithEventEngineDuringRuntime(PatternToSheetMapping mapping) {
 		if (isRunning) {
 			// tell the already-running event engine to be aware of this new pattern mapping!
 			getHostToolkit().getEventEngine().registerPatternMapForEventHandling(mapping);

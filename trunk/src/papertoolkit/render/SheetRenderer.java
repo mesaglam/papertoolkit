@@ -17,7 +17,7 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.TiledPattern;
 import papertoolkit.pattern.TiledPatternGenerator;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import papertoolkit.pattern.output.PDFPatternGenerator;
 import papertoolkit.pattern.output.PostscriptPatternGenerator;
@@ -81,7 +81,7 @@ public class SheetRenderer {
 	 * information to a file, for so that we can run the application in the future without rendering more
 	 * pattern.
 	 */
-	private PatternLocationToSheetLocationMapping patternInformation;
+	private PatternToSheetMapping patternInformation;
 
 	/**
 	 * By default, any active regions will be overlaid with pattern (unique to at least this sheet, unless
@@ -119,7 +119,7 @@ public class SheetRenderer {
 	/**
 	 * @return
 	 */
-	public PatternLocationToSheetLocationMapping getPatternInformation() {
+	public PatternToSheetMapping getPatternInformation() {
 		return patternInformation;
 	}
 

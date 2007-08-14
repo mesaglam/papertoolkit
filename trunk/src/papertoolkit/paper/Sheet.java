@@ -10,7 +10,7 @@ import java.util.Set;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.design.acrobat.RegionConfiguration;
 import papertoolkit.units.Inches;
@@ -74,7 +74,7 @@ public class Sheet {
 	 * This lets us know, given some physical coordinate, where we are on the sheet (i.e., which regions we
 	 * point to).
 	 */
-	private PatternLocationToSheetLocationMapping patternLocationToSheetLocationMapping;
+	private PatternToSheetMapping patternLocationToSheetLocationMapping;
 
 	/**
 	 * Internal datastructure for indexing a region by its name.
@@ -248,10 +248,10 @@ public class Sheet {
 	 * @return only one of these per any sheet. This maps the location on the sheet (the region coordinates)
 	 *         to physical pattern coordinates.
 	 */
-	public PatternLocationToSheetLocationMapping getPatternLocationToSheetLocationMapping() {
+	public PatternToSheetMapping getPatternLocationToSheetLocationMapping() {
 		if (patternLocationToSheetLocationMapping == null) {
 			// in case no one has set this object, we will ensure that it is not null...
-			setPatternLocationToSheetLocationMapping(new PatternLocationToSheetLocationMapping(this));
+			setPatternLocationToSheetLocationMapping(new PatternToSheetMapping(this));
 		}
 		return patternLocationToSheetLocationMapping;
 	}
@@ -263,8 +263,8 @@ public class Sheet {
 	 * @param patternInfoFile
 	 * @return
 	 */
-	public PatternLocationToSheetLocationMapping getPatternLocationToSheetLocationMapping(File patternInfoFile) {
-		setPatternLocationToSheetLocationMapping(new PatternLocationToSheetLocationMapping(this,
+	public PatternToSheetMapping getPatternLocationToSheetLocationMapping(File patternInfoFile) {
+		setPatternLocationToSheetLocationMapping(new PatternToSheetMapping(this,
 				patternInfoFile));
 		return patternLocationToSheetLocationMapping;
 	}
@@ -369,7 +369,7 @@ public class Sheet {
 	 * You can even create such an object manually (experts only). See the
 	 * PatternLocationToSheetLocationMapping object.
 	 */
-	public void setPatternLocationToSheetLocationMapping(PatternLocationToSheetLocationMapping mapping) {
+	public void setPatternLocationToSheetLocationMapping(PatternToSheetMapping mapping) {
 		patternLocationToSheetLocationMapping = mapping;
 	}
 
