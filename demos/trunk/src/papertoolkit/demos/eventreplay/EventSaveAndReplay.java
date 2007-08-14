@@ -7,7 +7,7 @@ import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.conversion.FlexiblePatternCoordinateConverter;
 import papertoolkit.pen.Pen;
 import papertoolkit.units.Inches;
@@ -36,7 +36,7 @@ public class EventSaveAndReplay extends Application {
 
 	private Region floatingRegion;
 
-	private PatternLocationToSheetLocationMapping mapping;
+	private PatternToSheetMapping mapping;
 
 	private Pen pen;
 
@@ -71,10 +71,10 @@ public class EventSaveAndReplay extends Application {
 	/**
 	 * @return
 	 */
-	private PatternLocationToSheetLocationMapping getPatternMap() {
+	private PatternToSheetMapping getPatternMap() {
 		if (mapping == null) {
 			// make the region float by having a flexible pattern map
-			mapping = new PatternLocationToSheetLocationMapping(getSheet());
+			mapping = new PatternToSheetMapping(getSheet());
 
 			// tie the pattern bounds to this region object
 			mapping.setPatternInformationOfRegion(getFloatingRegion(),

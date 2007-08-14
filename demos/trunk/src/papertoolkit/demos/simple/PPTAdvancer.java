@@ -12,7 +12,7 @@ import papertoolkit.events.handlers.ClickAdapter;
 import papertoolkit.events.handlers.GestureHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.PenAdapter;
@@ -76,7 +76,7 @@ public class PPTAdvancer extends Application {
 						final double height = Math.abs(sample1.getY() - sample2.getY());
 
 						// create this custom mapping object
-						final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
+						final PatternToSheetMapping mapping = new PatternToSheetMapping(
 								s);
 						// tie the pattern bounds to this region object
 						mapping.setPatternInformationOfRegion(r, //

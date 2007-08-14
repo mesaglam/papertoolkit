@@ -27,7 +27,7 @@ import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.ink.InkStroke;
@@ -175,7 +175,7 @@ public class ViewBatched {
 
 		// this is how you can dynamically register regions for event handling
 		// first, create a custom mapping object
-		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
+		final PatternToSheetMapping mapping = new PatternToSheetMapping(
 				sheet);
 		// tie the pattern bounds to this region object
 		mapping.setPatternInformationOfRegion(region, //
