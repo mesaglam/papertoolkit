@@ -42,6 +42,15 @@ public class DebugUtils {
 	private static final String WHITESPACE = StringUtils.repeat(" ", 60);
 
 	/**
+	 * @param stackTraceElement
+	 * @return the simple class name of the class representing this stack trace element
+	 */
+	public static String getClassNameFromStackTraceElement(StackTraceElement stackTraceElement) {
+		String qualifiedClassName = stackTraceElement.getClassName();
+		return qualifiedClassName.substring(qualifiedClassName.lastIndexOf(".")+1);
+	}
+
+	/**
 	 * @return the debugPriorityMask
 	 */
 	public static int getDebugPriorityMask() {
@@ -62,8 +71,7 @@ public class DebugUtils {
 		final Thread currThread = Thread.currentThread();
 		final int actualOffset = stackTraceOffset + additionalStackOffset;
 		final StackTraceElement[] ste = currThread.getStackTrace();
-		String className = ste[actualOffset].getClassName();
-		className = className.substring(className.lastIndexOf(".") + 1);
+		String className = getClassNameFromStackTraceElement(ste[actualOffset]);
 
 		// get the stuff between the parentheses
 		String element = ste[actualOffset].toString();

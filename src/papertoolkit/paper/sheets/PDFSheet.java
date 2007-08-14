@@ -51,7 +51,6 @@ public class PDFSheet extends Sheet {
 	 */
 	public PDFSheet(File pdfFile, int pageNumber) {
 		file = pdfFile;
-		addConfigurationPath(pdfFile.getParentFile());
 
 		pageNum = pageNumber;
 		try {

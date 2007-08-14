@@ -56,9 +56,7 @@ import papertoolkit.units.Pixels;
 import papertoolkit.units.Points;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.StringUtils;
-import papertoolkit.util.SystemUtils;
 import papertoolkit.util.WindowUtils;
-import papertoolkit.util.files.FileUtils;
 import papertoolkit.util.graphics.ImageCache;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -148,6 +146,15 @@ public class PaperToolkit {
 	 */
 	static {
 		printInitializationMessages();
+	}
+
+	/**
+	 * @return a new application with a file name that is based on the calling class... That is, if you use
+	 *         this convenience function, we will assume that the class you called it from is the main app.
+	 */
+	public static Application createApplication() {
+		return new Application("PaperApp_"
+				+ DebugUtils.getClassNameFromStackTraceElement(Thread.currentThread().getStackTrace()[2]));
 	}
 
 	/**
@@ -396,7 +403,7 @@ public class PaperToolkit {
 	 * The engine that processes all pen events, producing the correct outputs and calling the right event
 	 * handlers.
 	 */
-	private EventDispatcher eventEngine;
+	private EventDispatcher eventDispatcher;
 
 	/**
 	 * Store frequently used pens here... so that you can ask the toolkit for them instead of creating them
@@ -468,8 +475,8 @@ public class PaperToolkit {
 			initializeLookAndFeel();
 		}
 
-		eventEngine = new EventDispatcher();
-		batchServer = new BatchedDataServer(eventEngine);
+		eventDispatcher = new EventDispatcher();
+		batchServer = new BatchedDataServer(eventDispatcher);
 
 		// Start the local server up whenever the paper toolkit is initialized.
 		// the either flag can override the other. They will both need to be
@@ -528,7 +535,7 @@ public class PaperToolkit {
 						// Runtime Pattern to Region Binding
 						// adds a listener for trashed events in the Event
 						// Engine
-						eventEngine.addEventHandlerForUnmappedEvents(new StrokeHandler() {
+						eventDispatcher.addEventHandlerForUnmappedEvents(new StrokeHandler() {
 							public void strokeArrived(PenEvent e) {
 								Rectangle2D bounds = getStroke().getBounds();
 								// determine the bounds of the region in
@@ -547,7 +554,7 @@ public class PaperToolkit {
 										new PatternDots(width), new PatternDots(height));
 
 								// unregister myself...
-								eventEngine.removeEventHandlerForUnmappedEvents(this);
+								eventDispatcher.removeEventHandlerForUnmappedEvents(this);
 
 								// DebugUtils.println("Bound the region [" + r.getName() + "] to Pattern "
 								// + bounds);
@@ -593,8 +600,8 @@ public class PaperToolkit {
 	 * 
 	 * @return
 	 */
-	public EventDispatcher getEventEngine() {
-		return eventEngine;
+	public EventDispatcher getEventDispatcher() {
+		return eventDispatcher;
 	}
 
 	/**
@@ -884,13 +891,13 @@ public class PaperToolkit {
 			pen.startLiveMode(); // starts live mode at the pen's default
 			// place
 			if (pen.isLive()) {
-				eventEngine.register(pen);
+				eventDispatcher.register(pen);
 			}
 		}
 
 		// keep track of the pattern assigned to different sheets and regions
 		final Collection<PatternToSheetMapping> patternMappings = paperApp.getPatternMaps();
-		eventEngine.registerPatternMapsForEventHandling(patternMappings);
+		eventDispatcher.registerPatternMapsForEventHandling(patternMappings);
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 
 		// will populate the system tray with a feature for runtime binding of
@@ -932,13 +939,13 @@ public class PaperToolkit {
 		final List<PenInput> pens = paperApp.getPenInputDevices();
 		for (PenInput pen : pens) {
 			if (pen.isLive()) {
-				eventEngine.unregisterPen(pen);
+				eventDispatcher.unregisterPen(pen);
 				// stop the pen from listening!
 				pen.stopLiveMode();
 			}
 		}
 
-		eventEngine.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
+		eventDispatcher.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
 		batchServer.unregisterBatchEventHandlers(paperApp.getBatchEventHandlers());
 
 		// DebugUtils.println("Stopping Application: " + paperApp.getName());
@@ -964,12 +971,5 @@ public class PaperToolkit {
 	 */
 	public void useApplicationManager(boolean flag) {
 		useAppManager = flag;
-	}
-
-	/**
-	 * @return a new application with a unique file name that is based on the current system time.
-	 */
-	public static Application createApplication() {
-		return new Application("Application_" + FileUtils.getCurrentTimeForUseInAFileName());
 	}
 }
