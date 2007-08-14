@@ -17,10 +17,10 @@ import papertoolkit.util.DebugUtils;
 import papertoolkit.util.communications.COMPort;
 import papertoolkit.util.networking.ClientServerType;
 
-
 /**
  * <p>
- * The PenServer also implements a simple filtering to clean up stray penUps that may come from bad pens/pattern.
+ * The PenServer also implements a simple filtering to clean up stray penUps that may come from bad
+ * pens/pattern.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -52,14 +52,15 @@ public class PenServer implements PenListener {
 
 				try {
 					if (serverType == ClientServerType.PLAINTEXT) {
-						log("Waiting for a plain text connection on port " + serverSocket.getLocalPort()
-								+ "...");
+						// log("Waiting for a plain text connection on port " + serverSocket.getLocalPort()
+						// + "...");
 					} else { // serverType == Java Server
-						log("Waiting for a java connection on port " + serverSocket.getLocalPort() + "...");
+						// log("Waiting for a java connection on port " + serverSocket.getLocalPort() +
+						// "...");
 					}
 					s = serverSocket.accept();
-					log("Got a connection on port " + serverSocket.getLocalPort() + "...");
-					log("Client IP Addr is " + s.getRemoteSocketAddress());
+					// log("Got a connection on port " + serverSocket.getLocalPort() + "...");
+					// log("Client IP Addr is " + s.getRemoteSocketAddress());
 				} catch (IOException ioe) {
 					log("Error with server socket: " + ioe.getLocalizedMessage());
 				}
@@ -297,7 +298,7 @@ public class PenServer implements PenListener {
 				sample(s);
 			}
 		});
-		
+
 		// start thread to accept connections
 		new Thread(new ServerThread()).start();
 	}
@@ -317,7 +318,8 @@ public class PenServer implements PenListener {
 	 * @author Ron Yeh
 	 */
 	public void penDown(PenSample s) {
-		if (jitterFilter.happenedTooCloseToLastPenUp() && false) { // HACK: For Samsung Demo..., remove false and fix this!
+		// if (jitterFilter.happenedTooCloseToLastPenUp() && false) { // HACK: For Samsung Demo... remove!
+		if (jitterFilter.happenedTooCloseToLastPenUp()) {
 			DebugUtils.println("Cancelling Last PenUp");
 			jitterFilter.cancelLastPenUp();
 		} else {

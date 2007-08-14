@@ -39,7 +39,7 @@ public class DebugUtils {
 	/**
 	 * Some white space that we can use for padding.
 	 */
-	private static final String WHITESPACE = StringUtils.repeat(" ", 54);
+	private static final String WHITESPACE = StringUtils.repeat(" ", 60);
 
 	/**
 	 * @return the debugPriorityMask
@@ -53,17 +53,6 @@ public class DebugUtils {
 	 */
 	public static boolean isDebugTraceOn() {
 		return debugTraceOn;
-	}
-
-	/**
-	 * @param string
-	 */
-	public static synchronized void print(Object object) {
-		final String s = (object == null) ? "null" : object.toString();
-		if (DebugUtils.debugTraceOn) {
-			printDebugTrace(0);
-		}
-		System.out.print(s);
 	}
 
 	/**
@@ -130,7 +119,15 @@ public class DebugUtils {
 			linkToLineNumber = printDebugTrace(additionalStackOffset);
 		}
 		System.out.print(s);
+		
+		int padding = WHITESPACE.length() - s.length();
+		if (padding < 0) {
+			padding = 0;
+		}
+		System.out.print(WHITESPACE.substring(0, padding));
+
 		System.out.println("\t" + linkToLineNumber);
+		System.out.flush();
 	}
 
 	/**
