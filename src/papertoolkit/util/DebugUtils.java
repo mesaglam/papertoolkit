@@ -36,6 +36,9 @@ public class DebugUtils {
 	 */
 	private static int stackTraceOffset = 3;
 
+	/**
+	 * Some white space that we can use for padding.
+	 */
 	private static final String WHITESPACE = StringUtils.repeat(" ", 54);
 
 	/**
@@ -75,8 +78,8 @@ public class DebugUtils {
 
 		// get the stuff between the parentheses
 		String element = ste[actualOffset].toString();
-		element = element.substring(element.lastIndexOf("("), element.lastIndexOf(")")+1);
-		element = "[" + element + "]";
+		// element = element.substring(element.lastIndexOf("("), element.lastIndexOf(")")+1);
+		element = "[ " + element + " ]";
 		String methodName = ste[actualOffset].getMethodName();
 		final String trace = className + "." + methodName;
 

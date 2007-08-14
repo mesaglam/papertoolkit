@@ -9,7 +9,7 @@ import papertoolkit.events.handlers.HandwritingHandler;
 import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.ink.InkStroke;
@@ -161,7 +161,7 @@ public class CaptureApplication extends Application {
 		final double height = brY - tlY;
 
 		// create this custom mapping object
-		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(sheet);
+		final PatternToSheetMapping mapping = new PatternToSheetMapping(sheet);
 
 		// tie the pattern bounds to this region object
 		mapping.setPatternInformationOfRegion(region, //

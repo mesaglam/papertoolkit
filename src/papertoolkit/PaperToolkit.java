@@ -35,7 +35,7 @@ import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.StrokeHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.RegionID;
 import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
 import papertoolkit.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
@@ -492,7 +492,7 @@ public class PaperToolkit {
 	 * @param mappings
 	 */
 	private void checkPatternMapsForUninitializedRegions(
-			Collection<PatternLocationToSheetLocationMapping> mappings) {
+			Collection<PatternToSheetMapping> mappings) {
 
 		if (trayIcon == null) {
 			DebugUtils
@@ -500,7 +500,7 @@ public class PaperToolkit {
 			return;
 		}
 
-		for (final PatternLocationToSheetLocationMapping map : mappings) {
+		for (final PatternToSheetMapping map : mappings) {
 
 			final MenuItem loadMappingItem = new MenuItem("Load most recent Pattern Mappings");
 			loadMappingItem.addActionListener(getLoadRecentPatternMappingsActionListener(map));
@@ -645,7 +645,7 @@ public class PaperToolkit {
 	 * @return
 	 */
 	private ActionListener getLoadRecentPatternMappingsActionListener(
-			final PatternLocationToSheetLocationMapping map) {
+			final PatternToSheetMapping map) {
 		// add it to the list, so we can invoke them later!
 		final ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent nullActionEvent) {
@@ -891,7 +891,7 @@ public class PaperToolkit {
 		}
 
 		// keep track of the pattern assigned to different sheets and regions
-		final Collection<PatternLocationToSheetLocationMapping> patternMappings = paperApp.getPatternMaps();
+		final Collection<PatternToSheetMapping> patternMappings = paperApp.getPatternMaps();
 		eventEngine.registerPatternMapsForEventHandling(patternMappings);
 		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 

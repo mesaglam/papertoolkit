@@ -10,7 +10,7 @@ import java.util.Map;
 import papertoolkit.events.PenEvent.PenEventModifier;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
-import papertoolkit.pattern.coordinates.PatternLocationToSheetLocationMapping;
+import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
 import papertoolkit.pen.PenInput;
 import papertoolkit.pen.PenSample;
@@ -62,8 +62,8 @@ public class EventDispatcher {
 	 * Lets us figure out which sheets and regions should handle which events. Interacting with this list
 	 * should be as efficient as possible, because many "events" may be thrown per second!
 	 */
-	private List<PatternLocationToSheetLocationMapping> patternToSheetMaps = Collections
-			.synchronizedList(new ArrayList<PatternLocationToSheetLocationMapping>());
+	private List<PatternToSheetMapping> patternToSheetMaps = Collections
+			.synchronizedList(new ArrayList<PatternToSheetMapping>());
 
 	/**
 	 * Keeps track of how many times a pen has been registered. If during an unregister, this count drops to
@@ -214,7 +214,7 @@ public class EventDispatcher {
 
 			// for each sample, we first have to convert it to a location on the sheet.
 			// THEN, we will be able to make more interesting events...
-			for (final PatternLocationToSheetLocationMapping pmap : patternToSheetMaps) {
+			for (final PatternToSheetMapping pmap : patternToSheetMaps) {
 
 				// this is a key step!
 				// the event engine figures out which patterned regions contains
@@ -347,7 +347,7 @@ public class EventDispatcher {
 	 * 
 	 * @param mapping
 	 */
-	public void registerPatternMapForEventHandling(PatternLocationToSheetLocationMapping mapping) {
+	public void registerPatternMapForEventHandling(PatternToSheetMapping mapping) {
 		// DebugUtils.println("Registering A Pattern Location to Sheet Location Map");
 		if (patternToSheetMaps.contains(mapping)) {
 			// DebugUtils.println("EventEngine is already aware of this pattern map.");
@@ -361,7 +361,7 @@ public class EventDispatcher {
 	 * @param patternMaps
 	 */
 	public void registerPatternMapsForEventHandling(
-			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
+			Collection<PatternToSheetMapping> patternMaps) {
 		// DebugUtils.println("Registering the (Pattern Location --> Sheet Location) Maps " + "[" +
 		// patternMaps
 		// + "]");
@@ -398,7 +398,7 @@ public class EventDispatcher {
 	 * @param patternMap
 	 *            forget about this pattern map for this session...
 	 */
-	public void unregisterPatternMapForEventHandling(PatternLocationToSheetLocationMapping patternMap) {
+	public void unregisterPatternMapForEventHandling(PatternToSheetMapping patternMap) {
 		patternToSheetMaps.remove(patternMap);
 	}
 
@@ -408,7 +408,7 @@ public class EventDispatcher {
 	 * @param patternMaps
 	 */
 	public void unregisterPatternMapsForEventHandling(
-			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
+			Collection<PatternToSheetMapping> patternMaps) {
 		patternToSheetMaps.removeAll(patternMaps);
 	}
 

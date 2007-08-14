@@ -43,7 +43,7 @@ import papertoolkit.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PatternLocationToSheetLocationMapping {
+public class PatternToSheetMapping {
 
 	// files end with .patternInfo.xml
 	private static final String[] PATTERN_INFO_EXTENSION_FILTER = new String[] { "patternInfo.xml" };
@@ -69,7 +69,7 @@ public class PatternLocationToSheetLocationMapping {
 	 * 
 	 * @param s
 	 */
-	public PatternLocationToSheetLocationMapping(Sheet s) {
+	public PatternToSheetMapping(Sheet s) {
 		sheet = s;
 		final List<Region> regions = s.getRegions();
 		warnIfThereAreNoRegions(regions);
@@ -83,7 +83,7 @@ public class PatternLocationToSheetLocationMapping {
 	 * @param s
 	 * @param patternInfoFile
 	 */
-	public PatternLocationToSheetLocationMapping(Sheet s, File patternInfoFile) {
+	public PatternToSheetMapping(Sheet s, File patternInfoFile) {
 		sheet = s;
 		final List<Region> regions = s.getRegions();
 		warnIfThereAreNoRegions(regions);
