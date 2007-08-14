@@ -59,9 +59,12 @@ public class PatternToSheetMapping {
 	private Sheet sheet;
 
 	/**
-	 * One mapping object per sheet. Create this object after you have added all the regions that you need to
-	 * the sheet. This class will maintain a mapping of Regions to physical (streaming) and logical (batched)
-	 * pen coordinates.
+	 * One mapping object per sheet. This class will maintain a mapping of regions to physical (streaming) and
+	 * logical (batched) pen coordinates.
+	 * 
+	 * Originally, you had to create this object AFTER you have added all the regions that you need to the
+	 * sheet. We are moving to a model where you can add regions after the fact...
+	 * 
 	 * 
 	 * This constructor will try to load the pattern configuration automatically. If you want to set the
 	 * mapping manually, you will need to load the map with TiledPatternCoordinateConverters so that active
@@ -175,6 +178,8 @@ public class PatternToSheetMapping {
 	}
 
 	/**
+	 * There is one default path where we store pattern mapping files (PaperToolkit/mappings/).
+	 * 
 	 * @param configurationPaths
 	 */
 	private void loadConfigurationFromAutomaticallyDiscoveredXMLFiles() {
@@ -182,13 +187,15 @@ public class PatternToSheetMapping {
 		// if it does, load it automatically...
 		final Set<File> configurationPaths = sheet.getConfigurationPaths();
 		if (configurationPaths.size() == 0) {
-			DebugUtils.println("This Sheet does not have any pattern configuration paths. "
-					+ "Either add one so that we can automatically look for *.patternInfo.xml "
-					+ "files, or add patternInfo files explicitly.");
-			return;
+			// DebugUtils.println("This Sheet does not have any pattern configuration paths. "
+			// + "Either add one so that we can automatically look for *.patternInfo.xml "
+			// + "files, or add patternInfo files explicitly.");
+
+			// look in the default location
+			configurationPaths.add(new File(PaperToolkit.getToolkitRootPath(), "mappings"));
 		}
 
-		DebugUtils.println("This Sheet has configuration paths for *.patternInfo.xml files.");
+		// DebugUtils.println("This Sheet has configuration paths for *.patternInfo.xml files.");
 
 		for (File path : configurationPaths) {
 			// System.out.println(path);
@@ -323,14 +330,16 @@ public class PatternToSheetMapping {
 	}
 
 	/**
+	 * Checks to see if there are regions for this mapping...
+	 * 
 	 * @param regions
 	 */
 	private void warnIfThereAreNoRegions(final List<Region> regions) {
 		// at this point, the sheet has to have regions...
 		// for now, warn, if there are no regions
 		if (regions.size() == 0) {
-			DebugUtils.println("There aren't any regions. Did you perhaps add the "
-					+ "regions _after_ you added the sheet to the application?");
+			// DebugUtils.println("There aren't any regions. Did you perhaps add the "
+			// + "regions _after_ you added the sheet to the application?");
 		}
 	}
 }

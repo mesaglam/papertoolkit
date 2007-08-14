@@ -281,6 +281,9 @@ public class PenServer implements PenListener {
 	 */
 	private ClientServerType serverType;
 
+	/**
+	 * Weed out the spurious PENUP events that some NOKIA SU-1B pens throw...
+	 */
 	private PenJitterFilter jitterFilter;
 
 	/**
@@ -291,7 +294,6 @@ public class PenServer implements PenListener {
 		serverSocket = ss;
 		serverType = type;
 		outputs = new ArrayList<PenServerSender>();
-
 		jitterFilter = new PenJitterFilter(new PenUpCallback() {
 			public void penUp(PenSample s) {
 				penUp = true;
@@ -318,9 +320,7 @@ public class PenServer implements PenListener {
 	 * @author Ron Yeh
 	 */
 	public void penDown(PenSample s) {
-		// if (jitterFilter.happenedTooCloseToLastPenUp() && false) { // HACK: For Samsung Demo... remove!
 		if (jitterFilter.happenedTooCloseToLastPenUp()) {
-			DebugUtils.println("Cancelling Last PenUp");
 			jitterFilter.cancelLastPenUp();
 		} else {
 			penUp = false;
