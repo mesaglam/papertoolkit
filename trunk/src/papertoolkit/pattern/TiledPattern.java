@@ -6,13 +6,12 @@ import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
- * A TiledPatternGenerator can create a TiledPattern object, which allows you to iterate through the
- * object to find the dot pattern.
+ * A TiledPatternGenerator can create a TiledPattern object, which allows you to iterate through the object to
+ * find the dot pattern.
  * </p>
  * <p>
- * This class will also know the physical and logical coordinates of the pattern that it reads in.
- * This allows other classes to determine this information later on, for coordinate transformations,
- * etc.
+ * This class will also know the physical and logical coordinates of the pattern that it reads in. This allows
+ * other classes to determine this information later on, for coordinate transformations, etc.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -24,8 +23,8 @@ import papertoolkit.util.DebugUtils;
 public class TiledPattern {
 
 	/**
-	 * Where to start getting pattern from on the first page. We must ensure that it is a valid
-	 * number. If it is an invalid number, we will just start from the 0th horizontal dot.
+	 * Where to start getting pattern from on the first page. We must ensure that it is a valid number. If it
+	 * is an invalid number, we will just start from the 0th horizontal dot.
 	 */
 	private int initialDotXOffset;
 
@@ -35,8 +34,8 @@ public class TiledPattern {
 	private int initialDotYOffset;
 
 	/**
-	 * Where to start looking. Default to 0, but we should be able to set the offset so that our
-	 * different regions don't have the same pattern.
+	 * Where to start looking. Default to 0, but we should be able to set the offset so that our different
+	 * regions don't have the same pattern.
 	 */
 	private int initialPatternFileNum = 0;
 
@@ -86,8 +85,8 @@ public class TiledPattern {
 	private int numTotalRows;
 
 	/**
-	 * Stores the pattern in strings. One String per row. We use StringBuilder because it is useful
-	 * for reading in the pattern from disk.
+	 * Stores the pattern in strings. One String per row. We use StringBuilder because it is useful for
+	 * reading in the pattern from disk.
 	 */
 	private StringBuilder[] pattern;
 
@@ -102,8 +101,8 @@ public class TiledPattern {
 	private PatternPackage patternPackage;
 
 	/**
-	 * The creator of this object has to calculate exactly how many dots it needs. This class doesn't
-	 * have smarts. It will give you exactly what you ask for.
+	 * The creator of this object has to calculate exactly how many dots it needs. This class doesn't have
+	 * smarts. It will give you exactly what you ask for.
 	 * 
 	 * @param thePatternPackage
 	 * @param initialPatternFileN
@@ -153,7 +152,7 @@ public class TiledPattern {
 		}
 
 		if (advanceToNextPatternPage) {
-			DebugUtils.println("Going to the next Pattern File.");
+			// DebugUtils.println("Going to the next Pattern File.");
 			// move to the next file! because we were out of bounds
 			initialDotXOffset = 0;
 			initialDotYOffset = 0;
@@ -167,8 +166,7 @@ public class TiledPattern {
 				+ numDotsYFromBottomMostTiles; // the bottom row
 
 		// get the origin of the first pattern file
-		patternCoordinateOfOrigin = patternPackage
-				.getPatternCoordinateOfOriginOfFile(initialPatternFileNum);
+		patternCoordinateOfOrigin = patternPackage.getPatternCoordinateOfOriginOfFile(initialPatternFileNum);
 
 		// adjust the x coordinate for the offset
 		patternCoordinateOfOrigin.setX(new PatternDots(patternCoordinateOfOrigin.getXVal()
@@ -177,7 +175,7 @@ public class TiledPattern {
 		patternCoordinateOfOrigin.setY(new PatternDots(patternCoordinateOfOrigin.getYVal()
 				+ initialDotYOffset));
 
-		DebugUtils.println("Origin for this patch of pattern: " + patternCoordinateOfOrigin);
+		// DebugUtils.println("Origin for this patch of pattern: " + patternCoordinateOfOrigin);
 
 		// read in the pattern information
 		loadPattern();
@@ -284,8 +282,8 @@ public class TiledPattern {
 	}
 
 	/**
-	 * Called by the constructor to load in the pattern. Any field set by this method can be safely
-	 * accessed by external classes.
+	 * Called by the constructor to load in the pattern. Any field set by this method can be safely accessed
+	 * by external classes.
 	 */
 	private void loadPattern() {
 		// System.out.println(this);
@@ -340,7 +338,7 @@ public class TiledPattern {
 				}
 
 				// if we are on the rightmost or bottommost tile, we need to use alternate bounds
-				DebugUtils.println("PatternFileNumber: " + patternFileNumber);
+				// DebugUtils.println("PatternFileNumber: " + patternFileNumber);
 				final String[] patternTile = patternPackage.readPatternFromFile(patternFileNumber, //
 						origX, origY, width, height);
 

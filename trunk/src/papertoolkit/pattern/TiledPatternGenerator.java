@@ -9,7 +9,6 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.units.Units;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * Creates arbitrary-sized pattern blocks, assuming you have enough pattern files to supply it with.
@@ -157,7 +156,7 @@ public class TiledPatternGenerator {
 	 * @return
 	 */
 	public TiledPattern getPattern(Units width, Units height) {
-		DebugUtils.println("getPattern Called " + ++numTimesGetPatternCalled + " times...");
+		// DebugUtils.println("getPattern Called " + ++numTimesGetPatternCalled + " times...");
 
 		final long numDotsX = Math.round(width.getValueInPatternDots());
 		final long numDotsY = Math.round(height.getValueInPatternDots());
@@ -192,10 +191,10 @@ public class TiledPatternGenerator {
 		// if we only need one tile....
 		// we would like to stay on the same pattern file if we still have space
 		// calculate this from numDotsXFromRightMostTiles and numDotsYFromBottomMostTiles...
-		DebugUtils.println("NumTilesNeeded: " + numTilesNeededX + ", " + numTilesNeededY);
+		// DebugUtils.println("NumTilesNeeded: " + numTilesNeededX + ", " + numTilesNeededY);
 		if (numTilesNeededX == 1 && numTilesNeededY == 1) {
-			DebugUtils.println("DotsNeeded: x: " + numDotsXFromRightMostTiles + ", y: "
-					+ numDotsYFromBottomMostTiles);
+			// DebugUtils.println("DotsNeeded: x: " + numDotsXFromRightMostTiles + ", y: "
+			// + numDotsYFromBottomMostTiles);
 			// if we WILL exceed the horizontal bounds....
 			if (lastDotUsedX + numDotsXFromRightMostTiles > numPatternColsPerFile) {
 
@@ -208,7 +207,7 @@ public class TiledPatternGenerator {
 			if (lastDotUsedY + numDotsYFromBottomMostTiles > numPatternRowsPerFile) {
 				lastDotUsedY = 0;
 
-				DebugUtils.println("Incrementing Pattern File Number.");
+				// DebugUtils.println("Incrementing Pattern File Number.");
 				// get pattern from a new file!
 				patternFileNumber++;
 			}

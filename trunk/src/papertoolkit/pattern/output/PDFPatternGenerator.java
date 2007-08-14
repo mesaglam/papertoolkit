@@ -15,7 +15,6 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 
-
 /**
  * <p>
  * This sits on top of PatternPackage and/or TiledPattern to create PDFs that can be printed. It uses the
@@ -297,7 +296,7 @@ public class PDFPatternGenerator {
 		int gridXPosition = initX;
 		int gridYPosition = MathUtils.rint(yOrigInPoints * convertPointsToHundredthsOfMM);
 
-		DebugUtils.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " " + gridYPosition);
+		// DebugUtils.println("PDFPatternGenerator: Dot Position is " + gridXPosition + " " + gridYPosition);
 
 		int xJitter = 0;
 		int yJitter = 0;

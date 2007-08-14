@@ -24,7 +24,6 @@ import papertoolkit.util.ArrayUtils;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * The API browser allows you to play with ink methods so that you can learn about them visually. It comprises
@@ -82,7 +81,6 @@ public class InkAPIBrowser {
 		p.startLiveMode();
 	}
 
-	
 	/**
 	 * The Flash GUI tells us to call a series of methods, and then return the results to the GUI...
 	 * Basically, we end up applying a list of methods to the Ink, and get a resulting ink object that we send
@@ -112,8 +110,8 @@ public class InkAPIBrowser {
 			}
 		}
 
-		DebugUtils.println("Original Ink: " + ink.getNumStrokes());
-		DebugUtils.println("New Ink: " + inkResult.getNumStrokes());
+		// DebugUtils.println("Original Ink: " + ink.getNumStrokes());
+		// DebugUtils.println("New Ink: " + inkResult.getNumStrokes());
 
 		// send this ink back to the Flash GUI, to highlight in red!
 		flash.sendMessage("<highlight>" + inkResult.toXMLString(false) + "</highlight>");
@@ -140,7 +138,7 @@ public class InkAPIBrowser {
 		if (currentSynchedFileIndex == synchedFiles.size()) {
 			currentSynchedFileIndex = 0;
 		}
-		DebugUtils.println(getCurrentFile().getName());
+		// DebugUtils.println(getCurrentFile().getName());
 	}
 
 	/**
@@ -151,7 +149,7 @@ public class InkAPIBrowser {
 		if (currentSynchedFileIndex < 0) {
 			currentSynchedFileIndex = synchedFiles.size() - 1;
 		}
-		DebugUtils.println(getCurrentFile().getName());
+		// DebugUtils.println(getCurrentFile().getName());
 	}
 
 	/**
@@ -164,7 +162,7 @@ public class InkAPIBrowser {
 		int countOfInk = 0;
 		List<File> renderedImages = new ArrayList<File>();
 		for (Ink ink : importedInk) {
-			DebugUtils.println(ink.getName());
+			// DebugUtils.println(ink.getName());
 			ink.setName(ink.getName() + countOfInk);
 			File file = ink.renderToJPEGFile();
 			renderedImages.add(file);
@@ -177,7 +175,7 @@ public class InkAPIBrowser {
 				PaperToolkit.getResourceFile("/templates/Preview.html")).toString();
 		StringBuilder sb = new StringBuilder();
 		for (File f : renderedImages) {
-			
+
 			// TODO / XXX: Change this to the actual Desktop's file path
 			sb.append("<img src=\"file:///C|/Documents and Settings/Ron Yeh/Desktop/" + f.getName() + "\"/>");
 		}
@@ -246,7 +244,7 @@ public class InkAPIBrowser {
 		flash.addFlashClientListener(new FlashListener() {
 			public boolean messageReceived(String command) {
 				if (command.equals("apibrowserclient connected")) {
-					DebugUtils.println("Flash Client Connected!");
+					// DebugUtils.println("Flash Client Connected!");
 					sendListOfExposedMethods();
 					return CONSUMED;
 				} else if (command.equals("next")) {

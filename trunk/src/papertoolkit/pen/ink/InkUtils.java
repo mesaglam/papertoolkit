@@ -259,7 +259,7 @@ public class InkUtils {
 			}
 		}
 
-		DebugUtils.println(biggestStroke);
+		// DebugUtils.println(biggestStroke);
 		return biggestStroke;
 	}
 
@@ -278,9 +278,9 @@ public class InkUtils {
 
 		for (InkStroke stroke : strokes) {
 			int numSamples = stroke.getNumSamples();
-			DebugUtils.println(numSamples);
+			// DebugUtils.println(numSamples);
 			if (numSamples > maxNumSamples) {
-				DebugUtils.println("Longest");
+				// DebugUtils.println("Longest");
 				longestStroke = stroke;
 				maxNumSamples = numSamples;
 			}

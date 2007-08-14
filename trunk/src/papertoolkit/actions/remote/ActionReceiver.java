@@ -22,7 +22,6 @@ import papertoolkit.util.networking.ClientServerType;
 
 import com.thoughtworks.xstream.XStream;
 
-
 /**
  * <p>
  * A daemon that sits and waits for actions to come in over the wire. It then invokes those actions. You can
@@ -230,7 +229,6 @@ public class ActionReceiver {
 	 */
 	private Thread getDaemonThread() {
 		return new Thread() {
-
 			public void run() {
 				while (true) {
 					Socket client = null;
@@ -240,8 +238,8 @@ public class ActionReceiver {
 							break;
 						}
 
-						DebugUtils.println("Waiting for a " + serverType + " connection on port ["
-								+ serverPort + "]");
+						// DebugUtils.println("Waiting for a " + serverType + " connection on port ["
+						// + serverPort + "]");
 
 						client = serverSocket.accept();
 
@@ -250,8 +248,8 @@ public class ActionReceiver {
 						final String dnsName = inetAddress.getHostName();
 
 						// we got a connection with the client
-						DebugUtils.println("Got a connection on server port " + serverPort);
-						DebugUtils.println("               from client: " + ipAddr + " :: " + dnsName);
+						// DebugUtils.println("Got a connection on server port " + serverPort);
+						// DebugUtils.println(" from client: " + ipAddr + " :: " + dnsName);
 						if (connectionListener != null) {
 							connectionListener.newConnectionFrom(dnsName, ipAddr);
 						}
@@ -269,11 +267,11 @@ public class ActionReceiver {
 								// .stanford.edu
 								// 128.15.
 								// good enough for us!
-								DebugUtils.println("This is a trusted client. Matched: " + nameOrAddress);
+								// DebugUtils.println("This is a trusted client. Matched: " + nameOrAddress);
 								clientIsOK = true;
 							} else {
-								DebugUtils.println("Did not match our client. Filter [" + nameOrAddress
-										+ "] does not match " + dnsName + " next!");
+								// DebugUtils.println("Did not match our client. Filter [" + nameOrAddress
+								// + "] does not match " + dnsName + " next!");
 							}
 						}
 						if (!clientIsOK) {
@@ -432,8 +430,8 @@ public class ActionReceiver {
 			for (Socket client : clients) {
 				client.close();
 			}
-			DebugUtils.println("ActionReceiver :: " + serverType + " on port " + serverSocket.getLocalPort()
-					+ " is stopping...");
+			// DebugUtils.println("ActionReceiver :: " + serverType + " on port " +
+			// serverSocket.getLocalPort() + " is stopping...");
 			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();

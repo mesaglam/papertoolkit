@@ -49,7 +49,7 @@ public class OpenFileAction implements Action {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		DebugUtils.println("File Opened: " + file.getName());
+		// DebugUtils.println("File Opened: " + file.getName());
 	}
 
 }

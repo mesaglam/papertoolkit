@@ -98,7 +98,7 @@ public class HandwritingRecognitionService {
 
 		while (!serverStarted) {
 			try {
-				DebugUtils.println("Waiting for the server to start up...");
+				// DebugUtils.println("Waiting for the server to start up...");
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();

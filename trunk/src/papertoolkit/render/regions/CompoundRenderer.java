@@ -12,7 +12,6 @@ import papertoolkit.util.DebugUtils;
 import papertoolkit.util.MathUtils;
 import papertoolkit.util.graphics.GraphicsUtils;
 
-
 /**
  * <p>
  * Allows us to build up more complicated regions. Think of it as a Swing JComponent with children.
@@ -63,8 +62,8 @@ public class CompoundRenderer extends RegionRenderer {
 			Coordinates childOffset = compoundRegion.getChildOffset(child);
 			final double xOffsetPts = childOffset.getX().getValueInPoints();
 			final double yOffsetPts = childOffset.getY().getValueInPoints();
-			DebugUtils.println("Rendering Child Region: [" + child.getName()
-					+ "] with Child Offset: " + childOffset);
+			// DebugUtils.println("Rendering Child Region: [" + child.getName()
+			// + "] with Child Offset: " + childOffset);
 			final AffineTransform translated = g2d.getTransform();
 			translated.translate(xOffsetPts, yOffsetPts);
 			g2d.setTransform(translated); // move to the correct offset

@@ -18,7 +18,6 @@ import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.units.coordinates.PercentageCoordinates;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * When you ask the PaperToolkit to run a paper Application, there will be exactly one EventDispatcher
@@ -349,9 +348,9 @@ public class EventDispatcher {
 	 * @param mapping
 	 */
 	public void registerPatternMapForEventHandling(PatternLocationToSheetLocationMapping mapping) {
-		DebugUtils.println("Registering A Pattern Location to Sheet Location Map");
+		// DebugUtils.println("Registering A Pattern Location to Sheet Location Map");
 		if (patternToSheetMaps.contains(mapping)) {
-			DebugUtils.println("EventEngine is already aware of this pattern map.");
+			// DebugUtils.println("EventEngine is already aware of this pattern map.");
 		}
 		patternToSheetMaps.add(mapping);
 	}
@@ -363,10 +362,11 @@ public class EventDispatcher {
 	 */
 	public void registerPatternMapsForEventHandling(
 			Collection<PatternLocationToSheetLocationMapping> patternMaps) {
-		DebugUtils.println("Registering the (Pattern Location --> Sheet Location) Maps " + "[" + patternMaps
-				+ "]");
+		// DebugUtils.println("Registering the (Pattern Location --> Sheet Location) Maps " + "[" +
+		// patternMaps
+		// + "]");
 		patternToSheetMaps.addAll(patternMaps);
-		DebugUtils.println("Registered " + patternMaps.size() + " New Maps");
+		// DebugUtils.println("Registered " + patternMaps.size() + " New Maps");
 	}
 
 	/**
@@ -420,7 +420,7 @@ public class EventDispatcher {
 	public void unregisterPen(PenInput pen) {
 		int newCount = decrementPenRegistrationCount(pen);
 		if (newCount == 0) {
-			DebugUtils.println("Count is at Zero. Let's remove the pen and its listener...");
+//			DebugUtils.println("Count is at Zero. Let's remove the pen and its listener...");
 			PenListener listener = penToListener.get(pen);
 			removePenFromInternalLists(pen, listener);
 		}

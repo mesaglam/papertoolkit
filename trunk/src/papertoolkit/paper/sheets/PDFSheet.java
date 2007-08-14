@@ -14,12 +14,11 @@ import papertoolkit.util.DebugUtils;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
 
-
 /**
  * <p>
- * Create a Sheet that is based on a single page of a PDF file. Since a sheet is one page, if we
- * have a multipage PDF, we can only access one page of it. Later on, we will add support for
- * Bundles to read multipage PDFs.
+ * Create a Sheet that is based on a single page of a PDF file. Since a sheet is one page, if we have a
+ * multipage PDF, we can only access one page of it. Later on, we will add support for Bundles to read
+ * multipage PDFs.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -71,8 +70,8 @@ public class PDFSheet extends Sheet {
 			pageNum = 1;
 		}
 		if (pageNum > numberOfPages) {
-			System.out.println("WARNING: pageNum: " + pageNum
-					+ " is an invalid page. Setting it to " + numberOfPages + ". (PDFSheet.java)");
+			System.out.println("WARNING: pageNum: " + pageNum + " is an invalid page. Setting it to "
+					+ numberOfPages + ". (PDFSheet.java)");
 			pageNum = numberOfPages;
 		}
 
@@ -81,7 +80,7 @@ public class PDFSheet extends Sheet {
 		setSize(new Points(pageSize.width()), new Points(pageSize.height()));
 
 		// hmm... how should we handle rotations?
-		DebugUtils.println("The Rotation of the PDFSheet is: " + pdfReader.getPageRotation(pageNumber));
+		// DebugUtils.println("The Rotation of the PDFSheet is: " + pdfReader.getPageRotation(pageNumber));
 	}
 
 	/**

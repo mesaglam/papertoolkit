@@ -20,7 +20,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import papertoolkit.printing.Printer;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * Enables you to print Postscript files.
@@ -56,9 +55,9 @@ public class PostscriptPrinter extends Printer {
 		final PrintService printService[] = PrintServiceLookup.lookupPrintServices(flavor, pras);
 		// DebugUtils.println("Looking up Default Service");
 		final PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
-		DebugUtils.println("Starting Printing Service UI");
-		final PrintService service = ServiceUI.printDialog(null, 200, 200, printService,
-				defaultService, flavor, pras);
+		// DebugUtils.println("Starting Printing Service UI");
+		final PrintService service = ServiceUI.printDialog(null, 200, 200, printService, defaultService,
+				flavor, pras);
 		if (service != null) {
 			// DebugUtils.println("Creating Print Job");
 			final DocPrintJob job = service.createPrintJob();
@@ -72,7 +71,7 @@ public class PostscriptPrinter extends Printer {
 			final Doc doc = new SimpleDoc(fis, flavor, das);
 
 			try {
-				DebugUtils.println("Printing");
+				// DebugUtils.println("Printing");
 				job.print(doc, pras);
 			} catch (PrintException e) {
 				e.printStackTrace();

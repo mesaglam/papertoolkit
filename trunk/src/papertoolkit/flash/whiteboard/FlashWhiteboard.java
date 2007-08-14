@@ -20,7 +20,6 @@ import papertoolkit.tools.ToolExplorer;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * Opens the Whiteboard Flash/Flex application.
@@ -90,7 +89,6 @@ public class FlashWhiteboard {
 	 */
 	private double rotation = 0;
 
-	
 	/**
 	 * @param portNum
 	 */
@@ -115,8 +113,8 @@ public class FlashWhiteboard {
 		return new FlashListener() {
 			public boolean messageReceived(String command) {
 				if (command.equals("Whiteboard")) {
-					DebugUtils.println("Whiteboard Connected!");
-					DebugUtils.println("Color: " + swatchColor);
+					// DebugUtils.println("Whiteboard Connected!");
+					// DebugUtils.println("Color: " + swatchColor);
 					flash.sendMessage("<swatchColor r='" + swatchColor.getRed() + "' g='"
 							+ swatchColor.getGreen() + "' b='" + swatchColor.getBlue() + "'/>");
 					flash.sendMessage("<inkColor r='" + inkColor.getRed() + "' g='" + inkColor.getGreen()
@@ -126,7 +124,7 @@ public class FlashWhiteboard {
 					flash.sendMessage("<title value='" + title + "'/>");
 
 					for (Pen p : pens) {
-						DebugUtils.println("Adding Pen Listener");
+						// DebugUtils.println("Adding Pen Listener");
 						p.addLivePenListener(new FlashPenListener(flash));
 						p.addLivePenListener(getInkListener());
 					}
@@ -161,9 +159,11 @@ public class FlashWhiteboard {
 				currInkStroke = new InkStroke();
 				currInkStroke.addSample(sample);
 			}
+
 			public void penUp(PenSample sample) {
 				inkWell.addStroke(currInkStroke);
 			}
+
 			public void sample(PenSample sample) {
 				currInkStroke.addSample(sample);
 			}

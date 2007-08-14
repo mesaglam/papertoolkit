@@ -38,7 +38,6 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
-
 /**
  * <p>
  * This class will render a Sheet into a JPEG, PDF, or Java2D graphics context.
@@ -152,7 +151,7 @@ public class SheetRenderer {
 				continue;
 			}
 
-			DebugUtils.println("-------------");
+			// DebugUtils.println("-------------");
 
 			// add the region's offset from the top left corner of the sheet
 			Coordinates regionOffset = sheet.getRegionOffset(r);
@@ -170,7 +169,7 @@ public class SheetRenderer {
 			// need to keep the returned pattern object around
 			final TiledPattern pattern = generator.getPattern(scaledWidth, scaledHeight);
 
-			DebugUtils.println("Rendering Pattern for " + r.getName());
+			// DebugUtils.println("Rendering Pattern for " + r.getName());
 			// render the pattern starting at the region's origin
 			pgen.renderPattern(pattern, // the tiled pattern
 					Units.add(r.getOriginX(), regionOffset.getX()), // origin + offset
@@ -227,13 +226,13 @@ public class SheetRenderer {
 				DebugUtils.println("Null Converter. Is this region not active? " + r);
 				continue;
 			}
-			
+
 			// the tiledPattern encompasses the whole sheet
 			// we set the information of for the converter, by setting the information for the whole pattern,
 			// with a clipping bounds, defined by the region's location relative to
 			// the sheet's upper left corner
-			patternCoordinateConverter.setPatternInformationByReadingItFrom(pgen.getPattern(), regionLocation, r
-					.getWidth(), r.getHeight());
+			patternCoordinateConverter.setPatternInformationByReadingItFrom(pgen.getPattern(),
+					regionLocation, r.getWidth(), r.getHeight());
 		}
 
 		return pgen.getPostscriptPattern();
@@ -260,7 +259,7 @@ public class SheetRenderer {
 			// Weird. g2d.getTransform SHOULD give us a copy....
 			// a real copy
 			final AffineTransform currTransform = new AffineTransform(g2d.getTransform());
-			DebugUtils.println("Rendering " + r.getName());
+			// DebugUtils.println("Rendering " + r.getName());
 			final Coordinates regionOffset = sheet.getRegionOffset(r);
 			final double xOffsetPts = regionOffset.getX().getValueInPoints();
 			final double yOffsetPts = regionOffset.getY().getValueInPoints();
@@ -371,7 +370,7 @@ public class SheetRenderer {
 
 		// should this be moved to regions???
 		if (renderActiveRegionsWithPattern) {
-			DebugUtils.println("Rendering Pattern");
+			// DebugUtils.println("Rendering Pattern");
 			// after rendering everything, we still need to overlay the pattern on top of active
 			// regions; This is only for PDF rendering.
 
@@ -458,7 +457,7 @@ public class SheetRenderer {
 	public void savePatternInformation(File patternInfoFile) {
 		// save the pattern info to disk as a nice XML File! =)
 		patternInformation.saveConfigurationToXML(patternInfoFile);
-		DebugUtils.println("Pattern Information saved to " + patternInfoFile.getAbsolutePath());
+		// DebugUtils.println("Pattern Information saved to " + patternInfoFile.getAbsolutePath());
 	}
 
 	/**

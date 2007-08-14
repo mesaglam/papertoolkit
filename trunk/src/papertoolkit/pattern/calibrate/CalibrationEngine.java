@@ -12,7 +12,6 @@ import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * Aligns two Ink objects to determine the clock offset and parameters for our pattern package.
@@ -122,11 +121,11 @@ public class CalibrationEngine {
 					final double currStreamedY = sSamplesY[j];
 					final double currBatchedY = bSamplesY[j];
 					final double currBatchedX = bSamplesX[j];
-					
-					DebugUtils.println("Streamed: " + currStreamedX + ", " + currStreamedY + " <--> "
-							+ currBatchedX + ", " + currBatchedY + " on page " + bPageAddress
-							+ " with the Pen's Clock" + behindOrAhead + "by " + Math.abs(millisBehind)
-							+ " milliseconds.");
+
+					// DebugUtils.println("Streamed: " + currStreamedX + ", " + currStreamedY + " <--> "
+					// + currBatchedX + ", " + currBatchedY + " on page " + bPageAddress
+					// + " with the Pen's Clock" + behindOrAhead + "by " + Math.abs(millisBehind)
+					// + " milliseconds.");
 
 					// an incremental averaging...
 					numSamples++;
@@ -136,16 +135,16 @@ public class CalibrationEngine {
 
 					final double offsetX = currStreamedX - currBatchedX;
 					final double offsetY = currStreamedY - currBatchedY;
-					
+
 					DebugUtils.println(offsetX + " " + offsetY);
 
 				}
 			}
 		}
 
-		DebugUtils.println("After " + numSamples + " samples, we find that the Pen's Clock is"
-				+ getBehindOrAheadString(avgMillisBehind) + "by " + Math.abs(avgMillisBehind)
-				+ " milliseconds, on average.");
+		// DebugUtils.println("After " + numSamples + " samples, we find that the Pen's Clock is"
+		// + getBehindOrAheadString(avgMillisBehind) + "by " + Math.abs(avgMillisBehind)
+		// + " milliseconds, on average.");
 	}
 
 	/**
