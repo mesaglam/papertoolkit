@@ -15,7 +15,6 @@ import papertoolkit.pen.PenInput;
 import papertoolkit.pen.synch.BatchedEventHandler;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
-import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -126,53 +125,27 @@ public class Application {
 	}
 
 	/**
-	 * When a sheet is added to an application, we will need to determine how the pattern maps to the sheet.
-	 * We will create a PatternLocationToSheetLocationMapping object from this sheet.
-	 * 
-	 * WARNING: The current design REQUIRES you to add the sheet AFTER you have added regions to the sheet.
-	 * This is an unfortunate design (ordering constraints), and should be changed _if possible_.
-	 * 
-	 * Alternatively, we can warn when there is ambiguity in loading patternInfo files.
+	 * When a sheet is added to an application, we will need to determine how pattern coordinates map to the
+	 * sheet's coordinates (i.e., we need a PatternToSheetMapping for this sheet).
 	 * 
 	 * @param sheet
-	 * @deprecated until we can find out a better way to load a patternInfo.xml file
 	 */
 	public void addSheet(Sheet sheet) {
-		// ensure that a mapping object is created
-		final PatternToSheetMapping mapping = sheet
-				.getPatternLocationToSheetLocationMapping();
-		addSheetObjectToInternalList(sheet);
-		registerMappingWithEventEngineDuringRuntime(mapping);
-
-		sheet.setParentApplication(this);
+		addSheet(sheet, sheet.getPatternToSheetMapping());
 	}
 
 	/**
-	 * This method is better than the one argument version, because it makes everything explicit. We MAY
-	 * deprecate the other one at some point.
-	 * 
-	 * @param sheet
-	 * @param patternInfoFile
-	 */
-	public void addSheet(Sheet sheet, File patternInfoFile) {
-		// ensure that a mapping object is created from this file
-		PatternToSheetMapping mapping = sheet
-				.getPatternLocationToSheetLocationMapping(patternInfoFile);
-		addSheetObjectToInternalList(sheet);
-		registerMappingWithEventEngineDuringRuntime(mapping);
-	}
-
-	/**
-	 * This method may be the best of the three, because you explicitly construct the patternToSheetMapping
-	 * (using any method you prefer). Highest flexibility, but possibly inconvenient.
+	 * This method may be better, because you explicitly construct the patternToSheetMapping (using any method
+	 * you prefer). More flexible, but less convenient.
 	 * 
 	 * @param sheet
 	 * @param patternInfoFile
 	 */
 	public void addSheet(Sheet sheet, PatternToSheetMapping patternToSheetMapping) {
-		sheet.setPatternLocationToSheetLocationMapping(patternToSheetMapping);
+		sheet.setPatternToSheetMapping(patternToSheetMapping);
 		addSheetObjectToInternalList(sheet);
 		registerMappingWithEventEngineDuringRuntime(patternToSheetMapping);
+		sheet.setParentApplication(this);
 	}
 
 	/**
@@ -188,6 +161,26 @@ public class Application {
 			// DebugUtils.println("Adding Sheet: " + sheet);
 			sheets.add(sheet);
 		}
+	}
+
+	/**
+	 * Create, add, and return a new sheet...
+	 * 
+	 * @return a new Sheet object with dimensions 8.5 x 11 inches
+	 */
+	public Sheet createSheet() {
+		return createSheet(8.5, 11);
+	}
+
+	/**
+	 * Create, add, and return a new sheet...
+	 * 
+	 * @return a new Sheet object.
+	 */
+	public Sheet createSheet(double widthInches, double heightInches) {
+		final Sheet sheetToAdd = new Sheet(widthInches, heightInches);
+		addSheet(sheetToAdd); // how do we map this sheet to some pattern location?
+		return sheetToAdd;
 	}
 
 	/**
@@ -232,7 +225,7 @@ public class Application {
 	public Collection<PatternToSheetMapping> getPatternMaps() {
 		Collection<PatternToSheetMapping> map = new ArrayList<PatternToSheetMapping>();
 		for (Sheet s : getSheets()) {
-			map.add(s.getPatternLocationToSheetLocationMapping());
+			map.add(s.getPatternToSheetMapping());
 		}
 		return map;
 	}
@@ -282,7 +275,7 @@ public class Application {
 	private void registerMappingWithEventEngineDuringRuntime(PatternToSheetMapping mapping) {
 		if (isRunning) {
 			// tell the already-running event engine to be aware of this new pattern mapping!
-			getHostToolkit().getEventEngine().registerPatternMapForEventHandling(mapping);
+			getHostToolkit().getEventDispatcher().registerPatternMapForEventHandling(mapping);
 		}
 	}
 
@@ -314,8 +307,8 @@ public class Application {
 		// unregister this sheet's mapping information
 		// so that the EventEngine won't dispatch events to this sheet.
 		if (isRunning) {
-			getHostToolkit().getEventEngine().unregisterPatternMapForEventHandling(
-					sheet.getPatternLocationToSheetLocationMapping());
+			getHostToolkit().getEventDispatcher().unregisterPatternMapForEventHandling(
+					sheet.getPatternToSheetMapping());
 		}
 	}
 
@@ -411,14 +404,5 @@ public class Application {
 	 */
 	public String toString() {
 		return name + " Application";
-	}
-
-	/**
-	 * @return
-	 */
-	public Sheet createSheet() {
-		Sheet sheetToAdd = new Sheet(8.5, 11);
-		addSheet(sheetToAdd); // how do we map this sheet to some pattern location?
-		return sheetToAdd;
 	}
 }

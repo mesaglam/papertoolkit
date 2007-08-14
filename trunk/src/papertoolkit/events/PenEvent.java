@@ -18,22 +18,6 @@ import papertoolkit.units.coordinates.StreamedPatternCoordinates;
 public class PenEvent {
 
 	/**
-	 * <p>
-	 * 
-	 * </p>
-	 */
-	public enum PenEventModifier {
-		// a pen down event
-		DOWN,
-
-		// a regular sample event
-		SAMPLE,
-
-		// a pen up event
-		UP
-	}
-
-	/**
 	 * Whether this event should not be processed anymore by handlers deeper in the queue. FALSE by default.
 	 * An Event Handler should set it to be consumed if it is NOT OK for other handlers to deal with this
 	 * event in "parallel."
@@ -68,14 +52,14 @@ public class PenEvent {
 	private PenSample penSample;
 
 	/**
-	 * When was this event generated, in system time (milliseconds).
-	 */
-	private long timestamp;
-
-	/**
 	 * True if the event is dispatched in real-time. False if it is being read from a pen synchronization.
 	 */
 	private boolean realtimeFlag = true;
+
+	/**
+	 * When was this event generated, in system time (milliseconds).
+	 */
+	private long timestamp;
 
 	/**
 	 * @param thePenID
@@ -168,6 +152,13 @@ public class PenEvent {
 	}
 
 	/**
+	 * @return
+	 */
+	public boolean isRealTime() {
+		return realtimeFlag;
+	}
+
+	/**
 	 * @return if this event object represents the pen touching down on the page
 	 */
 	public boolean isTypePenDown() {
@@ -182,9 +173,9 @@ public class PenEvent {
 	}
 
 	/**
-	 * TODO: Change this to an enum?
-	 * 
 	 * @param modifier
+	 *            describes the type of PenEvent (whether the pen just came down, just went up, or is
+	 *            currently tracking
 	 */
 	public void setModifier(PenEventModifier modifier) {
 		eventModifier = modifier;
@@ -222,9 +213,5 @@ public class PenEvent {
 	 */
 	public String toString() {
 		return "PenEvent {Pen " + penID + " (" + penName + ") " + penSample + "}";
-	}
-
-	public boolean isRealTime() {
-		return realtimeFlag;
 	}
 }

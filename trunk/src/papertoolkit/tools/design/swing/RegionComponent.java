@@ -18,7 +18,7 @@ import javax.swing.JComponent;
 
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.PenEvent.PenEventModifier;
+import papertoolkit.events.PenEventModifier;
 import papertoolkit.paper.Region;
 import papertoolkit.pen.PenSample;
 import papertoolkit.units.Percentage;

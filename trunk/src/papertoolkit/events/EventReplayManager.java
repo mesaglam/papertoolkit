@@ -13,7 +13,6 @@ import java.util.List;
 import javax.swing.JFileChooser;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.events.PenEvent.PenEventModifier;
 import papertoolkit.pen.PenSample;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;

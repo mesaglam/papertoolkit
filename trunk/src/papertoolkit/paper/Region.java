@@ -130,7 +130,7 @@ public class Region {
 	private boolean visible = true;
 
 	/**
-	 * For our American friends.
+	 * A convenience funciton, for our American friends. =)
 	 * 
 	 * @param xInches
 	 * @param yInches

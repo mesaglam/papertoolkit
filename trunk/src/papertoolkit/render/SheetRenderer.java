@@ -112,7 +112,7 @@ public class SheetRenderer {
 	 */
 	public SheetRenderer(Sheet s, TiledPatternGenerator patternGenerator) {
 		sheet = s;
-		patternInformation = sheet.getPatternLocationToSheetLocationMapping();
+		patternInformation = sheet.getPatternToSheetMapping();
 		generator = patternGenerator;
 	}
 

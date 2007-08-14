@@ -49,29 +49,32 @@ import papertoolkit.units.coordinates.Coordinates;
  */
 public class Sheet {
 
+	/**
+	 * 
+	 */
 	private static final String INDENT = "   ";
 
 	/**
-	 * Any time we load regions from a configuration file, we will keep track of that path. Later on, we can
-	 * use this information to find other files, such as the .patternInfo.xml files or even the patterned
-	 * ps/pdf file.
+	 * For default sheet names.
 	 */
-	private Set<File> configurationPaths = new HashSet<File>();
+	private static int uniqueID = 0;
 
 	/**
-	 * 
+	 * Sheets can be identified by name. A decent default would be a Sheet_UNIQUEID...
 	 */
-	private String name = "A Sheet";
+	private String name = "Sheet";
 
 	/**
-	 * 
+	 * The app that owns this sheet. Allows traversal up the component hierarchy.
 	 */
 	private Application parentApp;
 
 	/**
-	 * For each sheet, we need to keep the pattern to sheet location map. Each sheet has one mapping object.
-	 * This lets us know, given some physical coordinate, where we are on the sheet (i.e., which regions we
-	 * point to).
+	 * For each sheet, we need to keep the pattern to sheet location mapping. Each sheet has one mapping
+	 * object. This lets us know, given some physical coordinate, where we are on the sheet (i.e., which
+	 * regions we point to).
+	 * 
+	 * In case no one has set this object, we will ensure that it is not null...
 	 */
 	private PatternToSheetMapping patternLocationToSheetLocationMapping;
 
@@ -104,15 +107,6 @@ public class Sheet {
 	}
 
 	/**
-	 * @param width
-	 * @param height
-	 * @param unitsClass
-	 */
-	public Sheet(double width, double height, Units units) {
-		this(units.getUnitsObjectOfSameTypeWithValue(width), units.getUnitsObjectOfSameTypeWithValue(height));
-	}
-
-	/**
 	 * A convenience method for our American friends. =)
 	 * 
 	 * @param widthInches
@@ -123,6 +117,15 @@ public class Sheet {
 	}
 
 	/**
+	 * @param width
+	 * @param height
+	 * @param unitsClass
+	 */
+	public Sheet(double width, double height, Units units) {
+		this(units.getUnitsObjectOfSameTypeWithValue(width), units.getUnitsObjectOfSameTypeWithValue(height));
+	}
+
+	/**
 	 * Choose your own units.
 	 * 
 	 * @param width
@@ -130,17 +133,8 @@ public class Sheet {
 	 */
 	public Sheet(Units w, Units h) {
 		setSize(w, h);
-	}
-
-	/**
-	 * @param configPath
-	 *            a directory that we should be aware of, for automatically loading things such as the
-	 *            patternInfo.xml file.
-	 */
-	public void addConfigurationPath(File configPath) {
-		// register the fact that we loaded a configuration file from this directory
-		configurationPaths.add(configPath);
-		// DebugUtils.println("Configuration Paths: " + configurationPaths);
+		setName("Sheet_" + uniqueID++);
+		patternLocationToSheetLocationMapping = new PatternToSheetMapping(this);
 	}
 
 	/**
@@ -163,7 +157,7 @@ public class Sheet {
 	 */
 	public void addRegion(Region r, PatternDots x, PatternDots y, PatternDots w, PatternDots h) {
 		addRegion(r);
-		getPatternLocationToSheetLocationMapping().setPatternInformationOfRegion(r, x, y, w, h);
+		getPatternToSheetMapping().setPatternInformationOfRegion(r, x, y, w, h);
 	}
 
 	/**
@@ -180,7 +174,7 @@ public class Sheet {
 
 	/**
 	 * This file must be an XStream-serialized RegionConfiguration object. This can be produced by hand,
-	 * programmatically, or by the R3 Acrobat plugin.
+	 * programmatically, or by the PaperToolkit Acrobat plugin.
 	 * 
 	 * @param regionConfigurationFile
 	 *            read in this file and add all the regions to this Sheet.
@@ -202,8 +196,6 @@ public class Sheet {
 		for (Region r : theRegions) {
 			addRegion(r);
 		}
-
-		addConfigurationPath(regionConfigurationFile.getParentFile());
 	}
 
 	/**
@@ -215,10 +207,23 @@ public class Sheet {
 	}
 
 	/**
-	 * @return directories to look in for files like the patterned pdf, patternInfo.xml, or regions.xml files.
+	 * @return a region covering the whole sheet
 	 */
-	public Set<File> getConfigurationPaths() {
-		return configurationPaths;
+	public Region createRegion() {
+		return createRegion(0, 0, getWidth().getValueInInches(), getHeight().getValueInInches());
+	}
+
+	/**
+	 * @param xInches
+	 * @param yInches
+	 * @param wInches
+	 * @param hInches
+	 * @return
+	 */
+	public Region createRegion(double xInches, double yInches, double wInches, double hInches) {
+		Region regionToAdd = new Region("Region_" + regions.size(), 0, 0, wInches, hInches);
+		addRegion(regionToAdd);
+		return regionToAdd;
 	}
 
 	/**
@@ -236,7 +241,8 @@ public class Sheet {
 	}
 
 	/**
-	 * @return the Application object that owns this Sheet.
+	 * @return the Application object that owns this Sheet. Allows us to traverse from the leaf components
+	 *         back up to the main application.
 	 */
 	public Application getParentApplication() {
 		return parentApp;
@@ -246,23 +252,7 @@ public class Sheet {
 	 * @return only one of these per any sheet. This maps the location on the sheet (the region coordinates)
 	 *         to physical pattern coordinates.
 	 */
-	public PatternToSheetMapping getPatternLocationToSheetLocationMapping() {
-		if (patternLocationToSheetLocationMapping == null) {
-			// in case no one has set this object, we will ensure that it is not null...
-			setPatternLocationToSheetLocationMapping(new PatternToSheetMapping(this));
-		}
-		return patternLocationToSheetLocationMapping;
-	}
-
-	/**
-	 * A convenience function for applying a pattern information file (created when the PDF is rendered). Note
-	 * that if a pattern mapping object already exists for this sheet, it will be overwritten by this method!
-	 * 
-	 * @param patternInfoFile
-	 * @return
-	 */
-	public PatternToSheetMapping getPatternLocationToSheetLocationMapping(File patternInfoFile) {
-		setPatternLocationToSheetLocationMapping(new PatternToSheetMapping(this, patternInfoFile));
+	public PatternToSheetMapping getPatternToSheetMapping() {
 		return patternLocationToSheetLocationMapping;
 	}
 
@@ -273,6 +263,24 @@ public class Sheet {
 	 */
 	public Region getRegion(String regionName) {
 		return regionNameToRegionObject.get(regionName);
+	}
+
+	/**
+	 * Where is the region on this sheet? Add the region's internal location, plus the external offset stored
+	 * in this sheet object.
+	 * 
+	 * @param region
+	 * @return
+	 */
+	public Coordinates getRegionLocationRelativeToSheet(Region region) {
+		Coordinates rOffset = getRegionOffset(region);
+		Units offsetX = rOffset.getX();
+		Units offsetY = rOffset.getY();
+
+		Coordinates location = new Coordinates();
+		location.setX(Units.add(offsetX, region.getOriginX()));
+		location.setY(Units.add(offsetY, region.getOriginY()));
+		return location;
 	}
 
 	/**
@@ -298,24 +306,6 @@ public class Sheet {
 			coordinates = regionsAndRelativeLocations.get(region);
 		}
 		return coordinates;
-	}
-
-	/**
-	 * Where is the region on this sheet? Add the region's internal location, plus the external offset stored
-	 * in this sheet object.
-	 * 
-	 * @param region
-	 * @return
-	 */
-	public Coordinates getRegionLocationRelativeToSheet(Region region) {
-		Coordinates rOffset = getRegionOffset(region);
-		Units offsetX = rOffset.getX();
-		Units offsetY = rOffset.getY();
-
-		Coordinates location = new Coordinates();
-		location.setX(Units.add(offsetX, region.getOriginX()));
-		location.setY(Units.add(offsetY, region.getOriginY()));
-		return location;
 	}
 
 	/**
@@ -348,6 +338,7 @@ public class Sheet {
 
 	/**
 	 * @param n
+	 *            the name of this sheet (use it to identify the sheet in external applications)
 	 */
 	public void setName(String n) {
 		name = n;
@@ -368,7 +359,7 @@ public class Sheet {
 	 * You can even create such an object manually (experts only). See the
 	 * PatternLocationToSheetLocationMapping object.
 	 */
-	public void setPatternLocationToSheetLocationMapping(PatternToSheetMapping mapping) {
+	public void setPatternToSheetMapping(PatternToSheetMapping mapping) {
 		patternLocationToSheetLocationMapping = mapping;
 	}
 
@@ -430,15 +421,5 @@ public class Sheet {
 	 */
 	public String toXML() {
 		return PaperToolkit.toXML(this);
-	}
-
-	/**
-	 * @return
-	 */
-	public Region createRegion() {
-		Region regionToAdd = new Region("A Region", 0, 0, getWidth().getValueInInches(), getHeight()
-				.getValueInInches());
-		addRegion(regionToAdd);
-		return regionToAdd;
 	}
 }
