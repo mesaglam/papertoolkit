@@ -24,12 +24,11 @@ import papertoolkit.util.DebugUtils;
 import papertoolkit.util.components.EndlessProgressDialog;
 import papertoolkit.util.networking.ClientServerType;
 
-
 /**
  * <p>
- * A remote synchronous collaborative sketching tool. Each user (A & B) prints out the SAME sheet
- * and runs the SAME application. The only difference is that each have to specify the other user's
- * machine as a destination for their content.
+ * A remote synchronous collaborative sketching tool. Each user (A & B) prints out the SAME sheet and runs the
+ * SAME application. The only difference is that each have to specify the other user's machine as a
+ * destination for their content.
  * 
  * This is Task 2 of the GIGAprints CHI Studies.
  * </p>
@@ -106,7 +105,8 @@ public class BuddySketch extends Application {
 
 		// set up the GIGAprint application
 		buddySketchPUI = new BuddySketchPaperUI(this);
-		addSheet(buddySketchPUI, new File("data/Sketch/BuddySketchUI.patternInfo.xml"));
+		addSheet(buddySketchPUI);
+		// addSheet(buddySketchPUI, new File("data/Sketch/BuddySketchUI.patternInfo.xml")); // OLD WAY
 
 		addLocalPen();
 
@@ -329,9 +329,9 @@ public class BuddySketch extends Application {
 						Ink i = (Ink) msgVal;
 						buddySketchGUI.addBuddyInkToCanvas(i);
 					} else {
-						
+
 					}
-					
+
 					DebugUtils.println("Got a ProcessInformationAction");
 				} else {
 					action.invoke();

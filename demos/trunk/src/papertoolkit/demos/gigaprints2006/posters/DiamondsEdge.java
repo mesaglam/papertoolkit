@@ -13,7 +13,6 @@ import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.ink.InkStroke;
 
-
 /**
  * <p>
  * </p>
@@ -96,8 +95,8 @@ public class DiamondsEdge extends Application {
 			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("EmailArea");
-				Device
-						.doOpenURL("https://mail.google.com/mail/?view=cm&tf=0&fs=1&to=mbernst@stanford.edu%20avir@stanford.edu");
+				Device.doOpenURL("https://mail.google.com/mail/?view=cm&tf=0&fs=1&to="
+						+ "mbernst@stanford.edu%20avir@stanford.edu");
 			}
 		});
 
@@ -112,8 +111,8 @@ public class DiamondsEdge extends Application {
 	}
 
 	/**
-	 * This is an empty initialization method that developers can override if they choose to
-	 * subclass an Application instead of creating an empty App and adding sheets to it.
+	 * This is an empty initialization method that developers can override if they choose to subclass an
+	 * Application instead of creating an empty App and adding sheets to it.
 	 * 
 	 * It is called by the constructor.
 	 */
@@ -129,7 +128,8 @@ public class DiamondsEdge extends Application {
 		// Adding the sheet HAS to go after event handlers are added to the regions
 		// This is poor design and MUST be changed... for usability's sake.
 		// WAIT: This is not true, as Sketch! adds event handlers after adding the sheet. =\
-		addSheet(poster, new File("data/Posters/DiamondsEdge2.patternInfo.xml"));
+		addSheet(poster);
+		// addSheet(poster, new File("data/Posters/DiamondsEdge2.patternInfo.xml"));
 
 		initializeEventHandlers();
 	}

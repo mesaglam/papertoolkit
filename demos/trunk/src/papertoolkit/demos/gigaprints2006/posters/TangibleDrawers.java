@@ -10,7 +10,6 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * </p>
@@ -98,7 +97,8 @@ public class TangibleDrawers extends Application {
 	protected void initializeAfterConstructor() {
 		poster = new PDFSheet(new File("data/Posters/TangibleDrawers.pdf"));
 		poster.addRegions(new File("data/Posters/TangibleDrawers.regions.xml"));
-		addSheet(poster, new File("data/Posters/TangibleDrawers.patternInfo.xml"));
+		addSheet(poster);
+		// addSheet(poster, new File("data/Posters/TangibleDrawers.patternInfo.xml"));
 		initializeEventHandlers();
 	}
 }

@@ -1,7 +1,5 @@
 package papertoolkit.demos.gigaprints2006.blog;
 
-import java.io.File;
-
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
@@ -24,8 +22,6 @@ public class CommentTester extends Application {
 		super("Comment Tester");
 
 		Sheet s = new Sheet(8.5, 11);
-
-		s.addConfigurationPath(new File("."));
 
 		Region r = new Region("CommentTest", 0.5, 0.5, 7.5, 7.5);
 		CommentCollector cc = new CommentCollector(null, 0) {

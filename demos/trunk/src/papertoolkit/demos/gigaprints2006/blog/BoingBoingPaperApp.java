@@ -66,10 +66,7 @@ public class BoingBoingPaperApp extends Application {
 		// For using a PDF in the background instead of a Jpeg
 		// file = new File("data/Blog/bb_blank.pdf");
 		// sheet = new PDFSheet(file);
-
 		sheet = new Sheet(51, 38);
-
-		sheet.addConfigurationPath(new File("./data/Blog/"));
 
 		// Put the background on the sheet
 		File background = new File("data/Blog/bb_blank.jpg");

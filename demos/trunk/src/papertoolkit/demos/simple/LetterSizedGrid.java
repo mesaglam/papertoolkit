@@ -101,8 +101,6 @@ public class LetterSizedGrid extends Application {
 		FlowPaperLayout.layout(sheet, regions, new Coordinates(new Inches(0.5), new Inches(0.5)),
 				new Inches(7.5), new Inches(10), new Inches(0.5), new Inches(0.8));
 
-		// must go before the addSheet for now...
-		sheet.addConfigurationPath(new File("data/Grid/"));
 		addSheet(sheet);
 
 		// Add Two Pens

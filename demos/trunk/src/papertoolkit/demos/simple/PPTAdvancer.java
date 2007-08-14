@@ -91,7 +91,8 @@ public class PPTAdvancer extends Application {
 
 		} else {
 			// this one works with page 13 of the Mead 5x8 notebook...
-			addSheet(s, new File("data/Powerpoint/PPT.patternInfo.xml"));
+			addSheet(s);
+			// addSheet(s, new File("data/Powerpoint/PPT.patternInfo.xml"));
 		}
 
 	}

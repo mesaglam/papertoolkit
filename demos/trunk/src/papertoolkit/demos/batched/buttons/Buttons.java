@@ -1,7 +1,5 @@
 package papertoolkit.demos.batched.buttons;
 
-import java.io.File;
-
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
@@ -10,7 +8,6 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pen.Pen;
 import papertoolkit.util.DebugUtils;
-
 
 /**
  * <p>
@@ -42,7 +39,8 @@ public class Buttons extends Application {
 	 */
 	public Buttons() {
 		super("Buttons");
-		addSheet(getSheet(), new File("data/Batched/Buttons.patternInfo.xml"));
+		addSheet(getSheet());
+		// addSheet(getSheet(), new File("data/Batched/Buttons.patternInfo.xml"));
 		addPenInput(getPen());
 	}
 

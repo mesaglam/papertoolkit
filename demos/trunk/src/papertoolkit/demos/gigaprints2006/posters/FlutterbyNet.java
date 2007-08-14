@@ -10,7 +10,6 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * </p>
@@ -76,8 +75,7 @@ public class FlutterbyNet extends Application {
 	}
 
 	/**
-	 * It's sort of weird we have to recompile in between designing, rendering, and running. Fix
-	 * this.
+	 * It's sort of weird we have to recompile in between designing, rendering, and running. Fix this.
 	 * 
 	 * @see papertoolkit.application.Application#initializeAfterConstructor()
 	 */
@@ -86,10 +84,11 @@ public class FlutterbyNet extends Application {
 		poster.addRegions(new File("data/Posters/FlutterbyNet.regions.xml"));
 
 		initializeEventHandlers();
-		
+
 		DebugUtils.println(poster.getRegionNames());
 		// weird... we need to use the old method once, until we render it... and
 		// then we need to add the patternInfo later... this design should be changed.
-		addSheet(poster, new File("data/Posters/FlutterbyNet.patternInfo.xml"));
+		addSheet(poster);
+		// addSheet(poster, new File("data/Posters/FlutterbyNet.patternInfo.xml"));
 	}
 }

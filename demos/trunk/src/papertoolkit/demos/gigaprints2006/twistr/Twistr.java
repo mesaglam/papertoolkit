@@ -17,11 +17,10 @@ import papertoolkit.devices.Device;
 import papertoolkit.pen.Pen;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
- * A Twistr game with Flickr photos. This is used as the first task in the GIGAprints study. We
- * should log actions to a file, so we can calculate the acquisition times...
+ * A Twistr game with Flickr photos. This is used as the first task in the GIGAprints study. We should log
+ * actions to a file, so we can calculate the acquisition times...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -127,8 +126,7 @@ public class Twistr {
 		PaperToolkit.initializeLookAndFeel();
 
 		// unserialize our TwistrFinal.xml file
-		listOfPhotos = (ArrayList<FlickrPhoto>) PaperToolkit.fromXML(new File(
-				"data/Flickr/TwistrFinal.xml"));
+		listOfPhotos = (ArrayList<FlickrPhoto>) PaperToolkit.fromXML(new File("data/Flickr/TwistrFinal.xml"));
 		numPhotos = listOfPhotos.size();
 		DebugUtils.println(numPhotos + " photos in this game");
 		setupFrame();
@@ -192,8 +190,8 @@ public class Twistr {
 		DebugUtils.println(photo3);
 		DebugUtils.println(photo4);
 
-		display.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(),
-				photo3.getFileLarge(), photo4.getFileLarge());
+		display.placeFourPhotos(photo1.getFileLarge(), photo2.getFileLarge(), photo3.getFileLarge(), photo4
+				.getFileLarge());
 	}
 
 	/**
@@ -255,8 +253,8 @@ public class Twistr {
 		return numTurns;
 	}
 
-	private String[] p1Sounds = new String[] { "sacrebleu.wav", "en-garde.wav", "gitmemore.wav",
-			"sweet.wav", "sorrylove.wav", "vamos.wav" };
+	private String[] p1Sounds = new String[] { "sacrebleu.wav", "en-garde.wav", "gitmemore.wav", "sweet.wav",
+			"sorrylove.wav", "vamos.wav" };
 
 	private String[] p2Sounds = new String[] { "touche.wav", "bon.wav", "bravo.wav", "cool.wav",
 			"gorgeous.wav", "shock.wav", "wabamm.wav" };
@@ -402,7 +400,8 @@ public class Twistr {
 	private void setupApp() {
 		application = new Application("Twistr");
 		TwistrPrint print = new TwistrPrint();
-		application.addSheet(print, new File("data/Flickr/Twistr.patternInfo.xml"));
+		application.addSheet(print);
+		// application.addSheet(print, new File("data/Flickr/Twistr.patternInfo.xml")); // OLD WAY
 
 		print.setParent(this);
 

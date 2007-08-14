@@ -10,7 +10,6 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * </p>
@@ -90,10 +89,11 @@ public class PALette extends Application {
 		poster.addRegions(new File("data/Posters/PALette.regions.xml"));
 
 		initializeEventHandlers();
-		
+
 		DebugUtils.println(poster.getRegionNames());
 		// weird... we need to use the old method once, until we render it... and
 		// then we need to add the patternInfo later... this design should be changed.
-		addSheet(poster, new File("data/Posters/PALette.patternInfo.xml"));
+		addSheet(poster);
+		// addSheet(poster, new File("data/Posters/PALette.patternInfo.xml"));
 	}
 }
