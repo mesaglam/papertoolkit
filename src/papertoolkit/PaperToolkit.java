@@ -491,8 +491,7 @@ public class PaperToolkit {
 	 * 
 	 * @param mappings
 	 */
-	private void checkPatternMapsForUninitializedRegions(
-			Collection<PatternToSheetMapping> mappings) {
+	private void checkPatternMapsForUninitializedRegions(Collection<PatternToSheetMapping> mappings) {
 
 		if (trayIcon == null) {
 			DebugUtils
@@ -644,8 +643,7 @@ public class PaperToolkit {
 	 * @param map
 	 * @return
 	 */
-	private ActionListener getLoadRecentPatternMappingsActionListener(
-			final PatternToSheetMapping map) {
+	private ActionListener getLoadRecentPatternMappingsActionListener(final PatternToSheetMapping map) {
 		// add it to the list, so we can invoke them later!
 		final ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent nullActionEvent) {
@@ -837,7 +835,7 @@ public class PaperToolkit {
 		frequentlyUsedPens.add(new Pen("Local Pen"));
 		if (props.containsKey(REMOTE_PENS_KEY)) {
 			String theProp = props.getProperty(REMOTE_PENS_KEY);
-			DebugUtils.println("Loading Frequently Used Remote Pens from PaperToolkit.xml: " + theProp);
+			// DebugUtils.println("Loading Frequently Used Remote Pens from PaperToolkit.xml: " + theProp);
 			String[] pens = theProp.split(","); // comma delimited
 			for (String pen : pens) {
 				int colonIndex = pen.indexOf(":");
@@ -874,8 +872,8 @@ public class PaperToolkit {
 		// we assume we have decided where each pen server will run
 		// start live mode will connect to that pen server.
 		if (paperApp.getPenInputDevices().size() == 0) {
-			DebugUtils.println(paperApp.getName()
-					+ " does not have any pens! We will add a single streaming pen for you.");
+			// DebugUtils.println(paperApp.getName()
+			// + " does not have any pens! We will add a single streaming pen for you.");
 			final Pen aPen = new Pen();
 			paperApp.addPenInput(aPen);
 		}

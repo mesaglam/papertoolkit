@@ -219,7 +219,7 @@ public class BatchedDataServer {
 	 * @param msg
 	 */
 	private void log(String msg) {
-		System.out.println("Batch Server: " + msg);
+		DebugUtils.printlnWithStackOffset(msg, 1);
 	}
 
 	/**

@@ -133,9 +133,9 @@ public class PenStreamingConnection implements SerialPortEventListener {
 		msg.append("Port " + port + " not found.");
 		DebugUtils.println(msg.toString());
 		System.out.flush();
-		System.err.println("Is JavaCOMM not installed?");
-		System.err.println("Is your Bluetooth Dongle unplugged?");
-		System.err.println("Are connecting to the correct COM port, named ANOTO STREAMING?");
+		
+		
+		System.err.println("Potential Problems: JavaCOMM is not installed OR Your Bluetooth Dongle is unplugged OR A COM port, named ANOTO STREAMING doesn't exist.");
 		return null;
 	}
 

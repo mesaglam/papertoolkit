@@ -172,10 +172,10 @@ public class PatternPackage {
 
 		// DebugUtils.println("There are " + numPatternFiles + " pattern files in " + location);
 		if (numPatternFiles == 0) {
-			DebugUtils.println("This pattern package is not usable.");
+			// DebugUtils.println("This pattern package is not usable.");
 			return;
 		} else {
-			DebugUtils.println("Loading pattern package information.");
+			DebugUtils.println("Loading pattern package information for [" + name + "].");
 		}
 
 		patternFiles = visibleFiles;
