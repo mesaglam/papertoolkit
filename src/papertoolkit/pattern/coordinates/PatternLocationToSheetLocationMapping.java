@@ -22,7 +22,6 @@ import papertoolkit.util.DebugUtils;
 import papertoolkit.util.MathUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * This class stores mappings from regions of pattern (and their coordinates in Anoto space) to Sheets and
@@ -132,9 +131,8 @@ public class PatternLocationToSheetLocationMapping {
 	 * @return the converter that enables you to figure out where on the region a sample falls.
 	 */
 	public PatternCoordinateConverter getPatternBoundsOfRegion(Region r) {
-		DebugUtils.println("Pattern Bounds: " + regionToPatternBounds.size() + " " + r.getName() + " "
-				+ regionToPatternBounds);
-
+		// DebugUtils.println("Pattern Bounds: " + regionToPatternBounds.size() + " " + r.getName() + " "
+		// + regionToPatternBounds);
 		return regionToPatternBounds.get(r);
 	}
 
@@ -197,7 +195,7 @@ public class PatternLocationToSheetLocationMapping {
 			List<File> patternInfoFiles = FileUtils.listVisibleFiles(path, PATTERN_INFO_EXTENSION_FILTER);
 			// System.out.println(patternInfoFiles.size());
 			for (File f : patternInfoFiles) {
-				DebugUtils.println("Trying to automatically load " + f.getName());
+				// DebugUtils.println("Trying to automatically load " + f.getName());
 				loadConfigurationFromXML(f);
 			}
 		}
@@ -221,7 +219,7 @@ public class PatternLocationToSheetLocationMapping {
 
 			// loads the information into our map
 			if (regionIDToPattern.containsKey(xmlKey)) {
-				DebugUtils.println("Loaded Pattern Configuration for " + xmlKey);
+				// DebugUtils.println("Loaded Pattern Configuration for " + xmlKey);
 				regionToPatternBounds.put(r, regionIDToPattern.get(xmlKey));
 			}
 		}

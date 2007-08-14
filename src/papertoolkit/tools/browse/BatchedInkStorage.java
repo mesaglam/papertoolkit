@@ -24,7 +24,7 @@ public class BatchedInkStorage {
 	
 	public static void main(String[] args) {
 		File f = new File(xmlPath);
-		DebugUtils.println(f.getAbsolutePath());
+		// DebugUtils.println(f.getAbsolutePath());
 	}
 	
 }

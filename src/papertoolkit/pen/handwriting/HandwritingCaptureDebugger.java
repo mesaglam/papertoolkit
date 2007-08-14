@@ -105,7 +105,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 			calibrateButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					doClear();
-					DebugUtils.println("Calibrate: Choose Top Left and Bottom Right Corners...");
+					// DebugUtils.println("Calibrate: Choose Top Left and Bottom Right Corners...");
 					app.addCalibrationHandler();
 				}
 			});
@@ -123,7 +123,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 			clearButton = new JButton("Clear");
 			clearButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					DebugUtils.println("Clear!");
+					// DebugUtils.println("Clear!");
 					doClear();
 				}
 
@@ -206,7 +206,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 			saveButton = new JButton("Save");
 			saveButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					DebugUtils.println("Save");
+					// DebugUtils.println("Save");
 					app.saveInkToDisk();
 				}
 			});
@@ -249,7 +249,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 	 * @param topTen
 	 */
 	public void setAlternatives(List<String> topTen) {
-		DebugUtils.println(topTen);
+		// DebugUtils.println(topTen);
 	}
 
 	/**

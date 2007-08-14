@@ -18,7 +18,6 @@ import javax.xml.stream.XMLStreamReader;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.xml.TagType;
 
-
 /**
  * <p>
  * Allows us to parse an Eclipse project's classpath.
@@ -73,8 +72,7 @@ public class EclipseProjectClassPath {
 	 */
 	public EclipseProjectClassPath(File cpFile) {
 		classpathFile = cpFile;
-		
-		DebugUtils.println(classpathFile.getAbsolutePath());
+		// DebugUtils.println(classpathFile.getAbsolutePath());
 	}
 
 	/**
@@ -85,8 +83,8 @@ public class EclipseProjectClassPath {
 	 * @throws FileNotFoundException
 	 * @throws FactoryConfigurationError
 	 */
-	private List<String> parseFile(String pathPrefix, Set<String> srcPaths)
-			throws FileNotFoundException, XMLStreamException {
+	private List<String> parseFile(String pathPrefix, Set<String> srcPaths) throws FileNotFoundException,
+			XMLStreamException {
 		referencePaths = srcPaths;
 		prefix = pathPrefix;
 
@@ -224,8 +222,7 @@ public class EclipseProjectClassPath {
 					break;
 				case CLASSPATHENTRY:
 					// only if eclipse considers this path "included"
-					if (!currentNode.excluding && !currentKind.equals("con")
-							&& !currentKind.equals("var")) {
+					if (!currentNode.excluding && !currentKind.equals("con") && !currentKind.equals("var")) {
 						// if it's a src/ type, we gotta recursively compute the classpath
 						if (currentKind.equals("src")) {
 							if (currentPath.equals("src")) {
@@ -244,8 +241,8 @@ public class EclipseProjectClassPath {
 									referencePaths.add(currentPath);
 									File cpFile = null;
 									try {
-										cpFile = new File(new File(new File(".."), currentPath),
-												".classpath").getCanonicalFile();
+										cpFile = new File(new File(new File(".."), currentPath), ".classpath")
+												.getCanonicalFile();
 									} catch (IOException e1) {
 										e1.printStackTrace();
 									}
@@ -254,8 +251,7 @@ public class EclipseProjectClassPath {
 									try {
 										// get classpaths recursively
 										List<String> referencedClasspaths = new EclipseProjectClassPath(
-												cpFile).parseFile(".." + currentPath + "/",
-												referencePaths);
+												cpFile).parseFile(".." + currentPath + "/", referencePaths);
 										listOfClassPaths.addAll(referencedClasspaths);
 									} catch (FileNotFoundException e) {
 										e.printStackTrace();

@@ -18,7 +18,6 @@ import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.units.PatternDots;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * This paper application demonstrates:
@@ -109,12 +108,11 @@ public class CaptureApplication extends Application {
 			public void penUp(PenSample sample) {
 				if (anchorPointTopLeft == null) {
 					anchorPointTopLeft = sample;
-					DebugUtils.println("Top Left Point is now set to " + anchorPointTopLeft);
+					// DebugUtils.println("Top Left Point is now set to " + anchorPointTopLeft);
 					gui.showTopLeftPointConfirmation();
 				} else if (anchorPointBottomRight == null) {
 					anchorPointBottomRight = sample;
-					DebugUtils
-							.println("Bottom Right Point is now set to " + anchorPointBottomRight);
+					// DebugUtils.println("Bottom Right Point is now set to " + anchorPointBottomRight);
 					gui.showBottomRightPointConfirmation();
 					scaleInkPanelToFit();
 					addOneSheetAndOneRegionForHandwritingCapture();
@@ -141,7 +139,7 @@ public class CaptureApplication extends Application {
 	private void addOneSheetAndOneRegionForHandwritingCapture() {
 		// ask the event engine to remove our sheet and our mappings, if they exist
 		if (mainSheet != null) {
-			DebugUtils.println("Removing old region...");
+			// DebugUtils.println("Removing old region...");
 
 			// remove the sheet from this application
 			removeSheet(mainSheet);
@@ -163,8 +161,7 @@ public class CaptureApplication extends Application {
 		final double height = brY - tlY;
 
 		// create this custom mapping object
-		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(
-				sheet);
+		final PatternLocationToSheetLocationMapping mapping = new PatternLocationToSheetLocationMapping(sheet);
 
 		// tie the pattern bounds to this region object
 		mapping.setPatternInformationOfRegion(region, //
@@ -217,13 +214,12 @@ public class CaptureApplication extends Application {
 	 */
 	public void saveInkToDisk() {
 		File file = new File(System.currentTimeMillis() + "_ink.xml");
-		DebugUtils.println("Saving as: " + file.getAbsolutePath());
+		// DebugUtils.println("Saving as: " + file.getAbsolutePath());
 		inkCollector.saveInkToXMLFile(file);
 	}
 
 	/**
-	 * Fit to WIDTH or HEIGHT, whichever is larger. The defined region should fit "perfectly" in our
-	 * panel.
+	 * Fit to WIDTH or HEIGHT, whichever is larger. The defined region should fit "perfectly" in our panel.
 	 */
 	private void scaleInkPanelToFit() {
 		final double width = anchorPointBottomRight.x - anchorPointTopLeft.x;
@@ -269,7 +265,7 @@ public class CaptureApplication extends Application {
 				lastTimeNewInkArrived = System.currentTimeMillis();
 
 				String text = recognizeHandwriting();
-				DebugUtils.println("Handwritten Content: " + text);
+				// DebugUtils.println("Handwritten Content: " + text);
 				gui.setInfoText(text);
 				// gui.setAlternatives(topTen);
 			}

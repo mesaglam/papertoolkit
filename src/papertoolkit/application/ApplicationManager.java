@@ -42,7 +42,6 @@ import papertoolkit.util.components.EndlessProgressDialog;
 import papertoolkit.util.files.FileUtils;
 import papertoolkit.util.layout.StackedLayout;
 
-
 /**
  * <p>
  * A GUI for running multiple applications, designing sheets, or accessing the tool explorer.
@@ -223,12 +222,12 @@ public class ApplicationManager {
 			exitAppManagerButton = new JButton("Exit App Manager");
 			exitAppManagerButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
-					DebugUtils.println("Stopping all Applications...");
+					// DebugUtils.println("Stopping all Applications...");
 					final Object[] objects = toolkit.getRunningApplications().toArray();
 					for (Object o : objects) {
 						toolkit.stopApplication((Application) o);
 					}
-					DebugUtils.println("Exiting the Paper Toolkit & Application Manager...");
+					// DebugUtils.println("Exiting the Paper Toolkit & Application Manager...");
 					System.exit(0);
 				}
 			});
@@ -408,7 +407,7 @@ public class ApplicationManager {
 							"Please wait while your PDF is generated.");
 					// start rendering
 					selectedApp.renderToPDF(folderToSavePDFs, selectedApp.getName());
-					DebugUtils.println("Done Rendering.");
+					// DebugUtils.println("Done Rendering.");
 
 					// open the folder in explorer! =)
 					try {

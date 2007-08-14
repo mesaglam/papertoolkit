@@ -40,7 +40,7 @@ public class BundleRenderer {
 		int n = 0;
 		for (Sheet s : sheets) {
 			final File destFile = new File(parentPath, fileNameWithoutExtension + "_" + n + ".pdf");
-			DebugUtils.println("Rendering " + destFile);
+//			DebugUtils.println("Rendering " + destFile);
 			final SheetRenderer sr = new SheetRenderer(s, sharedPatternGenerator);
 			sr.renderToPDF(destFile);
 			n++;

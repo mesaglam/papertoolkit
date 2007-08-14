@@ -10,7 +10,6 @@ import papertoolkit.units.Units;
 import papertoolkit.units.coordinates.Coordinates;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * Somewhat similar to Swing's FlowLayout, but it is not a Layout Manager in the sense that it needs to
@@ -132,12 +131,11 @@ public class FlowPaperLayout {
 			relInchesX += currRegionWidthInInches + hPaddingInInches;
 			count++;
 		}
-		
+
 		centerRow(sheet, currentRow, widthOfLayoutAreaInInches, relInchesX);
 
 		// align the last row that we laid out
-
-		DebugUtils.println("Laid out " + count + " items.");
+		// DebugUtils.println("Laid out " + count + " items.");
 	}
 
 	/**
@@ -145,7 +143,8 @@ public class FlowPaperLayout {
 	 * @param currentRow
 	 * @param extraSlackBetweenItems
 	 */
-	private static void centerRow(Sheet sheet, final List<Region> currentRow, double widthOfLayoutAreaInInches, double relInchesX) {
+	private static void centerRow(Sheet sheet, final List<Region> currentRow,
+			double widthOfLayoutAreaInInches, double relInchesX) {
 		final double slackSpace = widthOfLayoutAreaInInches - relInchesX;
 		final int numItemsInThisRow = currentRow.size();
 		final double extraSlackBetweenItems = slackSpace / (numItemsInThisRow - 1);

@@ -14,7 +14,6 @@ import papertoolkit.util.DebugUtils;
 import papertoolkit.util.graphics.ImageCache;
 import papertoolkit.util.graphics.JAIUtils;
 
-
 /**
  * <p>
  * Renders an ImageRegion to a graphics context or PDF file.
@@ -55,14 +54,15 @@ public class ImageRenderer extends RegionRenderer {
 		final double ppi = imgRegion.getPixelsPerInch(); // default is 72
 		final double ppiConversion = 72 / ppi;
 		final double conv = units.getScalarMultipleToConvertTo(new Points());
-		
+
 		// load the image
 		PlanarImage image = ImageCache.loadPlanarImage(file);
 		if (imgRegion.isActive()) {
-			DebugUtils.println("Image an Active Region. Blurring the Image to Increase Contrast w/ Pattern Dots.");
+			// DebugUtils.println("Image an Active Region. Blurring the Image to Increase Contrast w/ Pattern
+			// Dots.");
 			image = JAIUtils.blur(image);
 		}
-		
+
 		final AffineTransform transform = new AffineTransform();
 
 		// System.out.println("Rendering " + imgRegion);
@@ -75,7 +75,7 @@ public class ImageRenderer extends RegionRenderer {
 
 		// resize the image based on its pixelsPerInch
 		transform.scale(ppiConversion, ppiConversion);
-		
+
 		g2d.drawRenderedImage(image, transform);
 	}
 }

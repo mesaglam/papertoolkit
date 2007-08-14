@@ -28,12 +28,11 @@ import papertoolkit.util.WindowUtils;
 import papertoolkit.util.components.ribbons.RibbonPanel;
 import papertoolkit.util.components.ribbons.RibbonToolbar;
 
-
 /**
  * <p>
- * Basically, a JFrame with a scrollable document panel that can render Sheets and Regions. This
- * class is incomplete, but it was inspired by the original GIGAprints designer. It should provide
- * debugging and design options for the designer/developer.
+ * Basically, a JFrame with a scrollable document panel that can render Sheets and Regions. This class is
+ * incomplete, but it was inspired by the original GIGAprints designer. It should provide debugging and design
+ * options for the designer/developer.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -182,8 +181,7 @@ public class Designer {
 			mainFrame.pack();
 			// position the window
 			if (lastWindowX == 0 && lastWindowY == 0) {
-				mainFrame.setLocation(WindowUtils.getWindowOrigin(mainFrame,
-						WindowUtils.DESKTOP_CENTER));
+				mainFrame.setLocation(WindowUtils.getWindowOrigin(mainFrame, WindowUtils.DESKTOP_CENTER));
 			} else {
 				mainFrame.setLocation(lastWindowX, lastWindowY);
 			}
@@ -224,8 +222,7 @@ public class Designer {
 	 */
 	private JScrollPane getScrollableDocumentPanel() {
 		if (scrollPane == null) {
-			scrollPane = new JScrollPane(getDocumentPanel(),
-					ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+			scrollPane = new JScrollPane(getDocumentPanel(), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 			getDocumentPanel().setParentScrollPane(scrollPane);
 			getDocumentPanel().setParentFrame(mainFrame);
@@ -287,7 +284,7 @@ public class Designer {
 				public void windowDeactivated(WindowEvent e) {
 					final Container contentPane = fullScreenFrame.getContentPane();
 					contentPane.removeAll();
-					DebugUtils.println("Window Deactivated... Adding back to the old panel...");
+					// DebugUtils.println("Window Deactivated... Adding back to the old panel...");
 					scrollPane.setViewportView(new JPanel());
 					scrollPane.repaint();
 				}

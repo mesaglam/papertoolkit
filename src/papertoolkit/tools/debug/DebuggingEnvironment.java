@@ -12,7 +12,6 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * To help you visualize the event handlers and otherwise debug the paper UI and application. This class
@@ -50,7 +49,7 @@ public class DebuggingEnvironment {
 	 */
 	private void sendAppLayout() {
 		List<Sheet> sheets = app.getSheets();
-		DebugUtils.println("Number of Sheets: " + sheets.size());
+		// DebugUtils.println("Number of Sheets: " + sheets.size());
 		// assume one sheet for now...
 		StringBuilder msg = new StringBuilder();
 		msg.append("<app>");
@@ -97,7 +96,7 @@ public class DebuggingEnvironment {
 	public void setApp(Application paperApp) {
 		app = paperApp;
 		app.setDebuggingEnvironment(this);
-		DebugUtils.println("Starting to debug " + app);
+		// DebugUtils.println("Starting to debug " + app);
 	}
 
 	/**
@@ -111,7 +110,7 @@ public class DebuggingEnvironment {
 		flash.addFlashClientListener(new FlashListener() {
 			public boolean messageReceived(String command) {
 				if (command.equals("eventvizclient connected")) {
-					DebugUtils.println("Flash Client Connected!");
+					// DebugUtils.println("Flash Client Connected!");
 					sendApplicationLayout();
 					return CONSUMED;
 				} else if (command.equals("load most recent pattern mappings")) {

@@ -22,7 +22,6 @@ import papertoolkit.util.graphics.GraphicsUtils;
 import papertoolkit.util.graphics.ImageUtils;
 import papertoolkit.util.graphics.JAIUtils;
 
-
 /**
  * <p>
  * Renders Ink to a Graphics2D or PDF.
@@ -97,13 +96,14 @@ public class InkRenderer {
 		renderToG2D(graphics2D);
 		graphics2D.dispose();
 		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destJPEGFile);
-		DebugUtils.println("Wrote the File");
+		// DebugUtils.println("Wrote the File");
 	}
 
 	/**
 	 * Looks very similar to SheetRenderer's. TODO: Can we integrate this?
 	 */
-	public void renderToJPEG(File destJPEGFile, PixelsPerInch resolutionPixelsPerInch, Units width, Units height) {
+	public void renderToJPEG(File destJPEGFile, PixelsPerInch resolutionPixelsPerInch, Units width,
+			Units height) {
 		Pixels pixels = new Pixels(1, resolutionPixelsPerInch);
 		final double scale = Points.ONE.getScalarMultipleToConvertTo(pixels);
 
@@ -128,7 +128,7 @@ public class InkRenderer {
 		renderToG2D(graphics2D);
 		graphics2D.dispose();
 		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destJPEGFile);
-		DebugUtils.println("Wrote the File");
+		// DebugUtils.println("Wrote the File");
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class InkRenderer {
 		renderToG2D(graphics2D);
 		graphics2D.dispose();
 		ImageUtils.writeImageToJPEG(image.getAsBufferedImage(), destFile);
-		DebugUtils.println("Wrote the File");
+		// DebugUtils.println("Wrote the File");
 	}
 
 	/**

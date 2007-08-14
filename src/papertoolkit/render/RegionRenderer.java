@@ -16,7 +16,6 @@ import papertoolkit.util.DebugUtils;
 import papertoolkit.util.MathUtils;
 import papertoolkit.util.StringUtils;
 
-
 /**
  * <p>
  * Renders a Region to a graphics context.
@@ -72,8 +71,7 @@ public class RegionRenderer {
 	 * @return whether or not the debug flag is set to TRUE
 	 */
 	private static boolean readDebugFlagFromConfigFile() {
-		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME,
-				CONFIG_FILE_KEY);
+		final String property = Configuration.getPropertyFromConfigFile(PROPERTY_NAME, CONFIG_FILE_KEY);
 		final boolean debug = Boolean.parseBoolean(property);
 		return debug;
 	}
@@ -89,8 +87,8 @@ public class RegionRenderer {
 
 	/**
 	 * @param g2d
-	 *            Draw some boxes to the Graphics context to show where the regions lie. Normally, a
-	 *            subclass would want to override this and NOT call the super.renderToG2D(...)
+	 *            Draw some boxes to the Graphics context to show where the regions lie. Normally, a subclass
+	 *            would want to override this and NOT call the super.renderToG2D(...)
 	 */
 	public void renderToG2D(Graphics2D g2d) {
 		final Rectangle2D b = region.getUnscaledBounds2D();
@@ -122,21 +120,21 @@ public class RegionRenderer {
 		// should we render the fill of this region?
 		if (opacity > 0) {
 			Color fillColor = region.getFillColor();
-			g2d.setColor(new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(),
-					MathUtils.rint(opacity * 255)));
+			g2d.setColor(new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), MathUtils
+					.rint(opacity * 255)));
 			g2d.fillRect(finalX, finalY, finalW, finalH);
 		}
 
 		if (DEBUG_REGIONS) { // draw some debug text and fill in the region
-			DebugUtils.println("Debugging regions in renderToG2D(...)");
+			// DebugUtils.println("Debugging regions in renderToG2D(...)");
 			g2d.setFont(FONT);
 			g2d.setColor(REGION_COLOR);
 			g2d.fillRect(finalX, finalY, finalW, finalH);
 			g2d.setColor(TEXT_COLOR);
 			final String regionString = region.toString();
 
-			final Rectangle2D stringBounds = FONT.getStringBounds(regionString,
-					new FontRenderContext(null, true, true));
+			final Rectangle2D stringBounds = FONT.getStringBounds(regionString, new FontRenderContext(null,
+					true, true));
 			final double lineWidth = stringBounds.getWidth();
 			final int lineHeight = MathUtils.rint(stringBounds.getHeight());
 			final int lengthOfString = regionString.length();

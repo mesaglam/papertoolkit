@@ -26,7 +26,6 @@ import papertoolkit.tools.design.util.Regions;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * Interprets a set of pen strokes, and outputs a paper UI xml file.
@@ -55,7 +54,7 @@ public class SketchToPaperUI {
 	 * 
 	 */
 	public SketchToPaperUI(Pen p) {
-		DebugUtils.println("New Sketch To Paper UI");
+		// DebugUtils.println("New Sketch To Paper UI");
 		pen = p;
 
 		// set up the pen, and a pen listener...
@@ -97,7 +96,7 @@ public class SketchToPaperUI {
 	 * 
 	 */
 	public void exit() {
-		DebugUtils.println("Exiting Sketch To Paper UI");
+		// DebugUtils.println("Exiting Sketch To Paper UI");
 		pen.stopLiveMode();
 	}
 

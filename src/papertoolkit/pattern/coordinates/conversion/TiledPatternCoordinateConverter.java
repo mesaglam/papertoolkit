@@ -554,11 +554,11 @@ public class TiledPatternCoordinateConverter implements PatternCoordinateConvert
 		setTileToTileOffsetInDots(p.getNumHorizDotsBetweenTiles(), p.getNumVertDotsBetweenTiles());
 		setTotalSizeInDots(p.getNumTotalColumns(), p.getNumTotalRows());
 
-		DebugUtils.println("");
-		System.out.println("=====================================");
-		System.out.println(p);
-		System.out.println(this);
-		System.out.println("=====================================");
+		// DebugUtils.println("");
+		// System.out.println("=====================================");
+		// System.out.println(p);
+		// System.out.println(this);
+		// System.out.println("=====================================");
 	}
 
 	/**

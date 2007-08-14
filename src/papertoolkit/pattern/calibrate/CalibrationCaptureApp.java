@@ -26,7 +26,6 @@ import papertoolkit.util.MathUtils;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * This class helps us create a mapping between the streamed (physical) coordinates and the batched (logical)
@@ -190,12 +189,12 @@ public class CalibrationCaptureApp {
 					}
 
 					currStreamedInk.addStroke(stroke);
-					DebugUtils.println(currStreamedInk.getNumStrokes() + " strokes collected.");
+					// DebugUtils.println(currStreamedInk.getNumStrokes() + " strokes collected.");
 
 					final double[] samplesX = stroke.getXSamples();
 					final double[] samplesY = stroke.getYSamples();
-					DebugUtils.println("STDEV X: " + MathUtils.standardDeviation(samplesX));
-					DebugUtils.println("STDEV Y: " + MathUtils.standardDeviation(samplesY));
+					// DebugUtils.println("STDEV X: " + MathUtils.standardDeviation(samplesX));
+					// DebugUtils.println("STDEV Y: " + MathUtils.standardDeviation(samplesY));
 				}
 			};
 		}

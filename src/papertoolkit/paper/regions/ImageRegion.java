@@ -14,7 +14,6 @@ import papertoolkit.units.conversion.PixelsPerInch;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.graphics.ImageUtils;
 
-
 /**
  * <p>
  * Represents an Image. You can either initialize it with a File, or with a Java Image type. If you add an
@@ -88,8 +87,8 @@ public class ImageRegion extends Region {
 
 		double ppi = 72;
 
-		DebugUtils.println("AspectImage: " + aspectImage + " AspectBox: " + aspectBox);
-		
+		// DebugUtils.println("AspectImage: " + aspectImage + " AspectBox: " + aspectBox);
+
 		// if aspectImage is larger, that means it is shorter and wider than the bounding box
 		if (aspectImage > aspectBox) {
 			// use the ppi of the width
@@ -101,7 +100,7 @@ public class ImageRegion extends Region {
 			// use the ppi of the height
 			ppi = dimension.height / hInches;
 		}
-		DebugUtils.println("PixelsPerInch: " + ppi);
+		// DebugUtils.println("PixelsPerInch: " + ppi);
 
 		pixelsPerInch = new PixelsPerInch(ppi);
 

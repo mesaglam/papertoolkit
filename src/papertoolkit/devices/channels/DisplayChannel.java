@@ -7,7 +7,6 @@ import papertoolkit.devices.Device;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.graphics.ImageUtils;
 
-
 /**
  * <p>
  * A Local/Remote JFrame and associated Graphics2D object, essentially. Calls to this graphics2D are handled
@@ -63,7 +62,7 @@ public class DisplayChannel {
 	public void displayImage(File imgFile, double maxWidthAsPercentageOfDisplay,
 			double maxHeightAsPercentageOfDisplay, ImageLocation where) {
 		final Dimension dimension = ImageUtils.readSize(imgFile);
-		DebugUtils.println(dimension);
+		// DebugUtils.println(dimension);
 		// do nothing for now....
 	}
 }

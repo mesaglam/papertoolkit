@@ -18,7 +18,6 @@ import papertoolkit.pen.PenSample;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * This class interacts with the EventEngine to simulate real-time input events. The events can be loaded from
@@ -152,7 +151,7 @@ public class EventReplayManager {
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File[] selectedFiles = chooser.getSelectedFiles();
 			for (File f : selectedFiles) {
-				DebugUtils.println("Loading " + f);
+				// DebugUtils.println("Loading " + f);
 				loadEventDataFrom(f);
 			}
 		}
@@ -170,7 +169,7 @@ public class EventReplayManager {
 				PenEvent event = createEventFromString(inputLine);
 				loadedEvents.add(event);
 			}
-			DebugUtils.println("Loaded " + loadedEvents.size() + " events.");
+			// DebugUtils.println("Loaded " + loadedEvents.size() + " events.");
 			br.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -242,7 +241,7 @@ public class EventReplayManager {
 
 					lastTimeStamp = event.getTimestamp();
 				}
-				DebugUtils.println("Done. Replayed " + events.size() + " Events");
+				// DebugUtils.println("Done. Replayed " + events.size() + " Events");
 			}
 		}).start();
 	}

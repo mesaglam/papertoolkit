@@ -17,7 +17,6 @@ import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * The R3 approach suggests that you create Application objects to wrap your entire paper + digital
@@ -184,9 +183,9 @@ public class Application {
 	 */
 	private void addSheetObjectToInternalList(Sheet sheet) {
 		if (sheets.contains(sheet)) {
-			DebugUtils.println("Already added this sheet: " + sheet);
+			// DebugUtils.println("Already added this sheet: " + sheet);
 		} else {
-			DebugUtils.println("Adding Sheet: " + sheet);
+			// DebugUtils.println("Adding Sheet: " + sheet);
 			sheets.add(sheet);
 		}
 	}
@@ -347,14 +346,14 @@ public class Application {
 	 */
 	public void renderToPDF(File parentDirectory, String fileNameWithoutExtension) {
 		if (sheets.size() == 1) {
-			DebugUtils.println("Rendering PDF...");
+			// DebugUtils.println("Rendering PDF...");
 			final Sheet sheet = sheets.get(0);
 			final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + ".pdf");
 			System.out.println("Rendering: " + destPDFFile.getAbsolutePath());
 			final SheetRenderer renderer = sheet.getRenderer();
 			renderer.renderToPDF(destPDFFile);
 		} else {
-			DebugUtils.println("Rendering PDFs...");
+			// DebugUtils.println("Rendering PDFs...");
 			for (int i = 0; i < sheets.size(); i++) {
 				final Sheet sheet = sheets.get(i);
 				final File destPDFFile = new File(parentDirectory, fileNameWithoutExtension + "_Sheet_" + i

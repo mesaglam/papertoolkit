@@ -19,7 +19,6 @@ import papertoolkit.devices.channels.DisplayChannel;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.networking.ClientServerType;
 
-
 /**
  * <p>
  * Applications can also include devices, which can supply input and receive output. Since devices may not be
@@ -245,10 +244,10 @@ public class Device {
 	 */
 	public boolean isAlive() {
 		try {
-			DebugUtils.println("Checking if Device is Alive and Reachable...");
+			// DebugUtils.println("Checking if Device is Alive and Reachable...");
 			final InetAddress address = InetAddress.getByName(hostNameOrIPAddr);
-			DebugUtils.println("Device Hostname: " + address.getHostName());
-			DebugUtils.println("Device Address: " + address.getHostAddress());
+			// DebugUtils.println("Device Hostname: " + address.getHostName());
+			// DebugUtils.println("Device Address: " + address.getHostAddress());
 			return true;
 		} catch (UnknownHostException e) {
 			DebugUtils.println(e);
