@@ -470,7 +470,7 @@
 		<application_info name="char-width" value="14"/>
 		<application_info name="char-height" value="21"/>
 		<application_info name="paper_category" value="fieldtools::R3"/>
-		<application_info name="service" value="fieldtools::ButterflyNet"/>
+		<application_info name="service" value="fieldtools::R3"/>
 		<application_info name="pattern_page_type" value="unique"/>
 		<page address="48.0.12.0">
 			<layout image="LSS 2-48.0.12.0.png" width="455" height="677">

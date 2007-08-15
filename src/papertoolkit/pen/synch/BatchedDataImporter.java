@@ -14,6 +14,7 @@ import java.lang.reflect.Modifier;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,17 +26,16 @@ import papertoolkit.util.SystemUtils;
 import papertoolkit.util.classpath.EclipseProjectClassLoader;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
- * The batched importer will be called by the pen importer (.NET code) every time you synchronize
- * the pen. It sends the information to the BatchServer, which will notify any running applications.
+ * The batched importer will be called by the pen importer (.NET code) every time you synchronize the pen. It
+ * sends the information to the BatchServer, which will notify any running applications.
  * 
- * TODO: In the future, applications do not need to be running all the time. They will be notified
- * of new data upon booting.
+ * TODO: In the future, applications do not need to be running all the time. They will be notified of new data
+ * upon booting.
  * 
- * This class is launched by PaperToolkit\penSynch\bin\BatchImporter.exe. It creates a log file in
- * the same directory, that you can tail using an app such as BareTail.
+ * This class is launched by PaperToolkit\penSynch\bin\BatchImporter.exe. It creates a log file in the same
+ * directory, that you can tail using an app such as BareTail.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -57,11 +57,13 @@ public class BatchedDataImporter {
 	public BatchedDataImporter(String[] args) {
 		try {
 			// redirect system output to a log file
-			System.setOut(new PrintStream(new FileOutputStream(new File(PaperToolkit
-					.getToolkitRootPath(), "penSynch/bin/BatchImporter.log"))));
+			System.setOut(new PrintStream(new FileOutputStream(new File(PaperToolkit.getToolkitRootPath(),
+					"penSynch/bin/BatchImporter.log"))));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		DebugUtils.println("Current Time is: " + new Date());
 
 		if (DEBUG) {
 			JOptionPane.showMessageDialog(null, "Batched Pen Data saved to penSynch/Data/XML/."
@@ -97,13 +99,11 @@ public class BatchedDataImporter {
 				// action
 				DebugUtils.println("Running JAR: " + fileName);
 				SystemUtils.runJar(f, new String[] { '"' + new File(
-						"penSynch/RegisteredBatchedMonitors/Examples/Example.txt")
-						.getAbsolutePath() + '"' });
+						"penSynch/RegisteredBatchedMonitors/Examples/Example.txt").getAbsolutePath() + '"' });
 			} else if (fileName.endsWith(".bat") || fileName.endsWith(".exe")) {
 				DebugUtils.println("Running BAT/EXE: " + fileName);
 				SystemUtils.run(f, new String[] { '"' + new File(
-						"penSynch/RegisteredBatchedMonitors/Examples/Example.txt")
-						.getAbsolutePath() + '"' });
+						"penSynch/RegisteredBatchedMonitors/Examples/Example.txt").getAbsolutePath() + '"' });
 			} else if (fileName.endsWith(".monitor")) {
 				DebugUtils.println("Running Monitor: " + f.getAbsolutePath());
 				runMonitorFromConfigFile(f, args);
@@ -129,14 +129,13 @@ public class BatchedDataImporter {
 			// open a socket connection to the batch importer / event handler
 			// if an app is running, it will handle the incoming batched ink...
 			// if not, this will simply throw an exception and fall through...
-			final Socket socket = new Socket("localhost", BatchedDataServer.DEFAULT_PLAINTEXT_PORT);
-			final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket
-					.getOutputStream()));
+			final Socket socket = new Socket("localhost", BatchedDataDispatcher.DEFAULT_PLAINTEXT_PORT);
+			final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 			// send over the xml file! =)
-			bw.write("XML: " + args[0] + SystemUtils.LINE_SEPARATOR); // the
-			// path!
-			bw.write(BatchedDataServer.EXIT_COMMAND + SystemUtils.LINE_SEPARATOR);
+			// the path!
+			bw.write("XML: " + args[0] + SystemUtils.LINE_SEPARATOR);
+			bw.write(BatchedDataDispatcher.EXIT_COMMAND + SystemUtils.LINE_SEPARATOR);
 			bw.flush();
 			bw.close();
 
@@ -144,7 +143,7 @@ public class BatchedDataImporter {
 			socket.close();
 		} catch (ConnectException e) {
 			DebugUtils.println("No Batched Importer is Currently Listening to Port: "
-					+ BatchedDataServer.DEFAULT_PLAINTEXT_PORT);
+					+ BatchedDataDispatcher.DEFAULT_PLAINTEXT_PORT);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			DebugUtils.println(e.getLocalizedMessage());
@@ -158,8 +157,8 @@ public class BatchedDataImporter {
 	}
 
 	/**
-	 * Adds a monitor into the configuration file. This monitor will be run every time a digital pen
-	 * is docked.
+	 * Adds a monitor into the configuration file. This monitor will be run every time a digital pen is
+	 * docked.
 	 */
 	public static void registerMonitor(BatchedDataImportMonitor monitor) {
 		DebugUtils.println("Registering " + monitor.getName());
@@ -201,8 +200,8 @@ public class BatchedDataImporter {
 	}
 
 	/**
-	 * Reads in the file, figures out which directory our monitor resides in, and runs it, with the
-	 * correct classpath!
+	 * Reads in the file, figures out which directory our monitor resides in, and runs it, with the correct
+	 * classpath!
 	 * 
 	 * @param monitorConfigFile
 	 *            the *.monitor configuration file, in Java Properties (non-xml) format.
@@ -224,10 +223,10 @@ public class BatchedDataImporter {
 			if (resolvedProjectDirectory.exists()) {
 				// assume it's absolute, do nothing
 			} else {
-				resolvedProjectDirectory = new File(PaperToolkit.getToolkitRootPath(), eclipseProjectDirectory);
+				resolvedProjectDirectory = new File(PaperToolkit.getToolkitRootPath(),
+						eclipseProjectDirectory);
 			}
-			
-			
+
 			EclipseProjectClassLoader eclipesProjectClassLoader = new EclipseProjectClassLoader(
 					resolvedProjectDirectory);
 			try {
@@ -235,8 +234,7 @@ public class BatchedDataImporter {
 				Method m = classObj.getMethod("main", new Class[] { args.getClass() });
 				m.setAccessible(true);
 				int mods = m.getModifiers();
-				if (m.getReturnType() != void.class || !Modifier.isStatic(mods)
-						|| !Modifier.isPublic(mods)) {
+				if (m.getReturnType() != void.class || !Modifier.isStatic(mods) || !Modifier.isPublic(mods)) {
 					throw new NoSuchMethodException("main");
 				}
 				// call the main class

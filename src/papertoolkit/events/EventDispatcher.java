@@ -102,20 +102,6 @@ public class EventDispatcher {
 	}
 
 	/**
-	 * Creates a new PenEvent from the Pen Name and Identifier.
-	 * 
-	 * TODO: Should the time be gotten from the sample instead?
-	 * 
-	 * @param sample
-	 * @return
-	 */
-	private PenEvent createPenEvent(String penName, int penID, PenSample sample) {
-		// make an event object so that someone can send it to the right event handler
-		final PenEvent event = new PenEvent(penID, penName, System.currentTimeMillis(), sample);
-		return event;
-	}
-
-	/**
 	 * @param pen
 	 * @return the registration count AFTER the decrement.
 	 */
@@ -137,28 +123,23 @@ public class EventDispatcher {
 
 	/**
 	 * @param penInputDevice
-	 * @return a pen listener that will report data to this event engine. The engine will then package the
-	 *         data and report it to all event handlers (read: interactors) that are interested in this data.
+	 * @return a pen listener that will report data to this event dispatcher. The engine will then package the
+	 *         data and report it to all event handlers that are interested in this data.
 	 */
 	private PenListener getNewPenListener(final PenInput penInputDevice) {
 		pensCurrentlyMonitoring.add(penInputDevice);
 
-		// properties of the pen
+		/**
+		 * properties of the pen
+		 */
 		final int penID = pensCurrentlyMonitoring.indexOf(penInputDevice);
 		final String penName = penInputDevice.getName();
 
+		// TODO: Should the time be gotten from the sample instead? This may have impact if we are processing Batched data...
+		// See the three calls to System.currentTimeMillis() below...
 		return new PenListener() {
-
-			/**
-			 * @see papertoolkit.pen.streaming.listeners.PenListener#penDown(papertoolkit.pen.PenSample)
-			 */
 			public void penDown(PenSample sample) {
-				final PenEvent event = createPenEvent(penName, penID, sample);
-				event.setModifier(PenEventModifier.DOWN);
-
-				// a pendown generated through a real pen listener should be saved
-				// so that future sessions can replay the stream of events
-				handlePenEvent(event);
+				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample, PenEventType.DOWN, true));
 			}
 
 			/**
@@ -168,21 +149,11 @@ public class EventDispatcher {
 			 * @see papertoolkit.pen.streaming.listeners.PenListener#penUp(papertoolkit.pen.PenSample)
 			 */
 			public void penUp(PenSample sample) {
-				final PenEvent event = createPenEvent(penName, penID, sample);
-				event.setModifier(PenEventModifier.UP);
-
-				// save the pen up also!
-				// do this before setting the location
-				// the location will be determined later, when the event is resent
-				handlePenUpEvent(event);
+				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample, PenEventType.UP, true));
 			}
 
-			/**
-			 * @see papertoolkit.pen.streaming.listeners.PenListener#sample(papertoolkit.pen.PenSample)
-			 */
 			public void sample(PenSample sample) {
-				final PenEvent event = createPenEvent(penName, penID, sample);
-				handlePenEvent(event);
+				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample, PenEventType.SAMPLE, true));
 			}
 		};
 	}
@@ -199,11 +170,23 @@ public class EventDispatcher {
 	 * @param penEvent
 	 */
 	public void handlePenEvent(PenEvent penEvent) {
+
+		// handle Pen UP events differently...
+		// as pen up objects don't actually have a location
+		if (penEvent.isTypePenUp()) {
+			penEvent.setPercentageLocation(lastKnownLocation);
+			for (EventHandler h : mostRecentEventHandlers) {
+				h.handleEvent(penEvent);
+			}
+			return; // done!
+		}
+
+		// handle Pen DOWN and Pen SAMPLE events here...
+
 		// System.out.println("Dispatching Event for pen #" + penID + " " + sample);
 		mostRecentEventHandlers.clear();
 
 		synchronized (patternToSheetMaps) {
-
 			boolean eventHandledAtLeastOnce = false;
 
 			// for each sample, we first have to convert it to a location on the sheet.
@@ -294,18 +277,6 @@ public class EventDispatcher {
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * Send the penUp to the event handlers...
-	 * 
-	 * @param event
-	 */
-	public void handlePenUpEvent(PenEvent event) {
-		event.setPercentageLocation(lastKnownLocation);
-		for (EventHandler h : mostRecentEventHandlers) {
-			h.handleEvent(event);
 		}
 	}
 

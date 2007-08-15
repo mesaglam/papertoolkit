@@ -43,7 +43,7 @@ import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenInput;
 import papertoolkit.pen.handwriting.HandwritingRecognitionService;
 import papertoolkit.pen.streaming.PenServerTrayApp;
-import papertoolkit.pen.synch.BatchedDataServer;
+import papertoolkit.pen.synch.BatchedDataDispatcher;
 import papertoolkit.tools.ToolExplorer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
@@ -123,28 +123,17 @@ public class PaperToolkit {
 	public static final File PATTERN_PATH = getPatternPath();
 
 	/**
-	 * 
+	 * A key for the configuration file.
 	 */
 	private static final String REMOTE_PENS_KEY = "remotePens";
 
 	/**
-	 * 
+	 * The instance that is created when you use the convenience functions.
 	 */
 	private static PaperToolkit toolkitInstance;
 
 	/**
-	 * The version of the PaperToolkit. Not that it really means anything. =)
-	 * 
-	 * <p>
-	 * Version 0.4 was tagged on April 5, 2007. <br>
-	 * Version 0.5 will include refactoring based on our findings for UIST. <br>
-	 * Future Versions should include:
-	 * <ul>
-	 * <li>Better Batched Event Support</li>
-	 * <li>Better Debugging Tools</li>
-	 * <li>Flash Integration</li>
-	 * </ul>
-	 * </p>
+	 * The version of PaperToolkit.
 	 */
 	private static String versionString = "0.6";
 
@@ -407,7 +396,7 @@ public class PaperToolkit {
 	/**
 	 * Processes batched ink.
 	 */
-	private BatchedDataServer batchServer;
+	private BatchedDataDispatcher batchedDataDispatcher;
 
 	/**
 	 * The engine that processes all pen events, producing the correct outputs and calling the right event
@@ -486,7 +475,7 @@ public class PaperToolkit {
 		}
 
 		eventDispatcher = new EventDispatcher();
-		batchServer = new BatchedDataServer(eventDispatcher);
+		batchedDataDispatcher = new BatchedDataDispatcher(eventDispatcher);
 
 		// Start the local server up whenever the paper toolkit is initialized.
 		// the either flag can override the other. They will both need to be
@@ -907,7 +896,6 @@ public class PaperToolkit {
 		// keep track of the pattern assigned to different sheets and regions
 		final Collection<PatternToSheetMapping> patternMappings = paperApp.getPatternMaps();
 		eventDispatcher.registerPatternMapsForEventHandling(patternMappings);
-		batchServer.registerBatchEventHandlers(paperApp.getBatchEventHandlers());
 
 		// will populate the system tray with a feature for runtime binding of
 		// regions... =)
@@ -955,7 +943,6 @@ public class PaperToolkit {
 		}
 
 		eventDispatcher.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
-		batchServer.unregisterBatchEventHandlers(paperApp.getBatchEventHandlers());
 
 		// DebugUtils.println("Stopping Application: " + paperApp.getName());
 		runningApplications.remove(paperApp);

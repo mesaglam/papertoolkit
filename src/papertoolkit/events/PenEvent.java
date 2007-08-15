@@ -30,7 +30,7 @@ public class PenEvent {
 	/**
 	 * Was it a pen up or down, or just a regular sample? Regular Sample --> 0 (the default)
 	 */
-	private PenEventModifier eventModifier = PenEventModifier.SAMPLE;
+	private PenEventType eventType = PenEventType.SAMPLE;
 
 	/**
 	 * Where did the event occur?
@@ -63,16 +63,24 @@ public class PenEvent {
 	private long timestamp;
 
 	/**
+	 * Creates a new PenEvent from the Pen Name and Identifier, etc.
+	 * 
 	 * @param thePenID
 	 * @param thePenName
 	 * @param time
 	 * @param sample
+	 * @param type
+	 *            UP, DOWN, or SAMPLE (most common)
+	 * @param isRealtime
+	 *            TRUE if the pen is streaming, FALSE if the pen has just been docked in the cradle
 	 */
-	public PenEvent(int thePenID, String thePenName, long time, PenSample sample) {
+	public PenEvent(int thePenID, String thePenName, long time, PenSample sample, PenEventType type, boolean isRealtime) {
 		penID = thePenID;
 		timestamp = time;
 		penSample = sample;
 		penName = thePenName;
+		eventType = type;
+		realtimeFlag = isRealtime;
 	}
 
 	/**
@@ -141,8 +149,8 @@ public class PenEvent {
 	/**
 	 * @return a flag to let us know what type of event this is... DOWN, SAMPLE, or UP
 	 */
-	public PenEventModifier getType() {
-		return eventModifier;
+	public PenEventType getType() {
+		return eventType;
 	}
 
 	/**
@@ -163,23 +171,21 @@ public class PenEvent {
 	 * @return if this event object represents the pen touching down on the page
 	 */
 	public boolean isTypePenDown() {
-		return eventModifier.equals(PenEventModifier.DOWN);
+		return eventType.equals(PenEventType.DOWN);
 	}
-
+	
 	/**
 	 * @return if this event object represents the pen lifting up from the page
 	 */
 	public boolean isTypePenUp() {
-		return eventModifier.equals(PenEventModifier.UP);
+		return eventType.equals(PenEventType.UP);
 	}
 
 	/**
-	 * @param modifier
-	 *            describes the type of PenEvent (whether the pen just came down, just went up, or is
-	 *            currently tracking
+	 * @param rtFlag
 	 */
-	public void setModifier(PenEventModifier modifier) {
-		eventModifier = modifier;
+	public void setIsRealTime(boolean rtFlag) {
+		realtimeFlag = rtFlag;
 	}
 
 	/**
@@ -205,6 +211,15 @@ public class PenEvent {
 	 */
 	public void setPercentageLocation(PercentageCoordinates location) {
 		locationOnRegion = location;
+	}
+
+	/**
+	 * @param modifier
+	 *            describes the type of PenEvent (whether the pen just came down, just went up, or is
+	 *            currently tracking
+	 */
+	public void setType(PenEventType modifier) {
+		eventType = modifier;
 	}
 
 	/*

@@ -30,7 +30,7 @@ namespace PenMonitor {
             // 
             // closeButton
             // 
-            this.closeButton.Location = new System.Drawing.Point(12, 411);
+            this.closeButton.Location = new System.Drawing.Point(12, 216);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(468, 23);
             this.closeButton.TabIndex = 0;
@@ -44,21 +44,21 @@ namespace PenMonitor {
             this.outputTextBox.Multiline = true;
             this.outputTextBox.Name = "outputTextBox";
             this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.outputTextBox.Size = new System.Drawing.Size(468, 393);
+            this.outputTextBox.Size = new System.Drawing.Size(468, 198);
             this.outputTextBox.TabIndex = 1;
             // 
             // MessageForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(492, 446);
+            this.ClientSize = new System.Drawing.Size(492, 251);
             this.Controls.Add(this.outputTextBox);
             this.Controls.Add(this.closeButton);
             this.Font = new System.Drawing.Font("Trebuchet MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "MessageForm";
-            this.Text = "Pen Monitor";
+            this.Text = "PaperToolkit Pen Monitor";
             this.Load += new System.EventHandler(this.MessageForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

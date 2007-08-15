@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <icon>R3D3.ico</icon>
   <classPath>
-    <mainClass>edu.stanford.hci.r3.pen.synch.BatchedDataImporter</mainClass>
+    <mainClass>papertoolkit.pen.synch.BatchedDataImporter</mainClass>
     <cp>../../bin</cp>
     <cp>../../lib/swingx.jar</cp>
     <cp>../../lib/epsgraphics.jar</cp>

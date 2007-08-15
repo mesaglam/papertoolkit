@@ -18,6 +18,7 @@ namespace PenMonitor {
 
         private void closeButton_Click(object sender, EventArgs e) {
             Close();
+            Application.Exit();
         }
 
         private void MessageForm_Load(object sender, EventArgs e) {
