@@ -162,7 +162,7 @@ public class BatchedDataDispatcher {
 
 			// extract page address
 			final String pageAddress = matcherPageBegin.group(1);
-			DebugUtils.println("Page Address: " + pageAddress);
+			// DebugUtils.println("Page Address: " + pageAddress);
 
 			// save where we got this ink, so we will know later on...
 			final PageAddress address = new PageAddress(pageAddress);
@@ -183,7 +183,7 @@ public class BatchedDataDispatcher {
 				final String strokeTimeStamp = matcherStrokeBegin.group(1);
 				final long ts = Long.parseLong(strokeTimeStamp);
 				// date/time of the beginning of the stroke!
-				DebugUtils.println("Stroke Time: " + new Date(ts));
+				// DebugUtils.println("Stroke Time: " + new Date(ts));
 
 				// samples between the <stroke...></stroke>
 				final String strokeSampleText = insideText.substring(matcherStrokeBegin.end(),
@@ -324,8 +324,8 @@ public class BatchedDataDispatcher {
 						final String dnsName = inetAddress.getHostName();
 
 						// we got a connection with the client
-						DebugUtils.println("Got a connection on server port " + serverPort);
-						DebugUtils.println("               from client: " + ipAddr + " :: " + dnsName);
+						// DebugUtils.println("Got a connection on server port " + serverPort);
+						// DebugUtils.println(" from client: " + ipAddr + " :: " + dnsName);
 
 						// keep it around
 						clients.add(client);

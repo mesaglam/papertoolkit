@@ -426,6 +426,9 @@ public class PaperToolkit {
 	 */
 	private final Properties localProperties = new Properties();
 
+	/**
+	 * 
+	 */
 	private PopupMenu popupMenu;
 
 	/**
@@ -719,12 +722,6 @@ public class PaperToolkit {
 	private PopupMenu getTrayPopupMenu() {
 		if (popupMenu == null) {
 			popupMenu = new PopupMenu("Paper Toolkit Options");
-
-			// exit the application
-			final MenuItem exitItem = new MenuItem("Exit");
-			exitItem.addActionListener(getExitListener());
-
-			popupMenu.add(exitItem);
 		}
 
 		return popupMenu;
@@ -752,7 +749,6 @@ public class PaperToolkit {
 		// load the system tray icon...
 		getSystemTrayIcon();
 
-		popupMenu.add(new MenuItem("-")); // separator
 		final MenuItem debugItem = new MenuItem("Debug [" + app.getName() + "]");
 		debugItem.addActionListener(getDebugListener(app));
 
@@ -772,6 +768,7 @@ public class PaperToolkit {
 			});
 			getTrayPopupMenu().add(item);
 		}
+
 	}
 
 	/**
@@ -897,24 +894,20 @@ public class PaperToolkit {
 		final Collection<PatternToSheetMapping> patternMappings = paperApp.getPatternMaps();
 		eventDispatcher.registerPatternMapsForEventHandling(patternMappings);
 
-		// will populate the system tray with a feature for runtime binding of
-		// regions... =)
+		// will populate the system tray with a feature for runtime binding of regions... =)
 		checkPatternMapsForUninitializedRegions(patternMappings);
-
-		// XXX
-		// Here, we should pass the event engine over...
-		// When the Batch Server gets in the data, it will translate it to
-		// streaming event
-		// coordinates
-		// And then pass it to the Event Engine
-		// It will essentially "replay" the events as if it were through event
-		// save/replay
 
 		// DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);
 		if (useAppManager) {
 			appManager.repaintListOfApps();
 		}
+
+		popupMenu.add(new MenuItem("-")); // separator
+		// for exiting the application
+		final MenuItem exitItem = new MenuItem("Exit");
+		exitItem.addActionListener(getExitListener());
+		popupMenu.add(exitItem);
 
 		// provides access back to the toolkit object
 		paperApp.setHostToolkit(this);

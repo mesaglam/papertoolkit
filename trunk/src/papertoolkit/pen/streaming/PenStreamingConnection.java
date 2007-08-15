@@ -336,8 +336,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 					// before, it passed x=0, y=0
 					final PenSample penSample = new PenSample(lastX, lastY, 0, timestamp, true);
 					// on June 12, 2006, I changed the behavior so that a .sample event is NOT
-					// generated on pen up. It simply passes the pen up event with the timestamp
-					// along...
+					// generated on pen up. It simply passes the pen up event with the timestamp along...
 					// thus, .sample is NEVER called with isPenUp() == true
 					// pl.sample(penSample);
 					pl.penUp(penSample);

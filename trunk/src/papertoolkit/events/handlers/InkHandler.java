@@ -136,7 +136,7 @@ public abstract class InkHandler extends EventHandler {
 	/**
 	 * The System time of the most recent pen up event.
 	 */
-	private long lastPenUpTime;
+	private long lastPenUpTime = 0;
 
 	/**
 	 * 
