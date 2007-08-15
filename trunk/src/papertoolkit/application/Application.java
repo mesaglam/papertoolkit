@@ -18,9 +18,9 @@ import papertoolkit.tools.debug.DebuggingEnvironment;
 
 /**
  * <p>
- * The R3 approach suggests that you create Application objects to wrap your entire paper + digital
+ * The PaperToolkit approach suggests that you create Application objects to wrap your entire paper + digital
  * application. This is only ONE approach to solving the paper + digital integration, as you can actually use
- * R3's components separately...
+ * PaperToolkit's components separately...
  * </p>
  * <p>
  * An application will consist of Bundles and Sheets, and the actions that are bound to individual regions. A
@@ -42,13 +42,7 @@ import papertoolkit.tools.debug.DebuggingEnvironment;
 public class Application {
 
 	/**
-	 * Batched event handlers allow you to get at data that was synchronized through the USB dock. In the
-	 * future, these event handlers will work exactly the same as real-time event handlers.
-	 */
-	private List<BatchedEventHandler> batchEventHandlers = new ArrayList<BatchedEventHandler>();
-
-	/**
-	 * 
+	 * For inspecting the application at runtime.
 	 */
 	private DebuggingEnvironment debuggingEnvironment;
 
@@ -99,13 +93,6 @@ public class Application {
 	 */
 	public Application(String theName) {
 		name = theName;
-	}
-
-	/**
-	 * @param beh
-	 */
-	public void addBatchEventHandler(BatchedEventHandler beh) {
-		batchEventHandlers.add(beh);
 	}
 
 	/**
@@ -181,18 +168,6 @@ public class Application {
 		final Sheet sheetToAdd = new Sheet(widthInches, heightInches);
 		addSheet(sheetToAdd); // how do we map this sheet to some pattern location?
 		return sheetToAdd;
-	}
-
-	/**
-	 * A Paper Application needs BatchEventHandlers to detect when a person synchronizes a pen with the
-	 * computer. In the future, this may be integrated with standard event handling on a region. Right now,
-	 * this is not possible, as we need the ability to calibrate the batched coordinates (which are processed
-	 * by the PAD files) with the streaming coordinates.
-	 * 
-	 * @return
-	 */
-	public List<BatchedEventHandler> getBatchEventHandlers() {
-		return batchEventHandlers;
 	}
 
 	/**
@@ -284,13 +259,6 @@ public class Application {
 	 */
 	public void removeAllSheets() {
 		sheets.clear();
-	}
-
-	/**
-	 * @param beh
-	 */
-	public void removeBatchEventHandler(BatchedEventHandler beh) {
-		batchEventHandlers.remove(beh);
 	}
 
 	/**

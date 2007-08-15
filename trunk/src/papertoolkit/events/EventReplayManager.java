@@ -64,12 +64,14 @@ public class EventReplayManager {
 	private boolean playEventsInRealTime = true;
 
 	/**
-	 * The standard replay manager requires an event engine... The new approach is to record it at the pen
-	 * level...
+	 * The standard replay manager requires an event dispatcher...
+	 * 
+	 * The new approach is to record it at the pen level...
 	 * 
 	 * @param engine
 	 */
 	public EventReplayManager() {
+		// nothing
 	}
 
 	/**
@@ -89,7 +91,7 @@ public class EventReplayManager {
 	public PenEvent createEventFromString(String eventString) {
 		// DebugUtils.println(eventString);
 		final String[] fields = eventString.split(SEPARATOR);
-		final PenEventModifier modifier = PenEventModifier.valueOf(fields[0]);
+		final PenEventType modifier = PenEventType.valueOf(fields[0]);
 		final String penName = fields[2];
 		final int penID = Integer.parseInt(fields[1]);
 		final long time = Long.parseLong(fields[3]);
@@ -98,9 +100,7 @@ public class EventReplayManager {
 		final long ts = Long.parseLong(fields[6]);
 		final int f = Integer.parseInt(fields[7]);
 
-		final PenEvent event = new PenEvent(penID, penName, time, new PenSample(x, y, f, ts));
-		event.setModifier(modifier);
-		return event;
+		return new PenEvent(penID, penName, time, new PenSample(x, y, f, ts), modifier, false);
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class EventReplayManager {
 	 * Replay the events that have been loaded, in the order that they appear in the list...
 	 */
 	public void replayLoadedEvents(EventDispatcher eventEngine) {
-		replayToEventEngine(eventEngine, loadedEvents);
+		replayToEventDispatcher(eventEngine, loadedEvents);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class EventReplayManager {
 	 *            eventEngine = engine;
 	 * @param events
 	 */
-	public void replayToEventEngine(final EventDispatcher eventEngine, final List<PenEvent> events) {
+	private void replayToEventDispatcher(final EventDispatcher eventEngine, final List<PenEvent> events) {
 		new Thread(new Runnable() {
 			public void run() {
 				long lastTimeStamp = 0;
@@ -232,12 +232,7 @@ public class EventReplayManager {
 					}
 
 					// assume here that all PenEvent objects have their flags set correctly
-					if (event.isTypePenUp()) {
-						eventEngine.handlePenUpEvent(event);
-					} else {
-						eventEngine.handlePenEvent(event);
-					}
-
+					eventEngine.handlePenEvent(event);
 					lastTimeStamp = event.getTimestamp();
 				}
 				// DebugUtils.println("Done. Replayed " + events.size() + " Events");
@@ -247,8 +242,8 @@ public class EventReplayManager {
 
 	/**
 	 * Save this pen event. This is done automatically for events streamed through the Event Engine. In the
-	 * future, we should probably log at the PenListener level too! This allows arbitrary event data save and
-	 * replay.
+	 * future, we should probably log at the PenListener level instead! This allows arbitrary event data save
+	 * and replay.
 	 * 
 	 * @param event
 	 */

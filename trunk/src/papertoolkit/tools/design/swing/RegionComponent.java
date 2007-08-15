@@ -18,7 +18,7 @@ import javax.swing.JComponent;
 
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.PenEventModifier;
+import papertoolkit.events.PenEventType;
 import papertoolkit.paper.Region;
 import papertoolkit.pen.PenSample;
 import papertoolkit.units.Percentage;
@@ -170,7 +170,7 @@ public class RegionComponent extends JComponent implements MouseMotionListener, 
 		PenEvent pe = 
 			new PenEvent(0,"Swing",ts, new PenSample(x,y,down ? 128 : 0,ts));
 		if (!sample)
-			pe.setModifier(down ? PenEventModifier.DOWN : PenEventModifier.UP);
+			pe.setType(down ? PenEventType.DOWN : PenEventType.UP);
 			
 		pe.setPercentageLocation(
 			new PercentageCoordinates(getPercentage(x,getWidth()),

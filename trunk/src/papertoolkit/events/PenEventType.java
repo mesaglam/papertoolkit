@@ -11,7 +11,7 @@ package papertoolkit.events;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public enum PenEventModifier {
+public enum PenEventType {
 	// a pen down event
 	DOWN,
 

@@ -49,7 +49,7 @@ namespace PenMonitor {
             // display it in a message box
             form = new MessageForm();
             form.Show();
-            form.WindowState = System.Windows.Forms.FormWindowState.Minimized;
+            // form.WindowState = System.Windows.Forms.FormWindowState.Minimized;
 
             // find the requests path from the windows registry
             // [HKEY_LOCAL_MACHINE\SOFTWARE\Classes\BNetPenMonitor]:"PenRequestsDir"
@@ -77,7 +77,7 @@ namespace PenMonitor {
             log.Flush();
             log.Close();
 
-            form.appendLine("Pen Synchronization Complete! Closing this window...");
+            form.appendLine("Pen Synchronization Complete!");
 
 
             // Run R3 to import the new strokes...
