@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
-	<classpathentry excluding="**/.svn/|testFiles/private/" kind="src" path="data"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/epsgraphics.jar"/>
 	<classpathentry kind="lib" path="lib/jpedal/bcprov-jdk15-133.jar"/>

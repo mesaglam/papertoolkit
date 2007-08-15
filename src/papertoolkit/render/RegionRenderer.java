@@ -12,7 +12,6 @@ import papertoolkit.config.Configuration;
 import papertoolkit.paper.Region;
 import papertoolkit.units.Points;
 import papertoolkit.units.Units;
-import papertoolkit.util.DebugUtils;
 import papertoolkit.util.MathUtils;
 import papertoolkit.util.StringUtils;
 
@@ -35,9 +34,9 @@ public class RegionRenderer {
 	public static final String CONFIG_FILE_KEY = "regionrenderer.debugregions.file";
 
 	/**
-	 * 
+	 * Flags to customize the rendering of regions without having to recompile the toolkit.
 	 */
-	public static final String CONFIG_FILE_VALUE = "/config/RegionRenderer.xml";
+	public static final String CONFIG_FILE_VALUE = "data/config/RegionRenderer.xml";
 
 	/**
 	 * Whether we are in debug mode.

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -15,12 +16,9 @@ import papertoolkit.actions.remote.ActionReceiver;
 import papertoolkit.render.RegionRenderer;
 import papertoolkit.units.Pixels;
 
-
 /**
  * <p>
- * The design of this configuration scheme was informed by Jeff Heer's prefuse code. It is incomplete, but
- * when properly implemented, it will allow a user of this toolkit to retrieve resources from the JAR, and
- * customize the operation of the toolkit with one or more config files.
+ * This configuration scheme allows developers to customize the operation of the toolkit through config files.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -31,53 +29,21 @@ import papertoolkit.units.Pixels;
  */
 public class Configuration extends Properties {
 
+	/**
+	 * Stores our configuration properties.
+	 */
 	private static final Configuration config = new Configuration();
 
 	/**
-	 * Resolves the configuration name to a String value. The value can correspond to a file name, path,
-	 * numeric value, etc.
+	 * Returns a resource file on the file system...
 	 * 
-	 * @param propertyName
-	 *            a key to index the toolkit's configuration
-	 * @return the value corresponding to the configName key
-	 */
-	private static String getPropertyValue(String propertyName) {
-		final String property = config.getProperty(propertyName);
-		// System.out.println("Configuration.java: Retrieved Property " + propertyName + " --> "
-		// + property);
-		return property;
-	}
-
-	/**
-	 * TODO: Works for now, but won't work once we package it in a JAR.
+	 * There are no plans to make PaperToolkit available as a single JAR.
 	 * 
 	 * @param configFileKey
 	 * @return
 	 */
 	public static File getConfigFile(String configFileKey) {
-		try {
-			// System.out.println("Configuration.java: Property Name: " + propertyName);
-			final URL resource = Configuration.class.getResource(getPropertyValue(configFileKey));
-			// System.out.println("Configuration.java: URL: " + resource);
-			final URI uri = resource.toURI();
-			final File file = new File(uri);
-			return file;
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
-	 * @param propertyName
-	 * @return
-	 * @throws IOException
-	 */
-	private static InputStream getConfigFileStream(String propertyName) throws IOException {
-		final String resourceName = getPropertyValue(propertyName);
-		// System.out.println("Configuration.java: Resource is " + resourceName);
-		final URL resource = Configuration.class.getResource(resourceName);
-		return resource.openStream();
+		return getResourceFile(configFileKey);
 	}
 
 	/**
@@ -87,17 +53,7 @@ public class Configuration extends Properties {
 	public static Properties getPropertiesFromConfigFile(String configFileKey) {
 		final Properties props = new Properties();
 		try {
-			// System.out.println("Configuration.java: Config File Key is " + propertyName + " --> "
-			// + configFileKey);
-			final InputStream configFileStream = Configuration.getConfigFileStream(configFileKey);
-
-			// Just for debugging...
-			// BufferedReader br = new BufferedReader(new InputStreamReader(configFileStream));
-			// String line;
-			// while ((line = br.readLine()) != null) {
-			// System.out.println(line);
-			// }
-
+			final InputStream configFileStream = getResourceFile(configFileKey).toURI().toURL().openStream();
 			props.loadFromXML(configFileStream);
 		} catch (InvalidPropertiesFormatException e) {
 			e.printStackTrace();
@@ -119,16 +75,31 @@ public class Configuration extends Properties {
 	}
 
 	/**
+	 * Resolves the configuration name to a String value. The value can correspond to a file name, path,
+	 * numeric value, etc.
 	 * 
+	 * @param propertyName
+	 *            a key to index the toolkit's configuration
+	 * @return the value corresponding to the configName key
 	 */
-	private Configuration() {
-		setDefaultConfig();
+	private static String getPropertyValue(String propertyName) {
+		final String property = config.getProperty(propertyName);
+		return property;
+	}
+
+	/**
+	 * @param configFileKey
+	 * @return
+	 */
+	private static File getResourceFile(String configFileKey) {
+		// this is a relative path to PaperToolkit
+		return new File(PaperToolkit.getToolkitRootPath(), getPropertyValue(configFileKey));
 	}
 
 	/**
 	 * Provide default locations for our xml config files and other resources.
 	 */
-	private void setDefaultConfig() {
+	private Configuration() {
 		// part of the resources in the JAR File (or export directory)
 		// this maps abstract names to actual files on the file system.
 		setProperty(Pixels.CONFIG_FILE_KEY, Pixels.CONFIG_FILE_VALUE);
@@ -137,5 +108,4 @@ public class Configuration extends Properties {
 		setProperty(PaperToolkit.CONFIG_PATTERN_PATH_KEY, PaperToolkit.CONFIG_PATTERN_PATH_VALUE);
 		setProperty(PaperToolkit.CONFIG_FILE_KEY, PaperToolkit.CONFIG_FILE_VALUE);
 	}
-
 }

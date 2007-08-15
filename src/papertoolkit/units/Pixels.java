@@ -29,7 +29,7 @@ public class Pixels extends Units {
 	 * approximately 95 (my current monitor's physical ppi). That is, an inch on my monitor is about 95
 	 * pixels.
 	 */
-	public static final String CONFIG_FILE_VALUE = "/config/PixelsPerInch.xml";
+	public static final String CONFIG_FILE_VALUE = "data/config/PixelsPerInch.xml";
 
 	/**
 	 * The config file specifies our default pixels per inch on this system. You can customize that file if
