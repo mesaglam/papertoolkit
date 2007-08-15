@@ -46,7 +46,7 @@ public class ActionReceiver {
 	 * you actions. By default, we will allow all computers to send you R3Actions to the port you are
 	 * listening on. We use a wildcard * to designate this.
 	 */
-	public static final String CONFIG_FILE_VALUE = "/config/ActionReceiver.xml";
+	public static final String CONFIG_FILE_VALUE = "data/config/ActionReceiver.xml";
 
 	/**
 	 * Will listen on this port for Java XML objects.

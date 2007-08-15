@@ -90,7 +90,7 @@ public class PaperToolkit {
 	/**
 	 * 
 	 */
-	public static final String CONFIG_FILE_VALUE = "/config/PaperToolkit.xml";
+	public static final String CONFIG_FILE_VALUE = "data/config/PaperToolkit.xml";
 
 	/**
 	 * 
@@ -98,26 +98,38 @@ public class PaperToolkit {
 	public static final String CONFIG_PATTERN_PATH_KEY = "tiledpatterngenerator.patternpath";
 
 	/**
-	 * 
+	 * Where our pattern files are located...
 	 */
-	public static final String CONFIG_PATTERN_PATH_VALUE = "/pattern/";
+	public static final String CONFIG_PATTERN_PATH_VALUE = "data/pattern/";
 
 	/**
 	 * Property Keys.
 	 */
 	private static final String HW_REC_KEY = "handwritingRecognition";
+
 	/**
 	 * Whether we have called initializeLookAndFeel() yet...
 	 */
 	private static boolean lookAndFeelInitialized = false;
 
 	/**
+	 * Where PaperToolkit is installed.
+	 */
+	private static File paperToolkitRootPath;
+
+	/**
 	 * Where to find the directories that store our pattern definition files.
 	 */
 	public static final File PATTERN_PATH = getPatternPath();
 
+	/**
+	 * 
+	 */
 	private static final String REMOTE_PENS_KEY = "remotePens";
 
+	/**
+	 * 
+	 */
 	private static PaperToolkit toolkitInstance;
 
 	/**
@@ -203,27 +215,29 @@ public class PaperToolkit {
 		return null;
 	}
 
+	private static File getToolkitDataFile(String relativePath) {
+		return new File(new File(getToolkitRootPath(), "/data/"), relativePath);
+	}
+
 	/**
-	 * 
-	 * Before 1.0, we will need to make sure this can work with a JAR-style deployment. Currently, this does
-	 * NOT work as a packaged jar.
+	 * There are no plans for PaperToolkit to be deployed as a single JAR file. Thus, this assumes you have it
+	 * installed on the file system.
 	 * 
 	 * @return the root path to the toolkit (e.g., C:\Documents and Settings\User Name\Projects\PaperToolkit\)
 	 */
 	public static File getToolkitRootPath() {
-		File file = null;
-		try {
-			URL resource = PaperToolkit.class.getResource("/config");
-			file = new File(resource.toURI()).getParentFile();
-
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
+		if (paperToolkitRootPath == null) {
+			// get the runtime directory for the papertoolkit package (e.g.,
+			// PaperToolkit/bin/papertoolkit) the parent will be the root directory!
+			URL resource = PaperToolkit.class.getResource("/papertoolkitroot");
+			try {
+				paperToolkitRootPath = new File(resource.toURI()).getParentFile().getParentFile();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 		}
-		if (file == null) {
-			return null;
-		} else {
-			return file.getParentFile();
-		}
+		DebugUtils.println(paperToolkitRootPath);
+		return paperToolkitRootPath;
 	}
 
 	/**
@@ -691,8 +705,8 @@ public class PaperToolkit {
 	private void getSystemTrayIcon() {
 		if (trayIcon == null) {
 			// this is the icon that sits in our tray...
-			trayIcon = new TrayIcon(ImageCache.loadBufferedImage(PaperToolkit.class
-					.getResource("/icons/glue.png")), "Paper Toolkit", getTrayPopupMenu());
+			trayIcon = new TrayIcon(ImageCache.loadBufferedImage(PaperToolkit
+					.getToolkitDataFile("/icons/paper.png")), "Paper Toolkit", getTrayPopupMenu());
 			trayIcon.setImageAutoSize(true);
 			try {
 				if (SystemTray.isSupported()) {
