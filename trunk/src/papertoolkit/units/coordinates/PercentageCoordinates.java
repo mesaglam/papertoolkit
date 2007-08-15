@@ -1,6 +1,7 @@
 package papertoolkit.units.coordinates;
 
 import papertoolkit.units.Percentage;
+import papertoolkit.units.Size;
 import papertoolkit.units.Units;
 
 /**
@@ -24,7 +25,18 @@ public class PercentageCoordinates extends Coordinates {
 	public PercentageCoordinates(Percentage pctInX, Percentage pctInY) {
 		super(pctInX, pctInY);
 	}
-	
+
+	/**
+	 * @param pctInX
+	 *            [0, 100]
+	 * @param pctInY
+	 *            [0, 100]
+	 * @param size
+	 */
+	public PercentageCoordinates(double pctInX, double pctInY, Size size) {
+		this(new Percentage(pctInX, size.getWidth()), new Percentage(pctInY, size.getHeight()));
+	}
+
 	/**
 	 * @return
 	 */

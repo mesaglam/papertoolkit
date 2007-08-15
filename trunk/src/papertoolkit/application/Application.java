@@ -223,7 +223,7 @@ public class Application {
 	 * @return the information that maps a pattern location to a location on a sheet.
 	 */
 	public Collection<PatternToSheetMapping> getPatternMaps() {
-		Collection<PatternToSheetMapping> map = new ArrayList<PatternToSheetMapping>();
+		final Collection<PatternToSheetMapping> map = new ArrayList<PatternToSheetMapping>();
 		for (Sheet s : getSheets()) {
 			map.add(s.getPatternToSheetMapping());
 		}

@@ -2,32 +2,33 @@ package papertoolkit.units;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Represents a rectangular size, whose width and height are in arbitrary units.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
- * 
- * Represents a rectangular size, whose width and height are in arbitrary units.
  */
 public class Size implements Cloneable {
 
 	/**
-	 * The Height of this Sheet.
+	 * The height value.
 	 */
 	private Units height;
 
 	/**
-	 * The Width of this Sheet.
+	 * The width value, in some units.
 	 */
 	private Units width;
 
 	/**
-	 * 
+	 * 8.5 x 11 inches, is our default size, since Letter-sized pages are so common.
 	 */
 	public Size() {
-		width = Inches.ONE;
-		height = Inches.ONE;
+		width = new Inches(8.5);
+		height = new Inches(11);
 	}
 
 	/**

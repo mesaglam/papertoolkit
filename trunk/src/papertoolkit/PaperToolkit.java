@@ -236,7 +236,6 @@ public class PaperToolkit {
 				e.printStackTrace();
 			}
 		}
-		DebugUtils.println(paperToolkitRootPath);
 		return paperToolkitRootPath;
 	}
 
@@ -299,13 +298,10 @@ public class PaperToolkit {
 	 */
 	public static void main(String[] args) {
 		if (args.length == 0) {
-			// the 0 args branch will run the Paper Toolkit GUI, which helps
-			// designers learn what
-			// you
-			// can do with this toolkit. It integrates with the documentation
-			// and stuff too!
+			// the 0 args branch will run the Paper Toolkit GUI, which helps designers learn what you can do
+			// with this toolkit. It integrates with the documentation and stuff too!
 			printUsage();
-			new PaperToolkit().startToolExplorer();
+			// new PaperToolkit().startToolExplorer();
 		} else if (args[0].startsWith("-actions")) {
 			ActionReceiverTrayApp.main(new String[] {});
 		} else if (args[0].startsWith("-pen")) {
@@ -334,7 +330,7 @@ public class PaperToolkit {
 		System.out.println("	-actions	// runs the action receiver");
 		System.out.println("	-pen		// runs the pen server");
 		System.out
-				.println("Thank you for using R3! Feel free to send feedback (good & bad) to ronyeh@cs.stanford.edu.");
+				.println("Thank you for using PaperToolkit! Feel free to send feedback (good & bad) to ronyeh@cs.stanford.edu.");
 	}
 
 	/**
@@ -547,8 +543,7 @@ public class PaperToolkit {
 						// DebugUtils.println("Binding " + r);
 
 						// Runtime Pattern to Region Binding
-						// adds a listener for trashed events in the Event
-						// Engine
+						// adds a listener for trashed events in the Event Dispatcher
 						eventDispatcher.addEventHandlerForUnmappedEvents(new StrokeHandler() {
 							public void strokeArrived(PenEvent e) {
 								Rectangle2D bounds = getStroke().getBounds();
