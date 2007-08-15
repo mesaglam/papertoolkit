@@ -1,6 +1,7 @@
 package papertoolkit.events;
 
 import papertoolkit.pen.PenSample;
+import papertoolkit.units.Size;
 import papertoolkit.units.coordinates.PercentageCoordinates;
 import papertoolkit.units.coordinates.StreamedPatternCoordinates;
 
@@ -34,7 +35,7 @@ public class PenEvent {
 	/**
 	 * Where did the event occur?
 	 */
-	private PercentageCoordinates locationOnRegion;
+	private PercentageCoordinates locationOnRegion = new PercentageCoordinates(0, 0, new Size());
 
 	/**
 	 * Which pen generated this event?
