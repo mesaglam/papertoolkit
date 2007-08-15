@@ -8,6 +8,7 @@ import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pen.ink.InkStroke;
+import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -43,17 +44,17 @@ public class HelloBatched {
 
 	private static EventHandler getInkHandler() {
 		return new InkHandler() {
+			private String msgPrefix = "This handler was triggered in ";
+
 			// renamed from InkCollector; has nicer methods for handling/collecting ink
 			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				// all handlers have a method called handleX, which gets a PenEvent; handlers also provide
 				// their subclasses access to internal variables
-				System.out.println("We have collected " + getNumStrokesCollected() + " ink strokes. \t: "
-						+ Thread.currentThread().getStackTrace()[1]);
-				System.out.print("This handler was triggered in ");
+				DebugUtils.println("We have collected " + getNumStrokesCollected() + " ink strokes.");
 				if (event.isRealTime()) {
-					System.out.println("Real-time Mode..");
+					DebugUtils.println(msgPrefix + "Real-time Mode..");
 				} else {
-					System.out.println("Batched Mode.");
+					DebugUtils.println(msgPrefix + "Batched Mode.");
 				}
 			}
 		};
