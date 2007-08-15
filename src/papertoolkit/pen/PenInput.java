@@ -16,7 +16,7 @@ import papertoolkit.util.DebugUtils;
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
- * 
+ * @see Pen.java
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public abstract class PenInput {
@@ -34,8 +34,6 @@ public abstract class PenInput {
 
 	/**
 	 * Cached pen listeners, so we can add them when/if you go live.
-	 * 
-	 * TODO: How will we handle batched events later on?
 	 */
 	protected List<PenListener> penListenersToAdd = new ArrayList<PenListener>();
 

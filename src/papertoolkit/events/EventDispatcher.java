@@ -135,11 +135,14 @@ public class EventDispatcher {
 		final int penID = pensCurrentlyMonitoring.indexOf(penInputDevice);
 		final String penName = penInputDevice.getName();
 
-		// TODO: Should the time be gotten from the sample instead? This may have impact if we are processing Batched data...
+		// TODO: Should the time be gotten from the sample instead? This may have impact if we are processing
+		// Batched data...
 		// See the three calls to System.currentTimeMillis() below...
 		return new PenListener() {
 			public void penDown(PenSample sample) {
-				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample, PenEventType.DOWN, true));
+				// DebugUtils.println("D " + sample);
+				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample,
+						PenEventType.DOWN, true));
 			}
 
 			/**
@@ -149,11 +152,15 @@ public class EventDispatcher {
 			 * @see papertoolkit.pen.streaming.listeners.PenListener#penUp(papertoolkit.pen.PenSample)
 			 */
 			public void penUp(PenSample sample) {
-				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample, PenEventType.UP, true));
+				// DebugUtils.println("U " + sample);
+				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample,
+						PenEventType.UP, true));
 			}
 
 			public void sample(PenSample sample) {
-				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample, PenEventType.SAMPLE, true));
+				// DebugUtils.println("S " + sample);
+				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample,
+						PenEventType.SAMPLE, true));
 			}
 		};
 	}

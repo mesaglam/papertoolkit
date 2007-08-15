@@ -287,6 +287,12 @@ public class PenServer implements PenListener {
 	private PenJitterFilter jitterFilter;
 
 	/**
+	 * So we know when pen ups are valid...
+	 */
+	private boolean penDownHasHappened = false;
+	
+
+	/**
 	 * @param ss
 	 * @param type
 	 */
@@ -320,6 +326,7 @@ public class PenServer implements PenListener {
 	 * @author Ron Yeh
 	 */
 	public void penDown(PenSample s) {
+		penDownHasHappened = true;
 		if (jitterFilter.happenedTooCloseToLastPenUp()) {
 			jitterFilter.cancelLastPenUp();
 		} else {
@@ -329,10 +336,19 @@ public class PenServer implements PenListener {
 	}
 
 	/**
+	 * We should not fire a pen up sample if no pen down has happned... This implies (with the Nokia SU-1B, at
+	 * least) that we are actually getting NO data at all...
+	 * 
 	 * @created Jun 12, 2006
 	 * @author Ron Yeh
 	 */
 	public void penUp(PenSample s) {
+		if (!penDownHasHappened) {
+			// ignore the spurious pen up event...
+			return;
+		}
+		penDownHasHappened = false;
+
 		// let the filter to figure this out
 		jitterFilter.triggerPenUpAfterADelay(s);
 	}
