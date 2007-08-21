@@ -15,14 +15,15 @@ import javax.swing.JPanel;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.InkHandler;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.ink.Ink;
 import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.pen.streaming.listeners.PenStrokeListener;
-import papertoolkit.pen.synch.BatchedEventHandler;
-import papertoolkit.util.DebugUtils;
-import papertoolkit.util.MathUtils;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.files.FileUtils;
 
@@ -69,7 +70,7 @@ public class CalibrationCaptureApp {
 
 	private Application app;
 
-	private BatchedEventHandler beh;
+	private InkHandler beh;
 
 	private CalibrationEngine calibrate = new CalibrationEngine();
 
@@ -106,7 +107,9 @@ public class CalibrationCaptureApp {
 
 		app = new Application("Calibration");
 		app.addPenInput(getPen());
-		app.addBatchEventHandler(getBatchedEventHandler());
+		Sheet sheet = app.createSheet();
+		Region region = sheet.createRegion();
+		region.addEventHandler(getBatchedInkHandler());
 		toolkit = new PaperToolkit(true, false, false);
 		toolkit.startApplication(app);
 	}
@@ -121,13 +124,13 @@ public class CalibrationCaptureApp {
 	/**
 	 * @return
 	 */
-	private BatchedEventHandler getBatchedEventHandler() {
+	private InkHandler getBatchedInkHandler() {
 		if (beh == null) {
-			beh = new BatchedEventHandler("Calibration") {
-				public void inkArrived(Ink inkOnThisPage) {
-					saveBatchedStrokes(inkOnThisPage);
+			beh = new InkHandler() {
+				public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
+					// just save it out each time... it's ok to be inefficient for this...
+					saveBatchedStrokes(getInk());
 				}
-
 			};
 		}
 		return beh;

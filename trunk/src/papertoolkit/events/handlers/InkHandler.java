@@ -180,6 +180,7 @@ public abstract class InkHandler extends EventHandler {
 	private long timeDiffBetweenPenUpAndPenDown;
 
 	public InkHandler() {
+		// nothing
 	}
 
 	/**

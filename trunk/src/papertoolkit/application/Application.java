@@ -12,7 +12,6 @@ import papertoolkit.devices.Device;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pen.PenInput;
-import papertoolkit.pen.synch.BatchedEventHandler;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
 
