@@ -18,13 +18,11 @@ import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.ink.Ink;
 import papertoolkit.pen.ink.InkStroke;
-import papertoolkit.pen.synch.BatchedEventHandler;
 import papertoolkit.render.ink.InkRenderer;
 import papertoolkit.units.Inches;
 import papertoolkit.units.Millimeters;
 import papertoolkit.units.conversion.PixelsPerInch;
 import papertoolkit.util.DebugUtils;
-
 
 /**
  * <p>
@@ -225,6 +223,8 @@ public class BioMap extends Application {
 		for (int i = 0; i < numPages; i++) {
 			final Sheet page = new Sheet(new Millimeters(148), new Millimeters(210));
 			notebook.addSheets(page); // A5
+			Region region = page.createRegion();
+			region.addEventHandler(getInkHandler());
 		}
 
 		// the application has to know about this pen
@@ -233,23 +233,18 @@ public class BioMap extends Application {
 		addPenInput(pen);
 	}
 
-	/**
-	 * @see papertoolkit.application.Application#initializeEventHandlers()
-	 */
-	protected void initializeEventHandlers() {
-		addBatchEventHandler(new BatchedEventHandler("Note Pages Renderer") {
-
-			@Override
-			public void inkArrived(Ink inkOnThisPage) {
-				// call the ink filter....
+	private InkHandler getInkHandler() {
+		return new InkHandler() {
+			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
+				Ink inkOnThisPage = getInk();
 				InkRenderer renderer = new InkRenderer(inkOnThisPage);
 				// argh... we need to specify that we are rendering in dots somehow!
 				// right now, we can only customize the pixels per inch....
 				// TODO: FIX THIS
-				renderer.renderToJPEG(new File("data/BioMap/Output/Ink_" + inkOnThisPage.getName() + ".jpg"),
+				int pageNumber = 1; // TODO: Should be different for each page
+				renderer.renderToJPEG(new File("data/BioMap/Output/Ink_" + pageNumber + inkOnThisPage.getName() + ".jpg"),
 						new PixelsPerInch(), new Millimeters(148 + 20), new Millimeters(210 + 20));
 			}
-			// nothing for now...
-		});
+		};
 	}
 }

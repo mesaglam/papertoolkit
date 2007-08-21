@@ -50,10 +50,12 @@ public class HelloBatched {
 			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				// all handlers have a method called handleX, which gets a PenEvent; handlers also provide
 				// their subclasses access to internal variables
-				DebugUtils.println("We have collected " + getNumStrokesCollected() + " ink strokes.");
+				DebugUtils.println("We have collected " + getNumStrokesCollected() + " TOTAL ink strokes.");
+				// DebugUtils.println(getNewInkOnly().getNumStrokes() + " new strokes.");
 				if (event.isRealTime()) {
-					DebugUtils.println(msgPrefix + "Real-time Mode..");
+					DebugUtils.println(msgPrefix + "Real-time Mode.");
 				} else {
+					getNewInkOnly().getNumStrokes();
 					DebugUtils.println(msgPrefix + "Batched Mode.");
 				}
 			}

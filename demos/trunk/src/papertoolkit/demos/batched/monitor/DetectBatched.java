@@ -4,13 +4,16 @@ import java.io.File;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.InkHandler;
+import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
 import papertoolkit.pen.ink.Ink;
-import papertoolkit.pen.synch.BatchedEventHandler;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.render.ink.InkRenderer;
 import papertoolkit.units.Inches;
 import papertoolkit.units.conversion.PixelsPerInch;
 import papertoolkit.util.DebugUtils;
-
 
 /**
  * <p>
@@ -31,14 +34,16 @@ public class DetectBatched extends Application {
 		paperToolkit.startApplication(batched);
 	}
 
-	private BatchedEventHandler inkHandler;
+	private InkHandler inkHandler;
 
 	/**
 	 * Run this application first, then write on your notepad and plug it in...
 	 */
 	public DetectBatched() {
 		super("Hello World for Batch Processing of Ink");
-		addBatchEventHandler(getInkHandler());
+		Sheet sheet = createSheet();
+		Region region = sheet.createRegion();
+		region.addEventHandler(getInkHandler());
 	}
 
 	/**
@@ -46,12 +51,15 @@ public class DetectBatched extends Application {
 	 * 
 	 * @return
 	 */
-	private BatchedEventHandler getInkHandler() {
+	private InkHandler getInkHandler() {
 		if (inkHandler == null) {
-			inkHandler = new BatchedEventHandler("Ink Handler") {
-				@Override
-				public void inkArrived(Ink inkOnThisPage) {
-					DebugUtils.println("Ink Arrived" + inkOnThisPage.getName());
+			inkHandler = new InkHandler() {
+				// Render Multiple Times... on each stroke
+				// This is probably inefficient. We need a better way to detect when the batched input is
+				// "done."
+				public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
+					Ink inkOnThisPage = getInk();
+					DebugUtils.println("Ink Arrived: " + inkOnThisPage.getName());
 					new InkRenderer(inkOnThisPage).renderToJPEG(new File("data/Batched/"
 							+ inkOnThisPage.getName() + ".jpeg"), //
 							new PixelsPerInch(80), new Inches(5.375), new Inches(8));

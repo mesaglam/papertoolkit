@@ -7,8 +7,6 @@ import papertoolkit.application.Application;
 import papertoolkit.paper.Bundle;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.sheets.PDFSheet;
-import papertoolkit.pen.ink.Ink;
-import papertoolkit.pen.synch.BatchedEventHandler;
 import papertoolkit.units.Millimeters;
 
 
@@ -35,20 +33,6 @@ public class BioMapSmallTest extends Application {
 	 */
 	public BioMapSmallTest() {
 		super("Field Biology Map");
-	}
-
-	/**
-	 * @see papertoolkit.application.Application#initializeEventHandlers()
-	 */
-	protected void initializeEventHandlers() {
-		addBatchEventHandler(new BatchedEventHandler("Note Pages Renderer") {
-
-			@Override
-			public void inkArrived(Ink inkOnThisPage) {
-				
-			}
-			// nothing for now...
-		});
 	}
 
 	/**
