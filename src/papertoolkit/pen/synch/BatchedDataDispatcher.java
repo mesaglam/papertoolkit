@@ -144,6 +144,9 @@ public class BatchedDataDispatcher {
 		final Matcher matcherPageBegin = PATTERN_BEGIN_PAGE.matcher(requestBuffer);
 		final Matcher matcherPageEnd = PATTERN_END_PAGE.matcher(requestBuffer);
 
+		// for simulating realtime
+		long lastPenUpTimestamp = 0L;
+
 		while (matcherPageBegin.find() && matcherPageEnd.find()) {
 			// DebugUtils.println("Processing Page: ");
 
@@ -183,7 +186,7 @@ public class BatchedDataDispatcher {
 				final String strokeTimeStamp = matcherStrokeBegin.group(1);
 				final long ts = Long.parseLong(strokeTimeStamp);
 				// date/time of the beginning of the stroke!
-				// DebugUtils.println("Stroke Time: " + new Date(ts));
+				DebugUtils.println("New Batched Stroke at Time: " + new Date(ts));
 
 				// samples between the <stroke...></stroke>
 				final String strokeSampleText = insideText.substring(matcherStrokeBegin.end(),
@@ -209,15 +212,31 @@ public class BatchedDataDispatcher {
 
 				// dispatch the whole pen stroke
 				// TODO Figure out the handling with multiple pens, etc... at some point
+				// Figure out how to handle this in simulated REAL-TIME
 				for (int i = 0; i < samples.size(); i++) {
 					if (i == 0) {
+						long timeDiff = samples.get(i).timestamp - lastPenUpTimestamp;
+						if (timeDiff > 1000) { // 1 second, then we just wait one second
+							timeDiff = 1000L;
+						}
+						try {
+							// pause a bit, up to 1 second... before triggering a new down sample
+							// this avoids the jitter filtering we have in some of the handler classes...
+							// TODO: We should remove that filtering, as we now have it in PenClient =\
+							Thread.sleep(timeDiff);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
 						// DebugUtils.println("DOWN");
 						eventDispatcher.handlePenEvent(new PenEvent(0, "Pen", System.currentTimeMillis(),
 								samples.get(i), PenEventType.DOWN, false));
+
 					} else if (i == samples.size() - 1) {
 						// DebugUtils.println("UP");
 						eventDispatcher.handlePenEvent(new PenEvent(0, "Pen", System.currentTimeMillis(),
 								samples.get(i), PenEventType.UP, false));
+						lastPenUpTimestamp = samples.get(i).timestamp;
 					} else {
 						// DebugUtils.println("P");
 						eventDispatcher.handlePenEvent(new PenEvent(0, "Pen", System.currentTimeMillis(),
