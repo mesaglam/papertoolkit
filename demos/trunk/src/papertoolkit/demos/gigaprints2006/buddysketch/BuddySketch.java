@@ -208,9 +208,6 @@ public class BuddySketch extends Application {
 		// start up my GUI... where my Ink & Photos display and also where the other person's Ink &
 		// Photos display
 		buddySketchGUI = new BuddySketchGUI(this);
-
-		// connect!
-		device.start();
 	}
 
 	/**
