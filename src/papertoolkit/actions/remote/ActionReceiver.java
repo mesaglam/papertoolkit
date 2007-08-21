@@ -99,12 +99,12 @@ public class ActionReceiver {
 	public static void stopDaemons() {
 		DebugUtils.println("Stopping Action Receiver Daemons.");
 		if (javaDaemon != null) {
-			javaDaemon.stop();
+			javaDaemon.disconnect();
 			javaDaemon = null;
 		}
 
 		if (textDaemon != null) {
-			textDaemon.stop();
+			textDaemon.disconnect();
 			textDaemon = null;
 		}
 	}
@@ -234,7 +234,7 @@ public class ActionReceiver {
 					Socket client = null;
 					try {
 						if (exitFlag) {
-							System.out.println("Closing Action Receiver Daemon.");
+							// DebugUtils.println("Closing Action Receiver Daemon.");
 							break;
 						}
 
@@ -282,7 +282,7 @@ public class ActionReceiver {
 						// keep it around
 						clients.add(client);
 					} catch (IOException ioe) {
-						DebugUtils.println("Error with server socket: " + ioe.getLocalizedMessage());
+						// DebugUtils.println("Error with server socket: " + ioe.getLocalizedMessage());
 					}
 
 					if (client != null) {
@@ -424,7 +424,7 @@ public class ActionReceiver {
 	/**
 	 * Tell the local receiver to stop processing actions from the remote senders.
 	 */
-	public void stop() {
+	public void disconnect() {
 		try {
 			exitFlag = true;
 			for (Socket client : clients) {
