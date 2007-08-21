@@ -304,7 +304,7 @@ public class ActionReceiverTrayApp {
 					if (receiverRunning) {
 						trayIcon.displayMessage("Action Receiver is Offline",
 								"Not listening for new actions.", TrayIcon.MessageType.INFO);
-						actionReceiver.stop();
+						actionReceiver.disconnect();
 						currentStatus = STATUS_OFF;
 						trayIcon.setImage(imageOFF);
 						onOffItem.setLabel(START_MSG);

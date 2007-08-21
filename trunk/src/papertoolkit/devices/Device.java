@@ -137,9 +137,14 @@ public class Device {
 	private DisplayChannel displayChannel;
 
 	/**
-	 * 
+	 * Which device are we connected to? Contains a DNS name (e.g., localhost, graphics.stanford.edu) or an IP Address
 	 */
 	private String hostNameOrIPAddr;
+
+	/**
+	 * If this is a local device, we need to be able to receive and invoke actions...
+	 */
+	private ActionReceiver localHostActionReceiver;
 
 	/**
 	 * A descriptive name for this device.
@@ -156,30 +161,49 @@ public class Device {
 	 */
 	public Device() {
 		this("localhost", "This Computer");
-		start();
 	}
 
 	/**
 	 * Provide an IP address of a remote device that is listening for actions.
+	 * Tries to connect immediately!
 	 */
 	public Device(String theHostNameOrIPAddr, String descriptiveName) {
 		hostNameOrIPAddr = theHostNameOrIPAddr;
 		name = descriptiveName;
+		if (isAlive()) {
+			connect();
+		}
 	}
 
 	/**
 	 * Once we have connected, we can start sending this device commands....
 	 */
-	public void start() {
+	private void connect() {
+		// The receiver has to be initiated first...
+		if (hostNameOrIPAddr.equals("localhost")) {
+			// add a receiver for the local device...
+			localHostActionReceiver = new ActionReceiver();
+		}
+
 		sender = new ActionSender(hostNameOrIPAddr, ActionReceiver.DEFAULT_JAVA_PORT, ClientServerType.JAVA);
 	}
 
 	/**
 	 * Disconnects from the sender. This device becomes useless afterward, until you reconnect.
 	 */
-	public void stop() {
+	public void disconnect() {
 		sender.disconnect();
 		sender = null;
+		if (localHostActionReceiver != null) {
+			// Waits 2 seconds for any incoming events to be invoked
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			localHostActionReceiver.disconnect();
+			localHostActionReceiver = null;
+		}
 	}
 
 	/**

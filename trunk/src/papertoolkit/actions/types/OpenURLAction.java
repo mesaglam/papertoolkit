@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import papertoolkit.actions.Action;
+import papertoolkit.util.DebugUtils;
 
 
 /**
@@ -56,9 +57,8 @@ public class OpenURLAction implements Action {
 	 */
 	public void invoke() {
 		try {
-			System.out.println();
 			final URI toURI = url.toURI();
-			System.out.println("Got the URI");
+			DebugUtils.println("Got the URI");
 			Desktop.getDesktop().browse(toURI);
 		} catch (IOException e) {
 			e.printStackTrace();
