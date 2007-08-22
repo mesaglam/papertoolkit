@@ -67,4 +67,10 @@ public class OpenURLAction implements Action {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "Open [" + url + "] with the default browser.";
+	}
 }

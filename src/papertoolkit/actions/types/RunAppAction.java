@@ -68,4 +68,12 @@ public class RunAppAction implements Action {
 			e.printStackTrace();
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "Run the [" + executablePath + "] Application.";
+	}
+
 }

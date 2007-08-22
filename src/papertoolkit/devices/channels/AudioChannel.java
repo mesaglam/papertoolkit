@@ -30,7 +30,7 @@ public class AudioChannel {
 	 */
 	public void playSoundFile(File sound) {
 		PlaySoundAction action = new PlaySoundAction(sound);
-		parentDevice.invokeAction(action);
+		parentDevice.invoke(action);
 	}
 
 	/**
@@ -38,6 +38,6 @@ public class AudioChannel {
 	 */
 	public void readTextOutLoud(String text) {
 		TextToSpeechAction action = new TextToSpeechAction(text);
-		parentDevice.invokeAction(action);
+		parentDevice.invoke(action);
 	}
 }

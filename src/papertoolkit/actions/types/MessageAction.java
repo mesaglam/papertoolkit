@@ -6,7 +6,8 @@ import papertoolkit.util.DebugUtils;
 /**
  * <p>
  * Allows you to pass some information. Nothing happens if you invoke() it. The sole purpose of this
- * class is to pass an object to the other device.
+ * class is to pass an object to the other device. This is arguably the most powerful action, because
+ * it allows the receiver to do anything it wants once it receives the action.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

@@ -195,9 +195,9 @@ public class Device {
 		sender.disconnect();
 		sender = null;
 		if (localHostActionReceiver != null) {
-			// Waits 2 seconds for any incoming events to be invoked
+			// Waits a bit for any incoming events to be invoked
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(300);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -242,7 +242,7 @@ public class Device {
 	}
 
 	/**
-	 * @return
+	 * @return the name of this device.
 	 */
 	public String getName() {
 		return name;
@@ -253,7 +253,7 @@ public class Device {
 	 * 
 	 * @param action
 	 */
-	public void invokeAction(Action action) {
+	public void invoke(Action action) {
 		if (sender != null) {
 			sender.invokeRemoteAction(action);
 		} else {

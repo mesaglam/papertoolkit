@@ -40,7 +40,7 @@ public class ActionChannel {
 	public void openURL(String urlString) {
 		try {
 			OpenURLAction a = new OpenURLAction(new URL(urlString));
-			parentDevice.invokeAction(a);
+			parentDevice.invoke(a);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -52,7 +52,7 @@ public class ActionChannel {
 	public void typeString(String typeThis) {
 		RobotAction a = new RobotAction();
 		a.typeString(typeThis);
-		parentDevice.invokeAction(a);
+		parentDevice.invoke(a);
 	}
 
 	/**
@@ -60,6 +60,6 @@ public class ActionChannel {
 	 */
 	public void openFile(File f) {
 		OpenFileAction a = new OpenFileAction(f);
-		parentDevice.invokeAction(a);
+		parentDevice.invoke(a);
 	}
 }
