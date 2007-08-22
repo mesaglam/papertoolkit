@@ -181,7 +181,7 @@ public class BuddySketch extends Application {
 
 		// tell the OTHER device to display it too!
 		MessageAction a = new MessageAction(DISPLAY_PHOTO, imgFile);
-		device.invokeAction(a);
+		device.invoke(a);
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class BuddySketch extends Application {
 
 		// tell the OTHER device to display this ink too!
 		MessageAction a = new MessageAction(DISPLAY_INK, newInkOnly);
-		device.invokeAction(a);
+		device.invoke(a);
 	}
 
 	/**

@@ -28,7 +28,7 @@ public class LocalDevice {
 		// we need a nice way to connect devices at runtime... so that they will automatically swap out/in
 		// ActionSenders and Receivers...
 		device = new Device();
-		device.invokeAction(new OpenURLAction("http://www.yahoo.com/"));
+		device.invoke(new OpenURLAction("http://www.yahoo.com/"));
 		device.disconnect();
 	}
 
