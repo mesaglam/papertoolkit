@@ -167,7 +167,7 @@ public class ActionReceiver {
 		this(ActionReceiver.DEFAULT_JAVA_PORT, ClientServerType.JAVA, new String[] { "*" });
 		setConnectionListener(new ActionReceiverConnectionListener() {
 			public void newConnectionFrom(String hostName, String ipAddr) {
-				DebugUtils.println("New Connection From: " + hostName + " " + ipAddr);
+				// DebugUtils.println("New Connection From: " + hostName + " " + ipAddr);
 			}
 		});
 		addActionHandler(new ActionHandler());
@@ -190,7 +190,7 @@ public class ActionReceiver {
 	public ActionReceiver(int tcpipPort, ClientServerType type, String... trusted) {
 		trustedSenders.addAll(Arrays.asList(trusted));
 		readTrustedSendersFromConfigFile();
-		DebugUtils.println("Trusted Client Set: " + trustedSenders);
+		// DebugUtils.println("Trusted Client Set: " + trustedSenders);
 
 		try {
 			serverSocket = new ServerSocket(tcpipPort);

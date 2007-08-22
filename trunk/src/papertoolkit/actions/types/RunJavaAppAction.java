@@ -5,10 +5,9 @@ import java.lang.reflect.Method;
 
 import papertoolkit.actions.Action;
 
-
 /**
  * <p>
- * Runs the main method of a java class.
+ * Runs the main method of a java class. The class has to be in your classpath at runtime of the toolkit...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -19,6 +18,9 @@ import papertoolkit.actions.Action;
  */
 public class RunJavaAppAction implements Action {
 
+	/**
+	 * e.g. MyClass.class
+	 */
 	private Class<?> classToRun;
 
 	/**
@@ -50,4 +52,7 @@ public class RunJavaAppAction implements Action {
 		}
 	}
 
+	public String toString() {
+		return "Run Java Application: " + classToRun.getName() + ".main";
+	}
 }

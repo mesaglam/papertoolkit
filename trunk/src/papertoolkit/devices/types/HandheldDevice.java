@@ -13,7 +13,6 @@ import papertoolkit.devices.Device;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class HandheldDevice extends Device {
-
 	public HandheldDevice(String theHostNameOrIPAddr, String descriptiveName) {
 		super(theHostNameOrIPAddr, descriptiveName);
 	}

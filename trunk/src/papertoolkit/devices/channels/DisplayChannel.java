@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.io.File;
 
 import papertoolkit.devices.Device;
-import papertoolkit.util.DebugUtils;
 import papertoolkit.util.graphics.ImageUtils;
 
 /**

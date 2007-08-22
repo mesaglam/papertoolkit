@@ -116,6 +116,8 @@ public class DisplayGraphicsAction implements Action {
 		}
 	}
 
+	private boolean bringToFront;
+
 	/**
 	 * 
 	 */
@@ -133,8 +135,6 @@ public class DisplayGraphicsAction implements Action {
 	private Point frameOrigin;
 
 	private int frameWidth = 800;
-
-	private boolean bringToFront;
 
 	/**
 	 * 
@@ -238,6 +238,10 @@ public class DisplayGraphicsAction implements Action {
 		extendedState = JFrame.NORMAL;
 	}
 
+	public void setBringToFront(boolean flag) {
+		bringToFront = flag;
+	}
+
 	/**
 	 * @param col
 	 */
@@ -259,9 +263,5 @@ public class DisplayGraphicsAction implements Action {
 	public void setFrameSize(int w, int h) {
 		frameWidth = w;
 		frameHeight = h;
-	}
-
-	public void setBringToFront(boolean flag) {
-		bringToFront = flag;
 	}
 }

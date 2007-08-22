@@ -1,5 +1,6 @@
 package papertoolkit.actions.types;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import papertoolkit.actions.Action;
@@ -34,6 +35,14 @@ public class OpenURL2Action implements Action {
 	private String browser;
 
 	private URL url;
+
+	public OpenURL2Action(String urlString) {
+		try {
+			url = new URL(urlString);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * @param theURL
@@ -73,4 +82,10 @@ public class OpenURL2Action implements Action {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "Open [" + url + "] with the default browser.";
+	}
 }

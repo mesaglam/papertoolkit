@@ -1,6 +1,7 @@
 package papertoolkit;
 
 import java.awt.AWTException;
+import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -58,6 +59,7 @@ import papertoolkit.util.DebugUtils;
 import papertoolkit.util.StringUtils;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.graphics.ImageCache;
+import papertoolkit.util.graphics.ImageUtils;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
@@ -175,6 +177,21 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @param relativePath
+	 * @return a file under the /data/ directory...
+	 */
+	public static File getDataFile(String relativePath) {
+		return new File(new File(getToolkitRootPath(), "/data/"), relativePath);
+	}
+
+	/**
+	 * @return
+	 */
+	public static Image getPaperToolkitIcon() {
+		return ImageUtils.readImage(getDataFile("icons/paper.png"));
+	}
+
+	/**
 	 * @return the location of pattern data, from the configuration files.
 	 */
 	public static File getPatternPath() {
@@ -189,7 +206,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Can only point to files...
+	 * Can only point to files that are in the "classpath"...
 	 * 
 	 * @param resourcePath
 	 * @return
@@ -203,9 +220,13 @@ public class PaperToolkit {
 		}
 		return null;
 	}
-
-	private static File getToolkitDataFile(String relativePath) {
-		return new File(new File(getToolkitRootPath(), "/data/"), relativePath);
+	
+	/**
+	 * @param relativePath
+	 * @return
+	 */
+	public static File getToolkitFile(String relativePath) {
+		return new File(getToolkitRootPath(), relativePath);
 	}
 
 	/**
@@ -693,7 +714,7 @@ public class PaperToolkit {
 		if (trayIcon == null) {
 			// this is the icon that sits in our tray...
 			trayIcon = new TrayIcon(ImageCache.loadBufferedImage(PaperToolkit
-					.getToolkitDataFile("/icons/paper.png")), "Paper Toolkit", getTrayPopupMenu());
+					.getDataFile("/icons/paper.png")), "Paper Toolkit", getTrayPopupMenu());
 			trayIcon.setImageAutoSize(true);
 			try {
 				if (SystemTray.isSupported()) {

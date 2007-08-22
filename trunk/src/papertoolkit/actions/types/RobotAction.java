@@ -14,16 +14,17 @@ import java.util.List;
 import javax.swing.KeyStroke;
 
 import papertoolkit.actions.Action;
+import papertoolkit.util.ArrayUtils;
+import papertoolkit.util.StringUtils;
 import papertoolkit.util.graphics.ImageUtils;
-
 
 /**
  * <p>
  * Makes the machine run low level keyboard and mouse actions.
  * </p>
  * <p>
- * TODO: Implement higher level calls, like drag from x1,y1 to x2,y2. Which ends up being a mouse
- * down at x1,y1, mouseMove, and mouseUp at x2,y2.
+ * TODO: Implement higher level calls, like drag from x1,y1 to x2,y2. Which ends up being a mouse down at
+ * x1,y1, mouseMove, and mouseUp at x2,y2.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -63,6 +64,10 @@ public class RobotAction implements Action {
 			method = m;
 			arguments = args;
 		}
+
+		public String toString() {
+			return method.getCommand() + ":" + ArrayUtils.toString(arguments);
+		}
 	}
 
 	/**
@@ -70,10 +75,30 @@ public class RobotAction implements Action {
 	 */
 	public static enum RobotMethod {
 		CREATE_SCREEN_CAPTURE("CreateScreenCapture"), /* does nothing */
-		DELAY("Delay"), GET_PIXEL_COLOR("GetPixelColor"), KEY_PRESS("KPress"), KEY_RELEASE("KRelease"), KEY_TYPE(
-				"KType"), MOUSE_MOVE("MMove"), MOUSE_PRESS("MPress"), MOUSE_RELEASE("MRelease"), MOUSE_WHEEL(
-				"MWheel"), SET_AUTO_DELAY("SADelay"), SET_AUTO_WAIT_FOR_IDLE("SAWaitForIdle"), WAIT_FOR_IDLE(
-				"WaitForIdle");
+
+		DELAY("Delay"),
+
+		GET_PIXEL_COLOR("GetPixelColor"),
+
+		KEY_PRESS("KPress"),
+
+		KEY_RELEASE("KRelease"),
+
+		KEY_TYPE("KType"),
+
+		MOUSE_MOVE("MMove"),
+
+		MOUSE_PRESS("MPress"),
+
+		MOUSE_RELEASE("MRelease"),
+
+		MOUSE_WHEEL("MWheel"),
+
+		SET_AUTO_DELAY("SADelay"),
+
+		SET_AUTO_WAIT_FOR_IDLE("SAWaitForIdle"),
+
+		WAIT_FOR_IDLE("WaitForIdle");
 
 		private String command;
 
@@ -183,8 +208,7 @@ public class RobotAction implements Action {
 				rob.delay((Integer) arguments[0]);
 				break;
 			case GET_PIXEL_COLOR: // args: int x, int y
-				final Color pixelColor = rob.getPixelColor((Integer) arguments[0],
-						(Integer) arguments[1]);
+				final Color pixelColor = rob.getPixelColor((Integer) arguments[0], (Integer) arguments[1]);
 				System.out.println("RobotAction :: Pixel Color at " + arguments[0] + "," + arguments[1]
 						+ " is " + pixelColor);
 				// TODO: Do something more interesting with this data
@@ -225,7 +249,7 @@ public class RobotAction implements Action {
 
 	/**
 	 * @param keycode
-	 *           e.g, KeyEvent.VK_A, or KeyEvent.VK_SHIFT
+	 *            e.g, KeyEvent.VK_A, or KeyEvent.VK_SHIFT
 	 */
 	public void keyPress(int keycode) {
 		commandsToRun.add(new RobotCommand(RobotMethod.KEY_PRESS, keycode));
@@ -240,7 +264,7 @@ public class RobotAction implements Action {
 
 	/**
 	 * @param keycode
-	 *           e.g, KeyEvent.VK_A, or KeyEvent.VK_SHIFT
+	 *            e.g, KeyEvent.VK_A, or KeyEvent.VK_SHIFT
 	 */
 	public void keyType(int keycode) {
 		keyPress(keycode);
@@ -279,8 +303,8 @@ public class RobotAction implements Action {
 	 * @param direction
 	 */
 	public void mouseWheel(int wheelAmt, MouseWheelDirection direction) {
-		commandsToRun.add(new RobotCommand(RobotMethod.MOUSE_WHEEL, Math.abs(wheelAmt)
-				* direction.getValue()));
+		commandsToRun
+				.add(new RobotCommand(RobotMethod.MOUSE_WHEEL, Math.abs(wheelAmt) * direction.getValue()));
 	}
 
 	/**
@@ -320,4 +344,7 @@ public class RobotAction implements Action {
 		commandsToRun.add(new RobotCommand(RobotMethod.WAIT_FOR_IDLE));
 	}
 
+	public String toString() {
+		return "Invoke Java Robot Commands: " + commandsToRun;
+	}
 }
