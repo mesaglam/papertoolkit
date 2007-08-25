@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import papertoolkit.config.Constants;
+import papertoolkit.application.config.Constants;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.PenJitterFilter.PenUpCallback;
 import papertoolkit.pen.streaming.data.PenServerJavaObjectXMLSender;

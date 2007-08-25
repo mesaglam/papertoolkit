@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.config.Constants;
+import papertoolkit.application.config.Constants;
 import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.PenEventType;

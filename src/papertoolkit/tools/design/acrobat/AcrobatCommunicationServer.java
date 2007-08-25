@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.config.Constants;
+import papertoolkit.application.config.Constants;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 

@@ -17,10 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import papertoolkit.PaperToolkit;
+import papertoolkit.application.config.StartupOptions;
 import papertoolkit.tools.components.InkPanel;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.WindowUtils;
-
 
 /**
  * <p>
@@ -278,7 +278,13 @@ public class HandwritingCaptureDebugger extends JFrame {
 	 */
 	private void startApp() {
 		app = new CaptureApplication(this);
-		PaperToolkit p = new PaperToolkit(true, true /* app manager */, true);
+
+		StartupOptions options = new StartupOptions();
+		options.setParamApplyGUILookAndFeel(true);
+		options.setParamLoadAppManager(true);
+		options.setParamTurnOnHandwritingRecognitionServer(true);
+
+		PaperToolkit p = new PaperToolkit(options);
 		p.startApplication(app);
 	}
 

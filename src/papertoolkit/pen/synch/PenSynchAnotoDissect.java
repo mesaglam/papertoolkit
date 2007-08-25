@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +20,7 @@ import javax.xml.stream.events.XMLEvent;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.ink.Ink;
 import papertoolkit.pen.ink.InkStroke;
+import papertoolkit.util.DateUtils;
 import papertoolkit.util.DebugUtils;
 
 
@@ -233,12 +233,12 @@ public class PenSynchAnotoDissect {
 					Attribute timeAttr = startEvent.getAttributeByName(new QName("time"));
 					String time = timeAttr.getValue();
 					// DebugUtils.println(time);
-					universalTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a").parse(time);
+					universalTime = DateUtils.parseDateTime(time);
 				} else if (elementName.equals("localTime")) {
 					Attribute timeAttr = startEvent.getAttributeByName(new QName("time"));
 					String time = timeAttr.getValue();
 					// DebugUtils.println(time);
-					localTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a").parse(time);
+					localTime = DateUtils.parseDateTime(time);
 				} else if (elementName.equals("penID")) {
 					Attribute idAttr = startEvent.getAttributeByName(new QName("id"));
 					penID = idAttr.getValue();

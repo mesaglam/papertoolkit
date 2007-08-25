@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 import papertoolkit.actions.Action;
-import papertoolkit.config.Configuration;
-import papertoolkit.config.Constants;
+import papertoolkit.application.config.Configuration;
+import papertoolkit.application.config.Constants;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.networking.ClientServerType;
 
