@@ -54,7 +54,7 @@ public class Spreadsheet extends Application {
 
 	public static void main(String[] args) {
 		Spreadsheet spreadsheet = new Spreadsheet();
-		new PaperToolkit(true).loadApplication(spreadsheet);
+		new PaperToolkit().loadApplication(spreadsheet);
 	}
 
 }

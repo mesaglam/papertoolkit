@@ -35,7 +35,7 @@ import papertoolkit.util.DebugUtils;
 public class PPTAdvancer extends Application {
 
 	public static void main(String[] args) {
-		PaperToolkit toolkit = new PaperToolkit(true, true, false);
+		PaperToolkit toolkit = new PaperToolkit();
 		toolkit.startApplication(new PPTAdvancer(false));
 	}
 

@@ -3,6 +3,7 @@ package papertoolkit.demos.debug;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.ClickAdapter;
 import papertoolkit.events.handlers.ClickHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
@@ -28,27 +29,13 @@ public class DebugPaperApplication {
 		Sheet sheet = new Sheet(8.5, 11);
 
 		Region r = new Region("Ink", 1, 1, 6, 4);
-		r.addEventHandler(new ClickHandler() {
-
-			@Override
+		r.addEventHandler(new ClickAdapter() {
 			public void clicked(PenEvent e) {
 				DebugUtils.println(e.getPenName() + " Clicked");
 			}
-
-			@Override
-			public void pressed(PenEvent e) {
-
-			}
-
-			@Override
-			public void released(PenEvent e) {
-
-			}
-
 		});
 
 		ButtonRegion buttonRegion = new ButtonRegion("Send", 6, 9, 2, 1.3) {
-			@Override
 			protected void onClick(PenEvent e) {
 				DebugUtils.println("I got clicked");
 			}
@@ -62,7 +49,7 @@ public class DebugPaperApplication {
 		app.addPenInput(new Pen("Laptop Pen", "171.66.51.122"));
 		app.addSheet(sheet); // no pattern info xml file loaded...
 
-		PaperToolkit p = new PaperToolkit(true, false, false);
+		PaperToolkit p = new PaperToolkit();
 		p.startApplication(app);
 	}
 }

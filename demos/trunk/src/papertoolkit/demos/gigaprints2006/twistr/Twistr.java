@@ -418,7 +418,7 @@ public class Twistr {
 		application.addPenInput(pen2L);
 
 		// load it
-		PaperToolkit p = new PaperToolkit(true);
+		PaperToolkit p = new PaperToolkit();
 		p.startApplication(application);
 	}
 

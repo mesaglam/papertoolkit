@@ -15,7 +15,6 @@ import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
- * 
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -31,7 +30,7 @@ public class Document extends Application {
 	 */
 	public static void main(String[] args) {
 		Document spreadsheet = new Document();
-		new PaperToolkit(true).loadApplication(spreadsheet);
+		new PaperToolkit().loadApplication(spreadsheet);
 	}
 
 	private Region region;

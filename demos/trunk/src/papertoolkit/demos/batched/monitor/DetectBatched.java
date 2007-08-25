@@ -4,6 +4,7 @@ import java.io.File;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
+import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
@@ -30,7 +31,9 @@ public class DetectBatched extends Application {
 
 	public static void main(String[] args) {
 		DetectBatched batched = new DetectBatched();
-		PaperToolkit paperToolkit = new PaperToolkit(true /* use the app manager */);
+		StartupOptions options = new StartupOptions();
+		options.setParamLoadAppManager(true);
+		PaperToolkit paperToolkit = new PaperToolkit(options);
 		paperToolkit.startApplication(batched);
 	}
 

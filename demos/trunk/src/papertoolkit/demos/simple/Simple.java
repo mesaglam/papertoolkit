@@ -39,7 +39,7 @@ public class Simple {
 		s.addRegion(r);
 		app.addSheet(s);
 		app.addPenInput(new Pen("Primary Pen"));
-		PaperToolkit toolkit = new PaperToolkit(true /* app manager */);
+		PaperToolkit toolkit = new PaperToolkit();
 		toolkit.loadApplication(app);
 	}
 }

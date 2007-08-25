@@ -11,15 +11,13 @@ import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.tools.develop.CodeGenerator;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
- * A GIGAprint with an Avian Flu MessMap developed by Robert Horn. Ambiently, the GIGAprint will
- * flip through its database of photos (with backing URLs). If a person is interested, he will tap
- * the stop button, and the GIGAprint displays the article on screen. Additionally, you can tap
- * regions on the print which will bring up the associated article. Finally, you can write your
- * comments in the capture area which will update an online representation of the avian flu mess
- * map. We will do something similar for the Timeline.
+ * A GIGAprint with an Avian Flu MessMap developed by Robert Horn. Ambiently, the GIGAprint will flip through
+ * its database of photos (with backing URLs). If a person is interested, he will tap the stop button, and the
+ * GIGAprint displays the article on screen. Additionally, you can tap regions on the print which will bring
+ * up the associated article. Finally, you can write your comments in the capture area which will update an
+ * online representation of the avian flu mess map. We will do something similar for the Timeline.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -37,7 +35,7 @@ public class MessMapGIGAprint extends Application {
 		MessMapGIGAprint print = new MessMapGIGAprint();
 		// print.generateCode();
 
-		PaperToolkit p = new PaperToolkit(true /* use app manager */);
+		PaperToolkit p = new PaperToolkit();
 		p.loadApplication(print);
 	}
 
@@ -192,7 +190,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupAntiviralProducersNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on AntiviralProducersNature.");
 			}
@@ -201,7 +199,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupCommunicationsComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on CommunicationsComments.");
 			}
@@ -210,7 +208,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupCommunicationsWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on CommunicationsWikify.");
 			}
@@ -219,7 +217,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupEarlyFluNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on EarlyFluNature.");
 			}
@@ -228,7 +226,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupEducationComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on EducationComments.");
 			}
@@ -237,7 +235,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupEducationWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on EducationWikify.");
 			}
@@ -246,7 +244,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupFinancialComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on FinancialComments.");
 			}
@@ -255,7 +253,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupFinancialWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on FinancialWikify.");
 			}
@@ -264,7 +262,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupFoodComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on FoodComments.");
 				System.out.println(e.getPercentageLocation());
@@ -274,7 +272,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupFoodWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on FoodWikify.");
 			}
@@ -283,7 +281,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupFreeComments1(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on FreeComments1.");
 			}
@@ -292,7 +290,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupFreeComments1Wikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on FreeComments1Wikify.");
 			}
@@ -301,7 +299,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupFreeComments2(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on FreeComments2.");
 			}
@@ -310,7 +308,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupFreeComments2Wikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on FreeComments2Wikify.");
 			}
@@ -319,7 +317,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupHealthCareNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on HealthCareNature.");
 			}
@@ -328,7 +326,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupHowManyMightDie(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on HowManyMightDie.");
 			}
@@ -337,7 +335,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupInternationalNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on InternationalNature.");
 			}
@@ -346,7 +344,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupLocalCommunitiesNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on LocalCommunitiesNature.");
 			}
@@ -355,7 +353,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupNationalNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on NationalNature.");
 			}
@@ -364,7 +362,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupPublicHealthComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on PublicHealthComments.");
 			}
@@ -373,7 +371,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupPublicHealthWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on PublicHealthWikify.");
 			}
@@ -382,7 +380,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupPublicSafetyComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on PublicSafetyComments.");
 			}
@@ -391,7 +389,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupPublicSafetyWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on PublicSafetyWikify.");
 			}
@@ -400,7 +398,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupPublicServicesComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on PublicServicesComments.");
 			}
@@ -409,7 +407,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupPublicServicesWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on PublicServicesWikify.");
 			}
@@ -418,7 +416,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupPublicUtilitiesComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on PublicUtilitiesComments.");
 			}
@@ -427,7 +425,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupPublicUtilitiesWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on PublicUtilitiesWikify.");
 			}
@@ -436,7 +434,7 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupRichNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
+
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on RichNature.");
 			}
@@ -445,7 +443,6 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupScienceOfAntiviralsNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on ScienceOfAntiviralsNature.");
 			}
@@ -454,7 +451,6 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupTransportationComments(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on TransportationComments.");
 			}
@@ -463,7 +459,6 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupTransportationWikify(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on TransportationWikify.");
 			}
@@ -472,7 +467,6 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupUnknownsNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on UnknownsNature.");
 			}
@@ -481,7 +475,6 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupVaccineNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on VaccineNature.");
 			}
@@ -490,7 +483,6 @@ public class MessMapGIGAprint extends Application {
 
 	private void setupVirusItselfNature(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on VirusItselfNature.");
 			}

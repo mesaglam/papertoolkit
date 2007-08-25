@@ -72,7 +72,7 @@ public class DebugShowMeApp {
 		// whole sheet at a time, and do the regions automatically? =)
 		app.addSheet(sheet);
 
-		PaperToolkit p = new PaperToolkit(true, false, false);
+		PaperToolkit p = new PaperToolkit();
 		p.startApplication(app);
 	}
 }

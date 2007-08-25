@@ -50,8 +50,7 @@ public class BoingBoingPaperApp extends Application {
 
 	public static void main(String[] args) {
 		BoingBoingPaperApp print = new BoingBoingPaperApp();
-
-		PaperToolkit p = new PaperToolkit(true);
+		PaperToolkit p = new PaperToolkit();
 		p.loadApplication(print);
 	}
 

@@ -13,8 +13,7 @@ public class CommentTester extends Application {
 	public static void main(String[] args) {
 		CommentTester print = new CommentTester();
 		// print.generateCode();
-
-		PaperToolkit p = new PaperToolkit(true /* use app manager */);
+		PaperToolkit p = new PaperToolkit();
 		p.loadApplication(print);
 	}
 

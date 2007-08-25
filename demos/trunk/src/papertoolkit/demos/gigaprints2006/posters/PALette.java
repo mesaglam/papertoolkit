@@ -28,7 +28,7 @@ public class PALette extends Application {
 	public static void main(String[] args) {
 		// if we do not add a pen, the PaperToolkit will add a pen for us...
 		final Application a = new PALette();
-		final PaperToolkit p = new PaperToolkit(true /* use app manager */);
+		final PaperToolkit p = new PaperToolkit();
 		p.startApplication(a);
 	}
 

@@ -11,8 +11,9 @@ import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
- * Four Buttons, with event handlers. You can use them in Batched Mode or Real-time Mode, because Batched
- * Event Handling happens in more or less the same way.
+ * Four Buttons, with attached event handlers. You can use them in Batched Mode or Real-time Mode, because batched
+ * Event Handling looks the same to the program (other than the extra PenSynchEvent that is dispatched).
+ * 
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -20,6 +21,7 @@ import papertoolkit.util.DebugUtils;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * @lastWorkedOn DD Month YYYY
  */
 public class Buttons extends Application {
 
@@ -27,15 +29,14 @@ public class Buttons extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PaperToolkit tk = new PaperToolkit(true);
+		PaperToolkit tk = new PaperToolkit();
 		tk.startApplication(new Buttons());
 	}
 
 	private Sheet sheet;
 
 	/**
-	 * Design Flaw: Why do we need to call addSheet(Sheet), render the sheet, and then edit the code to use
-	 * addSheet(Sheet, File) instead? This should be fixed somehow...
+	 * 
 	 */
 	public Buttons() {
 		super("Buttons");

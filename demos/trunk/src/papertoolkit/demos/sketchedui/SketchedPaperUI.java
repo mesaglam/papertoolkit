@@ -14,7 +14,6 @@ import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.tools.design.swing.SheetFrame;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * Generated code
  * 
@@ -26,8 +25,7 @@ public class SketchedPaperUI extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		PaperToolkit p = new PaperToolkit(true /* use app manager */);
+		PaperToolkit p = new PaperToolkit();
 		p.loadApplication(new SketchedPaperUI());
 	}
 
@@ -107,7 +105,5 @@ public class SketchedPaperUI extends Application {
 				DebugUtils.println("You clicked on Region4.");
 			}
 		});
-
 	}
-
 }
