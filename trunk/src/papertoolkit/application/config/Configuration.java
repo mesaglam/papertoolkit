@@ -1,13 +1,9 @@
-package papertoolkit.config;
+package papertoolkit.application.config;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 

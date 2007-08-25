@@ -30,7 +30,8 @@ import javax.swing.filechooser.FileSystemView;
 import papertoolkit.actions.remote.ActionReceiverTrayApp;
 import papertoolkit.application.Application;
 import papertoolkit.application.ApplicationManager;
-import papertoolkit.config.Configuration;
+import papertoolkit.application.config.Configuration;
+import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.StrokeHandler;
@@ -476,43 +477,33 @@ public class PaperToolkit {
 	 * events that applications generate will be fed through this single event engine.
 	 */
 	public PaperToolkit() {
-		this(false);
+		this(new StartupOptions()); // default options...
 	}
 
 	/**
-	 * @param useAppManager
+	 * Use a custom parameter block, that lets you customize the look and feel, handwriting recognition, etc...
 	 */
-	public PaperToolkit(boolean useAppManager) {
-		this(true, useAppManager, false /* no handwriting */);
-	}
-
-	/**
-	 * TODO: Make the look and feel default to OFF, or somehow research a mixed look and feel solution...
-	 * 
-	 * @param useAppManager
-	 */
-	public PaperToolkit(boolean useLookAndFeel, boolean useAppManager, boolean useHandwritingRecognitionServer) {
+	public PaperToolkit(StartupOptions startupOptions) {
 		loadStartupConfiguration();
 
-		if (useLookAndFeel) {
+		if (startupOptions.getParamApplyGUILookAndFeel()) {
 			initializeLookAndFeel();
 		}
 
 		eventDispatcher = new EventDispatcher();
 		batchedDataDispatcher = new BatchedDataDispatcher(eventDispatcher);
 
+		// the handwriting server starts up only if the sheet has a handwriting recognizer... (or something like that)
 		// Start the local server up whenever the paper toolkit is initialized.
 		// the either flag can override the other. They will both need to be
-		// TRUE to actually load
-		// it.
-		if (useHandwriting && useHandwritingRecognitionServer) {
+		// TRUE to actually load it.
+		if (useHandwriting && startupOptions.getParamTurnOnHandwritingRecognitionServer()) {
 			HandwritingRecognitionService.getInstance();
 		}
 
 		// whether or not to show the app manager GUI when an application is
-		// loaded
-		// the idea is that one can load multiple applications (TODO)!
-		useApplicationManager(useAppManager);
+		// loaded the idea is that one can load multiple applications (TODO)!
+		useApplicationManager(startupOptions.getParamLoadAppManager());
 	}
 
 	/**

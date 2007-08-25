@@ -3,7 +3,7 @@
  */
 package papertoolkit.units;
 
-import papertoolkit.config.Configuration;
+import papertoolkit.application.config.Configuration;
 import papertoolkit.units.conversion.PixelsPerInch;
 
 /**

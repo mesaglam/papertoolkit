@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.config.Constants;
+import papertoolkit.application.config.Constants;
 import papertoolkit.flash.FlashCommunicationServer;
 import papertoolkit.flash.FlashListener;
 import papertoolkit.flash.FlashPenListener;

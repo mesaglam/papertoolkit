@@ -1,4 +1,4 @@
-package papertoolkit.config;
+package papertoolkit.application.config;
 
 /**
  * <p>

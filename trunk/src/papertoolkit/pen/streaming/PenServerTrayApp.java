@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.config.Constants;
+import papertoolkit.application.config.Constants;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.communications.COMPort;

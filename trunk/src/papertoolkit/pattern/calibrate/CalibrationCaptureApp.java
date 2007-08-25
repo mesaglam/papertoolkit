@@ -110,7 +110,7 @@ public class CalibrationCaptureApp {
 		Sheet sheet = app.createSheet();
 		Region region = sheet.createRegion();
 		region.addEventHandler(getBatchedInkHandler());
-		toolkit = new PaperToolkit(true, false, false);
+		toolkit = new PaperToolkit();
 		toolkit.startApplication(app);
 	}
 

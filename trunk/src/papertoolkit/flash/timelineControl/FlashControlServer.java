@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import papertoolkit.config.Constants;
+import papertoolkit.application.config.Constants;
 
 
 /**

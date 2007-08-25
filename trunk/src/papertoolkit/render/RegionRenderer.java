@@ -8,7 +8,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-import papertoolkit.config.Configuration;
+import papertoolkit.application.config.Configuration;
 import papertoolkit.paper.Region;
 import papertoolkit.units.Points;
 import papertoolkit.units.Units;

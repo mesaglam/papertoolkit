@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import papertoolkit.config.Constants;
+import papertoolkit.application.config.Constants;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
