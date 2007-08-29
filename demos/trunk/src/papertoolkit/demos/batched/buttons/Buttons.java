@@ -11,9 +11,9 @@ import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
- * Four Buttons, with attached event handlers. You can use them in Batched Mode or Real-time Mode, because batched
- * Event Handling looks the same to the program (other than the extra PenSynchEvent that is dispatched).
- * 
+ * Four Buttons, with attached event handlers. You can use them in Batched Mode or Real-time Mode, because
+ * batched Event Handling looks the same to the program (other than the extra PenSynchEvent that is
+ * dispatched).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -29,19 +29,20 @@ public class Buttons extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PaperToolkit tk = new PaperToolkit();
-		tk.startApplication(new Buttons());
+		PaperToolkit.runApplication(new Buttons());
 	}
 
 	private Sheet sheet;
 
 	/**
-	 * 
+	 * How will the application map pen coordinates to your regions and event handlers? Well, whenever the app
+	 * is started, it automatically creates a mapping object that is stored in
+	 * PaperToolkit/mappings/*.patternInfo.xml. This mapping object can be updated if you render a PDF, or if
+	 * you bind regions programmatically or at runtime.
 	 */
 	public Buttons() {
 		super("Buttons");
 		addSheet(getSheet());
-		// addSheet(getSheet(), new File("data/Batched/Buttons.patternInfo.xml"));
 		addPenInput(getPen());
 	}
 
