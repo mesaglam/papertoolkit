@@ -131,7 +131,7 @@ public class PaperToolkit {
 	private static final String REMOTE_PENS_KEY = "remotePens";
 
 	/**
-	 * The instance that is created when you use the convenience functions.
+	 * The instance that is created when you use the convenience function.
 	 */
 	private static PaperToolkit toolkitInstance;
 
@@ -221,7 +221,7 @@ public class PaperToolkit {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param relativePath
 	 * @return
@@ -269,7 +269,6 @@ public class PaperToolkit {
 			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 			xmlEngine.alias("PenEvent", PenEvent.class);
-
 		}
 		return xmlEngine;
 	}
@@ -481,7 +480,8 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Use a custom parameter block, that lets you customize the look and feel, handwriting recognition, etc...
+	 * Use a custom parameter block, that lets you customize the look and feel, handwriting recognition,
+	 * etc...
 	 */
 	public PaperToolkit(StartupOptions startupOptions) {
 		loadStartupConfiguration();
@@ -493,7 +493,8 @@ public class PaperToolkit {
 		eventDispatcher = new EventDispatcher();
 		batchedDataDispatcher = new BatchedDataDispatcher(eventDispatcher);
 
-		// the handwriting server starts up only if the sheet has a handwriting recognizer... (or something like that)
+		// the handwriting server starts up only if the sheet has a handwriting recognizer... (or something
+		// like that)
 		// Start the local server up whenever the paper toolkit is initialized.
 		// the either flag can override the other. They will both need to be
 		// TRUE to actually load it.
@@ -515,8 +516,8 @@ public class PaperToolkit {
 	private void checkPatternMapsForUninitializedRegions(Collection<PatternToSheetMapping> mappings) {
 
 		if (trayIcon == null) {
-			DebugUtils
-					.println("No need to check for uninitialized pattern maps, as we're not using the system tray.");
+			DebugUtils.println("No need to check for uninitialized pattern maps, "
+					+ "as we're not using the system tray.");
 			return;
 		}
 
@@ -704,8 +705,9 @@ public class PaperToolkit {
 	private void getSystemTrayIcon() {
 		if (trayIcon == null) {
 			// this is the icon that sits in our tray...
-			trayIcon = new TrayIcon(ImageCache.loadBufferedImage(PaperToolkit
-					.getDataFile("/icons/paper.png")), "Paper Toolkit", getTrayPopupMenu());
+			trayIcon = new TrayIcon(ImageCache
+					.loadBufferedImage(PaperToolkit.getDataFile("/icons/paper.png")), "Paper Toolkit",
+					getTrayPopupMenu());
 			trayIcon.setImageAutoSize(true);
 			try {
 				if (SystemTray.isSupported()) {
@@ -801,15 +803,13 @@ public class PaperToolkit {
 		setStartupProperties(props);
 
 		// also check for a custom PaperToolkit.xml in the run directory of the
-		// application
-		// properties in that file will override the ones we just loaded from
+		// application properties in that file will override the ones we just loaded from
 		// the default location
 		// alternatively, you can just edit the default PaperToolkit.xml,
-		// located in
-		// data/config/PaperToolkit.xml
+		// located in data/config/PaperToolkit.xml
 		File localPropsFile = new File("PaperToolkit.xml");
 		if (localPropsFile.exists()) {
-			DebugUtils.println("Local Properties File Exists. Overriding Properties: ");
+			DebugUtils.println("Local Properties File Exists. Loading Properties from " + localPropsFile);
 			try {
 				localProperties.loadFromXML(new FileInputStream(localPropsFile));
 				setStartupProperties(localProperties);
