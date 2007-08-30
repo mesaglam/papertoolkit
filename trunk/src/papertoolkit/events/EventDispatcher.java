@@ -284,6 +284,10 @@ public class EventDispatcher {
 					}
 				}
 			}
+			
+			if (!eventHandledAtLeastOnce) {
+				DebugUtils.println("Incoming Event is Not Mapped to any Regions: " + penEvent);
+			}
 		}
 	}
 

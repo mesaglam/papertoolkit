@@ -372,4 +372,11 @@ public class Application {
 	public String toString() {
 		return name + " Application";
 	}
+
+	/**
+	 * 
+	 */
+	public void run() {
+		PaperToolkit.getInstance().startApplication(this);
+	}
 }
