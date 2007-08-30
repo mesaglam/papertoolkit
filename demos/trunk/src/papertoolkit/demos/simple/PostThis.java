@@ -2,7 +2,6 @@ package papertoolkit.demos.simple;
 
 import java.awt.Font;
 
-import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
@@ -36,7 +35,7 @@ public class PostThis extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PaperToolkit.runApplication(new PostThis());
+		new PostThis().run();
 	}
 
 	private HandwritingHandler handwritingRecognizer;

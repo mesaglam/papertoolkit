@@ -1,6 +1,5 @@
 package papertoolkit.demos.batched.buttons;
 
-import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
@@ -29,7 +28,7 @@ public class Buttons extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PaperToolkit.runApplication(new Buttons());
+		new Buttons().run();
 	}
 
 	private Sheet sheet;

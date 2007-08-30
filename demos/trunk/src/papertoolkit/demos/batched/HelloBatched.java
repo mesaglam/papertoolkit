@@ -39,7 +39,7 @@ public class HelloBatched {
 		Sheet sheet = app.createSheet(); // default size is 8.5 x 11
 		Region region = sheet.createRegion(); // default name; default size is size of sheet
 		region.addEventHandler(getInkHandler());
-		PaperToolkit.runApplication(app);
+		app.run();
 	}
 
 	private static EventHandler getInkHandler() {
