@@ -15,10 +15,12 @@ import javax.comm.SerialPortEvent;
 import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
 
+import papertoolkit.PaperToolkit;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.communications.COMPort;
+import papertoolkit.util.files.FileUtils;
 
 /**
  * <p>
@@ -103,7 +105,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 			return instance;
 		}
 
-		// set up a connection to the COM port read from it, and display to console
+		// set up a connection to the COM port read from it, and display to
+		// console
 		// boolean portFound = false;
 		if (port == null) {
 			port = DEFAULT_PORT;
@@ -133,25 +136,51 @@ public class PenStreamingConnection implements SerialPortEventListener {
 		DebugUtils.println(msg.toString());
 		System.out.flush();
 
-		System.err.println("Several Potential Problems: JavaCOMM is not installed / "
-				+ "Your Bluetooth Dongle is unplugged / "
-				+ "A COM port, named ANOTO STREAMING doesn't exist.");
+		System.err.println("Several Potential Problems:");
+		System.err.println("JavaCOMM is not installed or");
+		System.err.println("Your Bluetooth Dongle is unplugged or");
+		System.err.println("The file win32com.dll isn't in your PATH (or application rundir) or");
+		System.err.println("A COM port named ANOTO STREAMING doesn't exist.");
 
 		// make sure comm.jar and javax.comm.properties exists...
 		// e.g., C:\Program Files\Java\jre1.6.0_01
 		String pathToJava = System.getProperty("java.home");
 
-		// comm.jar should already be in our Eclipse build path... so we need not check here
+		// comm.jar should already be in our Eclipse build path... so we need
+		// not check here
 		// File commJar = new File(pathToJava, "lib/comm.jar");
 		// DebugUtils.println(commJar.exists());
 
 		File commProperties = new File(pathToJava, "lib/javax.comm.properties");
+		// if it does not... then we copy it over automatically!
 		if (!commProperties.exists()) {
-			DebugUtils.println(commProperties.getPath()
+			System.err.println(commProperties.getAbsolutePath()
 					+ " needs to be present for PaperToolkit to find your COM ports.");
-			System.err.println("Please copy the javax.comm.properties file into your JRE's lib directory.");
+
+			File commPropsSourceFile = PaperToolkit.getToolkitFile("lib/comm/javax.comm.properties");
+
+			System.err.println("Copying the javax.comm.properties file into your JRE's lib directory: "
+					+ commPropsSourceFile.getAbsolutePath());
+			System.err.println("Please restart this application.");
+
+			// copy it for you...
+			FileUtils.copy(commPropsSourceFile, commProperties);
 		}
 
+		File win32ComDLL = new File("./win32com.dll");
+		if (!win32ComDLL.exists()) {
+			System.err.println(win32ComDLL.getAbsolutePath()
+					+ " needs to be present for PaperToolkit to talk to your COM ports.");
+
+			File win32ComSourceFile = PaperToolkit.getToolkitFile("win32com.dll");
+
+			System.err.println("Copying the DLL into your application's rundir: "
+					+ win32ComSourceFile.getAbsolutePath());
+			System.err.println("Please restart this application.");
+
+			// copy it for you...
+			FileUtils.copy(win32ComSourceFile, win32ComDLL);
+		}
 		return null;
 	}
 
@@ -331,18 +360,22 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 				penIsUp = true;
 				for (PenListener pl : listeners) {
-					// on October 27, 2006, I changed behavior so that the pen up sample
+					// on October 27, 2006, I changed behavior so that the pen
+					// up sample
 					// now passes X & Y info
 					// before, it passed x=0, y=0
 					final PenSample penSample = new PenSample(lastX, lastY, 0, timestamp, true);
-					// on June 12, 2006, I changed the behavior so that a .sample event is NOT
-					// generated on pen up. It simply passes the pen up event with the timestamp along...
+					// on June 12, 2006, I changed the behavior so that a
+					// .sample event is NOT
+					// generated on pen up. It simply passes the pen up event
+					// with the timestamp along...
 					// thus, .sample is NEVER called with isPenUp() == true
 					// pl.sample(penSample);
 					pl.penUp(penSample);
 				}
 			}
-		} else if (nextUp == StreamingField.X) { // 4 bytes long, X Coordinate
+		} else if (nextUp == StreamingField.X) { // 4 bytes long, X
+			// Coordinate
 			numBytesCoord++;
 			x = x << 8; // shift left by one byte
 			x = x | (bCurrent & 0xFF); // attach the byte
@@ -352,7 +385,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 				nextUp = StreamingField.Y;
 				numBytesCoord = 0;
 			}
-		} else if (nextUp == StreamingField.Y) { // 4 bytes long, Y Coordinate
+		} else if (nextUp == StreamingField.Y) { // 4 bytes long, Y
+			// Coordinate
 			numBytesCoord++;
 			y = y << 8;
 			y = y | (bCurrent & 0xFF);
@@ -380,7 +414,8 @@ public class PenStreamingConnection implements SerialPortEventListener {
 			}
 
 			// IMPLEMENTATION NOTE:
-			// type 'float' is NOT long enough to hold the orignial X/Y and their
+			// type 'float' is NOT long enough to hold the orignial X/Y and
+			// their
 			// fraction part simutaneously, since the original X/Y is too big
 			// so we have to append the fraction part after conversion.
 
@@ -399,9 +434,11 @@ public class PenStreamingConnection implements SerialPortEventListener {
 			if (penIsUp) {
 				penIsUp = false;
 				for (PenListener pl : listeners) {
-					// Nov 12, 2006, I changed the behavior of .penDown to NOT send a .sample
+					// Nov 12, 2006, I changed the behavior of .penDown to NOT
+					// send a .sample
 					// event... because It seems rather redundant.
-					// so now, neither penUp nor penDown sends an extra sample event
+					// so now, neither penUp nor penDown sends an extra sample
+					// event
 					// penDown contains a true sample
 					// penUp just contains the values of the most recent sample
 					// It is designed this way to facilitate calibration.
@@ -412,16 +449,19 @@ public class PenStreamingConnection implements SerialPortEventListener {
 
 				for (PenListener pl : listeners) {
 					// June 12, 2006
-					// (ronyeh) I changed the behavior of pen listeners a bit here...
+					// (ronyeh) I changed the behavior of pen listeners a bit
+					// here...
 					// now, we only pass ONE pen sample to all listeners
-					// if there are multiple listeners, then they must make their own copies if
+					// if there are multiple listeners, then they must make
+					// their own copies if
 					// they're gonna keep them around
 					// (OR beware that others may have your samples too)
 					pl.sample(penSample);
 				}
 			}
 
-			// keep it around so that we can pass this information to the pen up event!
+			// keep it around so that we can pass this information to the pen up
+			// event!
 			lastSample = penSample;
 
 			// reset our values
