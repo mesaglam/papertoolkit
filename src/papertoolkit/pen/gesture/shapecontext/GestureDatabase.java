@@ -1,4 +1,4 @@
-package papertoolkit.pen.gesture;
+package papertoolkit.pen.gesture.shapecontext;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

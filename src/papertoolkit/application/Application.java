@@ -1,5 +1,9 @@
 package papertoolkit.application;
 
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +18,7 @@ import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pen.PenInput;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
+import papertoolkit.tools.design.swing.SheetFrame;
 
 /**
  * <p>
@@ -173,7 +178,27 @@ public class Application {
 	 * @return
 	 */
 	public DebuggingEnvironment getDebuggingEnvironment() {
+		if (debuggingEnvironment == null) {
+			debuggingEnvironment = new DebuggingEnvironment(this);
+		}
+
 		return debuggingEnvironment;
+	}
+
+	/**
+	 * Attaches to the popup menu. Allows us to drop into the Debug mode of a paper application, with event
+	 * visualizations and stuff. =)
+	 * 
+	 * @param app
+	 * @return
+	 */
+	private ActionListener getDebugListener() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DebuggingEnvironment debuggingEnvironment = getDebuggingEnvironment();
+				debuggingEnvironment.showFlashView();
+			}
+		};
 	}
 
 	/**
@@ -238,6 +263,47 @@ public class Application {
 	 */
 	public boolean isUserChoosingDestinationForPDF() {
 		return userChoosesPDFDestination;
+	}
+
+	/**
+	 * @param popupMenu
+	 */
+	public final void populateTrayMenu(PopupMenu popupMenu) {
+		final PopupMenu menu = new PopupMenu(getName());
+		popupMenu.add(menu);
+
+		final MenuItem debugItem = new MenuItem("Debug");
+		debugItem.addActionListener(getDebugListener());
+
+		final MenuItem renderItem = new MenuItem("Render " + sheets.size() + " Sheets to PDF");
+		renderItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				renderToPDF();
+			}
+		});
+
+		menu.add(debugItem);
+		menu.add(renderItem);
+
+		for (final Sheet s : getSheets()) {
+			MenuItem item = new MenuItem("GUI Simulator for Sheet [" + s.getName() + "]");
+			item.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					new SheetFrame(s, 640, 480);
+				}
+			});
+			menu.add(item);
+		}
+		populateTrayMenuExtensions(menu);
+	}
+
+	/**
+	 * This is an extension point. If you want to customize the tray menu, you can subclass this.
+	 * 
+	 * @param popupMenu
+	 */
+	public void populateTrayMenuExtensions(PopupMenu popupMenu) {
+		// nothing; subclasses can use this
 	}
 
 	/**
@@ -327,6 +393,13 @@ public class Application {
 	}
 
 	/**
+	 * 
+	 */
+	public void run() {
+		PaperToolkit.getInstance().startApplication(this);
+	}
+
+	/**
 	 * @param debugEnvironment
 	 */
 	public void setDebuggingEnvironment(DebuggingEnvironment debugEnvironment) {
@@ -373,10 +446,4 @@ public class Application {
 		return name + " Application";
 	}
 
-	/**
-	 * 
-	 */
-	public void run() {
-		PaperToolkit.getInstance().startApplication(this);
-	}
 }

@@ -101,6 +101,7 @@ public class SheetFrame extends JFrame {
 			// Set the bounds
 			c.setBounds((int) (r.getOriginX().getValue() * scale), (int) (r.getOriginY().getValue() * scale),
 					(int) (r.getWidth().getValue() * scale), (int) (r.getHeight().getValue() * scale));
+			setVisible(true);
 		}
 	}
 
