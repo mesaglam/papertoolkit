@@ -39,9 +39,10 @@ public class DebuggingEnvironment {
 	/**
 	 * @param paperApp
 	 */
-	public DebuggingEnvironment() {
+	public DebuggingEnvironment(Application app) {
 		// Start the local messaging server
 		flash = new FlashCommunicationServer();
+		setApp(app);
 	}
 
 	/**
@@ -93,7 +94,7 @@ public class DebuggingEnvironment {
 	/**
 	 * @param paperApp
 	 */
-	public void setApp(Application paperApp) {
+	private void setApp(Application paperApp) {
 		app = paperApp;
 		app.setDebuggingEnvironment(this);
 		// DebugUtils.println("Starting to debug " + app);
