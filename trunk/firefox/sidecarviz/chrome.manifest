@@ -1,0 +1,2 @@
+content  sidecarviz  chrome/content/
+overlay  chrome://browser/content/browser.xul  chrome://sidecarviz/content/sidecarvizOverlay.xul

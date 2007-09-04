@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<overlay id="sidecarvizOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	// This imports our javascript.
+	<script type="application/x-javascript" src="chrome://sidecarviz/content/sidecarvizOverlay.js"/>
+
+
+	// This is for the right click menu.
+	<popup id="contentAreaContextMenu">
+	  <menuitem id="sidecarviz" label="Copy to SideCar" accesskey="C" 
+	  insertafter="context-stop" oncommand="copyToSideCar();"/>
+	</popup>
+
+
+	// This is for the Tools menu.
+	<menupopup id="menu_ToolsPopup">
+		<menuitem insertafter="devToolsSeparator" label="Start SideCar"
+		accesskey="V" oncommand="startSideCar();" />	
+	</menupopup>
+</overlay>
+

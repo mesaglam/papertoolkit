@@ -7,6 +7,12 @@
 <font face="Trebuchet MS">
 This folder contains resources for interacting with Mozilla Firefox and Plugins.<br/>
 Firefox Plugins can provide added functionality to connect paper applications with the browsing experience.<br/>
+<br/>
+Installation Instructions:<br/>
+Package either of these plugins up as an XPI, such that the install.rdf is in the root directory of the ZIP/XPI file.
+Install the Mozilla Firefox extension by dragging it onto Firefox.
+<br/>
+After installing, navigate to your Mozilla Firefox extensions directory (e.g., C:\Documents and Settings\Ron Yeh\Application Data\Mozilla\Firefox\Profiles\tmyos3as.default\extensions) and look for a folder called sidecar|contentScraper@papertoolkit.ext. Delete it! Then, copy the redirect file from firefox\sidecarviz or firefox\contentScraper into the extensions folder. The ext file will tell firefox where to look on your file system. Make sure to update the ext file to point to the right place.
 </font>
 </body>
 </html>
