@@ -1,13 +1,7 @@
 package tools {
-	
 	import flash.display.Stage;
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
-	import flash.display.NativeWindow;
-	import flash.system.Shell;
-	import flash.events.InvokeEvent;
-	import flash.filesystem.File;
-	import flash.net.navigateToURL;
 	import flash.net.URLRequest;
 	
 	import java.JavaIntegration;
@@ -22,7 +16,6 @@ package tools {
 	public class ToolExplorerBackend extends Sprite {
 		
 		private var stageObj:Stage;
-		private var window:NativeWindow;
 		private var app:ToolExplorer;
 
 		// the mode to start in... 
@@ -35,11 +28,7 @@ package tools {
 		// constructor
 		public function ToolExplorerBackend(appObj:ToolExplorer):void {
 			app = appObj;
-			app.window.addEventListener(Event.CLOSE, windowCloseHandler);
-			window = app.window;		
-			stageObj = window.stage;
-			window.width = 1280;
-			window.height = 720;
+			stageObj = app.stage;
 			addListenerForCommandLineArguments();
 			setupToolList();
 		}			
@@ -114,22 +103,14 @@ package tools {
 		// Exits the Application...		
 		public function exit():void {
 			javaBackend.send("exitServer");
-			Shell.shell.exit();
 		}
 		
 		public function addListenerForCommandLineArguments():void {
-			Shell.shell.addEventListener(InvokeEvent.INVOKE, processCommandLineArguments);
 		}
 
 		// process the command line arguments
-		public function processCommandLineArguments(invocation:InvokeEvent):void{
+		public function processCommandLineArguments(invocation:Event):void{
 			var arguments:Array;
-			var currentDir:File;
-			
-			arguments = invocation.arguments;
-		    currentDir = invocation.currentDirectory;
-		    
-			trace("Current Directory: " + currentDir.nativePath);
 		    if (arguments.length > 0) {
 		    	// trace(arguments);
 		    	for each (var arg:String in arguments) {
@@ -150,13 +131,13 @@ package tools {
 
 		// handlers for Flex GUI buttons
 		public function browseToAuthorWebsite():void {
-			navigateToURL(new URLRequest("http://graphics.stanford.edu/~ronyeh"));			
+			flash.net.navigateToURL(new URLRequest("http://graphics.stanford.edu/~ronyeh"));			
 		}
 		public function browseToHCIWebsite():void {
-			navigateToURL(new URLRequest("http://hci.stanford.edu/"));			
+			flash.net.navigateToURL(new URLRequest("http://hci.stanford.edu/"));			
 		}
 		public function browseToDocumentationWebsite():void {
-			navigateToURL(new URLRequest("http://hci.stanford.edu/paper/documentation/"));			
+			flash.net.navigateToURL(new URLRequest("http://hci.stanford.edu/paper/documentation/"));			
 		}
 
 		
