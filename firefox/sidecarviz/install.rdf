@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>sidecar@papertoolkit.ext</em:id>
+		<em:name>SideCar</em:name>
+		<em:version>0.1</em:version>
+		<em:description>Connects Firefox to the SideCar Visualizations for PaperToolkit</em:description>
+		<em:creator>Ron B. Yeh</em:creator>
+		<em:homepageURL>http://graphics.stanford.edu/~ronyeh</em:homepageURL>
+		<em:iconURL>chrome://sidecarviz/content/images/star.png</em:iconURL>
+		<em:aboutURL>chrome://sidecarviz/content/about.xul</em:aboutURL>
+		<em:updateURL>http://hci.stanford.edu/paper/firefox/sidecarvizupdate.rdf</em:updateURL>
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.0</em:minVersion>
+				<em:maxVersion>2.5</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+	</Description>
+</RDF>
