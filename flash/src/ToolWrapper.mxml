@@ -5,9 +5,6 @@
 	pageTitle="Tool Wrapper" 
 	addedToStage="init();" 
 	xmlns:components="components.*">
-	
-	<mx:Style source="styles/styles.css"/>
-
 	<mx:Script>
 		<![CDATA[
 			import tools.ToolWrapperBackend;
