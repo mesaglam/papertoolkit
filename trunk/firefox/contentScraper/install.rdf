@@ -4,9 +4,10 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>contentscraper@santiagosoft.com.ext</em:id>
+    <em:id>contentscraper@papertoolkit.ext</em:id>
     <em:version>0.1</em:version>
     <em:type>2</em:type>
+
    
     <!-- Target Application this extension can install into, 
          with minimum and maximum supported versions. --> 

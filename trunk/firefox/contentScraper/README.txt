@@ -1,0 +1,1 @@
+Drop the *.ext file into C:\Documents and Settings\{USER NAME}\Application Data\Mozilla\Firefox\Profiles\{PROFILE NAME}\extensions
