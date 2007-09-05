@@ -1,9 +1,10 @@
 var SVZFile = {
 	init: function () {
-		alert(this.getHomeFile());
+	
+	
 	},
 	
-	getHomeFile : function(childFile) {
+	getHomeFile : function(childFile) { // a Mozilla Local File
 		return this.getSystemFile("Home", childFile);
 	},
 	getTempFile : function(childFile) {

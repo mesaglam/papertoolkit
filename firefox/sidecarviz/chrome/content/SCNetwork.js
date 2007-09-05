@@ -4,10 +4,6 @@ var SideCarViz = {
 		window.addEventListener('load', addJavaScripts, true);
 	},
 	
-	startSideCar: function() {
-	    gBrowser.loadURI("http://kotaku.com/");
-	},
-	
 	copyToSideCar : function() {
 		var selection = content.document.getSelection(); // what is selected in the window!
 		
@@ -20,7 +16,9 @@ var SideCarViz = {
 	startSideCar : function() {
 		// question, can we access the HTML's DOM?
 		// if we can, we can potentially talk to Flex!!! Damn... =)
-		alert("Starting SideCar XXX");
+		alert("Starting SideCar...");
+
+	    gBrowser.loadURI("http://kotaku.com/");
 	},
 
 
