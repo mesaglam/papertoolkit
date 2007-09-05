@@ -18,7 +18,6 @@ var clientOutputStreamArray = new Array();
 // See the End of this file to see where it's called
 function initializeContentServer() {
 
-
 	// See a list of DOM Events at:
 	// http://en.wikipedia.org/wiki/DOM_Events
 	window.addEventListener("load", start, false);

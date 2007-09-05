@@ -1,0 +1,4 @@
+var SCBrowser = {
+	init: function () {
+	}
+};

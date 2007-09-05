@@ -1,4 +1,4 @@
-var SVZFile = {
+var SCFile = {
 	init: function () {
 	
 	
@@ -18,4 +18,3 @@ var SVZFile = {
 		return file;
 	}
 };
-SVZFile.init();
