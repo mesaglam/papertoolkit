@@ -5,11 +5,14 @@ var SCNetwork = {
 	// array of streams for outputting to our clients
 	clientOutputStreamArray : null,
 
+
 	init: function() {
 		this.clientOutputStreamArray = new Array(); /* of outputstreams to our client socket(s) */
 	
 	    // open a server socket
 		try {
+			alert("Starting Server Socket");
+		
 		    this.serverSocket = Components.classes["@mozilla.org/network/server-socket;1"].createInstance(Components.interfaces.nsIServerSocket);
 
 			// true means only connections from this machine
@@ -29,6 +32,26 @@ var SCNetwork = {
 				var outStream = transport.openOutputStream(0,0,0);
 				outStream.write(outputString, outputString.length);
 
+				var stream = transport.openInputStream(0,0,0);
+				var scriptablestream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
+				scriptablestream.init(stream);
+
+				var pump = Components.classes["@mozilla.org/network/input-stream-pump;1"].createInstance(Components.interfaces.nsIInputStreamPump);
+				pump.init(stream, -1, -1, 0, 0, false);
+				var dataListener = {
+					data : "",
+					onStartRequest: function(request, context) {},
+					onStopRequest: function(request, context, status){
+						scriptablestream.close();
+						outStream.close();
+					},
+					onDataAvailable: function(request, context, inputStream, offset, count){
+						this.data += scriptablestream.read(count);
+						alert(this.data);
+					},
+				};
+				pump.asyncRead(dataListener,null);
+
 				alert("Client " + SCNetwork.clientOutputStreamArray.length + " connected");
 
 				// add it to the end of the array (grow the array automatically)
@@ -37,11 +60,12 @@ var SCNetwork = {
 				alert(exception);
 			}
 		},
+		
 		onStopListening : function(sSocket, status) {
 			alert("Client Disconnected");
 		}
 	},
-	
+  	
 	//
 	// stops the server
 	// 
