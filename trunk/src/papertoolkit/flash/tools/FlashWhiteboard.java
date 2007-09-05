@@ -1,4 +1,4 @@
-package papertoolkit.flash.whiteboard;
+package papertoolkit.flash.tools;
 
 import java.awt.Color;
 import java.io.File;
