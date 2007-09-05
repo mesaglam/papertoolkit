@@ -1,11 +1,7 @@
 package papertoolkit.application.config;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.HashSet;
 import java.util.List;
-
-import javax.xml.stream.XMLStreamException;
 
 import papertoolkit.util.classpath.EclipseProjectClassPath;
 import papertoolkit.util.files.FileUtils;
@@ -49,11 +45,11 @@ public class BatchFileCreator {
 
 		File batchFile = new File("PenServer.bat");
 		FileUtils.writeStringToFile("java -classpath " + classPathString
-				+ " edu.stanford.hci.r3.pen.streaming.PenServerTrayApp \n pause", batchFile);
+				+ " papertoolkit.pen.streaming.PenServerTrayApp \n pause", batchFile);
 
 		File batchFile2 = new File("ActionReceiver.bat");
 		FileUtils.writeStringToFile("java -classpath " + classPathString
-				+ " edu.stanford.hci.r3.actions.remote.ActionReceiverTrayApp \n pause", batchFile2);
+				+ " papertoolkit.actions.remote.ActionReceiverTrayApp \n pause", batchFile2);
 
 		System.out.println(classPathString);
 	}
