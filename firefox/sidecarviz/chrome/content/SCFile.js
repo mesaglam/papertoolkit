@@ -1,7 +1,5 @@
 var SCFile = {
 	init: function () {
-	
-	
 	},
 	
 	getHomeFile : function(childFile) { // a Mozilla Local File

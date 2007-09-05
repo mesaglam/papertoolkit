@@ -31,9 +31,7 @@ var SideCarViz = {
 };
 
 
-//	<script type="application/x-javascript" src="chrome://sidecarviz/content/SCFile.js"/>
-
 
 SCNetwork.init();
-// SCFile.init();
+SCFile.init();
 SideCarViz.init();
