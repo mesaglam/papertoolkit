@@ -11,7 +11,7 @@ var SCNetwork = {
 	
 	    // open a server socket
 		try {
-			alert("Starting Server Socket");
+			// alert("Starting Server Socket");
 		
 		    this.serverSocket = Components.classes["@mozilla.org/network/server-socket;1"].createInstance(Components.interfaces.nsIServerSocket);
 
@@ -28,7 +28,7 @@ var SCNetwork = {
 	socketListener : {
 		onSocketAccepted : function(sSocket, transport) {
 			try {
-				var outputString = "Connected to the SideCar Firefox Plugin\n";
+				var outputString = "Connected to the SideCar Firefox Plugin\r\n";
 				var outStream = transport.openOutputStream(0,0,0);
 				outStream.write(outputString, outputString.length);
 
@@ -47,12 +47,14 @@ var SCNetwork = {
 					},
 					onDataAvailable: function(request, context, inputStream, offset, count){
 						this.data += scriptablestream.read(count);
-						alert(this.data);
+						
+						// figure out some way to parse the items (every time a \n is detected?)
+						// alert(this.data);
 					},
 				};
 				pump.asyncRead(dataListener,null);
 
-				alert("Client " + SCNetwork.clientOutputStreamArray.length + " connected");
+				// alert("Client " + SCNetwork.clientOutputStreamArray.length + " connected");
 
 				// add it to the end of the array (grow the array automatically)
 				SCNetwork.clientOutputStreamArray[SCNetwork.clientOutputStreamArray.length] = outStream;
@@ -81,4 +83,10 @@ var SCNetwork = {
 			this.serverSocket.close();
 		}
 	},
+	
+	sendMessageToAllListeners : function(msg) {
+		for (var i=0; i<this.clientOutputStreamArray.length; i++) {
+			this.clientOutputStreamArray[i].write(msg, msg.length);
+		}
+	}
 };
