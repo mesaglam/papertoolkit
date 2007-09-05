@@ -19,6 +19,7 @@ import papertoolkit.pen.PenInput;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.tools.design.swing.SheetFrame;
+import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -294,9 +295,32 @@ public class Application {
 			});
 			menu.add(item);
 		}
+		
+		populateTrayMenuForSideCar(menu);
 		populateTrayMenuExtensions(menu);
 	}
 
+
+	private final void populateTrayMenuForSideCar(PopupMenu popupMenu) {
+		popupMenu.add("-");
+		
+		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
+		openSideCarItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DebugUtils.println("Opening Sidecar...");
+				
+				// opens the flex application
+				
+				// our eclipse is already instrumented with the SideCar plugin, so it's already listening on 
+				// all the right ports
+				
+				// TODO:
+			}
+		});
+
+		popupMenu.add(openSideCarItem);
+	}
+	
 	/**
 	 * This is an extension point. If you want to customize the tray menu, you can subclass this.
 	 * 

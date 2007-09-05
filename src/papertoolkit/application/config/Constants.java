@@ -23,7 +23,6 @@ public class Constants {
 		public static final int BATCH_SERVER = 9999;
 		
 		public static final int FLASH_COMMUNICATION_SERVER = 8545;
-		public static final int FLASH_CONTROL_SERVER = 6543;
 
 		public static final int HANDWRITING_RECOGNITION = 9898;
 

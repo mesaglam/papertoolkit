@@ -1,4 +1,4 @@
-package papertoolkit.flash.timelineControl;
+package papertoolkit.flash.tools;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -8,20 +8,19 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import papertoolkit.PaperToolkit;
+import papertoolkit.flash.FlashCommunicationServer;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.components.SuperJTextField;
 
-
 /**
  * <p>
- * A GUI for testing out the various Flash connectivity features. Currently, an SWF file cannot
- * connect to a socket on the local machine. However, it seems to work through Flash 9's debugging
- * environment.
+ * A GUI for testing out the various Flash connectivity features. Currently, an SWF file cannot connect to a
+ * socket on the local machine. However, it seems to work through Flash 9's debugging environment. This may be
+ * an older issue that has since been cleared up with the FlashSecurityRegistration class.
  * 
  * TODO: We will have to change the implementation to Flash's XMLSocket(...).
  * 
- * We should also be able to send more interesting events over to the Flash UI. (PenEvents and
- * EventHandlers?)
+ * We should also be able to send more interesting events over to the Flash UI. (PenEvents and EventHandlers?)
  * </p>
  * <p>
  * </p>
@@ -41,43 +40,32 @@ public class FlashControlDebugger {
 		new FlashControlDebugger();
 	}
 
-	/**
-	 * 
-	 */
 	private JFrame control;
-
-	/**
-	 * 
-	 */
 	private JPanel mainPanel;
-
-	/**
-	 * 
-	 */
 	private JButton okButton;
 
 	/**
-	 * 
+	 * Sends the message over the wire to your telnet or Flash GUI client.
 	 */
 	private ActionListener sendActionListener;
 
 	/**
-	 * 
+	 * The server that clients can connect to (localhost:8545)
 	 */
-	private FlashControlServer server;
+	private FlashCommunicationServer server;
 
 	/**
-	 * 
+	 * Contains the message to send.
 	 */
 	private SuperJTextField textField;
 
 	/**
-	 * 
+	 * Use this to manually control a Flash GUI that listens for text events. It's a barebones app that sends
+	 * strings across the wire.
 	 */
 	public FlashControlDebugger() {
 		PaperToolkit.initializeLookAndFeel();
-
-		server = new FlashControlServer();
+		server = new FlashCommunicationServer();
 
 		control = new JFrame("Flash UI Controller");
 		control.setSize(640, 80);
@@ -118,7 +106,7 @@ public class FlashControlDebugger {
 		if (sendActionListener == null) {
 			sendActionListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					server.sendMessage(textField.getText());
+					server.sendLine(textField.getText());
 				}
 			};
 		}

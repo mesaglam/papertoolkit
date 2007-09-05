@@ -19,11 +19,11 @@ import papertoolkit.application.config.Constants;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * A messaging server that will relay information objects to one or more Flash GUIs, which will listen for
- * them. It's a two way pipe, so the Flash GUIs can also send messages back!
+ * them. It's a two way pipe, so the Flash GUIs can also send messages back! It can ask the GUI to do
+ * different things, such as going to a named frame.
  * 
  * This is an early implementation. Later on, we may allow our event handlers to live in the world of Flash,
  * for faster UI prototyping.
@@ -38,7 +38,7 @@ import papertoolkit.util.files.FileUtils;
 public class FlashCommunicationServer {
 
 	/**
-	 * Only counts up.
+	 * Only ever counts up, so IDs are unique.
 	 */
 	private int clientID = 0;
 
@@ -101,6 +101,8 @@ public class FlashCommunicationServer {
 	}
 
 	/**
+	 * Adds a handler for this function name...
+	 * 
 	 * @param cmdName
 	 * @param flashCommand
 	 */
@@ -161,7 +163,7 @@ public class FlashCommunicationServer {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				DebugUtils.println("Closing Flash Communications Server");
+				DebugUtils.println("Stopping Flash Communications Server");
 			}
 
 		};
@@ -228,7 +230,7 @@ public class FlashCommunicationServer {
 					+ serverPort + ".html");
 			FileUtils.writeStringToFile(fileStr, outputTempHTML);
 			final URI uri = outputTempHTML.toURI();
-			
+
 			// browse to this new file
 			DebugUtils.println("Loading the Flash GUI...");
 			Desktop.getDesktop().browse(uri);
@@ -242,6 +244,10 @@ public class FlashCommunicationServer {
 	 */
 	public void removeAllFlashClientListeners() {
 		listeners.clear();
+	}
+
+	public void sendLine(String msg) {
+		sendMessage(msg + "\r\n");
 	}
 
 	/**
