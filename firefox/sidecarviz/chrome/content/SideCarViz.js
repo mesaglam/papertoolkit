@@ -1,12 +1,11 @@
 var SideCarViz = {
 	init: function () {
 		this.clipboard = Cc["@mozilla.org/widget/clipboard;1"].getService(Ci.nsIClipboard); // the system clipboard
-		window.addEventListener('load', addJavaScripts, true);
+		window.addEventListener('load', this.addJavaScripts, true);
 	},
 	
 	copyToSideCar : function() {
 		var selection = content.document.getSelection(); // what is selected in the window!
-		
 		this.startSideCar();
 		
 		// document.location --> chrome://browser/content/browser.xul
@@ -16,9 +15,9 @@ var SideCarViz = {
 	startSideCar : function() {
 		// question, can we access the HTML's DOM?
 		// if we can, we can potentially talk to Flex!!! Damn... =)
-		alert("Starting SideCar...");
+		// alert("Starting SideCar...");
 
-	    gBrowser.loadURI("http://kotaku.com/");
+	    gBrowser.loadURI("http://kotaku.com/"); // gBrowser --> the Firefox Browser
 	},
 
 
@@ -31,4 +30,10 @@ var SideCarViz = {
 	}
 };
 
+
+//	<script type="application/x-javascript" src="chrome://sidecarviz/content/SCFile.js"/>
+
+
+SCNetwork.init();
+// SCFile.init();
 SideCarViz.init();
