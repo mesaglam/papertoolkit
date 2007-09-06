@@ -2,7 +2,7 @@ package papertoolkit.demos.flash;
 
 import java.awt.Color;
 
-import papertoolkit.flash.whiteboard.FlashWhiteboard;
+import papertoolkit.flash.tools.FlashWhiteboard;
 import papertoolkit.pen.Pen;
 
 

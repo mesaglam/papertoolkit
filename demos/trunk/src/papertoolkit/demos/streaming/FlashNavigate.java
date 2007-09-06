@@ -1,14 +1,18 @@
 package papertoolkit.demos.streaming;
 
-import papertoolkit.flash.timelineControl.FlashControlServer;
+import papertoolkit.flash.FlashCommunicationServer;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
 
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * Talks to a Flash GUI that connects via an XML socket. The Flash GUI listens for text commands such as
+ * [[Circle Map]], and responds appropriately.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -16,9 +20,7 @@ import papertoolkit.pen.streaming.listeners.PenListener;
 public class FlashNavigate {
 
 	private static PenSample down;
-
-	private static FlashControlServer server;
-
+	private static FlashCommunicationServer server;
 	private static PenSample up;
 
 	/**
@@ -35,7 +37,7 @@ public class FlashNavigate {
 				System.out.println("Pen Up: " + sample);
 				if (up.y > down.y) {
 					System.out.println("Dragged Down");
-					server.sendMessage("[[Circle Map]]");
+					server.sendLine("[[Circle Map]]");
 				} else {
 					System.out.println("Dragged Up");
 				}
@@ -54,8 +56,7 @@ public class FlashNavigate {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		server = new FlashControlServer();
-
+		server = new FlashCommunicationServer();
 		Pen pen = new Pen();
 		pen.startLiveMode();
 		pen.addLivePenListener(getDebugPenListener());
