@@ -21,5 +21,5 @@ public interface FlashListener {
 	 * @param command
 	 * @return if the event was "consumed" If so, do not process it anymore...
 	 */
-	public boolean messageReceived(String command);
+	public boolean messageReceived(String command, String...args);
 }

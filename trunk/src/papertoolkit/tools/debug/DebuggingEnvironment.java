@@ -109,7 +109,7 @@ public class DebuggingEnvironment {
 		flash.openFlashHTMLGUI(eventVizHTML);
 		flash.removeAllFlashClientListeners(); // HACK: for now...
 		flash.addFlashClientListener(new FlashListener() {
-			public boolean messageReceived(String command) {
+			public boolean messageReceived(String command, String...args) {
 				if (command.equals("eventvizclient connected")) {
 					// DebugUtils.println("Flash Client Connected!");
 					sendApplicationLayout();

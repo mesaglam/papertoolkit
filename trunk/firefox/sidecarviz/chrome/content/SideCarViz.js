@@ -48,22 +48,6 @@ var SideCarViz = {
 		return "";
 	},
 
-	// send this to the SideCar Eclipse Plugin / SideCar Flex Application
-	notifyListenersOfNewClipboardContents : function() {
-		println("SC::ClipboardContentsChanged url:[[" + content.document.location + "]] contents:[[" + this.getClipboardContents() + "]]");
-	},
-	
-	notifyListenersOfNewTab : function() {
-		println("SC::NewTab");
-	},
-	
-	notifyListenersOfNewPageURL : function(url) {
-		println("SC::NewPage url:[["+url+"]]");
-	},
-	
-	notifyListenersOfTyping : function(str) {
-		println("SC::UserTyped text:[["+str+"]]");
-	},
 
 	startSideCar : function() {
 		// question, can we access the HTML's DOM?
@@ -86,7 +70,28 @@ var SideCarViz = {
 	copyString : function(str) {
 		this.clipboardHelper.copyString(str);
 		// alert("Copied: " + str)
-	}
+	},
+	
+	
+	
+	// send this to the SideCar Eclipse Plugin / SideCar Flex Application
+	notifyListenersOfNewClipboardContents : function() {
+		// contents:{{" + this.getClipboardContents() + "}}
+		println("%%SC::ClipboardContentsChanged%% url:@_" + content.document.location + "_@");
+	},
+	
+	notifyListenersOfNewTab : function() {
+		println("%%SC::NewTab%%");
+	},
+	
+	notifyListenersOfNewPageURL : function(url) {
+		println("%%SC::NewPage%% url:@_"+url+"_@");
+	},
+	
+	notifyListenersOfTyping : function(str) {
+		println("%%SC::UserTyped%% text:@_"+str+"_@");
+	},
+	
 };
 
 function println(msg) {
