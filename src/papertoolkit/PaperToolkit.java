@@ -1,6 +1,7 @@
 package papertoolkit;
 
 import java.awt.AWTException;
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -8,6 +9,9 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
 
@@ -47,10 +53,8 @@ import papertoolkit.pen.handwriting.HandwritingRecognitionService;
 import papertoolkit.pen.streaming.PenServerTrayApp;
 import papertoolkit.pen.synch.BatchedDataDispatcher;
 import papertoolkit.tools.ToolExplorer;
-import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
 import papertoolkit.tools.design.acrobat.RegionConfiguration;
-import papertoolkit.tools.design.swing.SheetFrame;
 import papertoolkit.units.Centimeters;
 import papertoolkit.units.Inches;
 import papertoolkit.units.PatternDots;
@@ -84,6 +88,8 @@ import com.thoughtworks.xstream.XStream;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class PaperToolkit {
+
+	private static boolean alreadyInitialized = false;
 
 	/**
 	 * 
@@ -135,10 +141,22 @@ public class PaperToolkit {
 	 */
 	private static PaperToolkit toolkitInstance;
 
+	private static TrayIcon trayIcon;
+
+	/**
+	 * The System Tray right click menu.
+	 */
+	private static PopupMenu trayMenu;
+
 	/**
 	 * The version of PaperToolkit.
+	 * 
+	 * 0.7 added gesture recognition<br>
+	 * 0.8 should add SideCar testing tools<br>
+	 * 0.9 should do major cleaning and bug fixing....<br>
+	 * 1.0 should re-include the printing API.<br>
 	 */
-	private static String versionString = "0.6";
+	private static String versionString = "0.7";
 
 	/**
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
@@ -149,7 +167,7 @@ public class PaperToolkit {
 	 * Print an Intro Message.
 	 */
 	static {
-		printInitializationMessages();
+		init();
 	}
 
 	/**
@@ -159,6 +177,35 @@ public class PaperToolkit {
 	public static Application createApplication() {
 		return new Application("PaperApp_"
 				+ DebugUtils.getClassNameFromStackTraceElement(Thread.currentThread().getStackTrace()[2]));
+	}
+
+	/**
+	 * For debugging running applications. =)
+	 */
+	private static void createSystemTrayIcon() {
+		if (!SystemTray.isSupported()) {
+			return;
+		}
+		if (trayIcon == null) {
+			// this is the icon that sits in our tray...
+			trayIcon = new TrayIcon(ImageCache
+					.loadBufferedImage(PaperToolkit.getDataFile("/icons/paper.png")), "Paper Toolkit",
+					getTrayMenu());
+			trayIcon.setImageAutoSize(true);
+			trayIcon.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					if (!SwingUtilities.isRightMouseButton(e)) {
+						exitPaperToolkit();
+					}
+				}
+			});
+			try {
+				SystemTray.getSystemTray().add(trayIcon);
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
+			// Don't add a Shutdown Hook, as that is buggy, and can stop shutdown
+		}
 	}
 
 	/**
@@ -262,6 +309,26 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @return a menu for the System Tray Icon.
+	 */
+	private static PopupMenu getTrayMenu() {
+		if (trayMenu == null) {
+			trayMenu = new PopupMenu("Paper Toolkit Options");
+
+			// for exiting the application
+			final MenuItem exitItem = new MenuItem("Exit PaperToolkit");
+			exitItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					exitPaperToolkit();
+				}
+			});
+			trayMenu.add(exitItem);
+		}
+
+		return trayMenu;
+	}
+
+	/**
 	 * @return the XStream processor that parses and creates XML.
 	 */
 	private static synchronized XStream getXMLEngine() {
@@ -282,6 +349,16 @@ public class PaperToolkit {
 			xmlEngine.alias("PenEvent", PenEvent.class);
 		}
 		return xmlEngine;
+	}
+
+	public static void init() {
+		if (alreadyInitialized) {
+			return;
+		}
+		alreadyInitialized = true;
+
+		printInitializationMessages();
+		createSystemTrayIcon(); // load the system tray icon...
 	}
 
 	/**
@@ -449,16 +526,9 @@ public class PaperToolkit {
 	private final Properties localProperties = new Properties();
 
 	/**
-	 * 
-	 */
-	private PopupMenu popupMenu;
-
-	/**
 	 * The list of running applications.
 	 */
 	private List<Application> runningApplications = new ArrayList<Application>();
-
-	private TrayIcon trayIcon;
 
 	/**
 	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false. True is
@@ -527,7 +597,7 @@ public class PaperToolkit {
 
 			final MenuItem loadMappingItem = new MenuItem("Load most recent Pattern Mappings");
 			loadMappingItem.addActionListener(getLoadRecentPatternMappingsActionListener(map));
-			getTrayPopupMenu().add(loadMappingItem);
+			getTrayMenu().add(loadMappingItem);
 
 			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map.getRegionToPatternMapping();
 
@@ -588,7 +658,7 @@ public class PaperToolkit {
 						});
 					}
 				});
-				getTrayPopupMenu().add(bindPatternToRegionItem);
+				getTrayMenu().add(bindPatternToRegionItem);
 			}
 		}
 	}
@@ -607,18 +677,14 @@ public class PaperToolkit {
 	 * 
 	 * @return
 	 */
-	private ActionListener getExitListener() {
-		return new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				System.out.println("Exiting the Paper Toolkit...");
-				if (trayIcon != null) {
-					TrayIcon iconToRemove = trayIcon;
-					trayIcon = null;
-					SystemTray.getSystemTray().remove(iconToRemove);
-				}
-				System.exit(0);
-			}
-		};
+	private static void exitPaperToolkit() {
+		System.out.println("Exiting PaperToolkit...");
+		if (trayIcon != null) {
+			TrayIcon iconToRemove = trayIcon;
+			trayIcon = null;
+			SystemTray.getSystemTray().remove(iconToRemove);
+		}
+		System.exit(0);
 	}
 
 	/**
@@ -674,48 +740,6 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * For debugging running applications. =)
-	 */
-	private void createSystemTrayIcon() {
-		if (trayIcon == null) {
-			// this is the icon that sits in our tray...
-			trayIcon = new TrayIcon(ImageCache
-					.loadBufferedImage(PaperToolkit.getDataFile("/icons/paper.png")), "Paper Toolkit",
-					getTrayPopupMenu());
-			trayIcon.setImageAutoSize(true);
-			try {
-				if (SystemTray.isSupported()) {
-					SystemTray.getSystemTray().add(trayIcon);
-
-					Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-						public void run() {
-							// DebugUtils.println("Running Shutdown Services...");
-							// Buggy for some reason... Can stop the shutdown =\
-							// if (trayIcon != null) {
-							// SystemTray.getSystemTray().remove(trayIcon);
-							// }
-							// DebugUtils.println("Done with Shutdown!");
-						}
-					}));
-				}
-			} catch (AWTException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * @return a menu for the System Tray Icon.
-	 */
-	private PopupMenu getTrayPopupMenu() {
-		if (popupMenu == null) {
-			popupMenu = new PopupMenu("Paper Toolkit Options");
-		}
-
-		return popupMenu;
-	}
-
-	/**
 	 * Adds an application to the loaded list, and displays the application manager if the useAppManager flag
 	 * is set to true (default == false).
 	 * 
@@ -734,10 +758,7 @@ public class PaperToolkit {
 			appManager.updateListOfApps();
 		}
 
-		// load the system tray icon...
-		createSystemTrayIcon();
-
-		app.populateTrayMenu(getTrayPopupMenu());
+		app.populateTrayMenu(getTrayMenu());
 	}
 
 	/**
@@ -875,12 +896,6 @@ public class PaperToolkit {
 		if (useAppManager) {
 			appManager.repaintListOfApps();
 		}
-
-		popupMenu.add(new MenuItem("-")); // separator
-		// for exiting the application
-		final MenuItem exitItem = new MenuItem("Exit");
-		exitItem.addActionListener(getExitListener());
-		popupMenu.add(exitItem);
 
 		// provides access back to the toolkit object
 		paperApp.setHostToolkit(this);

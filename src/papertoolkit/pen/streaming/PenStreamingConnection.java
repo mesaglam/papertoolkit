@@ -62,7 +62,7 @@ public class PenStreamingConnection implements SerialPortEventListener {
 	private static final boolean DEBUG = false;
 
 	/**
-	 * 
+	 * We default to COM5, you can change this here, or pass it into the Pen object that you work with.
 	 */
 	public static final COMPort DEFAULT_PORT = COMPort.COM5;
 

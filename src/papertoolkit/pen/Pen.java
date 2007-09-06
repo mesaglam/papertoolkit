@@ -1,5 +1,6 @@
 package papertoolkit.pen;
 
+import papertoolkit.PaperToolkit;
 import papertoolkit.pen.streaming.PenClient;
 import papertoolkit.pen.streaming.PenServer;
 import papertoolkit.pen.streaming.listeners.PenListener;
@@ -165,6 +166,7 @@ public class Pen extends PenInput {
 	 * application.
 	 */
 	public void startLiveMode() {
+		PaperToolkit.init(); // touch the PaperToolkit class, to initialize the system tray, etc..
 		startLiveMode(defaultPenServer);
 	}
 
@@ -197,7 +199,7 @@ public class Pen extends PenInput {
 
 			// add all the cached listeners now
 			for (PenListener pl : penListenersToAdd) {
-				DebugUtils.println("Adding cached pen listeners...");
+				// DebugUtils.println("Adding cached pen listeners...");
 				livePenClient.addPenListener(pl);
 			}
 		} else {

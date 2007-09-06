@@ -2,7 +2,10 @@ package papertoolkit.pen.gesture.dollar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import papertoolkit.pen.PenSample;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.util.MathUtils;
 
 /**
@@ -34,13 +37,30 @@ import papertoolkit.util.MathUtils;
  */
 public class DollarRecognizer {
 
-	private static class Pt {
+	public static class Pt {
 		double X;
 		double Y;
 
 		Pt(double x, double y) {
 			X = x;
 			Y = y;
+		}
+	}
+
+	/**
+	 * Basically a struct to contain the name of the template and the confidence.
+	 */
+	public static class RecognitionResult {
+		String name;
+		double score;
+
+		public RecognitionResult(String nameVal, double scoreVal) {
+			name = nameVal;
+			score = scoreVal;
+		}
+		
+		public String toString() {
+			return "Recognized as " + name + " with a score of " + score; 
 		}
 	}
 
@@ -55,16 +75,6 @@ public class DollarRecognizer {
 			Y = y;
 			Width = width;
 			Height = height;
-		}
-	}
-
-	private static class Result {
-		String Name;
-		double Score;
-
-		public Result(String name, double score) {
-			Name = name;
-			Score = score;
 		}
 	}
 
@@ -88,7 +98,7 @@ public class DollarRecognizer {
 	private static final double Phi = 0.5 * (-1.0 + Math.sqrt(5.0)); // Golden Ratio
 	private static final double SquareSize = 250.0;
 
-	public static Rectangle BoundingBox(ArrayList<Pt> points) {
+	private static Rectangle BoundingBox(ArrayList<Pt> points) {
 		double minX = Double.MAX_VALUE;
 		double maxX = Double.MIN_VALUE;
 		double minY = Double.MAX_VALUE;
@@ -111,7 +121,7 @@ public class DollarRecognizer {
 		return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 	}
 
-	public static Pt Centroid(ArrayList<Pt> points) {
+	private static Pt Centroid(ArrayList<Pt> points) {
 		double x = 0.0;
 		double y = 0.0;
 
@@ -126,12 +136,12 @@ public class DollarRecognizer {
 		return new Pt(x, y);
 	}
 
-	public static double DistanceAtAngle(ArrayList<Pt> points, Template T, double theta) {
+	private static double DistanceAtAngle(ArrayList<Pt> points, Template T, double theta) {
 		ArrayList<Pt> newpoints = RotateBy(points, theta);
 		return PathDistance(newpoints, T.Points);
 	}
 
-	public static double DistanceAtBestAngle(ArrayList<Pt> points, Template T, double a, double b,
+	private static double DistanceAtBestAngle(ArrayList<Pt> points, Template T, double a, double b,
 			double threshold) {
 		double x1 = Phi * a + (1.0 - Phi) * b;
 		double f1 = DistanceAtAngle(points, T, x1);
@@ -155,13 +165,22 @@ public class DollarRecognizer {
 		return Math.min(f1, f2);
 	}
 
-	public static ArrayList<Pt> makeArray(Pt... pts) {
+	public static ArrayList<Pt> makeArray(InkStroke stroke) {
+		final List<PenSample> samples = stroke.getSamples();
+		final ArrayList<Pt> list = new ArrayList<Pt>();
+		for (PenSample s: samples) {
+			list.add(new Pt(s.x, s.y));
+		}
+		return list;
+	};
+
+	private static ArrayList<Pt> makeArray(Pt... pts) {
 		ArrayList<Pt> list = new ArrayList<Pt>();
 		list.addAll(Arrays.asList(pts));
 		return list;
 	};
 
-	public static double PathDistance(ArrayList<Pt> pts1, ArrayList<Pt> pts2) {
+	private static double PathDistance(ArrayList<Pt> pts1, ArrayList<Pt> pts2) {
 		double d = 0.0;
 		for (int i = 0; i < pts1.size(); i++) { // assumes pts1.length == pts2.length
 			Pt pt1 = pts1.get(i);
@@ -171,7 +190,7 @@ public class DollarRecognizer {
 		return d / pts1.size();
 	}
 
-	public static double PathLength(ArrayList<Pt> points) {
+	private static double PathLength(ArrayList<Pt> points) {
 		double d = 0.0;
 		for (int i = 1; i < points.size(); i++) {
 			Pt pt1 = points.get(i - 1);
@@ -184,7 +203,7 @@ public class DollarRecognizer {
 	//
 	// Helper functions from this point down
 	//
-	public static ArrayList<Pt> Resample(ArrayList<Pt> points, int n) {
+	private static ArrayList<Pt> Resample(ArrayList<Pt> points, int n) {
 		double I = PathLength(points) / (n - 1); // interval length
 		double D = 0.0;
 		ArrayList<Pt> newpoints = new ArrayList<Pt>();
@@ -220,7 +239,7 @@ public class DollarRecognizer {
 	}
 
 	// rotates a set of points
-	public static ArrayList<Pt> RotateBy(ArrayList<Pt> points, double theta) {
+	private static ArrayList<Pt> RotateBy(ArrayList<Pt> points, double theta) {
 		Pt c = Centroid(points);
 		ArrayList<Pt> newpoints = new ArrayList<Pt>();
 		for (Pt pt : points) {
@@ -231,14 +250,14 @@ public class DollarRecognizer {
 		return newpoints;
 	}
 
-	public static ArrayList<Pt> RotateToZero(ArrayList<Pt> points) {
+	private static ArrayList<Pt> RotateToZero(ArrayList<Pt> points) {
 		Pt c = Centroid(points);
 		Pt firstPt = points.get(0);
 		double theta = Math.atan2(c.Y - firstPt.Y, c.X - firstPt.X);
 		return RotateBy(points, -theta);
 	}
 
-	public static ArrayList<Pt> ScaleToSquare(ArrayList<Pt> points, double size) {
+	private static ArrayList<Pt> ScaleToSquare(ArrayList<Pt> points, double size) {
 		Rectangle B = BoundingBox(points);
 		ArrayList<Pt> newpoints = new ArrayList<Pt>();
 		for (Pt pt : points) {
@@ -249,7 +268,7 @@ public class DollarRecognizer {
 		return newpoints;
 	}
 
-	public static ArrayList<Pt> TranslateToOrigin(ArrayList<Pt> points) {
+	private static ArrayList<Pt> TranslateToOrigin(ArrayList<Pt> points) {
 		Pt c = Centroid(points);
 		ArrayList<Pt> newpoints = new ArrayList<Pt>();
 		for (Pt pt : points) {
@@ -260,11 +279,7 @@ public class DollarRecognizer {
 		return newpoints;
 	}
 
-	//
-	// Recognizer class constants
-	//
 	private final ArrayList<Template> originalTemplates;
-
 	private ArrayList<Template> templates;
 
 
@@ -499,7 +514,7 @@ public class DollarRecognizer {
 	//
 	// add/delete new templates
 	//
-	public int AddTemplate(String name, ArrayList<Pt> points) {
+	public int addTemplate(String name, ArrayList<Pt> points) {
 		templates.add(new Template(name, points)); // append new template
 		int num = 0;
 		for (int i = 0; i < templates.size(); i++) {
@@ -510,12 +525,12 @@ public class DollarRecognizer {
 		return num; // number of templates with this name...
 	}
 
-	public int DeleteUserTemplates() {
+	public int deleteUserTemplates() {
 		templates = new ArrayList<Template>(originalTemplates); // clear beyond the original set
 		return templates.size();
 	}
 
-	public Result Recognize(ArrayList<Pt> points) {
+	public RecognitionResult recognize(ArrayList<Pt> points) {
 		points = Resample(points, NumPoints);
 		points = RotateToZero(points);
 		points = ScaleToSquare(points, SquareSize);
@@ -533,6 +548,10 @@ public class DollarRecognizer {
 			}
 		}
 		double score = 1.0 - (b / HalfDiagonal);
-		return new Result(templates.get(t).Name, score);
+		return new RecognitionResult(templates.get(t).Name, score);
+	}
+	
+	public RecognitionResult recognize(InkStroke stroke) {
+		return recognize(makeArray(stroke));
 	}
 }

@@ -27,6 +27,9 @@ import papertoolkit.util.DebugUtils;
  */
 public abstract class PenStrokeListener implements PenListener {
 
+	/**
+	 * 
+	 */
 	private List<PenSample> currentStroke;
 
 	/**
@@ -46,10 +49,8 @@ public abstract class PenStrokeListener implements PenListener {
 	 */
 	public abstract void penStroke(InkStroke stroke);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.stanford.hci.r3.pen.streaming.listeners.PenListener#penUp(edu.stanford.hci.r3.pen.PenSample)
+	/**	
+	 * @see papertoolkit.pen.streaming.listeners.PenListener#penUp(papertoolkit.pen.PenSample)
 	 */
 	public void penUp(PenSample sample) {
 		if (currentStroke == null) {
@@ -72,6 +73,6 @@ public abstract class PenStrokeListener implements PenListener {
 	 */
 	public void sample(PenSample sample) {
 		currentStroke.add(sample);
-		DebugUtils.println(sample);
+		// DebugUtils.println(sample);
 	}
 }

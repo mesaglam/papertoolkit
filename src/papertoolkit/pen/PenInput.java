@@ -6,7 +6,6 @@ import java.util.List;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * Applications need some way to get Pen Input. We can either provide this through the Pen class (which
@@ -16,6 +15,7 @@ import papertoolkit.util.DebugUtils;
  * <span class="BSDLicense"> This software is distributed under the <a
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
+ * 
  * @see Pen.java
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
@@ -56,9 +56,9 @@ public abstract class PenInput {
 	 */
 	public void addLivePenListener(PenListener penListener) {
 		if (!isLive()) {
-			DebugUtils.println("We are not registering this listener [" + penListener.toString()
-					+ "] with the event dispatcher at the moment. The Pen is not in Live Mode.");
-			DebugUtils.println("We will keep this listener around until you startLiveMode().");
+			// DebugUtils.println("We are not registering this listener [" + penListener.toString()
+			// + "] with the event dispatcher at the moment. The Pen is not in Live Mode.");
+			// DebugUtils.println("We will keep this listener around until you startLiveMode().");
 			penListenersToAdd.add(penListener);
 		}
 	}
