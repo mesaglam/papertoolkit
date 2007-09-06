@@ -74,6 +74,9 @@ public class InkStroke {
 	 */
 	private double strokeWidth = 1.2;
 
+	/**
+	 * Inkstroke in Pattern Dots...
+	 */
 	public InkStroke() {
 		referenceUnit = DEFAULT_REFERENCE_UNIT;
 	}

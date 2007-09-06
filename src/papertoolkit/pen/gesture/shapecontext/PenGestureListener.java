@@ -9,16 +9,18 @@ import java.util.ArrayList;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
 
-
 /**
- * <p></p>
- * <p><span class="BSDLicense">
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span></p>
+ * <p>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>.</span>
+ * </p>
  * 
  * @author Avi Robinson-Mosher
  */
 public class PenGestureListener implements PenListener {
-	
+
 	private ArrayList<Gesture> gestures = new ArrayList<Gesture>();
 
 	private ArrayList<ShapeContext> contexts = new ArrayList<ShapeContext>();
