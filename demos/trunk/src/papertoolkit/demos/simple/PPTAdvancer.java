@@ -9,7 +9,7 @@ import papertoolkit.application.Application;
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
-import papertoolkit.events.handlers.GestureHandler;
+import papertoolkit.events.handlers.MarkingGestureHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
@@ -112,7 +112,7 @@ public class PPTAdvancer extends Application {
 	 * @return
 	 */
 	private EventHandler getMarkHandler() {
-		return new GestureHandler() {
+		return new MarkingGestureHandler() {
 			public void handleMark(PenEvent e, GestureDirection dir) {
 				DebugUtils.println(dir);
 				final RobotAction robot = new RobotAction();

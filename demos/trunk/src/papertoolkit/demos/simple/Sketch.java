@@ -17,7 +17,7 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.ClickAdapter;
-import papertoolkit.events.handlers.GestureHandler;
+import papertoolkit.events.handlers.MarkingGestureHandler;
 import papertoolkit.events.handlers.InkHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
@@ -182,7 +182,7 @@ public class Sketch {
 		// wouldn't it be cool if you could copy a region in acrobat
 		// and paste it here, and it would become the code??? (FUTURE TODO)
 		Region regionSendToScreen = sheet.getRegion("MarkingMenu");
-		regionSendToScreen.addEventHandler(new GestureHandler() {
+		regionSendToScreen.addEventHandler(new MarkingGestureHandler() {
 			@Override
 			public void handleMark(PenEvent e, GestureDirection dir) {
 				System.out.println("Mark Direction: " + dir);
