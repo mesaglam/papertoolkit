@@ -113,7 +113,7 @@ public class PPTAdvancer extends Application {
 	 */
 	private EventHandler getMarkHandler() {
 		return new MarkingGestureHandler() {
-			public void handleMark(PenEvent e, GestureDirection dir) {
+			public void handleMark(PenEvent e, MarkDirection dir) {
 				DebugUtils.println(dir);
 				final RobotAction robot = new RobotAction();
 				switch (dir) {

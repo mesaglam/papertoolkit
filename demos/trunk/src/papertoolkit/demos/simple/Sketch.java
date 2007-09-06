@@ -184,7 +184,7 @@ public class Sketch {
 		Region regionSendToScreen = sheet.getRegion("MarkingMenu");
 		regionSendToScreen.addEventHandler(new MarkingGestureHandler() {
 			@Override
-			public void handleMark(PenEvent e, GestureDirection dir) {
+			public void handleMark(PenEvent e, MarkDirection dir) {
 				System.out.println("Mark Direction: " + dir);
 				switch (dir) {
 				case E: // save to file...
