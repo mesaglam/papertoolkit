@@ -19,7 +19,6 @@ import papertoolkit.util.networking.ClientServerType;
 
 import com.thoughtworks.xstream.XStream;
 
-
 /**
  * <p>
  * Connects to the Pen Server and displays some output...
@@ -101,7 +100,7 @@ public class PenClient {
 	 * 
 	 */
 	public void connect() {
-		socketListenerThread = getSocketListenerThreadBasedOnClientType();
+		socketListenerThread = new Thread(getSocketListenerThreadBasedOnClientType());
 		socketListenerThread.start();
 	}
 
@@ -122,10 +121,10 @@ public class PenClient {
 	/**
 	 * @return
 	 */
-	private Thread getSocketListenerThreadBasedOnClientType() {
+	private Runnable getSocketListenerThreadBasedOnClientType() {
 
 		if (clientType == ClientServerType.JAVA) {
-			return new Thread(new Runnable() {
+			return new Runnable() {
 
 				boolean penIsDown = false;
 
@@ -183,10 +182,9 @@ public class PenClient {
 						e.printStackTrace();
 					}
 				}
-
-			});
+			};
 		} else { // PLAIN TEXT CLIENT
-			return new Thread(new Runnable() {
+			return new Runnable() {
 				public void run() {
 					try {
 						final BufferedReader br = setupSocketAndReader();
@@ -204,7 +202,7 @@ public class PenClient {
 						e.printStackTrace();
 					}
 				}
-			});
+			};
 		}
 	}
 

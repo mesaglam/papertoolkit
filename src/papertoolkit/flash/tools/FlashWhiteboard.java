@@ -111,7 +111,7 @@ public class FlashWhiteboard {
 	 */
 	private FlashListener getFlashListener() {
 		return new FlashListener() {
-			public boolean messageReceived(String command) {
+			public boolean messageReceived(String command, String... args) {
 				if (command.equals("Whiteboard")) {
 					// DebugUtils.println("Whiteboard Connected!");
 					// DebugUtils.println("Color: " + swatchColor);

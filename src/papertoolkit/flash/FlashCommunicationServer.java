@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import papertoolkit.application.config.Constants;
 import papertoolkit.util.DebugUtils;
@@ -27,6 +29,18 @@ import papertoolkit.util.files.FileUtils;
  * 
  * This is an early implementation. Later on, we may allow our event handlers to live in the world of Flash,
  * for faster UI prototyping.
+ * 
+ * By default, we accept two sorts of commands. Commands without arguments come across the wire looking like
+ * this: <br>
+ * commandName <br>
+ * We also accept commands with arguments, that look like this:<br>
+ * [[commandName]]{{arg1}}{{arg2}}{{arg3}}<br>
+ * We simply assume that the input strings do not have double brackets or braces... If they do, then you
+ * should set your own delimiters...
+ * </p>
+ * <p>
+ * TODO: Clearly, this functionality would be useful outside of Flash too. Should we rename this class to
+ * ExternalCommunicationServer and ExternalCommand?
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -37,10 +51,18 @@ import papertoolkit.util.files.FileUtils;
  */
 public class FlashCommunicationServer {
 
+	private String argDelimiter;
+
+	private Pattern argRegExp;
+
 	/**
 	 * Only ever counts up, so IDs are unique.
 	 */
 	private int clientID = 0;
+
+	private String commandDelimiter;
+
+	private Pattern commandRegExp;
 
 	/**
 	 * 
@@ -56,6 +78,11 @@ public class FlashCommunicationServer {
 	 * Send messages to these Java listeners.
 	 */
 	private List<FlashListener> listeners = new ArrayList<FlashListener>();
+
+	/**
+	 * Replaces OTHER_PARAMS in the HTML/Flash template with other query parameters.
+	 */
+	private String queryParameters = "";
 
 	/**
 	 * 
@@ -78,11 +105,6 @@ public class FlashCommunicationServer {
 	private boolean verbose = false;
 
 	/**
-	 * Replaces OTHER_PARAMS in the HTML/Flash template with other query parameters.
-	 */
-	private String queryParameters = "";
-
-	/**
 	 * Allows us to send messages to the Flash GUI.
 	 */
 	public FlashCommunicationServer() {
@@ -95,6 +117,9 @@ public class FlashCommunicationServer {
 	 * @param port
 	 */
 	public FlashCommunicationServer(int port) {
+		setCommandDelimiter("%%*%%");
+		setArgumentsDelimiter("@_*_@");
+
 		serverPort = port;
 		serverThread = new Thread(getServer());
 		serverThread.start();
@@ -115,6 +140,17 @@ public class FlashCommunicationServer {
 	 */
 	public void addFlashClientListener(FlashListener flashListener) {
 		listeners.add(flashListener);
+	}
+
+	/**
+	 * @param params
+	 */
+	public void addQueryParameter(String params) {
+		if (queryParameters.equals("")) {
+			queryParameters = params;
+		} else {
+			queryParameters = queryParameters + "&" + params;
+		}
 	}
 
 	/**
@@ -170,18 +206,62 @@ public class FlashCommunicationServer {
 	}
 
 	/**
+	 * @param client
 	 * @param clientID
 	 * @param command
+	 *            case sensitive commands...
 	 */
-	public void handleCommand(int clientID, String command) {
-		if (commands.containsKey(command)) {
-			// invoking a stored command
-			commands.get(command).invoke();
+	public void handleCommand(FlashClient client, String command) {
+
+		// extract the command name using our delimiters...
+		String commandName = "";
+		Matcher cmdMatcher = commandRegExp.matcher(command);
+		if (cmdMatcher.find()) {
+			commandName = cmdMatcher.group(1);
+		} else {
+			commandName = command;
+		}
+
+		// extract the argument values using our delimiters...
+		ArrayList<String> arguments = new ArrayList<String>(); // default to no arguments
+		Matcher argMatcher = argRegExp.matcher(command);
+		while (argMatcher.find()) {
+			arguments.add(argMatcher.group(1));
+		}
+		String[] args = {};
+		if (arguments.size() > 0) {
+			args = arguments.toArray(args);
+		}
+
+		// System.out.println(">> Reading a line from the client: [" + command + "]");
+		if (commandName.equals("exit")) {
+			if (client != null) {
+				client.exitClient();
+			}
+		} else if (commandName.equals("exitServer")) {
+			if (client != null) {
+				client.exitClient();
+			}
+			exitServer();
+		} else if (commandName.equals("exitApplication")) {
+			if (client != null) {
+				client.exitClient();
+			}
+			exitServer();
+			System.exit(0);
+		} else if (commands.containsKey(commandName)) {
+			// invoking a stored command on the arguments
+			commands.get(commandName).invoke(args);
 		} else {
 			// sending the command on to listeners
-			DebugUtils.println("Server got command [" + command + "] from client " + clientID);
+			if (client != null) {
+				DebugUtils.println("Server got command [" + commandName + "] from client " + client.getID());
+			} else {
+				DebugUtils.println("Server got command [" + commandName + "].");
+			}
+
 			for (FlashListener listener : listeners) {
-				boolean consumed = listener.messageReceived(command);
+				boolean consumed = listener.messageReceived(commandName, args);
 				if (consumed) {
 					break;
 				}
@@ -190,44 +270,34 @@ public class FlashCommunicationServer {
 	}
 
 	/**
-	 * Point it to the Apollo exe that will serve as your GUI.
+	 * You can manually trigger commands without any client in particular.
 	 * 
-	 * @param apolloGUIFile
+	 * @param commandWithArgs
 	 */
-	public void openFlashApolloGUI(File apolloGUIFile, String... otherArguments) {
-		try {
-			List<String> app = new ArrayList<String>();
-			app.add(apolloGUIFile.getAbsolutePath());
-			app.add("port:" + serverPort);
-			for (String arg : otherArguments) {
-				app.add(arg);
-			}
-			ProcessBuilder processBuilder = new ProcessBuilder(app);
-			processBuilder.start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void handleCommand(String commandWithArgs) {
+		this.handleCommand(null, commandWithArgs);
 	}
 
 	/**
 	 * Reads in a Template HTML file, and generates the final HTML file on the fly, to contain our SWF,
 	 * passing in the port as a parameter.
 	 * 
-	 * @param flashGUIFile
+	 * @param htmlFileContainingSWF
 	 *            Or perhaps this should be a URL in the future, as the GUI can live online? Launches the
 	 *            flash GUI in a browser.
 	 */
-	public void openFlashHTMLGUI(File flashGUIFile) {
+	public void openFlashHTMLGUI(File htmlFileContainingSWF) {
 		try {
 			// replace the template with a port and other query parameters, such as the tool's name (which
 			// tells the ToolWrapper which tool to load)
-			String fileStr = FileUtils.readFileIntoStringBuffer(flashGUIFile, true).toString();
+			String fileStr = FileUtils.readFileIntoStringBuffer(htmlFileContainingSWF, true).toString();
 			fileStr = fileStr.replace("PORT_NUM", Integer.toString(serverPort));
 			fileStr = fileStr.replace("OTHER_PARAMS", queryParameters);
 
 			// create a new/temporary file in the same location as the template
-			final File outputTempHTML = new File(flashGUIFile.getParentFile(), flashGUIFile.getName() + "_"
-					+ serverPort + ".html");
+			final File outputTempHTML = new File(htmlFileContainingSWF.getParentFile(), htmlFileContainingSWF
+					.getName()
+					+ "_" + serverPort + ".html");
 			FileUtils.writeStringToFile(fileStr, outputTempHTML);
 			final URI uri = outputTempHTML.toURI();
 
@@ -246,6 +316,11 @@ public class FlashCommunicationServer {
 		listeners.clear();
 	}
 
+	/**
+	 * Basically a println.
+	 * 
+	 * @param msg
+	 */
 	public void sendLine(String msg) {
 		sendMessage(msg + "\r\n");
 	}
@@ -270,20 +345,29 @@ public class FlashCommunicationServer {
 	}
 
 	/**
+	 * server.setArgumentsDelimiter("{{*}}");
+	 * 
+	 * @param argumentPatternRegExp
+	 */
+	public void setArgumentsDelimiter(String argumentPattern) {
+		argDelimiter = argumentPattern.replace("*", "(.*?)");
+		argRegExp = Pattern.compile(argDelimiter);
+	}
+
+	/**
+	 * server.setCommandDelimiter("[[*]]"); Place an asterisk where the command should go...
+	 * 
+	 * @param commandPattern
+	 */
+	public void setCommandDelimiter(String commandPattern) {
+		commandDelimiter = commandPattern.replace("*", "(.*?)");
+		commandRegExp = Pattern.compile(commandDelimiter);
+	}
+
+	/**
 	 * @param v
 	 */
 	public void setVerbose(boolean v) {
 		verbose = v;
-	}
-
-	/**
-	 * @param params
-	 */
-	public void addQueryParameter(String params) {
-		if (queryParameters.equals("")) {
-			queryParameters = params;
-		} else {
-			queryParameters = queryParameters + "&" + params;
-		}
 	}
 }

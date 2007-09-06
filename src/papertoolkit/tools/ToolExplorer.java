@@ -42,25 +42,22 @@ public class ToolExplorer implements FlashListener {
 	}
 
 	/**
-	 * @param r3
+	 * @param ptk
 	 * @param startupMode
 	 */
-	public ToolExplorer(PaperToolkit r3, String startupMode, int port) {
+	public ToolExplorer(PaperToolkit ptk, String startupMode, int port) {
 		// look for the HTML file... if it doesn't exist, then ask people to download FLEX and compile it!
 		// TODO...
 		
-		paperToolkit = r3;
+		paperToolkit = ptk;
 		// start the Flash Communications Server, and register our listeners...
 		// Start the Apollo GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File toolExplorerApollo = new File(r3RootPath, "flash/bin/ToolExplorer.exe");
 		flash = new FlashCommunicationServer();
 		flash.addFlashClientListener(this);
-		if (startupMode != null) {
-			flash.openFlashApolloGUI(toolExplorerApollo, "mode:" + startupMode);
-		} else {
-			flash.openFlashApolloGUI(toolExplorerApollo);
-		}
+
+		// flash.openFlashApolloGUI(toolExplorerApollo);
 	}
 
 	/**
@@ -80,7 +77,7 @@ public class ToolExplorer implements FlashListener {
 	/*
 	 * @see edu.stanford.hci.r3.flash.FlashListener#messageReceived(java.lang.String)
 	 */
-	public boolean messageReceived(String command) {
+	public boolean messageReceived(String command, String...args) {
 		DebugUtils.println(command);
 		if (command.equals("Connected")) {
 			DebugUtils.println("ToolExplorer Connected");

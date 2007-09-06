@@ -7,7 +7,6 @@ import java.net.Socket;
 
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * Handles one Flash GUI client, that will communicate with our local Java server.
@@ -28,6 +27,7 @@ public class FlashClient {
 	private BufferedReader fromClient;
 	private FlashCommunicationServer server;
 	private PrintStream toClient;
+	private boolean done = false;
 
 	public FlashClient(FlashCommunicationServer flashCommServer, int id, Socket clientSock,
 			BufferedReader readerIn, PrintStream writerOut) {
@@ -40,8 +40,6 @@ public class FlashClient {
 		clientThread = new Thread(new Runnable() {
 			public void run() {
 				DebugUtils.println("New Flash Client: ID == " + clientID);
-
-				boolean done = false;
 				while (!done) {
 					String command = null;
 					try {
@@ -54,25 +52,10 @@ public class FlashClient {
 							done = true;
 							clientSocket.close();
 						} else {
-							command = command.trim();
-							// System.out.println(">> Reading a line from the client: [" + command + "]");
-							if (command.equals("exit")) {
-								done = true;
-								exitClient();
-							} else if (command.equals("exitServer")) {
-								done = true;
-								clientSocket.close();
-								server.exitServer();
-							} else if (command.equals("exitApplication")) {
-								done = true;
-								clientSocket.close();
-								server.exitServer();
-								System.exit(0);
-							} else {
-								// DebugUtils.println("Client " + clientID + " Unhandled command: "
-								// + command);
-								server.handleCommand(clientID, command);
-							}
+							// drop the surrounding whitespace
+							command = command.trim(); 
+							// always pass commands up to the server
+							server.handleCommand(FlashClient.this, command);
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -83,12 +66,17 @@ public class FlashClient {
 		});
 		clientThread.start();
 	}
+	
+	public int getID() {
+		return clientID;
+	}
 
 	/**
-	 * 
+	 * Set the done flag and close the socket. We don't need this client anymore.
 	 */
 	public void exitClient() {
 		DebugUtils.println("Exiting client " + clientID);
+		done = true;
 		try {
 			clientSocket.close();
 		} catch (IOException e) {
