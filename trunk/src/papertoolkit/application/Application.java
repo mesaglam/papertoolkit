@@ -93,6 +93,8 @@ public class Application {
 	 */
 	private boolean userChoosesPDFDestination = false;
 
+	private static boolean isfirstAppPopulatingSystemTray = true;
+
 	/**
 	 * @param theName
 	 */
@@ -270,6 +272,11 @@ public class Application {
 	 * @param popupMenu
 	 */
 	public final void populateTrayMenu(PopupMenu popupMenu) {
+		if (isfirstAppPopulatingSystemTray) {
+			popupMenu.add(new MenuItem("-")); // separator
+			isfirstAppPopulatingSystemTray = false;
+		}
+		
 		final PopupMenu menu = new PopupMenu(getName());
 		popupMenu.add(menu);
 

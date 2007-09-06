@@ -7,7 +7,7 @@ import papertoolkit.units.coordinates.PercentageCoordinates;
 
 /**
  * <p>
- * Can handle simple marking gestures by default.
+ * Can handle simple marking gestures (e.g., eight compass directions).
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -16,7 +16,7 @@ import papertoolkit.units.coordinates.PercentageCoordinates;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class GestureHandler extends EventHandler {
+public abstract class MarkingGestureHandler extends EventHandler {
 
 	/**
 	 * <p>
