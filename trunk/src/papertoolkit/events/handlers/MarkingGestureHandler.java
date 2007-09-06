@@ -23,7 +23,7 @@ public abstract class MarkingGestureHandler extends EventHandler {
 	 * Handles drags in one of eight directions.
 	 * </p>
 	 */
-	public static enum GestureDirection {
+	public static enum MarkDirection {
 		E, // 0 radians (cone from -PI/8 to PI/8)
 		N, // PI/2
 		NE, // PI/4
@@ -32,7 +32,7 @@ public abstract class MarkingGestureHandler extends EventHandler {
 		SE, // -PI/4
 		SW, // -3PI/4
 		W
-		// +/- PI (cone from -7PI/8 ... to -PI and from 7PI/8 to PI)
+		// +/- PI (cone from -7PI/8 ... to -PI & from 7PI/8 to PI)
 	}
 
 	private double dx;
@@ -44,8 +44,8 @@ public abstract class MarkingGestureHandler extends EventHandler {
 	private Units firstPercentageY;
 
 	/**
-	 * How many samples constitute a gesture? The larger, the more strict we will be (i.e., longer
-	 * gestures only).
+	 * How many samples constitute a gesture? The larger, the more strict we will be (i.e., longer gestures
+	 * only).
 	 */
 	private int gestureThreshold = 4;
 
@@ -87,31 +87,31 @@ public abstract class MarkingGestureHandler extends EventHandler {
 				if (testTheta > 0) { // E, NE, N, NW, W
 					if (testTheta < PI_2) { // NE or E
 						if (testTheta < PI_4) { // E
-							handleMark(event, GestureDirection.E);
+							handleMark(event, MarkDirection.E);
 						} else { // NE
-							handleMark(event, GestureDirection.NE);
+							handleMark(event, MarkDirection.NE);
 						}
 					} else { // N, NW, W... anything greater than PI/2
 						if (testTheta < THREE_PI_4) { // N
-							handleMark(event, GestureDirection.N);
+							handleMark(event, MarkDirection.N);
 						} else if (testTheta < Math.PI) { // NW
-							handleMark(event, GestureDirection.NW);
+							handleMark(event, MarkDirection.NW);
 						} else { // W
-							handleMark(event, GestureDirection.W);
+							handleMark(event, MarkDirection.W);
 						}
 					}
 				} else { // SE, S, SW, W
 					if (testTheta > -PI_2) { // S, SE
 						if (testTheta > -PI_4) {
-							handleMark(event, GestureDirection.SE);
+							handleMark(event, MarkDirection.SE);
 						} else {
-							handleMark(event, GestureDirection.S);
+							handleMark(event, MarkDirection.S);
 						}
 					} else { // SW, W
 						if (testTheta > -THREE_PI_4) {
-							handleMark(event, GestureDirection.SW);
+							handleMark(event, MarkDirection.SW);
 						} else {
-							handleMark(event, GestureDirection.W);
+							handleMark(event, MarkDirection.W);
 						}
 					}
 
@@ -129,7 +129,7 @@ public abstract class MarkingGestureHandler extends EventHandler {
 	 * @param e
 	 * @param dir
 	 */
-	public abstract void handleMark(PenEvent e, GestureDirection dir);
+	public abstract void handleMark(PenEvent e, MarkDirection dir);
 
 	/*
 	 * (non-Javadoc)

@@ -39,7 +39,7 @@ public abstract class PenStrokeListener implements PenListener {
 		// start a new stroke, which is just a list of PenSamples
 		currentStroke = new ArrayList<PenSample>();
 		currentStroke.add(sample);
-		DebugUtils.println(sample);
+		// DebugUtils.println(sample);
 	}
 
 	/**
