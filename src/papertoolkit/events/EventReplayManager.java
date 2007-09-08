@@ -206,12 +206,12 @@ public class EventReplayManager {
 	 * Threaded, because we do not want any GUI to block when calling this. Alternatively, refactor this into
 	 * blocking & nonblocking versions.
 	 * 
-	 * @param eventEngine
+	 * @param eventDispatcher
 	 *            We will dispatch events to this event engine, simulating input from one or more pens...
 	 *            eventEngine = engine;
 	 * @param events
 	 */
-	private void replayToEventDispatcher(final EventDispatcher eventEngine, final List<PenEvent> events) {
+	private void replayToEventDispatcher(final EventDispatcher eventDispatcher, final List<PenEvent> events) {
 		new Thread(new Runnable() {
 			public void run() {
 				long lastTimeStamp = 0;
@@ -232,7 +232,7 @@ public class EventReplayManager {
 					}
 
 					// assume here that all PenEvent objects have their flags set correctly
-					eventEngine.handlePenEvent(event);
+					eventDispatcher.handlePenEvent(event);
 					lastTimeStamp = event.getTimestamp();
 				}
 				// DebugUtils.println("Done. Replayed " + events.size() + " Events");

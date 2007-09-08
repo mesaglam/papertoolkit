@@ -10,7 +10,6 @@ import papertoolkit.flash.FlashCommunicationServer;
 import papertoolkit.flash.FlashListener;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
-import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
