@@ -2,8 +2,6 @@ package papertoolkit.tools.browse;
 
 import java.io.File;
 
-import papertoolkit.util.DebugUtils;
-
 
 /**
  * <p>
