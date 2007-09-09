@@ -1,14 +1,18 @@
 package papertoolkit.application;
 
+import java.awt.Desktop;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.PaperToolkit;
@@ -18,8 +22,11 @@ import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pen.PenInput;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
+import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
 import papertoolkit.tools.design.swing.SheetFrame;
 import papertoolkit.util.DebugUtils;
+import papertoolkit.util.components.EndlessProgressDialog;
+import papertoolkit.util.files.FileUtils;
 
 /**
  * <p>
@@ -88,10 +95,13 @@ public class Application {
 	 */
 	private List<Sheet> sheets = new ArrayList<Sheet>();
 
-	/**
-	 * Should the user decide where to render the PDF?
-	 */
-	private boolean userChoosesPDFDestination = false;
+	private MenuItem printSheetsItem;
+
+	private MenuItem printSheetInfoItem;
+
+	private MenuItem startItem;
+
+	private MenuItem stopItem;
 
 	private static boolean isfirstAppPopulatingSystemTray = true;
 
@@ -262,13 +272,6 @@ public class Application {
 	}
 
 	/**
-	 * @return whether to let the user choose where to render the Sheets...
-	 */
-	public boolean isUserChoosingDestinationForPDF() {
-		return userChoosesPDFDestination;
-	}
-
-	/**
 	 * @param popupMenu
 	 */
 	public final void populateTrayMenu(PopupMenu popupMenu) {
@@ -276,12 +279,23 @@ public class Application {
 			popupMenu.add(new MenuItem("-")); // separator
 			isfirstAppPopulatingSystemTray = false;
 		}
-		
+
 		final PopupMenu menu = new PopupMenu(getName());
 		popupMenu.add(menu);
 
 		final MenuItem debugItem = new MenuItem("Debug");
 		debugItem.addActionListener(getDebugListener());
+
+		/**
+		 * @return the button to load the Acrobat plugin for designing Paper UIs (drawing out regions)...
+		 */
+		final MenuItem designItem = new MenuItem("Design Sheets");
+		designItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				JFrame frame = AcrobatDesignerLauncher.start();
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+			}
+		});
 
 		final MenuItem renderItem = new MenuItem("Render " + sheets.size() + " Sheets to PDF");
 		renderItem.addActionListener(new ActionListener() {
@@ -302,32 +316,97 @@ public class Application {
 			});
 			menu.add(item);
 		}
-		
+
+		printSheetsItem = new MenuItem("Make PDFs...");
+		printSheetsItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				renderPDFToSpecificFolder();
+			}
+		});
+
+		startItem = new MenuItem("Start Application");
+		startItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				host.startApplication(Application.this);
+			}
+		});
+
+		stopItem = new MenuItem("Stop Application");
+		stopItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				host.stopApplication(Application.this);
+			}
+		});
+
+		printSheetInfoItem = new MenuItem("Display Sheet Information");
+		printSheetInfoItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				final List<Sheet> thisAppsSheets = getSheets();
+				for (Sheet s : thisAppsSheets) {
+					// use the longer, more descriptive string
+					DebugUtils.println(s.toDetailedString());
+				}
+			}
+		});
+
 		populateTrayMenuForSideCar(menu);
 		populateTrayMenuExtensions(menu);
 	}
 
+	/**
+	 * Renders a PDF of the Application's sheets.
+	 * 
+	 * @param selectedApp
+	 */
+	private void renderPDFToSpecificFolder() {
+		new Thread(new Runnable() {
+			private EndlessProgressDialog progress;
 
+			public void run() {
+				final File folderToSavePDFs = FileUtils.showDirectoryChooser(null,
+						"Choose a Directory for your PDFs");
+				if (folderToSavePDFs != null) { // user approved
+					// an endless progress bar
+					progress = new EndlessProgressDialog(null, "Creating the PDF",
+							"Please wait while your PDF is generated.");
+					// start rendering
+					renderToPDF(folderToSavePDFs, getName());
+					try {
+						// open the folder in explorer! =)
+						Desktop.getDesktop().open(folderToSavePDFs);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					progress.setVisible(false);
+					progress = null;
+				}
+			}
+		}).start();
+	}
+
+	/**
+	 * @param popupMenu
+	 */
 	private final void populateTrayMenuForSideCar(PopupMenu popupMenu) {
 		popupMenu.add("-");
-		
+
 		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
 		openSideCarItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				DebugUtils.println("Opening Sidecar...");
-				
+
 				// opens the flex application
-				
-				// our eclipse is already instrumented with the SideCar plugin, so it's already listening on 
+
+				// our eclipse is already instrumented with the SideCar plugin, so it's already listening on
 				// all the right ports
-				
+
 				// TODO:
 			}
 		});
 
 		popupMenu.add(openSideCarItem);
 	}
-	
+
 	/**
 	 * This is an extension point. If you want to customize the tray menu, you can subclass this.
 	 * 
@@ -461,13 +540,6 @@ public class Application {
 	 */
 	private void setRunning(boolean flag) {
 		isRunning = flag;
-	}
-
-	/**
-	 * @param flag
-	 */
-	public void setUserChoosesPDFDestinationFlag(boolean flag) {
-		userChoosesPDFDestination = flag;
 	}
 
 	/**
