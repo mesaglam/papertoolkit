@@ -5,25 +5,31 @@ import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.devices.Device;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.handlers.StrokeHandler;
+import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
+import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
 import papertoolkit.pen.PenInput;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
 import papertoolkit.tools.design.swing.SheetFrame;
+import papertoolkit.units.PatternDots;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.components.EndlessProgressDialog;
 import papertoolkit.util.files.FileUtils;
@@ -52,6 +58,8 @@ import papertoolkit.util.files.FileUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class Application {
+
+	private static boolean isfirstAppPopulatingSystemTray = true;
 
 	/**
 	 * For inspecting the application at runtime.
@@ -94,16 +102,6 @@ public class Application {
 	 * For simplicity, we expand out Bundles and place the sheets directly in this datastructure.
 	 */
 	private List<Sheet> sheets = new ArrayList<Sheet>();
-
-	private MenuItem printSheetsItem;
-
-	private MenuItem printSheetInfoItem;
-
-	private MenuItem startItem;
-
-	private MenuItem stopItem;
-
-	private static boolean isfirstAppPopulatingSystemTray = true;
 
 	/**
 	 * @param theName
@@ -317,28 +315,15 @@ public class Application {
 			menu.add(item);
 		}
 
-		printSheetsItem = new MenuItem("Make PDFs...");
+		final MenuItem printSheetsItem = new MenuItem("Make PDFs...");
 		printSheetsItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				renderPDFToSpecificFolder();
 			}
 		});
+		menu.add(printSheetsItem);
 
-		startItem = new MenuItem("Start Application");
-		startItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				host.startApplication(Application.this);
-			}
-		});
-
-		stopItem = new MenuItem("Stop Application");
-		stopItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				host.stopApplication(Application.this);
-			}
-		});
-
-		printSheetInfoItem = new MenuItem("Display Sheet Information");
+		final MenuItem printSheetInfoItem = new MenuItem("Display Sheet Information");
 		printSheetInfoItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				final List<Sheet> thisAppsSheets = getSheets();
@@ -348,40 +333,89 @@ public class Application {
 				}
 			}
 		});
+		menu.add(printSheetInfoItem);
+
+		final MenuItem startStopItem = new MenuItem("Stop Application");
+		startStopItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				if (isRunning) {
+					host.stopApplication(Application.this);
+					startStopItem.setLabel("Start Application");
+				} else {
+					host.startApplication(Application.this);
+					startStopItem.setLabel("Stop Application");
+				}
+			}
+		});
+		menu.add(startStopItem);
+
+		// will populate the system tray with a feature for runtime binding of regions... =)
+		addItemsToBindUninitializedRegions(menu);
 
 		populateTrayMenuForSideCar(menu);
 		populateTrayMenuExtensions(menu);
 	}
 
 	/**
-	 * Renders a PDF of the Application's sheets.
-	 * 
-	 * @param selectedApp
+	 * @return
 	 */
-	private void renderPDFToSpecificFolder() {
-		new Thread(new Runnable() {
-			private EndlessProgressDialog progress;
+	private File getPatternInfoFile() {
+		File dir = PaperToolkit.getToolkitFile("/mappings/");
+		final File destFile = new File(dir, getName() + ".patternInfo.xml");
+		return destFile;
+	}
 
-			public void run() {
-				final File folderToSavePDFs = FileUtils.showDirectoryChooser(null,
-						"Choose a Directory for your PDFs");
-				if (folderToSavePDFs != null) { // user approved
-					// an endless progress bar
-					progress = new EndlessProgressDialog(null, "Creating the PDF",
-							"Please wait while your PDF is generated.");
-					// start rendering
-					renderToPDF(folderToSavePDFs, getName());
-					try {
-						// open the folder in explorer! =)
-						Desktop.getDesktop().open(folderToSavePDFs);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					progress.setVisible(false);
-					progress = null;
+	/**
+	 * Check for uninitialized regions, and then populate the menu with options to bind these regions to
+	 * pattern at runtime!
+	 * 
+	 * @param mappings
+	 */
+	private void addItemsToBindUninitializedRegions(PopupMenu popupMenu) {
+		for (final PatternToSheetMapping map : getPatternMaps()) {
+			final MenuItem loadMappingItem = new MenuItem("Load Pattern Mappings");
+			loadMappingItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent nullActionEvent) {
+					map.loadConfigurationFromXML(getPatternInfoFile());
 				}
+			});
+			popupMenu.add(loadMappingItem);
+
+			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map.getRegionToPatternMapping();
+
+			for (final Region r : regionToPatternMapping.keySet()) {
+				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping.get(r);
+				double area = patternCoordinateConverter.getArea();
+				// DebugUtils.println("Area: " + area);
+				if (area > 0) {
+					// this region has a real mapping! NEXT!
+					continue;
+				}
+
+				// the menu item for invoking the runtime binding
+				// We need to update the text later...
+				final MenuItem bindPatternToRegionItem = new MenuItem("Add Pattern Binding For ["
+						+ r.getName() + "]");
+
+				bindPatternToRegionItem.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						// DebugUtils.println("Binding " + r);
+						host.addEventHandlerForUnmappedEvents(map, r, bindPatternToRegionItem,
+								getPatternInfoFile());
+					}
+				});
+				popupMenu.add(bindPatternToRegionItem);
 			}
-		}).start();
+		}
+	}
+
+	/**
+	 * This is an extension point. If you want to customize the tray menu, you can subclass this.
+	 * 
+	 * @param popupMenu
+	 */
+	public void populateTrayMenuExtensions(PopupMenu popupMenu) {
+		// nothing; subclasses can use this
 	}
 
 	/**
@@ -405,15 +439,6 @@ public class Application {
 		});
 
 		popupMenu.add(openSideCarItem);
-	}
-
-	/**
-	 * This is an extension point. If you want to customize the tray menu, you can subclass this.
-	 * 
-	 * @param popupMenu
-	 */
-	public void populateTrayMenuExtensions(PopupMenu popupMenu) {
-		// nothing; subclasses can use this
 	}
 
 	/**
@@ -453,6 +478,37 @@ public class Application {
 			getHostToolkit().getEventDispatcher().unregisterPatternMapForEventHandling(
 					sheet.getPatternToSheetMapping());
 		}
+	}
+
+	/**
+	 * Renders a PDF of the Application's sheets.
+	 * 
+	 * @param selectedApp
+	 */
+	private void renderPDFToSpecificFolder() {
+		new Thread(new Runnable() {
+			private EndlessProgressDialog progress;
+
+			public void run() {
+				final File folderToSavePDFs = FileUtils.showDirectoryChooser(null,
+						"Choose a Directory for your PDFs");
+				if (folderToSavePDFs != null) { // user approved
+					// an endless progress bar
+					progress = new EndlessProgressDialog(null, "Creating the PDF",
+							"Please wait while your PDF is generated.");
+					// start rendering
+					renderToPDF(folderToSavePDFs, getName());
+					try {
+						// open the folder in explorer! =)
+						Desktop.getDesktop().open(folderToSavePDFs);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					progress.setVisible(false);
+					progress = null;
+				}
+			}
+		}).start();
 	}
 
 	/**
@@ -525,11 +581,6 @@ public class Application {
 	 */
 	public void setHostToolkit(PaperToolkit toolkit) {
 		host = toolkit;
-		if (host != null) {
-			setRunning(true);
-		} else {
-			setRunning(false);
-		}
 	}
 
 	/**
@@ -538,7 +589,7 @@ public class Application {
 	 * 
 	 * @param flag
 	 */
-	private void setRunning(boolean flag) {
+	public void setRunning(boolean flag) {
 		isRunning = flag;
 	}
 
@@ -549,4 +600,9 @@ public class Application {
 		return name + " Application";
 	}
 
+	public void loadMostRecentPatternMappings() {
+		for (final PatternToSheetMapping map : getPatternMaps()) {
+			map.loadConfigurationFromXML(getPatternInfoFile());
+		}
+	}
 }
