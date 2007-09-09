@@ -278,7 +278,7 @@ public class PaperToolkit {
 
 	/**
 	 * @param relativePath
-	 * @return
+	 * @return a file or directory relative to PaperToolkit/
 	 */
 	public static File getToolkitFile(String relativePath) {
 		return new File(getToolkitRootPath(), relativePath);
@@ -500,11 +500,6 @@ public class PaperToolkit {
 	 */
 	private List<Pen> frequentlyUsedPens = new ArrayList<Pen>();
 
-	/**
-	 * 
-	 */
-	private List<ActionListener> listenersToLoadRecentPatternMappings = new ArrayList<ActionListener>();
-
 
 	/**
 	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
@@ -513,9 +508,9 @@ public class PaperToolkit {
 	private final Properties localProperties = new Properties();
 
 	/**
-	 * The list of running applications.
+	 * The list of running or stopped applications.
 	 */
-	private List<Application> runningApplications = new ArrayList<Application>();
+	private List<Application> loadedApplications = new ArrayList<Application>();
 
 	/**
 	 * Whether or not to use handwriting recognition. It will start the HWRec Server...
@@ -562,90 +557,6 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Check for uninitialized regions, and then populate the menu with options to bind these regions to
-	 * pattern at runtime!
-	 * 
-	 * @param mappings
-	 */
-	private void checkPatternMapsForUninitializedRegions(Collection<PatternToSheetMapping> mappings) {
-
-		if (trayIcon == null) {
-			DebugUtils.println("No need to check for uninitialized pattern maps, "
-					+ "as we're not using the system tray.");
-			return;
-		}
-
-		for (final PatternToSheetMapping map : mappings) {
-
-			final MenuItem loadMappingItem = new MenuItem("Load most recent Pattern Mappings");
-			loadMappingItem.addActionListener(getLoadRecentPatternMappingsActionListener(map));
-			getTrayMenu().add(loadMappingItem);
-
-			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map.getRegionToPatternMapping();
-
-			for (final Region r : regionToPatternMapping.keySet()) {
-				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping.get(r);
-				double area = patternCoordinateConverter.getArea();
-				// DebugUtils.println("Area: " + area);
-				if (area > 0) {
-					// this region has a real mapping! NEXT!
-					continue;
-				}
-
-				// the menu item for invoking the runtime binding
-				// We need to update the text later...
-				final MenuItem bindPatternToRegionItem = new MenuItem("Add Pattern Binding For ["
-						+ r.getName() + "]");
-
-				bindPatternToRegionItem.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						// DebugUtils.println("Binding " + r);
-
-						// Runtime Pattern to Region Binding
-						// adds a listener for trashed events in the Event
-						// Dispatcher
-						eventDispatcher.addEventHandlerForUnmappedEvents(new StrokeHandler() {
-							public void strokeArrived(PenEvent e) {
-								Rectangle2D bounds = getStroke().getBounds();
-								// determine the bounds of the region in
-								// pattern space
-								// this information was provided by the
-								// user
-								final double tlX = bounds.getX();
-								final double tlY = bounds.getY();
-								final double width = bounds.getWidth();
-								final double height = bounds.getHeight();
-
-								// tie the pattern bounds to this region
-								// object
-								map.setPatternInformationOfRegion(r, //
-										new PatternDots(tlX), new PatternDots(tlY), // 
-										new PatternDots(width), new PatternDots(height));
-
-								// unregister myself...
-								eventDispatcher.removeEventHandlerForUnmappedEvents(this);
-
-								// DebugUtils.println("Bound the region
-								// [" + r.getName() + "] to Pattern "
-								// + bounds);
-								bindPatternToRegionItem.setLabel("Change Binding for " + r.getName()
-										+ ". Currently set to " + bounds);
-
-								// additionally... write this out to a
-								// file on the desktop
-								File destFile = getLastRunPatternInfoFile();
-								map.saveConfigurationToXML(destFile);
-							}
-
-						});
-					}
-				});
-				getTrayMenu().add(bindPatternToRegionItem);
-			}
-		}
-	}
-
-	/**
 	 * EXPERTS ONLY: Interact with the EventEngine at runtime!
 	 * 
 	 * @return
@@ -676,51 +587,17 @@ public class PaperToolkit {
 		return frequentlyUsedPens;
 	}
 
-	/**
-	 * @return
-	 */
-	private File getLastRunPatternInfoFile() {
-		final File homeDir = FileSystemView.getFileSystemView().getHomeDirectory();
-
-		// TODO: Change this to the mappings directory
-		final File destFile = new File(homeDir, "PaperToolkitLastRun.patternInfo.xml");
-		return destFile;
-	}
-
-	/**
-	 * @param map
-	 * @return
-	 */
-	private ActionListener getLoadRecentPatternMappingsActionListener(final PatternToSheetMapping map) {
-		// add it to the list, so we can invoke them later!
-		final ActionListener actionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent nullActionEvent) {
-				map.loadConfigurationFromXML(getLastRunPatternInfoFile());
-			}
-		};
-		listenersToLoadRecentPatternMappings.add(actionListener);
-
-		return actionListener;
-	}
-
 	public String getProperty(String propertyKey) {
 		return localProperties.getProperty(propertyKey);
 	}
 
 	/**
-	 * @return
-	 */
-	public List<Application> getRunningApplications() {
-		return runningApplications;
-	}
-
-	/**
-	 * 
+	 * For every application, ask it to load themost recent mappings...
 	 */
 	public void loadMostRecentPatternMappings() {
 		DebugUtils.println("Loading most recent Pattern Mappings...");
-		for (ActionListener l : listenersToLoadRecentPatternMappings) {
-			l.actionPerformed(null);
+		for (Application a : loadedApplications) {
+			a.loadMostRecentPatternMappings();
 		}
 	}
 
@@ -808,28 +685,31 @@ public class PaperToolkit {
 	 * @param paperApp
 	 */
 	public void startApplication(Application paperApp) {
-		paperApp.populateTrayMenu(getTrayMenu());
+		if (!loadedApplications.contains(paperApp)) {
+			paperApp.populateTrayMenu(getTrayMenu());
 
-		
-		// run any initializers that need to happen before we begin
-		paperApp.initializeBeforeStarting();
+			// run any initializers that need to happen before we begin
+			paperApp.initializeBeforeStarting();
 
-		// get all the pens and start them in live mode...
-		// we assume we have decided where each pen server will run
-		// start live mode will connect to that pen server.
-		if (paperApp.getPenInputDevices().size() == 0) {
-			// DebugUtils.println(paperApp.getName()
-			// + " does not have any pens! We will add a single streaming pen
-			// for you.");
-			final Pen aPen = new Pen();
-			paperApp.addPenInput(aPen);
+			// get all the pens and start them in live mode...
+			// we assume we have decided where each pen server will run
+			// start live mode will connect to that pen server.
+			if (paperApp.getPenInputDevices().size() == 0) {
+				// DebugUtils.println(paperApp.getName()
+				// + " does not have any pens! We will add a single streaming pen for you.");
+				final Pen aPen = new Pen();
+				paperApp.addPenInput(aPen);
+			}
+
+			loadedApplications.add(paperApp);
+			// provides access back to the toolkit object
+			paperApp.setHostToolkit(this);
 		}
 
 		final List<PenInput> pens = paperApp.getPenInputDevices();
 		// add all the live pens to the eventEngine
 		for (PenInput pen : pens) {
-			pen.startLiveMode(); // starts live mode at the pen's default
-			// place
+			pen.startLiveMode(); // starts live mode at the pen's default place
 			if (pen.isLive()) {
 				eventDispatcher.register(pen);
 			}
@@ -838,15 +718,7 @@ public class PaperToolkit {
 		// keep track of the pattern assigned to different sheets and regions
 		final Collection<PatternToSheetMapping> patternMappings = paperApp.getPatternMaps();
 		eventDispatcher.registerPatternMapsForEventHandling(patternMappings);
-
-		// will populate the system tray with a feature for runtime binding of regions... =)
-		checkPatternMapsForUninitializedRegions(patternMappings);
-
-		// DebugUtils.println("Starting Application: " + paperApp.getName());
-		runningApplications.add(paperApp);
-
-		// provides access back to the toolkit object
-		paperApp.setHostToolkit(this);
+		paperApp.setRunning(true);
 	}
 
 	/**
@@ -857,7 +729,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Remove the application and stop receiving events from its pens....
+	 * Stop receiving events from its pens....
 	 * 
 	 * @param paperApp
 	 */
@@ -871,8 +743,42 @@ public class PaperToolkit {
 			}
 		}
 		eventDispatcher.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
-		runningApplications.remove(paperApp);
-		paperApp.setHostToolkit(null); // do we really need to set it to null?
+		paperApp.setRunning(false);
 	}
 
+	public void addEventHandlerForUnmappedEvents(final PatternToSheetMapping map, final Region region,
+			final MenuItem bindPatternToRegionItem, final File destFile) {
+
+		// Runtime Pattern to Region Binding adds a listener for
+		// trashed events in the Event Dispatcher
+		eventDispatcher.addEventHandlerForUnmappedEvents(new StrokeHandler() {
+			public void strokeArrived(PenEvent e) {
+				Rectangle2D bounds = getStroke().getBounds();
+				// determine the bounds of the region in
+				// pattern space. this information was provided by the user
+				final double tlX = bounds.getX();
+				final double tlY = bounds.getY();
+				final double width = bounds.getWidth();
+				final double height = bounds.getHeight();
+
+				// tie the pattern bounds to this region
+				// object
+				map.setPatternInformationOfRegion(region, //
+						new PatternDots(tlX), new PatternDots(tlY), // 
+						new PatternDots(width), new PatternDots(height));
+
+				// unregister myself...
+				eventDispatcher.removeEventHandlerForUnmappedEvents(this);
+
+				// DebugUtils.println("Bound the region
+				// [" + r.getName() + "] to Pattern "
+				// + bounds);
+				bindPatternToRegionItem.setLabel("Change Binding for " + region.getName()
+						+ ". Currently set to " + bounds);
+
+				// additionally... write this out to a file in the mappings directory
+				map.saveConfigurationToXML(destFile);
+			}
+		});
+	}
 }
