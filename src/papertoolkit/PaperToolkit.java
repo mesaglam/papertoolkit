@@ -32,7 +32,6 @@ import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.actions.remote.ActionReceiverTrayApp;
 import papertoolkit.application.Application;
-import papertoolkit.application.ApplicationManager;
 import papertoolkit.application.config.Configuration;
 import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.EventDispatcher;
@@ -871,13 +870,9 @@ public class PaperToolkit {
 				pen.stopLiveMode();
 			}
 		}
-
 		eventDispatcher.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
-
-		// DebugUtils.println("Stopping Application: " + paperApp.getName());
 		runningApplications.remove(paperApp);
-
-		paperApp.setHostToolkit(null);
+		paperApp.setHostToolkit(null); // do we really need to set it to null?
 	}
 
 }
