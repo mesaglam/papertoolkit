@@ -133,7 +133,7 @@ public class ToolkitMonitoringService {
 
 					String line = null;
 					while ((line = br.readLine()) != null) {
-						outputToClients("Client " + clientID  + " of " + clients.size() + " said: " + line);
+						outputToClients("Client #" + clientID  + " said: " + line + " [" + clients.size() + " total clients]");
 
 						if (line.equals("[[exit]]")) {
 							clients.remove(clientSocket);

@@ -20,11 +20,6 @@ public class StartupOptions {
 	private boolean useLookAndFeel = true;
 
 	/**
-	 * Load the App Manager (equivalent to the System Tray Menu) on startup...
-	 */
-	private boolean useAppManager = false;
-
-	/**
 	 * Automatically load the handwriting recognition server on startup. Otherwise, we'll just load it
 	 * whenever we notice that there is a handwriting recognizer in your application (default behavior).
 	 */
@@ -48,13 +43,5 @@ public class StartupOptions {
 
 	public boolean getParamTurnOnHandwritingRecognitionServer() {
 		return useHandwritingRecognitionServer;
-	}
-
-	public void setParamLoadAppManager(boolean flag) {
-		useAppManager = flag;
-	}
-
-	public boolean getParamLoadAppManager() {
-		return useAppManager;
 	}
 }

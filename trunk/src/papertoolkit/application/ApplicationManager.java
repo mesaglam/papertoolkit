@@ -36,7 +36,6 @@ import org.jdesktop.swingx.decorator.ConditionalHighlighter;
 import papertoolkit.PaperToolkit;
 import papertoolkit.paper.Sheet;
 import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
-import papertoolkit.util.DebugUtils;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.components.EndlessProgressDialog;
 import papertoolkit.util.files.FileUtils;
@@ -45,6 +44,7 @@ import papertoolkit.util.layout.StackedLayout;
 /**
  * <p>
  * A GUI for running multiple applications, designing sheets, or accessing the tool explorer.
+ * We are integrating all of these features into the system tray menu, and removing this class altogether...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -248,11 +248,11 @@ public class ApplicationManager {
 	private ListModel getListModel() {
 		final ListModel model = new AbstractListModel() {
 			public Object getElementAt(int appIndex) {
-				return toolkit.getLoadedApplications().get(appIndex);
+				return "No App";
 			}
 
 			public int getSize() {
-				return toolkit.getLoadedApplications().size();
+				return 1;
 			}
 		};
 		return model;

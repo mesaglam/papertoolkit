@@ -485,12 +485,6 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * Allows us to manage multiple running applications. Showing this GUI is optional. It is useful during
-	 * the design/debugging stages.
-	 */
-	private ApplicationManager appManager;
-
-	/**
 	 * Processes batched ink.
 	 */
 	private BatchedDataDispatcher batchedDataDispatcher;
@@ -512,10 +506,6 @@ public class PaperToolkit {
 	 */
 	private List<ActionListener> listenersToLoadRecentPatternMappings = new ArrayList<ActionListener>();
 
-	/**
-	 * A list of all applications loaded (but not necessarily running) in this system.
-	 */
-	private List<Application> loadedApplications = new ArrayList<Application>();
 
 	/**
 	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
@@ -527,12 +517,6 @@ public class PaperToolkit {
 	 * The list of running applications.
 	 */
 	private List<Application> runningApplications = new ArrayList<Application>();
-
-	/**
-	 * Whether to show the application manager whenever an app is loaded/started. Defaults to false. True is
-	 * useful for debugging and stopping apps that don't have a GUI.
-	 */
-	private boolean useAppManager = false;
 
 	/**
 	 * Whether or not to use handwriting recognition. It will start the HWRec Server...
@@ -574,10 +558,6 @@ public class PaperToolkit {
 			HandwritingRecognitionService.getInstance();
 		}
 
-		// whether or not to show the app manager GUI when an application is
-		// loaded the idea is that one can load multiple applications (TODO)!
-		useApplicationManager(startupOptions.getParamLoadAppManager());
-		
 		// set up the monitoring
 		monitoringService = new ToolkitMonitoringService(this);
 	}
@@ -709,13 +689,6 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * @return
-	 */
-	public List<Application> getLoadedApplications() {
-		return loadedApplications;
-	}
-
-	/**
 	 * @param map
 	 * @return
 	 */
@@ -740,28 +713,6 @@ public class PaperToolkit {
 	 */
 	public List<Application> getRunningApplications() {
 		return runningApplications;
-	}
-
-	/**
-	 * Adds an application to the loaded list, and displays the application manager if the useAppManager flag
-	 * is set to true (default == false).
-	 * 
-	 * If you would like to use the GUI launcher/App Manager then call PaperToolkit.useAppManager(true);
-	 * 
-	 * @param app
-	 */
-	public void loadApplication(Application app) {
-		// DebugUtils.println("Loading " + app.getName());
-		loadedApplications.add(app);
-
-		// show the app manager if the developer wants to see it.
-		if (useAppManager) {
-			// DebugUtils.println("Loading/Updating the Application Manager.");
-			appManager = new ApplicationManager(this);
-			appManager.updateListOfApps();
-		}
-
-		app.populateTrayMenu(getTrayMenu());
 	}
 
 	/**
@@ -858,10 +809,9 @@ public class PaperToolkit {
 	 * @param paperApp
 	 */
 	public void startApplication(Application paperApp) {
-		if (!loadedApplications.contains(paperApp)) {
-			loadApplication(paperApp);
-		}
+		paperApp.populateTrayMenu(getTrayMenu());
 
+		
 		// run any initializers that need to happen before we begin
 		paperApp.initializeBeforeStarting();
 
@@ -890,15 +840,11 @@ public class PaperToolkit {
 		final Collection<PatternToSheetMapping> patternMappings = paperApp.getPatternMaps();
 		eventDispatcher.registerPatternMapsForEventHandling(patternMappings);
 
-		// will populate the system tray with a feature for runtime binding of
-		// regions... =)
+		// will populate the system tray with a feature for runtime binding of regions... =)
 		checkPatternMapsForUninitializedRegions(patternMappings);
 
 		// DebugUtils.println("Starting Application: " + paperApp.getName());
 		runningApplications.add(paperApp);
-		if (useAppManager) {
-			appManager.repaintListOfApps();
-		}
 
 		// provides access back to the toolkit object
 		paperApp.setHostToolkit(this);
@@ -931,25 +877,7 @@ public class PaperToolkit {
 		// DebugUtils.println("Stopping Application: " + paperApp.getName());
 		runningApplications.remove(paperApp);
 
-		if (useAppManager) {
-			appManager.repaintListOfApps();
-		}
-
 		paperApp.setHostToolkit(null);
 	}
 
-	/**
-	 * @param app
-	 */
-	public void unloadApplication(Application app) {
-		loadedApplications.remove(app);
-	}
-
-	/**
-	 * @param flag
-	 *            whether or not to load the app manager when you load an application.
-	 */
-	public void useApplicationManager(boolean flag) {
-		useAppManager = flag;
-	}
 }

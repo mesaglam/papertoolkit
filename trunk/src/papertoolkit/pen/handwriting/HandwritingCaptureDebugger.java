@@ -281,7 +281,6 @@ public class HandwritingCaptureDebugger extends JFrame {
 
 		StartupOptions options = new StartupOptions();
 		options.setParamApplyGUILookAndFeel(true);
-		options.setParamLoadAppManager(true);
 		options.setParamTurnOnHandwritingRecognitionServer(true);
 
 		PaperToolkit p = new PaperToolkit(options);
