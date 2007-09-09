@@ -11,7 +11,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import papertoolkit.util.DebugUtils;
+import papertoolkit.PaperToolkit;
+import papertoolkit.events.EventDispatcher;
 
 /**
  * <p>
@@ -34,16 +35,18 @@ public class ToolkitMonitoringService {
 	 */
 	public static int SERVICES_PORT = 9797;
 
-	public static void main(String[] args) {
-		new ToolkitMonitoringService();
-	}
-
 	private List<Socket> clients = new ArrayList<Socket>();
 	private boolean exitServer = false;
+	private boolean firstTimeClientConnected = true;
 	private List<PrintWriter> outputs = new ArrayList<PrintWriter>();
 	private ServerSocket serverSocket;
+	private PaperToolkit toolkit;
 
-	public ToolkitMonitoringService() {
+	private ToolkitMonitor monitor;
+	
+	public ToolkitMonitoringService(PaperToolkit paperToolkit) {
+		toolkit = paperToolkit;
+		
 		// wait at this port for a connection
 		createServerToWaitForAConnection();
 
@@ -60,6 +63,7 @@ public class ToolkitMonitoringService {
 			e.printStackTrace();
 		}
 		new Thread() {
+
 			public void run() {
 				while (!exitServer) {
 					Socket client;
@@ -68,15 +72,30 @@ public class ToolkitMonitoringService {
 						if (client != null) {
 							clients.add(client);
 							startClientHandlerThread(client);
+							if (firstTimeClientConnected) {
+								instrumentToolkitForMonitoring();
+								firstTimeClientConnected = false;
+							}
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
 			}
+
 		}.start();
 	}
-	
+
+	private void instrumentToolkitForMonitoring() {
+		EventDispatcher eventDispatcher = toolkit.getEventDispatcher();
+		monitor = new ToolkitMonitor(toolkit, eventDispatcher, this);
+		eventDispatcher.setMonitor(monitor);
+	}
+
+	/**
+	 * Use this method to broadcast information to listeners...
+	 * @param msg
+	 */
 	public void outputToClients(String msg) {
 		for (PrintWriter clientPW : outputs) {
 			clientPW.println(msg);
@@ -87,8 +106,8 @@ public class ToolkitMonitoringService {
 	private void startClientHandlerThread(final Socket clientSocket) {
 		new Thread() {
 			private BufferedReader br;
-			private PrintWriter pw;
 			private int clientID = ++clientIDs; // count from 1
+			private PrintWriter pw;
 
 			public synchronized void disconnect() {
 				try {

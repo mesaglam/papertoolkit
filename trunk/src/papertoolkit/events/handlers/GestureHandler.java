@@ -17,7 +17,6 @@ import papertoolkit.events.PenEvent;
  */
 public class GestureHandler extends EventHandler {
 
-	@Override
 	public void handleEvent(PenEvent event) {
 		
 	}

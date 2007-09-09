@@ -54,7 +54,6 @@ public class EclipseProjectClassLoader extends ClassLoader {
 	/**
 	 * @see java.lang.ClassLoader#loadClass(java.lang.String, boolean)
 	 */
-	@Override
 	protected synchronized Class<?> loadClass(String className, boolean resolveIt)
 			throws ClassNotFoundException {
 

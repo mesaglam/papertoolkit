@@ -1,7 +1,6 @@
 package papertoolkit;
 
 import java.awt.AWTException;
-import java.awt.Component;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -11,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
@@ -55,6 +52,7 @@ import papertoolkit.pen.synch.BatchedDataDispatcher;
 import papertoolkit.tools.ToolExplorer;
 import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
 import papertoolkit.tools.design.acrobat.RegionConfiguration;
+import papertoolkit.tools.services.ToolkitMonitoringService;
 import papertoolkit.units.Centimeters;
 import papertoolkit.units.Inches;
 import papertoolkit.units.PatternDots;
@@ -541,6 +539,8 @@ public class PaperToolkit {
 	 */
 	private boolean useHandwriting;
 
+	private ToolkitMonitoringService monitoringService;
+
 	/**
 	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
 	 * (and between applications, ideally). There will be one event engine in the paper toolkit, and all
@@ -577,6 +577,9 @@ public class PaperToolkit {
 		// whether or not to show the app manager GUI when an application is
 		// loaded the idea is that one can load multiple applications (TODO)!
 		useApplicationManager(startupOptions.getParamLoadAppManager());
+		
+		// set up the monitoring
+		monitoringService = new ToolkitMonitoringService(this);
 	}
 
 	/**
