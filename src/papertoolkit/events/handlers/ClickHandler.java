@@ -19,6 +19,23 @@ public abstract class ClickHandler extends EventHandler {
 
 	/**
 	 * <p>
+	 * Keep it with its abstract parent. Makes code that needs a ClickHandler a wee bit cleaner. <br>
+	 * Extend this instead of ClickHandler.
+	 * </p>
+	 */
+	public static class ClickAdapter extends ClickHandler {
+		public void clicked(PenEvent e) {
+		}
+
+		public void pressed(PenEvent e) {
+		}
+
+		public void released(PenEvent e) {
+		}
+	}
+
+	/**
+	 * <p>
 	 * Does not notify a click until after a sufficiently long delay.
 	 * </p>
 	 */
@@ -60,8 +77,8 @@ public abstract class ClickHandler extends EventHandler {
 	}
 
 	/**
-	 * We assume a human cannot pen up and down within a 30 ms span.
-	 * TODO: Move this functionality down into the PenServer...
+	 * We assume a human cannot pen up and down within a 30 ms span. TODO: Move this functionality down into
+	 * the PenServer...
 	 */
 	private static final long MILLIS_TO_DELAY = 30;
 

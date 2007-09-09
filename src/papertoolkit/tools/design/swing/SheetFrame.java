@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.PenEventType;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.XMLRegion;

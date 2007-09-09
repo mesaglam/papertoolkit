@@ -14,6 +14,7 @@ import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
 import papertoolkit.pen.PenInput;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
+import papertoolkit.tools.services.ToolkitMonitor;
 import papertoolkit.units.Size;
 import papertoolkit.units.coordinates.PercentageCoordinates;
 import papertoolkit.util.DebugUtils;
@@ -74,6 +75,11 @@ public class EventDispatcher {
 	 * Each pen gets one and only one listener for the EventDispatcher...
 	 */
 	private Map<PenInput, PenListener> penToListener = new HashMap<PenInput, PenListener>();
+
+	/**
+	 * Broadcasts toolkit internals to external services.
+	 */
+	private ToolkitMonitor toolkitMonitor;
 
 	/**
 	 * This object handles event dispatch by hooking up pen listeners to local and remote pen servers. It will
@@ -183,7 +189,7 @@ public class EventDispatcher {
 		if (penEvent.isTypePenUp()) {
 			penEvent.setPercentageLocation(lastKnownLocation);
 			for (EventHandler h : mostRecentEventHandlers) {
-				h.handleEvent(penEvent);
+				monitoredHandleEvent(h, penEvent);
 			}
 			return; // done!
 		}
@@ -231,7 +237,7 @@ public class EventDispatcher {
 					// so long as the event is not consumed
 					for (EventHandler eh : eventHandlers) {
 						eventHandledAtLeastOnce = true;
-						eh.handleEvent(penEvent);
+						monitoredHandleEvent(eh, penEvent);
 						mostRecentEventHandlers.add(eh);
 						if (penEvent.isConsumed()) {
 							// we are done handling this event
@@ -243,15 +249,6 @@ public class EventDispatcher {
 					} // check the next event handler
 				} // check the next coordinate converter / matching region
 			} // check the next pattern map
-
-			// if none of the handlers own this event, we send the event to our "catch-all" event handlers...
-			if (!eventHandledAtLeastOnce) {
-				for (EventHandler eh : catchAllHandlers) {
-					eventHandledAtLeastOnce = true;
-					eh.handleEvent(penEvent);
-					mostRecentEventHandlers.add(eh);
-				} // check the next event handler
-			}
 
 			if (!eventHandledAtLeastOnce) {
 				// if in the end, no one has had a chance to deal with this event yet
@@ -270,7 +267,9 @@ public class EventDispatcher {
 						// so long as the event is not consumed
 						for (EventHandler eh : eventHandlers) {
 							eventHandledAtLeastOnce = true;
-							eh.handleEvent(penEvent);
+
+							monitoredHandleEvent(eh, penEvent);
+							
 							mostRecentEventHandlers.add(eh);
 							if (penEvent.isConsumed()) {
 								// we are done handling this event
@@ -284,10 +283,28 @@ public class EventDispatcher {
 					}
 				}
 			}
-			
+
+			// if none of the handlers own this event, we send the event to our "catch-all" event handlers...
+			if (!eventHandledAtLeastOnce) {
+				for (EventHandler eh : catchAllHandlers) {
+					eventHandledAtLeastOnce = true;
+					monitoredHandleEvent(eh, penEvent);
+					mostRecentEventHandlers.add(eh);
+				} // check the next event handler
+			}
+
+
+			// if this application has no sheets or regions... it'll fall all the way to here
 			if (!eventHandledAtLeastOnce) {
 				DebugUtils.println("Incoming Event is Not Mapped to any Regions: " + penEvent);
 			}
+		}
+	}
+
+	private void monitoredHandleEvent(EventHandler handler, PenEvent event) {
+		handler.handleEvent(event);
+		if (toolkitMonitor != null) {
+			toolkitMonitor.eventHandled(handler, event);
 		}
 	}
 
@@ -412,5 +429,9 @@ public class EventDispatcher {
 			PenListener listener = penToListener.get(pen);
 			removePenFromInternalLists(pen, listener);
 		}
+	}
+
+	public void setMonitor(ToolkitMonitor monitor) {
+		toolkitMonitor = monitor;
 	}
 }
