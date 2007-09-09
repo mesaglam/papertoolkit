@@ -10,11 +10,11 @@ import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
 
-
 /**
  * <p>
  * Simulate a mouse with the pen... Move the mouse w/ your real mouse first... and then the pen will move the
- * mouse relatively from penDown to penUp...
+ * mouse relatively from penDown to penUp... Because of the latency, the pen is not good enough to track user
+ * motions.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -33,7 +33,7 @@ public class PenMouse {
 	private double lastX;
 
 	private double lastY;
-	
+
 	private Point mouseLocation;
 
 	private Pen pen;

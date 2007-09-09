@@ -67,7 +67,6 @@ public class BioMapSmallTest extends Application {
 		// Ask the toolkit to load the application
 		// The user can then choose whether to print the GIGAprint, or run the app
 		PaperToolkit r3 = new PaperToolkit();
-		r3.useApplicationManager(true);
-		r3.loadApplication(new BioMapSmallTest());
+		r3.startApplication(new BioMapSmallTest());
 	}
 }

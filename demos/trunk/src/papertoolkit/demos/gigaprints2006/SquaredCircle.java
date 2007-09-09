@@ -80,8 +80,7 @@ public class SquaredCircle extends Application {
 			downloadPhotos();
 		} else {
 			final PaperToolkit r3 = new PaperToolkit();
-			r3.useApplicationManager(true);
-			r3.loadApplication(new SquaredCircle());
+			r3.startApplication(new SquaredCircle());
 		}
 	}
 

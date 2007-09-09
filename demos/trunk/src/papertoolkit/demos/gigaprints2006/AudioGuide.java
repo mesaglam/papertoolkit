@@ -32,8 +32,7 @@ public class AudioGuide extends Application {
 	public static void main(String[] args) {
 		AudioGuide guide = new AudioGuide();
 		PaperToolkit p = new PaperToolkit();
-		p.useApplicationManager(true); // flip to false later on
-		p.loadApplication(guide); // just call start later on
+		p.startApplication(guide); // just call start later on
 	}
 
 	/**

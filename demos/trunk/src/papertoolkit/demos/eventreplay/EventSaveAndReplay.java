@@ -31,7 +31,7 @@ public class EventSaveAndReplay extends Application {
 	 */
 	public static void main(String[] args) {
 		PaperToolkit toolkit = new PaperToolkit();
-		toolkit.loadApplication(new PPTAdvancer(false));
+		toolkit.startApplication(new PPTAdvancer(false));
 	}
 
 	private Region floatingRegion;

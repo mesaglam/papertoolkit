@@ -32,7 +32,6 @@ public class DetectBatched extends Application {
 	public static void main(String[] args) {
 		DetectBatched batched = new DetectBatched();
 		StartupOptions options = new StartupOptions();
-		options.setParamLoadAppManager(true);
 		PaperToolkit paperToolkit = new PaperToolkit(options);
 		paperToolkit.startApplication(batched);
 	}

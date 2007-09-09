@@ -40,6 +40,6 @@ public class Simple {
 		app.addSheet(s);
 		app.addPenInput(new Pen("Primary Pen"));
 		PaperToolkit toolkit = new PaperToolkit();
-		toolkit.loadApplication(app);
+		toolkit.startApplication(app);
 	}
 }

@@ -36,7 +36,7 @@ public class MessMapGIGAprint extends Application {
 		// print.generateCode();
 
 		PaperToolkit p = new PaperToolkit();
-		p.loadApplication(print);
+		p.startApplication(print);
 	}
 
 	/**

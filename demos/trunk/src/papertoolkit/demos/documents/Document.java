@@ -30,7 +30,7 @@ public class Document extends Application {
 	 */
 	public static void main(String[] args) {
 		Document spreadsheet = new Document();
-		new PaperToolkit().loadApplication(spreadsheet);
+		new PaperToolkit().startApplication(spreadsheet);
 	}
 
 	private Region region;

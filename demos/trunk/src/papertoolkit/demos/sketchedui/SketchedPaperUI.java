@@ -26,7 +26,7 @@ public class SketchedPaperUI extends Application {
 	 */
 	public static void main(String[] args) {
 		PaperToolkit p = new PaperToolkit();
-		p.loadApplication(new SketchedPaperUI());
+		p.startApplication(new SketchedPaperUI());
 	}
 
 	/**

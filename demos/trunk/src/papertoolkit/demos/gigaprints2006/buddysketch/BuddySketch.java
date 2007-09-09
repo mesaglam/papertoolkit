@@ -42,8 +42,6 @@ import papertoolkit.util.networking.ClientServerType;
 public class BuddySketch extends Application {
 
 	/**
-	 * <p>
-	 * </p>
 	 */
 	private static class HostNameWithComment {
 		public String comment;
@@ -101,7 +99,6 @@ public class BuddySketch extends Application {
 		super("Buddy Sketch Application");
 		System.out.println("Welcome to Buddy Sketch!");
 		PaperToolkit.initializeLookAndFeel();
-		setUserChoosesPDFDestinationFlag(false);
 
 		// set up the GIGAprint application
 		buddySketchPUI = new BuddySketchPaperUI(this);
@@ -115,7 +112,6 @@ public class BuddySketch extends Application {
 		} else {
 			// load it up and start!
 			PaperToolkit r3 = new PaperToolkit();
-			r3.useApplicationManager(true);
 			r3.startApplication(this);
 		}
 	}
