@@ -198,7 +198,6 @@ public class BuddySketch extends Application {
 	/**
 	 * @see papertoolkit.application.Application#initializeBeforeStarting()
 	 */
-	@Override
 	public void initializeBeforeStarting() {
 		startLocalActionReceiver();
 
@@ -307,7 +306,6 @@ public class BuddySketch extends Application {
 			/**
 			 * @see papertoolkit.actions.remote.ActionHandler#receivedAction(papertoolkit.actions.Action)
 			 */
-			@Override
 			public void receivedAction(Action action) {
 				if (action instanceof MessageAction) {
 					MessageAction p = (MessageAction) action;
@@ -338,7 +336,6 @@ public class BuddySketch extends Application {
 			/**
 			 * @see papertoolkit.actions.remote.ActionHandler#receivedActionText(java.lang.String)
 			 */
-			@Override
 			public void receivedActionText(String line) {
 				super.receivedActionText(line);
 			}

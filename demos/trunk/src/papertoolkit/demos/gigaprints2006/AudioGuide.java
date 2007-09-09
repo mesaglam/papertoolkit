@@ -6,7 +6,7 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.devices.Device;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.util.DebugUtils;
@@ -94,7 +94,6 @@ public class AudioGuide extends Application {
 	 */
 	private void setupChurchPhotos(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Church Photos.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/MemorialChurch.wav"));
@@ -107,7 +106,6 @@ public class AudioGuide extends Application {
 	 */
 	private void setupGates(Region gatesRegion) {
 		gatesRegion.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Gates Building.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/Gates.wav"));
@@ -117,7 +115,6 @@ public class AudioGuide extends Application {
 
 	private void setupGenericPhotos(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Generic Photos.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/SEQ.wav"));
@@ -127,7 +124,6 @@ public class AudioGuide extends Application {
 
 	private void setupGeology(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Geology.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/GeologyCorner.wav"));
@@ -137,7 +133,6 @@ public class AudioGuide extends Application {
 
 	private void setupGilbert(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on Gilbert and Herrin.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/Bio1.wav"));
@@ -148,7 +143,6 @@ public class AudioGuide extends Application {
 
 	private void setupGSB(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the GSB.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/GSB.wav"));
@@ -158,7 +152,6 @@ public class AudioGuide extends Application {
 
 	private void setupHistory(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the History.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/History.wav"));
@@ -168,7 +161,6 @@ public class AudioGuide extends Application {
 
 	private void setupLanguage(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Language.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/LanguageCorner.wav"));
@@ -178,7 +170,6 @@ public class AudioGuide extends Application {
 
 	private void setupMath(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Math.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/MathCorner.wav"));
@@ -188,7 +179,6 @@ public class AudioGuide extends Application {
 
 	private void setupOval(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Oval.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
@@ -198,7 +188,6 @@ public class AudioGuide extends Application {
 
 	private void setupOvalPhotos(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on The Oval Photos.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
@@ -208,7 +197,6 @@ public class AudioGuide extends Application {
 
 	private void setupPackardPhotos(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Packard Photos.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/SEQ.wav"));
@@ -218,7 +206,6 @@ public class AudioGuide extends Application {
 
 	private void setupQuad(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Quad.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/MainQuad.wav"));
@@ -228,7 +215,6 @@ public class AudioGuide extends Application {
 
 	private void setupTourists(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Tourists.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/AtOval.wav"));
@@ -238,7 +224,6 @@ public class AudioGuide extends Application {
 
 	private void setupTressider(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Tressider.");
 				Device.doPlaySound(new File("data/AudioGuide/audio/Tressider.wav"));
@@ -248,7 +233,6 @@ public class AudioGuide extends Application {
 
 	private void setupWhereAmI(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the Where Am I.");
 				System.out.println(e.getPercentageLocation());
@@ -259,7 +243,6 @@ public class AudioGuide extends Application {
 
 	private void setupWhitePlaza(Region region) {
 		region.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("You clicked on the White Plaza.");
 				System.out.println(e.getPercentageLocation());

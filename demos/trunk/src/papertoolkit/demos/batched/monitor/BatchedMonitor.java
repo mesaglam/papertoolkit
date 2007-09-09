@@ -31,12 +31,10 @@ public class BatchedMonitor implements BatchedDataImportMonitor {
 		new BatchedMonitor().handleBatchedData(new File("."));
 	}
 
-	@Override
 	public void handleBatchedData(File xmlFile) {
 		JOptionPane.showMessageDialog(null, "Handling Batched Data...");
 	}
 
-	@Override
 	public String getName() {
 		return "Batched Monitor Demo";
 	}

@@ -3,14 +3,12 @@ package papertoolkit.demos.debug;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.ButtonRegion;
 import papertoolkit.pen.Pen;
-import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.units.coordinates.PercentageCoordinates;
-import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -38,7 +36,6 @@ public class DebugShowMeApp {
 
 		Region inkRegion = new Region("Ink for ToDos", 1, 1, 6.5, 4);
 		inkRegion.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				// DebugUtils.println("Ink Region Clicked at " + e.getPercentageLocation());
 
@@ -52,7 +49,6 @@ public class DebugShowMeApp {
 		});
 
 		ButtonRegion buttonRegion = new ButtonRegion("Upload to Calendar", 5.5, 8.5, 2, 1.5) {
-			@Override
 			protected void onClick(PenEvent e) {
 				showMe("Send Clicked: Uploading your Ink!");
 			}

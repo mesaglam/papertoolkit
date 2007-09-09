@@ -111,24 +111,15 @@ public class BioMap extends Application {
 		};
 		urRegion.addEventHandler(inkWellUpperRight);
 		urRegion.addEventHandler(new ClickHandler() {
-
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("Upper Right Clicked");
 			}
-
-			@Override
 			public void pressed(PenEvent e) {
 				// TODO Auto-generated method stub
-
 			}
-
-			@Override
 			public void released(PenEvent e) {
 				// TODO Auto-generated method stub
-
 			}
-
 		});
 
 		// read in the BioMapSites.txt file to define the locations of the small boxed regions
@@ -166,21 +157,16 @@ public class BioMap extends Application {
 						new Inches(yOfThisSite), new Inches(.85), new Inches(.85));
 				rSite.addEventHandler(new ClickHandler() {
 
-					@Override
 					public void clicked(PenEvent e) {
 						DebugUtils.println("Site " + siteNum + " at " + utmX + ", " + utmY);
 						audioFeedback.speak("Site" + siteNum + "....");
 						lastSite = siteNum;
 					}
 
-					@Override
 					public void pressed(PenEvent e) {
-
 					}
 
-					@Override
 					public void released(PenEvent e) {
-
 					}
 				});
 				sheet.addRegion(rSite);

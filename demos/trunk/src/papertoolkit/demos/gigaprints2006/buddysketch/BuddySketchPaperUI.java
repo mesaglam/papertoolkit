@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
 import papertoolkit.events.handlers.InkHandler;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.ImageRegion;
@@ -63,7 +63,6 @@ public class BuddySketchPaperUI extends Sheet {
 		drawingRegion.addEventHandler(inkWell);
 
 		drawingRegion.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("Drawing Region CLICK " + e.getPercentageLocation());
 				DebugUtils.println("Drawing Region CLICK "
@@ -109,7 +108,6 @@ public class BuddySketchPaperUI extends Sheet {
 			final Region retrieveOrHide = new Region(desc, xInches, new Inches(yInches), imgRegion
 					.getWidth(), new Inches(0.6));
 			retrieveOrHide.addEventHandler(new ClickAdapter() {
-				@Override
 				public void clicked(PenEvent e) {
 					DebugUtils.println("Clicked " + fileName + " at " + e.getPercentageLocation());
 					sketchApp.displayImage(imgFile);

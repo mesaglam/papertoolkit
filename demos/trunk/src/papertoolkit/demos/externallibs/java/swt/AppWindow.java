@@ -32,7 +32,6 @@ public class AppWindow extends ApplicationWindow {
 	/**
 	 * @see org.eclipse.jface.window.Window#initializeBounds()
 	 */
-	@Override
 	protected void initializeBounds() {
 		getShell().setSize(640, 480);
 		getShell().setLocation(10, 10);
@@ -92,7 +91,6 @@ public class AppWindow extends ApplicationWindow {
 	/**
 	 * @see org.eclipse.jface.window.ApplicationWindow#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
-	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText("JFace Example");

@@ -2,7 +2,7 @@ package papertoolkit.demos.batched.buttons;
 
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pen.Pen;

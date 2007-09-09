@@ -37,7 +37,6 @@ public class PImageWithHighlight extends PImage {
 	/**
 	 * @see edu.umd.cs.piccolo.nodes.PImage#paint(edu.umd.cs.piccolo.util.PPaintContext)
 	 */
-	@Override
 	protected void paint(PPaintContext ppc) {
 		super.paint(ppc);
 		final Graphics2D g2d = ppc.getGraphics();

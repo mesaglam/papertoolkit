@@ -6,8 +6,8 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.devices.Device;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
 import papertoolkit.events.handlers.InkHandler;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.pen.Pen;
@@ -68,7 +68,6 @@ public class DiamondsEdge extends Application {
 		// next to the stanford logo...
 		Region websiteLink = poster.getRegion("HCIWebsiteArea");
 		websiteLink.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("HCIWebsiteArea");
 				Device.doOpenURL("http://hci.stanford.edu/");
@@ -77,8 +76,6 @@ public class DiamondsEdge extends Application {
 
 		Region titleWebsiteLink = poster.getRegion("WebsiteArea");
 		titleWebsiteLink.addEventHandler(new ClickAdapter() {
-
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("WebsiteArea");
 				Device.doOpenURL("http://hci.stanford.edu/");
@@ -92,7 +89,6 @@ public class DiamondsEdge extends Application {
 			/**
 			 * Opens GMAIL
 			 */
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("EmailArea");
 				Device.doOpenURL("https://mail.google.com/mail/?view=cm&tf=0&fs=1&to="
@@ -102,7 +98,6 @@ public class DiamondsEdge extends Application {
 
 		Region video = poster.getRegion("ShowVideoArea");
 		video.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("VideoArea");
 				Device.doOpenFile(new File("data/Posters/DiamondsEdge.mov"));

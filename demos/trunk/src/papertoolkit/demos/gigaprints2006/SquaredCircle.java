@@ -12,13 +12,12 @@ import papertoolkit.application.Application;
 import papertoolkit.demos.gigaprints2006.flickr.FlickrPhoto;
 import papertoolkit.demos.gigaprints2006.flickr.PhotoDownloadr;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.CompoundRegion;
 import papertoolkit.paper.regions.ImageRegion;
 import papertoolkit.units.Inches;
-import papertoolkit.units.Pixels;
 import papertoolkit.units.Units;
 import papertoolkit.units.conversion.PixelsPerInch;
 import papertoolkit.units.coordinates.Coordinates;
@@ -125,7 +124,6 @@ public class SquaredCircle extends Application {
 				new Inches(0.5), new Inches(0.5));
 		retrieve.setStrokeColor(Color.LIGHT_GRAY);
 		retrieve.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("Clicked on Photo " + photo.getUrl());
 			}
@@ -184,7 +182,6 @@ public class SquaredCircle extends Application {
 					currYInches, halfInch, halfInch);
 			voteUpRegion.setStrokeColor(Color.LIGHT_GRAY);
 			voteUpRegion.addEventHandler(new ClickAdapter() {
-				@Override
 				public void clicked(PenEvent e) {
 					System.out.println("This Photo is Great!: " + photo.getUrl() + " " + photoID);
 				}
@@ -194,7 +191,6 @@ public class SquaredCircle extends Application {
 					new Inches(currY + 0.5), halfInch, halfInch);
 			retrieveRegion.setStrokeColor(Color.LIGHT_GRAY);
 			retrieveRegion.addEventHandler(new ClickAdapter() {
-				@Override
 				public void clicked(PenEvent e) {
 					System.out.println("Clicked on Photo " + photo.getUrl() + " " + photoID);
 					new OpenURL2Action(photo.getUrl(), OpenURL2Action.FIREFOX).invoke();
@@ -204,7 +200,6 @@ public class SquaredCircle extends Application {
 					new Inches(currY + 1.0), halfInch, halfInch);
 			voteDownRegion.setStrokeColor(Color.LIGHT_GRAY);
 			voteDownRegion.addEventHandler(new ClickAdapter() {
-				@Override
 				public void clicked(PenEvent e) {
 					System.out.println("This Photo is No Good: " + photo.getUrl() + " " + photoID);
 				}

@@ -4,7 +4,7 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.demos.simple.PPTAdvancer;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
@@ -59,7 +59,6 @@ public class EventSaveAndReplay extends Application {
 			floatingRegion = new Region("Floating Region", //
 					new Inches(0), new Inches(0), new Inches(8.5), new Inches(11));
 			floatingRegion.addEventHandler(new ClickAdapter() {
-				@Override
 				public void clicked(PenEvent e) {
 					DebugUtils.println("Clicked at: " + e.getPercentageLocation());
 				}

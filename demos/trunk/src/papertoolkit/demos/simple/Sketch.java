@@ -16,9 +16,9 @@ import javax.swing.WindowConstants;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
-import papertoolkit.events.handlers.MarkingGestureHandler;
 import papertoolkit.events.handlers.InkHandler;
+import papertoolkit.events.handlers.MarkingGestureHandler;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.pen.Pen;
@@ -151,7 +151,6 @@ public class Sketch {
 
 		Region regionBlack = sheet.getRegion("BlackPalette");
 		regionBlack.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("Clicked Black " + clickCount + " times in a row.");
 				currentColor = BLACK;
@@ -161,7 +160,6 @@ public class Sketch {
 
 		Region regionPurple = sheet.getRegion("PurplePalette");
 		regionPurple.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("Clicked Purple " + clickCount + " times in a row.");
 				currentColor = PURPLE;
@@ -171,7 +169,6 @@ public class Sketch {
 
 		Region regionOrange = sheet.getRegion("OrangePalette");
 		regionOrange.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				System.out.println("Clicked Orange " + clickCount + " times in a row.");
 				currentColor = ORANGE;
@@ -183,7 +180,6 @@ public class Sketch {
 		// and paste it here, and it would become the code??? (FUTURE TODO)
 		Region regionSendToScreen = sheet.getRegion("MarkingMenu");
 		regionSendToScreen.addEventHandler(new MarkingGestureHandler() {
-			@Override
 			public void handleMark(PenEvent e, MarkDirection dir) {
 				System.out.println("Mark Direction: " + dir);
 				switch (dir) {

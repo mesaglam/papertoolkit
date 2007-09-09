@@ -3,7 +3,7 @@ package papertoolkit.demos.simple;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.units.PatternDots;
@@ -39,13 +39,11 @@ public class OverlappingRegions extends Application {
 		s.addRegion(r1, new PatternDots(0), new PatternDots(0), new PatternDots(1000000000), new PatternDots(1000000000));
 
 		r1.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("Clicked on R1: " + e);
 			}
 		});
 		r2.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("Clicked on R2: " + e);
 			}

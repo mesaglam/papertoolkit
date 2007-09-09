@@ -8,7 +8,7 @@ import java.util.List;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.layout.FlowPaperLayout;
@@ -88,7 +88,6 @@ public class LetterSizedGrid extends Application {
 				final Region r = new TextRegion(rname, rname, font, new Inches(0), new Inches(0),
 						new Inches(1), new Inches(1));
 				r.addEventHandler(new ClickAdapter() {
-					@Override
 					public void clicked(PenEvent e) {
 						System.out.println("Clicked on " + r.getName());
 						System.out.println(e.getStreamedPatternCoordinate());

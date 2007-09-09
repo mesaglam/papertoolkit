@@ -6,7 +6,7 @@ import java.util.List;
 
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.layout.FlowPaperLayout;
@@ -50,7 +50,6 @@ public class Grid {
 		for (int i = 0; i < 1400; i++) {
 			final Region r = new Region("Box_" + i, 0, 0, .75, .75);
 			r.addEventHandler(new ClickAdapter() {
-				@Override
 				public void clicked(PenEvent e) {
 					System.out.println("Clicked on " + r.getName());
 				}

@@ -5,7 +5,7 @@ import java.io.File;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.sheets.PDFSheet;
 import papertoolkit.util.DebugUtils;
@@ -48,7 +48,6 @@ public class FlutterbyNet extends Application {
 		// lower left side of the poster
 		final Region webArea = poster.getRegion("WebsiteArea");
 		webArea.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("Web");
 			}
@@ -57,7 +56,6 @@ public class FlutterbyNet extends Application {
 		// next to the stanford logo...
 		final Region emailArea = poster.getRegion("EmailArea");
 		emailArea.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("Email");
 			}
@@ -66,7 +64,6 @@ public class FlutterbyNet extends Application {
 		// lower right
 		final Region downloadArea = poster.getRegion("DownloadPDF");
 		downloadArea.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				DebugUtils.println("Download");
 			}

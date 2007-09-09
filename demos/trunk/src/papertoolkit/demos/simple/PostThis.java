@@ -4,9 +4,9 @@ import java.awt.Font;
 
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
 import papertoolkit.events.handlers.HandwritingHandler;
 import papertoolkit.events.handlers.InkHandler;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.TextRegion;
@@ -79,7 +79,6 @@ public class PostThis extends Application {
 	 */
 	private void addTagInkHandler(Region tagRegion) {
 		handwritingRecognizer = new HandwritingHandler() {
-			@Override
 			public void contentArrived() {
 				
 			}
@@ -92,7 +91,6 @@ public class PostThis extends Application {
 	 */
 	private void addUploadHandler(final Region uploadRegion) {
 		uploadRegion.addEventHandler(new ClickAdapter() {
-			@Override
 			public void clicked(PenEvent e) {
 				String handwriting = handwritingRecognizer.recognizeHandwriting();
 				DebugUtils.println("You tagged the ink with: [" + handwriting + "]");

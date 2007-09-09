@@ -76,10 +76,7 @@ public abstract class CommentCollector extends InkHandler {
 		feed.setDescription("BoingBoing GIGAprints Comments");
 
 		updater = new Thread() {
-
 			long lastRecorded = 0L;
-
-			@Override
 			public void run() {
 				while (true) {
 					try {

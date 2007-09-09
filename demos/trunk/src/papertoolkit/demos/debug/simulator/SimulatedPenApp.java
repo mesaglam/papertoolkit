@@ -2,14 +2,11 @@ package papertoolkit.demos.debug.simulator;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
-import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.ClickAdapter;
-import papertoolkit.events.handlers.ClickHandler;
+import papertoolkit.events.handlers.ClickHandler.ClickAdapter;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.ButtonRegion;
-import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSimulator;
 import papertoolkit.util.DebugUtils;
 
@@ -38,7 +35,6 @@ public class SimulatedPenApp {
 		});
 
 		ButtonRegion buttonRegion = new ButtonRegion("Send", 6, 9, 2, 1.3) {
-			@Override
 			protected void onClick(PenEvent e) {
 				DebugUtils.println("I got clicked");
 			}
