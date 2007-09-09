@@ -29,6 +29,10 @@ public class ToolkitMonitor {
 	}
 
 	public void eventHandled(EventHandler handler, PenEvent event) {
-		monitoringService.outputToClients("Event Handled: " + handler.toString() + " :: " + event);
+		if (handler != null) {
+			monitoringService.outputToClients("Event Handled: " + handler.toString() + " :: " + event);
+		} else {
+			monitoringService.outputToClients("Unhandled Event: " + event);
+		}
 	}
 }

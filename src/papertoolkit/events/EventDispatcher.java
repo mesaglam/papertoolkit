@@ -296,13 +296,16 @@ public class EventDispatcher {
 
 			// if this application has no sheets or regions... it'll fall all the way to here
 			if (!eventHandledAtLeastOnce) {
-				DebugUtils.println("Incoming Event is Not Mapped to any Regions: " + penEvent);
+				DebugUtils.println("Event Not Mapped to any Regions: " + penEvent);
+				monitoredHandleEvent(null, penEvent);
 			}
 		}
 	}
 
 	private void monitoredHandleEvent(EventHandler handler, PenEvent event) {
-		handler.handleEvent(event);
+		if (handler!=null) {
+			handler.handleEvent(event);
+		}
 		if (toolkitMonitor != null) {
 			toolkitMonitor.eventHandled(handler, event);
 		}
