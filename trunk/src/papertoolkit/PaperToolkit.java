@@ -39,8 +39,8 @@ import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.RegionID;
 import papertoolkit.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
+import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.Pen;
-import papertoolkit.pen.PenInput;
 import papertoolkit.pen.handwriting.HandwritingRecognitionService;
 import papertoolkit.pen.streaming.PenServerTrayApp;
 import papertoolkit.pen.synch.BatchedDataDispatcher;
@@ -705,9 +705,9 @@ public class PaperToolkit {
 			paperApp.setHostToolkit(this);
 		}
 
-		final List<PenInput> pens = paperApp.getPenInputDevices();
-		// add all the live pens to the eventEngine
-		for (PenInput pen : pens) {
+		// register all the live pens with the dispatcher
+		final List<InputDevice> pens = paperApp.getPenInputDevices();
+		for (InputDevice pen : pens) {
 			pen.startLiveMode(); // starts live mode at the pen's default place
 			if (pen.isLive()) {
 				eventDispatcher.register(pen);
@@ -733,8 +733,8 @@ public class PaperToolkit {
 	 * @param paperApp
 	 */
 	public void stopApplication(Application paperApp) {
-		final List<PenInput> pens = paperApp.getPenInputDevices();
-		for (PenInput pen : pens) {
+		final List<InputDevice> pens = paperApp.getPenInputDevices();
+		for (InputDevice pen : pens) {
 			if (pen.isLive()) {
 				eventDispatcher.unregisterPen(pen);
 				// stop the pen from listening!

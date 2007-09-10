@@ -24,7 +24,7 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
-import papertoolkit.pen.PenInput;
+import papertoolkit.pen.InputDevice;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
@@ -93,7 +93,7 @@ public class Application {
 	 * actual digital pens (Pen.java). Sometimes, they can be simulated... by anything that implements the
 	 * PenIput interface..
 	 */
-	private List<PenInput> penInputDevices = new ArrayList<PenInput>();
+	private List<InputDevice> penInputDevices = new ArrayList<InputDevice>();
 
 	/**
 	 * An application contains multiple bundles, which in turn contain multiple sheets. In the simplest case,
@@ -122,7 +122,7 @@ public class Application {
 	 * 
 	 * @param pen
 	 */
-	public void addPenInput(PenInput penInputDevice) {
+	public void addPenInput(InputDevice penInputDevice) {
 		penInputDevices.add(penInputDevice);
 	}
 
@@ -227,7 +227,7 @@ public class Application {
 	/**
 	 * @return the list of pens. The EventEngine will have to get the listeners to these pens...
 	 */
-	public List<PenInput> getPenInputDevices() {
+	public List<InputDevice> getPenInputDevices() {
 		return penInputDevices;
 	}
 

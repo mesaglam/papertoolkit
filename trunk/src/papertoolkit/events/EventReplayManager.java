@@ -241,9 +241,8 @@ public class EventReplayManager {
 	}
 
 	/**
-	 * Save this pen event. This is done automatically for events streamed through the Event Engine. In the
-	 * future, we should probably log at the PenListener level instead! This allows arbitrary event data save
-	 * and replay.
+	 * Save this pen event. This is done automatically for events streamed through any Pen, allowing arbitrary
+	 * save and replay of user interactions. One event file is created for each "test session."
 	 * 
 	 * @param event
 	 */

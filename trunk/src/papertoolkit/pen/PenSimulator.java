@@ -36,7 +36,7 @@ import papertoolkit.util.WindowUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PenSimulator extends PenInput implements MouseListener, MouseMotionListener {
+public class PenSimulator extends InputDevice implements MouseListener, MouseMotionListener {
 
 	private InkStroke currentStroke;
 	private JFrame frame;

@@ -11,7 +11,7 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
-import papertoolkit.pen.PenInput;
+import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.tools.services.ToolkitMonitor;
@@ -64,17 +64,17 @@ public class EventDispatcher {
 	 * Keeps track of how many times a pen has been registered. If during an unregister, this count drops to
 	 * zero, we remove the pen altogether.
 	 */
-	private Map<PenInput, Integer> penRegistrationCount = new HashMap<PenInput, Integer>();
+	private Map<InputDevice, Integer> penRegistrationCount = new HashMap<InputDevice, Integer>();
 
 	/**
 	 * Allows us to identify a pen by ID (the position of the pen in this list).
 	 */
-	private List<PenInput> pensCurrentlyMonitoring = new ArrayList<PenInput>();
+	private List<InputDevice> pensCurrentlyMonitoring = new ArrayList<InputDevice>();
 
 	/**
 	 * Each pen gets one and only one listener for the EventDispatcher...
 	 */
-	private Map<PenInput, PenListener> penToListener = new HashMap<PenInput, PenListener>();
+	private Map<InputDevice, PenListener> penToListener = new HashMap<InputDevice, PenListener>();
 
 	/**
 	 * Broadcasts toolkit internals to external services.
@@ -102,7 +102,7 @@ public class EventDispatcher {
 	 * @param pen
 	 * @param listener
 	 */
-	private void addPenToInternalLists(PenInput pen, PenListener listener) {
+	private void addPenToInternalLists(InputDevice pen, PenListener listener) {
 		penToListener.put(pen, listener);
 		pen.addLivePenListener(listener);
 	}
@@ -111,7 +111,7 @@ public class EventDispatcher {
 	 * @param pen
 	 * @return the registration count AFTER the decrement.
 	 */
-	private int decrementPenRegistrationCount(PenInput pen) {
+	private int decrementPenRegistrationCount(InputDevice pen) {
 		Integer count = penRegistrationCount.get(pen);
 		if (count == null) {
 			// huh? We don't have a record for this pen...
@@ -132,7 +132,7 @@ public class EventDispatcher {
 	 * @return a pen listener that will report data to this event dispatcher. The engine will then package the
 	 *         data and report it to all event handlers that are interested in this data.
 	 */
-	private PenListener getNewPenListener(final PenInput penInputDevice) {
+	private PenListener getNewPenListener(final InputDevice penInputDevice) {
 		pensCurrentlyMonitoring.add(penInputDevice);
 
 		/**
@@ -318,7 +318,7 @@ public class EventDispatcher {
 	 * @param pen
 	 *            the input device that provides pen-like data.
 	 */
-	private void incrementPenRegistrationCount(PenInput pen) {
+	private void incrementPenRegistrationCount(InputDevice pen) {
 		final Integer count = penRegistrationCount.get(pen);
 		if (count == null) {
 			penRegistrationCount.put(pen, 1); // incremented from zero to one
@@ -338,7 +338,7 @@ public class EventDispatcher {
 	 * 
 	 * @param pen
 	 */
-	public void register(PenInput pen) {
+	public void register(InputDevice pen) {
 		// get the old listener, if it exists
 		PenListener listener = penToListener.get(pen);
 		if (listener != null) {
@@ -392,7 +392,7 @@ public class EventDispatcher {
 	 *            removes this pen from our internal lists without updating the registration count.
 	 * @param listener
 	 */
-	private void removePenFromInternalLists(PenInput pen, PenListener listener) {
+	private void removePenFromInternalLists(InputDevice pen, PenListener listener) {
 		penToListener.remove(pen);
 		pen.removeLivePenListener(listener);
 		pensCurrentlyMonitoring.remove(pen);
@@ -427,7 +427,7 @@ public class EventDispatcher {
 	 * 
 	 * @param pen
 	 */
-	public void unregisterPen(PenInput pen) {
+	public void unregisterPen(InputDevice pen) {
 		int newCount = decrementPenRegistrationCount(pen);
 		if (newCount == 0) {
 			// DebugUtils.println("Count is at Zero. Let's remove the pen and its listener...");

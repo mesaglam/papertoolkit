@@ -21,13 +21,7 @@ import com.thoughtworks.xstream.XStream;
 
 /**
  * <p>
- * Connects to the Pen Server and displays some output...
- * </p>
- * <p>
- * A client who connects to a server can also have local PenListeners to process the samples...
- * 
- * TODO: A multithreaded Client for listening to multiple servers... However, does this make sense? Why would
- * we want to listen to multiple pens?
+ * Connects to the local or remote PenServer and notifies any PenListeners of the pen's actions.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -39,7 +33,8 @@ import com.thoughtworks.xstream.XStream;
 public class PenClient {
 
 	/**
-	 * 
+	 * Read from this socket. The data usually comes from a local PenServer... although if we wish to set up
+	 * multiple simultaneous pens, we can connect to remove PenServers.
 	 */
 	private Socket clientSocket;
 
@@ -52,6 +47,11 @@ public class PenClient {
 	 * Set this to true (call disconnect()) to tell the PenClient to stop listening for incoming pen data.
 	 */
 	private boolean exitFlag = false;
+
+	/**
+	 * The machine hosting the physical pen.
+	 */
+	private String hostName = "Unknown Machine";
 
 	/**
 	 * Multiple listeners can attach themselves to this Pen Client.
@@ -67,11 +67,6 @@ public class PenClient {
 	 * The PenClient and PenServer will communicate through a socket connection, over this port.
 	 */
 	private int portNumber;
-
-	/**
-	 * 
-	 */
-	private Thread socketListenerThread;
 
 	/**
 	 * @param serverName
@@ -97,11 +92,10 @@ public class PenClient {
 	}
 
 	/**
-	 * 
+	 * Starts the listening thread.
 	 */
 	public void connect() {
-		socketListenerThread = new Thread(getSocketListenerThreadBasedOnClientType());
-		socketListenerThread.start();
+		new Thread(getSocketListenerThreadBasedOnClientType()).start();
 	}
 
 	/**
@@ -119,22 +113,27 @@ public class PenClient {
 	}
 
 	/**
+	 * Where is the digital pen? On a local or remote machine?
+	 * 
 	 * @return
 	 */
-	private Runnable getSocketListenerThreadBasedOnClientType() {
+	public String getHostName() {
+		return hostName;
+	}
 
+	/**
+	 * @return one of two runnables... (common case: JAVA runnable)
+	 */
+	private Runnable getSocketListenerThreadBasedOnClientType() {
 		if (clientType == ClientServerType.JAVA) {
 			return new Runnable() {
-
 				boolean penIsDown = false;
 
 				public void run() {
 					try {
 						final BufferedReader br = setupSocketAndReader();
 						String line = null;
-
 						final XStream xml = new XStream();
-
 						while ((line = br.readLine()) != null) {
 							// System.out.println(line);
 
@@ -145,7 +144,7 @@ public class PenClient {
 							// TODO: Should we replace the time field in the sample with the time we received
 							// this sample?
 							// The old way is that the sample's time field is set to whatever the pen server's
-							// time is set to
+							// time is set to...
 							// this might result in some clock skew between different pens...
 							// should there be an option to do this?
 
@@ -176,7 +175,7 @@ public class PenClient {
 						e.printStackTrace();
 					} catch (SocketException se) {
 						if (se.getMessage().contains("socket closed")) {
-							DebugUtils.println("Pen Client's Socket is now closed...");
+							DebugUtils.println("PenClient's socket is now closed...");
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -191,6 +190,7 @@ public class PenClient {
 						String line = null;
 						while ((line = br.readLine()) != null) {
 							// print the text of the pen sample to the console
+							// this one's great for testing...
 							DebugUtils.println(line);
 							if (exitFlag) {
 								break;
@@ -259,7 +259,7 @@ public class PenClient {
 	private BufferedReader setupSocketAndReader() throws UnknownHostException, IOException {
 		// DebugUtils.println("Trying to connect to " + machineName + ":" + portNumber);
 		final InetAddress addr = InetAddress.getByName(machineName);
-		final String hostName = addr.getCanonicalHostName();
+		hostName = addr.getCanonicalHostName();
 		// DebugUtils.println("The resolved host name of this pen is: " + hostName);
 
 		clientSocket = new Socket(machineName, portNumber);
