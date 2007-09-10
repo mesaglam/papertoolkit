@@ -250,40 +250,6 @@ public class EventDispatcher {
 				} // check the next coordinate converter / matching region
 			} // check the next pattern map
 
-			if (!eventHandledAtLeastOnce) {
-				// if in the end, no one has had a chance to deal with this event yet
-				// we sent this event to ALL the regions we know about!
-				// 
-				// before, we would just trash it...
-				// however, this new approach allows us to avoid common errors
-				// and allow us to create paper applications as fast as possible
-				for (final PatternToSheetMapping pmap : patternToSheetMaps) {
-					final List<Region> regs = pmap.getSheet().getRegions();
-					for (Region r : regs) {
-						// does this region have any event handlers?
-						// if not, just go onto the next region
-						final List<EventHandler> eventHandlers = r.getEventHandlers();
-						// send the event to every event handler!
-						// so long as the event is not consumed
-						for (EventHandler eh : eventHandlers) {
-							eventHandledAtLeastOnce = true;
-
-							monitoredHandleEvent(eh, penEvent);
-							
-							mostRecentEventHandlers.add(eh);
-							if (penEvent.isConsumed()) {
-								// we are done handling this event
-								// look at no more event handlers
-								// look at no more pattern maps
-								// DebugUtils.println("Event Consumed");
-								return;
-							}
-						} // check the next event handler
-
-					}
-				}
-			}
-
 			// if none of the handlers own this event, we send the event to our "catch-all" event handlers...
 			if (!eventHandledAtLeastOnce) {
 				for (EventHandler eh : catchAllHandlers) {
@@ -293,6 +259,11 @@ public class EventDispatcher {
 				} // check the next event handler
 			}
 
+			// if in the end, no one has had a chance to deal with this event yet
+			// we sent this event to ALL the regions we know about!
+			// TODO: This doesn't really make sense... we should reevaluate it
+			// remove it for now
+			// eventHandledAtLeastOnce = sendEventToAllKnownRegions(penEvent, eventHandledAtLeastOnce);
 
 			// if this application has no sheets or regions... it'll fall all the way to here
 			if (!eventHandledAtLeastOnce) {
@@ -302,8 +273,39 @@ public class EventDispatcher {
 		}
 	}
 
+	private boolean sendEventToAllKnownRegions(PenEvent penEvent, boolean eventHandledAtLeastOnce) {
+		if (!eventHandledAtLeastOnce) {
+			// before, we would just trash it...
+			// however, this new approach allows us to avoid common errors
+			// and allow us to create paper applications as fast as possible
+			for (final PatternToSheetMapping pmap : patternToSheetMaps) {
+				final List<Region> regs = pmap.getSheet().getRegions();
+				for (Region r : regs) {
+					// does this region have any event handlers?
+					// if not, just go onto the next region
+					final List<EventHandler> eventHandlers = r.getEventHandlers();
+					// send the event to every event handler!
+					// so long as the event is not consumed
+					for (EventHandler eh : eventHandlers) {
+						eventHandledAtLeastOnce = true;
+						monitoredHandleEvent(eh, penEvent);
+						mostRecentEventHandlers.add(eh);
+						if (penEvent.isConsumed()) {
+							// we are done handling this event
+							// look at no more event handlers
+							// look at no more pattern maps
+							// DebugUtils.println("Event Consumed");
+							return eventHandledAtLeastOnce;
+						}
+					} // check the next event handler
+				}
+			}
+		}
+		return eventHandledAtLeastOnce;
+	}
+
 	private void monitoredHandleEvent(EventHandler handler, PenEvent event) {
-		if (handler!=null) {
+		if (handler != null) {
 			handler.handleEvent(event);
 		}
 		if (toolkitMonitor != null) {

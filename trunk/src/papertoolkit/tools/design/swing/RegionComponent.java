@@ -6,8 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import papertoolkit.pen.PenSample;
 import papertoolkit.units.Percentage;
 import papertoolkit.units.Pixels;
 import papertoolkit.units.coordinates.PercentageCoordinates;
+import papertoolkit.util.DebugUtils;
 
 /**
  * This class is used as an emulation layer for Region objects. It displays strokes drawn with the pen. It
@@ -34,40 +37,35 @@ import papertoolkit.units.coordinates.PercentageCoordinates;
  * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
  * </p>
  * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * @author Marcello
- * 
  */
-public class RegionComponent extends JComponent implements MouseMotionListener, MouseListener {
+public class RegionComponent extends JComponent {
+
+	private List<Shape> inks = new ArrayList<Shape>();
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8845814285246446932L;
 	private Region region;
-
-	private List<Shape> inks = new ArrayList<Shape>();
 
 	public RegionComponent(Region r) {
 		this.region = r;
 		setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, new Color(120, 120, 120)));
-		addMouseMotionListener(this);
-		addMouseListener(this);
+		addMouseMotionListener(getMouseMotionAdapter());
+		addMouseListener(getMouseAdapter());
 		r.addEventHandler(new EventHandler() {
-
+			double lastX, lastY;
 			boolean penDown = false;
 
-			double lastX, lastY;
-
 			public void handleEvent(PenEvent event) {
-
 				PercentageCoordinates pl = event.getPercentageLocation();
 
 				double x = pl.getPercentageInXDirection() * getWidth() / 100;
 				double y = pl.getPercentageInYDirection() * getHeight() / 100;
-
 				double force = event.getOriginalSample().getForce() / 128;
 
-				System.out.println("x=" + x + ",y=" + y + ",force=" + force);
+				// DebugUtils.println("x=" + x + ",y=" + y + ",force=" + force);
 
 				if (event.getOriginalSample().getForce() > 0) {
 					if (penDown) {
@@ -97,17 +95,24 @@ public class RegionComponent extends JComponent implements MouseMotionListener, 
 		});
 	}
 
-	/**
-	 * Returns the region.
-	 * 
-	 * @return
-	 */
-	public Region getRegion() {
-		return region;
+	private MouseListener getMouseAdapter() {
+		return new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				fireEvent(getEvent(e.getX(), e.getY(), true, false));
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				fireEvent(getEvent(e.getX(), e.getY(), false, false));
+			}
+		};
 	}
 
-	public void mouseDragged(MouseEvent e) {
-		fireEvent(getEvent(e.getX(), e.getY(), true, true));
+	private MouseMotionListener getMouseMotionAdapter() {
+		return new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				fireEvent(getEvent(e.getX(), e.getY(), true, true));
+			}
+		};
 	}
 
 	protected void add(Shape s) {
@@ -120,48 +125,16 @@ public class RegionComponent extends JComponent implements MouseMotionListener, 
 	}
 
 	/**
-	 * Draws strokes
-	 */
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.WHITE);
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		synchronized (inks) {
-			for (Shape s : inks)
-				g2d.draw(s);
-		}
-	}
-
-	public void mouseMoved(MouseEvent e) {
-	}
-
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	public void mouseExited(MouseEvent e) {
-	}
-
-	public void mousePressed(MouseEvent e) {
-		fireEvent(getEvent(e.getX(), e.getY(), true, false));
-	}
-
-	public void mouseReleased(MouseEvent e) {
-		fireEvent(getEvent(e.getX(), e.getY(), false, false));
-	}
-
-	/**
-	 * Converts fraction to a percentage.
+	 * Fires a PenEvent to all handlers
 	 * 
-	 * @param x
-	 * @param max
-	 * @return
+	 * @param pe
 	 */
-	private Percentage getPercentage(double x, double max) {
-		return new Percentage(x * 100.0 / max, new Pixels(max));
+	private void fireEvent(PenEvent pe) {
+		for (EventHandler eh : region.getEventHandlers()) {
+			eh.handleEvent(pe);
+			if (pe.isConsumed())
+				return;
+		}
 	}
 
 	/**
@@ -189,15 +162,37 @@ public class RegionComponent extends JComponent implements MouseMotionListener, 
 	}
 
 	/**
-	 * Fires a PenEvent to all handlers
+	 * Converts fraction to a percentage.
 	 * 
-	 * @param pe
+	 * @param x
+	 * @param max
+	 * @return
 	 */
-	private void fireEvent(PenEvent pe) {
-		for (EventHandler eh : region.getEventHandlers()) {
-			eh.handleEvent(pe);
-			if (pe.isConsumed())
-				return;
+	private Percentage getPercentage(double x, double max) {
+		return new Percentage(x * 100.0 / max, new Pixels(max));
+	}
+
+	/**
+	 * Returns the region.
+	 * 
+	 * @return
+	 */
+	public Region getRegion() {
+		return region;
+	}
+
+	/**
+	 * Draws strokes
+	 */
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setColor(Color.WHITE);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		synchronized (inks) {
+			for (Shape s : inks) {
+				g2d.draw(s);
+			}
 		}
 	}
 

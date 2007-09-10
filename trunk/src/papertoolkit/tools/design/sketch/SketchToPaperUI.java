@@ -22,9 +22,8 @@ import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.ink.InkUtils;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.pen.synch.PenSynch;
-import papertoolkit.tools.design.util.Regions;
-import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
+import papertoolkit.util.graphics.GraphicsUtils;
 
 /**
  * <p>
@@ -132,7 +131,7 @@ public class SketchToPaperUI {
 
 		// Calculate the size of the sheet in inches (make it fit in 8.5x11)
 		Rectangle2D sheet = biggestStroke.getBounds();
-		double scale = Regions.makeItFit(sheet.getWidth(), sheet.getHeight(), 8.5, 11);
+		double scale = GraphicsUtils.getScaleToFitFirstBoxInSecond(sheet.getWidth(), sheet.getHeight(), 8.5, 11);
 
 		// Print out to...
 		PrintStream outXML = null;

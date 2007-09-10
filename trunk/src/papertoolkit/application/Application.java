@@ -197,22 +197,6 @@ public class Application {
 	}
 
 	/**
-	 * Attaches to the popup menu. Allows us to drop into the Debug mode of a paper application, with event
-	 * visualizations and stuff. =)
-	 * 
-	 * @param app
-	 * @return
-	 */
-	private ActionListener getDebugListener() {
-		return new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				DebuggingEnvironment debuggingEnvironment = getDebuggingEnvironment();
-				debuggingEnvironment.showFlashView();
-			}
-		};
-	}
-
-	/**
 	 * @return the toolkit object that is running this application.
 	 */
 	public PaperToolkit getHostToolkit() {
@@ -281,60 +265,6 @@ public class Application {
 		final PopupMenu menu = new PopupMenu(getName());
 		popupMenu.add(menu);
 
-		final MenuItem debugItem = new MenuItem("Debug");
-		debugItem.addActionListener(getDebugListener());
-
-		/**
-		 * @return the button to load the Acrobat plugin for designing Paper UIs (drawing out regions)...
-		 */
-		final MenuItem designItem = new MenuItem("Design Sheets");
-		designItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				JFrame frame = AcrobatDesignerLauncher.start();
-				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-			}
-		});
-
-		final MenuItem renderItem = new MenuItem("Render " + sheets.size() + " Sheets to PDF");
-		renderItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				renderToPDF();
-			}
-		});
-
-		menu.add(debugItem);
-		menu.add(renderItem);
-
-		for (final Sheet s : getSheets()) {
-			MenuItem item = new MenuItem("GUI Simulator for Sheet [" + s.getName() + "]");
-			item.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					new SheetFrame(s, 640, 480);
-				}
-			});
-			menu.add(item);
-		}
-
-		final MenuItem printSheetsItem = new MenuItem("Make PDFs...");
-		printSheetsItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				renderPDFToSpecificFolder();
-			}
-		});
-		menu.add(printSheetsItem);
-
-		final MenuItem printSheetInfoItem = new MenuItem("Display Sheet Information");
-		printSheetInfoItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				final List<Sheet> thisAppsSheets = getSheets();
-				for (Sheet s : thisAppsSheets) {
-					// use the longer, more descriptive string
-					DebugUtils.println(s.toDetailedString());
-				}
-			}
-		});
-		menu.add(printSheetInfoItem);
-
 		final MenuItem startStopItem = new MenuItem("Stop Application");
 		startStopItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -349,8 +279,74 @@ public class Application {
 		});
 		menu.add(startStopItem);
 
+		final MenuItem debugItem = new MenuItem("Debug Application");
+		debugItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DebuggingEnvironment debuggingEnvironment = getDebuggingEnvironment();
+				debuggingEnvironment.showFlashView();
+			}
+		});
+		menu.add(debugItem);
+
+		final PopupMenu sheetsMenu = new PopupMenu("Paper UI");
+		menu.add(sheetsMenu);
+
+		final PopupMenu interactionsMenu = new PopupMenu("Interactions");
+		menu.add(interactionsMenu);
+
+		/**
+		 * @return the button to load the Acrobat plugin for designing Paper UIs (drawing out regions)...
+		 */
+		final MenuItem designItem = new MenuItem("Design Sheets");
+		designItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				JFrame frame = AcrobatDesignerLauncher.start();
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+			}
+		});
+		sheetsMenu.add(designItem);
+
+		for (final Sheet s : getSheets()) {
+			MenuItem item = new MenuItem("Simulate Pen Interactions for Sheet [" + s.getName() + "]");
+			item.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					SheetFrame sheetFrame = new SheetFrame(s, 800, 600);
+					sheetFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				}
+			});
+			interactionsMenu.add(item);
+		}
+
+		final MenuItem renderItem = new MenuItem("Render PDFs of " + sheets.size() + " sheets");
+		renderItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				renderToPDF();
+			}
+		});
+		sheetsMenu.add(renderItem);
+
+		final MenuItem printSheetsItem = new MenuItem("Render PDFs of " + sheets.size() + " sheets to...");
+		printSheetsItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				renderPDFToSpecificFolder();
+			}
+		});
+		sheetsMenu.add(printSheetsItem);
+
+		final MenuItem printSheetInfoItem = new MenuItem("Display UI Information");
+		printSheetInfoItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				final List<Sheet> thisAppsSheets = getSheets();
+				for (Sheet s : thisAppsSheets) {
+					// use the longer, more descriptive string
+					DebugUtils.println(s.toDetailedString());
+				}
+			}
+		});
+		sheetsMenu.add(printSheetInfoItem);
+
 		// will populate the system tray with a feature for runtime binding of regions... =)
-		addItemsToBindUninitializedRegions(menu);
+		addItemsToBindUninitializedRegions(interactionsMenu);
 
 		populateTrayMenuForSideCar(menu);
 		populateTrayMenuExtensions(menu);
@@ -384,29 +380,61 @@ public class Application {
 			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map.getRegionToPatternMapping();
 
 			for (final Region r : regionToPatternMapping.keySet()) {
-				PatternCoordinateConverter patternCoordinateConverter = regionToPatternMapping.get(r);
-				double area = patternCoordinateConverter.getArea();
-				// DebugUtils.println("Area: " + area);
-				if (area > 0) {
-					// this region has a real mapping! NEXT!
-					continue;
-				}
-
 				// the menu item for invoking the runtime binding
 				// We need to update the text later...
 				final MenuItem bindPatternToRegionItem = new MenuItem("Add Pattern Binding For ["
 						+ r.getName() + "]");
 
 				bindPatternToRegionItem.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						// DebugUtils.println("Binding " + r);
-						host.addEventHandlerForUnmappedEvents(map, r, bindPatternToRegionItem,
+					public void actionPerformed(ActionEvent e) {
+						addEventHandlerForUnmappedEvents(map, r, bindPatternToRegionItem,
 								getPatternInfoFile());
 					}
 				});
 				popupMenu.add(bindPatternToRegionItem);
 			}
 		}
+	}
+
+	/**
+	 * @param map
+	 * @param region
+	 * @param bindPatternToRegionItem
+	 * @param destFile
+	 */
+	private void addEventHandlerForUnmappedEvents(final PatternToSheetMapping map, final Region region,
+			final MenuItem bindPatternToRegionItem, final File destFile) {
+
+		DebugUtils.println("Draw a box (with one stroke) to bind region: [" + region
+				+ "] to an area on patterned paper.");
+		
+		// Runtime Pattern to Region Binding adds a listener for unmapped events in the Event Dispatcher
+		host.getEventDispatcher().addEventHandlerForUnmappedEvents(new StrokeHandler() {
+			public void strokeArrived(PenEvent e) {
+				Rectangle2D bounds = getStroke().getBounds();
+				// determine the bounds of the region in
+				// pattern space. this information was provided by the user
+				final double tlX = bounds.getX();
+				final double tlY = bounds.getY();
+				final double width = bounds.getWidth();
+				final double height = bounds.getHeight();
+
+				// tie the pattern bounds to this region object
+				map.setPatternInformationOfRegion(region, //
+						new PatternDots(tlX), new PatternDots(tlY), // 
+						new PatternDots(width), new PatternDots(height));
+
+				// unregister myself after one stroke
+				host.getEventDispatcher().removeEventHandlerForUnmappedEvents(this);
+
+				// DebugUtils.println("Bound the region [" + r.getName() + "] to Pattern " + bounds);
+				bindPatternToRegionItem.setLabel("Change Binding for " + region.getName()
+						+ ". Currently set to " + bounds);
+
+				// additionally... write this out to a file in the mappings directory
+				map.saveConfigurationToXML(destFile);
+			}
+		});
 	}
 
 	/**
@@ -512,8 +540,7 @@ public class Application {
 	}
 
 	/**
-	 * Feel free to OVERRIDE this too. It is called if the userChoosesPDFDestination flag is set to false, and
-	 * the user presses the Render PDF Button in the App Manager.
+	 * Feel free to OVERRIDE this.
 	 */
 	public void renderToPDF() {
 		renderToPDF(FileSystemView.getFileSystemView().getHomeDirectory(), getName());

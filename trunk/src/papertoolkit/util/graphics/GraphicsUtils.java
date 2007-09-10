@@ -7,11 +7,10 @@ import java.awt.geom.Point2D;
 
 import papertoolkit.units.Units;
 
-
 /**
  * <p>
- * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
- * BSD License</a>.
+ * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt"> BSD
+ * License</a>.
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
@@ -23,8 +22,28 @@ public class GraphicsUtils {
 	private static RenderingHints hintsBest;
 
 	/**
-	 * Creates a polygon from an array of points. It rounds off all the points' x & y values to the
-	 * nearest integer, as the Java Polygons only work with ints.
+	 * Returns the scale necessary to make width/height fit inside maxWidth/maxHeight.
+	 * 
+	 * @param width
+	 * @param height
+	 * @param maxWidth
+	 * @param maxHeight
+	 * @return
+	 */
+	public static double getScaleToFitFirstBoxInSecond(double width, double height, //
+			double maxWidth, double maxHeight) {
+		double xprop = width / maxWidth;
+		double yprop = height / maxHeight;
+		if (xprop < yprop) {
+			return 1 / yprop;
+		} else {
+			return 1 / xprop;
+		}
+	}
+
+	/**
+	 * Creates a polygon from an array of points. It rounds off all the points' x & y values to the nearest
+	 * integer, as the Java Polygons only work with ints.
 	 * 
 	 * @param points
 	 * @return the Polygon
@@ -38,13 +57,12 @@ public class GraphicsUtils {
 	}
 
 	/**
-	 * @return smooth as silk rendering hints, useful for nice scaling. Use this with Graphics2D, to
-	 *         create nice graphics.
+	 * @return smooth as silk rendering hints, useful for nice scaling. Use this with Graphics2D, to create
+	 *         nice graphics.
 	 */
 	public static RenderingHints getBestRenderingHints() {
 		if (hintsBest == null) {
-			hintsBest = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
+			hintsBest = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			hintsBest.add(new RenderingHints(RenderingHints.KEY_RENDERING,
 					RenderingHints.VALUE_RENDER_QUALITY));
 			hintsBest.add(new RenderingHints(RenderingHints.KEY_INTERPOLATION,
@@ -67,8 +85,8 @@ public class GraphicsUtils {
 				sb.append("Close");
 				break;
 			case PathIterator.SEG_CUBICTO:
-				sb.append("CubicTo: (" + points[0] + "," + points[1] + ") (" + points[2] + ","
-						+ points[3] + ") (" + points[4] + "," + points[5] + ")");
+				sb.append("CubicTo: (" + points[0] + "," + points[1] + ") (" + points[2] + "," + points[3]
+						+ ") (" + points[4] + "," + points[5] + ")");
 				break;
 			case PathIterator.SEG_LINETO:
 				sb.append("LineTo: (" + points[0] + "," + points[1] + ")");
@@ -77,8 +95,8 @@ public class GraphicsUtils {
 				sb.append("Move: (" + points[0] + "," + points[1] + ")");
 				break;
 			case PathIterator.SEG_QUADTO:
-				sb.append("QuadTo: (" + points[0] + "," + points[1] + ") (" + points[2] + ","
-						+ points[3] + ")");
+				sb.append("QuadTo: (" + points[0] + "," + points[1] + ") (" + points[2] + "," + points[3]
+						+ ")");
 				break;
 			}
 			pathIterator.next();
@@ -109,8 +127,8 @@ public class GraphicsUtils {
 	}
 
 	/**
-	 * Takes an input array of points, and returns a new array of points where all the values have
-	 * been converted from the old unit to the new destination unit.
+	 * Takes an input array of points, and returns a new array of points where all the values have been
+	 * converted from the old unit to the new destination unit.
 	 * 
 	 * @param sourceUnit
 	 *            the input points are defined in this unit
@@ -120,15 +138,13 @@ public class GraphicsUtils {
 	 *            the input points.
 	 * @return
 	 */
-	public static Point2D[] getPointsWithConvertedUnits(Units sourceUnit, Units destUnit,
-			Point2D... points) {
+	public static Point2D[] getPointsWithConvertedUnits(Units sourceUnit, Units destUnit, Point2D... points) {
 		final int length = points.length;
 		final Point2D[] dest = new Point2D[length];
 		final double conversion = sourceUnit.getScalarMultipleToConvertTo(destUnit); // the multiplier
 
 		for (int i = 0; i < length; i++) {
-			dest[i] = new Point2D.Double(points[i].getX() * conversion, points[i].getY()
-					* conversion);
+			dest[i] = new Point2D.Double(points[i].getX() * conversion, points[i].getY() * conversion);
 		}
 		return dest;
 	}

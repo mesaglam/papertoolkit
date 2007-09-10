@@ -19,8 +19,8 @@ import papertoolkit.util.DebugUtils;
 public abstract class StrokeHandler extends EventHandler {
 
 	/**
-	 * Keeps the most recent event, so that when pen up happens, we can give it an event that does
-	 * not have ZERO coordinates.
+	 * Keeps the most recent event, so that when pen up happens, we can give it an event that does not have
+	 * ZERO coordinates.
 	 */
 	private PenEvent lastEvent;
 
@@ -29,12 +29,19 @@ public abstract class StrokeHandler extends EventHandler {
 	 */
 	private boolean penDownHappened = false;
 
+	/**
+	 * 
+	 */
 	private InkStroke stroke;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public InkStroke getStroke() {
 		return stroke;
 	}
-	
+
 	/**
 	 * @see papertoolkit.events.EventHandler#handleEvent(papertoolkit.events.PenEvent)
 	 */
@@ -50,7 +57,7 @@ public abstract class StrokeHandler extends EventHandler {
 				return;
 			}
 		}
-		
+
 		if (event == null || event.getOriginalSample() == null) {
 			DebugUtils.println("Event Object is NULL");
 		} else {
@@ -65,7 +72,10 @@ public abstract class StrokeHandler extends EventHandler {
 	 * @param e
 	 */
 	public abstract void strokeArrived(PenEvent e);
-	
+
+	/**
+	 * 
+	 */
 	public String toString() {
 		return "StrokeHandler";
 	}

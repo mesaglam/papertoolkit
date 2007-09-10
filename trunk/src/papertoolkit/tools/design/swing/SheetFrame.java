@@ -18,7 +18,7 @@ import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.paper.regions.XMLRegion;
 import papertoolkit.pen.PenSample;
-import papertoolkit.tools.design.util.Regions;
+import papertoolkit.util.graphics.GraphicsUtils;
 
 /**
  * A JFrame based on a Sheet object. This allows you to quickly generate a Swing interface from an existing
@@ -29,6 +29,7 @@ import papertoolkit.tools.design.util.Regions;
  * </p>
  * 
  * @author Marcello
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class SheetFrame extends JFrame {
 
@@ -45,8 +46,8 @@ public class SheetFrame extends JFrame {
 	public SheetFrame(Sheet sheet, int width, int height) {
 		super(sheet.getName());
 
-		double scale = Regions.makeItFit(sheet.getWidth().getValue(), sheet.getHeight().getValue(), width,
-				height);
+		double scale = GraphicsUtils.getScaleToFitFirstBoxInSecond(sheet.getWidth().getValue(), sheet
+				.getHeight().getValue(), width, height);
 
 		JPanel panel = new JPanel(null);
 		panel.setPreferredSize(new Dimension((int) (sheet.getWidth().getValue() * scale), (int) (sheet
@@ -55,7 +56,6 @@ public class SheetFrame extends JFrame {
 		pack();
 
 		setLayout(null);
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 
@@ -93,8 +93,9 @@ public class SheetFrame extends JFrame {
 				}
 			}
 			// Otherwise use a default component
-			if (c == null)
+			if (c == null) {
 				c = new RegionComponent(r);
+			}
 
 			// Add it
 			panel.add(c);
