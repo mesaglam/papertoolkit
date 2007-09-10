@@ -23,12 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.actions.remote.ActionReceiverTrayApp;
 import papertoolkit.application.Application;
@@ -36,12 +34,10 @@ import papertoolkit.application.config.Configuration;
 import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.PenEvent;
-import papertoolkit.events.handlers.StrokeHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.RegionID;
-import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
 import papertoolkit.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenInput;
@@ -54,7 +50,6 @@ import papertoolkit.tools.design.acrobat.RegionConfiguration;
 import papertoolkit.tools.services.ToolkitMonitoringService;
 import papertoolkit.units.Centimeters;
 import papertoolkit.units.Inches;
-import papertoolkit.units.PatternDots;
 import papertoolkit.units.Pixels;
 import papertoolkit.units.Points;
 import papertoolkit.util.DebugUtils;
@@ -172,8 +167,8 @@ public class PaperToolkit {
 	 *         this convenience function, we will assume that the class you called it from is the main app.
 	 */
 	public static Application createApplication() {
-		return new Application("PaperApp_"
-				+ DebugUtils.getClassNameFromStackTraceElement(Thread.currentThread().getStackTrace()[2]));
+		return new Application(DebugUtils.getClassNameFromStackTraceElement(Thread.currentThread()
+				.getStackTrace()[2]));
 	}
 
 	/**
@@ -486,6 +481,7 @@ public class PaperToolkit {
 	/**
 	 * Processes batched ink.
 	 */
+	@SuppressWarnings("unused")
 	private BatchedDataDispatcher batchedDataDispatcher;
 
 	/**
@@ -499,7 +495,6 @@ public class PaperToolkit {
 	 * from scratch. This list is loaded up from the PaperToolkit.xml config file.
 	 */
 	private List<Pen> frequentlyUsedPens = new ArrayList<Pen>();
-
 
 	/**
 	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
@@ -517,6 +512,10 @@ public class PaperToolkit {
 	 */
 	private boolean useHandwriting;
 
+	/**
+	 * For allowing external apps (e.g., SideCar) to monitor the toolkit's actions...
+	 */
+	@SuppressWarnings("unused")
 	private ToolkitMonitoringService monitoringService;
 
 	/**
@@ -746,39 +745,4 @@ public class PaperToolkit {
 		paperApp.setRunning(false);
 	}
 
-	public void addEventHandlerForUnmappedEvents(final PatternToSheetMapping map, final Region region,
-			final MenuItem bindPatternToRegionItem, final File destFile) {
-
-		// Runtime Pattern to Region Binding adds a listener for
-		// trashed events in the Event Dispatcher
-		eventDispatcher.addEventHandlerForUnmappedEvents(new StrokeHandler() {
-			public void strokeArrived(PenEvent e) {
-				Rectangle2D bounds = getStroke().getBounds();
-				// determine the bounds of the region in
-				// pattern space. this information was provided by the user
-				final double tlX = bounds.getX();
-				final double tlY = bounds.getY();
-				final double width = bounds.getWidth();
-				final double height = bounds.getHeight();
-
-				// tie the pattern bounds to this region
-				// object
-				map.setPatternInformationOfRegion(region, //
-						new PatternDots(tlX), new PatternDots(tlY), // 
-						new PatternDots(width), new PatternDots(height));
-
-				// unregister myself...
-				eventDispatcher.removeEventHandlerForUnmappedEvents(this);
-
-				// DebugUtils.println("Bound the region
-				// [" + r.getName() + "] to Pattern "
-				// + bounds);
-				bindPatternToRegionItem.setLabel("Change Binding for " + region.getName()
-						+ ". Currently set to " + bounds);
-
-				// additionally... write this out to a file in the mappings directory
-				map.saveConfigurationToXML(destFile);
-			}
-		});
-	}
 }

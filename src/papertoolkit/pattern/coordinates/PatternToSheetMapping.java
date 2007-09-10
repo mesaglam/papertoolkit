@@ -186,6 +186,11 @@ public class PatternToSheetMapping {
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadConfigurationFromXML(File xmlFile) {
+		if (!xmlFile.exists()) {
+			DebugUtils.println("PatternMapping cannot be found at: " + xmlFile.getAbsolutePath());
+			return;
+		}
+
 		// for each region, there should be a specification of the pattern information
 		final HashMap<RegionID, PatternCoordinateConverter> regionIDToPattern = (HashMap<RegionID, PatternCoordinateConverter>) PaperToolkit
 				.fromXML(xmlFile);

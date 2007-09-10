@@ -142,9 +142,7 @@ public class Sheet {
 	 *            a region to be added to this sheet.
 	 */
 	public void addRegion(Region r) {
-		regions.add(r);
-		regionNameToRegionObject.put(r.getName(), r);
-		r.setParentSheet(this);
+		addRegion(r, new PatternDots(0), new PatternDots(0), new PatternDots(1), new PatternDots(1));
 	}
 
 	/**
@@ -156,7 +154,9 @@ public class Sheet {
 	 *            (x, y) in PatternDots
 	 */
 	public void addRegion(Region r, PatternDots x, PatternDots y, PatternDots w, PatternDots h) {
-		addRegion(r);
+		regions.add(r);
+		regionNameToRegionObject.put(r.getName(), r);
+		r.setParentSheet(this);
 		getPatternToSheetMapping().setPatternInformationOfRegion(r, x, y, w, h);
 	}
 
@@ -221,7 +221,7 @@ public class Sheet {
 	 * @return
 	 */
 	public Region createRegion(double xInches, double yInches, double wInches, double hInches) {
-		Region regionToAdd = new Region("Region_" + regions.size(), 0, 0, wInches, hInches);
+		final Region regionToAdd = new Region("Region_" + regions.size(), xInches, yInches, wInches, hInches);
 		addRegion(regionToAdd);
 		return regionToAdd;
 	}
