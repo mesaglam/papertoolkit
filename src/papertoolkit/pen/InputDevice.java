@@ -19,7 +19,7 @@ import papertoolkit.util.DebugUtils;
  * @see Pen.java
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public abstract class PenInput {
+public abstract class InputDevice {
 
 	/**
 	 * TRUE if the PenInput object is currently connected to the underlying (physical or simulated) pen in
@@ -40,7 +40,7 @@ public abstract class PenInput {
 	/**
 	 * @param penName
 	 */
-	public PenInput(String penName) {
+	public InputDevice(String penName) {
 		setName(penName);
 	}
 
