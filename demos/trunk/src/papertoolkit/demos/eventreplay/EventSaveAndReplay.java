@@ -35,11 +35,8 @@ public class EventSaveAndReplay extends Application {
 	}
 
 	private Region floatingRegion;
-
 	private PatternToSheetMapping mapping;
-
 	private Pen pen;
-
 	private Sheet sheet;
 
 	/**

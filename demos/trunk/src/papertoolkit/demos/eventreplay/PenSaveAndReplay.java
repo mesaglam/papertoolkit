@@ -8,6 +8,8 @@ import papertoolkit.pen.debug.DebuggingPenListener;
  * This handles saving and replaying at the lowest level, the pen input device. Basically, when you create a
  * new Pen, it will start logging all pen events to files in the eventData/ directory. You can optionally ask
  * the pen to load and replay these events, as if it were physically happening in real time.
+ * 
+ * This will also work for higher level events, if we can replay the low level pen input.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -18,13 +20,17 @@ import papertoolkit.pen.debug.DebuggingPenListener;
  */
 public class PenSaveAndReplay {
 
+	/**
+	 * 
+	 */
 	private Pen pen;
 
 	/**
 	 * 
 	 */
 	public PenSaveAndReplay() {
-		pen = new Pen("Remote Pen", "solaria.stanford.edu", 11104);
+		pen = new Pen(); // local pen
+		// pen = new Pen("Remote Pen", "solaria.stanford.edu", 11104); // remote pen
 		pen.addLivePenListener(new DebuggingPenListener(pen));
 		pen.startLiveMode();
 	}
