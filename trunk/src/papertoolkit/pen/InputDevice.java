@@ -33,15 +33,23 @@ public abstract class InputDevice {
 	private String name;
 
 	/**
-	 * Cached pen listeners, so we can add them when/if you go live.
+	 * Cached pen listeners, so we can "add" them when/if you go live.
 	 */
-	protected List<PenListener> penListenersToAdd = new ArrayList<PenListener>();
+	protected List<PenListener> penListenersToRegisterWhenLive = new ArrayList<PenListener>();
 
+	/**
+	 * The full list of live pen listeners...
+	 */
+	protected List<PenListener> penListeners = new ArrayList<PenListener>();
+
+	
 	/**
 	 * @param penName
 	 */
 	public InputDevice(String penName) {
 		setName(penName);
+		
+		
 	}
 
 	/**
@@ -55,11 +63,14 @@ public abstract class InputDevice {
 	 * @return true if we cached the pen listener on the penListenersToAdd list
 	 */
 	public void addLivePenListener(PenListener penListener) {
+		// always keep track of penListeners, for save & replay
+		penListeners.add(penListener);
+		
 		if (!isLive()) {
 			// DebugUtils.println("We are not registering this listener [" + penListener.toString()
 			// + "] with the event dispatcher at the moment. The Pen is not in Live Mode.");
 			// DebugUtils.println("We will keep this listener around until you startLiveMode().");
-			penListenersToAdd.add(penListener);
+			penListenersToRegisterWhenLive.add(penListener);
 		}
 	}
 
@@ -84,10 +95,13 @@ public abstract class InputDevice {
 	 * @param penListener
 	 */
 	public void removeLivePenListener(PenListener penListener) {
-		if (penListenersToAdd.contains(penListener)) {
-			penListenersToAdd.remove(penListener);
-			DebugUtils.println("Removed " + penListener + " from the cache of listeners.");
+		if (penListenersToRegisterWhenLive.contains(penListener)) {
+			penListenersToRegisterWhenLive.remove(penListener);
 		}
+		if (penListeners.contains(penListener)) {
+			penListeners.remove(penListener);
+		}
+		DebugUtils.println("Removed " + penListener + " from the list of PenListeners.");
 	}
 
 	/**
@@ -98,8 +112,14 @@ public abstract class InputDevice {
 		name = nomDePlume;
 	}
 
+	/**
+	 * Start Listening to the Physical Pen / Simulator.
+	 */
 	public abstract void startLiveMode();
 
+	/**
+	 * Stop Listening to the Physical Pen / Simulator.
+	 */
 	public abstract void stopLiveMode();
 
 }

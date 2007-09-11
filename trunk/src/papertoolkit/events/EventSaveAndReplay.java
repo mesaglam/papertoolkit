@@ -30,7 +30,7 @@ import papertoolkit.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class EventReplayManager {
+public class EventSaveAndReplay {
 
 	/**
 	 * Event Data files are of the form *.eventData.
@@ -70,7 +70,7 @@ public class EventReplayManager {
 	 * 
 	 * @param engine
 	 */
-	public EventReplayManager() {
+	public EventSaveAndReplay() {
 		// nothing
 	}
 
@@ -143,7 +143,7 @@ public class EventReplayManager {
 	 * 
 	 */
 	public void importEventDataFromFileChooser() {
-		JFileChooser chooser = FileUtils.createNewFileChooser(EventReplayManager.FILE_EXTENSION);
+		JFileChooser chooser = FileUtils.createNewFileChooser(EventSaveAndReplay.FILE_EXTENSION);
 		chooser.setCurrentDirectory(new File(PaperToolkit.getToolkitRootPath(), "eventData/"));
 		chooser.setMultiSelectionEnabled(true);
 		int result = chooser.showDialog(null, "Import Event Data");
