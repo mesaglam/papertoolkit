@@ -64,7 +64,7 @@ public class Pen extends InputDevice {
 	 * you wish. They will just get the same data.
 	 */
 	public Pen() {
-		this("A Pen");
+		this("Local Pen");
 	}
 
 	/**
@@ -107,7 +107,6 @@ public class Pen extends InputDevice {
 	public void addLivePenListener(PenListener penListener) {
 		// keep one around in the cache if the pen is not currently live
 		super.addLivePenListener(penListener);
-		
 		if (isLive()) {
 			// if we're live, then listen to the PenClient
 			livePenClient.addPenListener(penListener);
@@ -198,13 +197,16 @@ public class Pen extends InputDevice {
 			liveMode = true;
 
 			// add all the cached listeners now
-			for (PenListener pl : penListenersToAdd) {
+			for (PenListener pl : penListenersToRegisterWhenLive) {
 				// DebugUtils.println("Adding cached pen listeners...");
 				livePenClient.addPenListener(pl);
 			}
 		} else {
-			DebugUtils.println("Pen [" + getName() + "] is already live. " + "We cannot connect again.");
+			DebugUtils.println("Pen [" + getName() + "] is already live. ");
 		}
+		
+		// add event save and replay here...
+		
 	}
 
 	/**

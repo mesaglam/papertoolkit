@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.beans.EventSetDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,6 +34,7 @@ import papertoolkit.application.Application;
 import papertoolkit.application.config.Configuration;
 import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.EventDispatcher;
+import papertoolkit.events.EventSaveAndReplay;
 import papertoolkit.events.PenEvent;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
@@ -81,6 +83,9 @@ import com.thoughtworks.xstream.XStream;
  */
 public class PaperToolkit {
 
+	/**
+	 * Ensure the toolkit initialization happens once and only once.
+	 */
 	private static boolean alreadyInitialized = false;
 
 	/**
@@ -133,6 +138,9 @@ public class PaperToolkit {
 	 */
 	private static PaperToolkit toolkitInstance;
 
+	/**
+	 * In the Windows System Tray...
+	 */
 	private static TrayIcon trayIcon;
 
 	/**
@@ -343,6 +351,10 @@ public class PaperToolkit {
 		return xmlEngine;
 	}
 
+	/**
+	 * Called only once, on toolkit startup. (Also is called manually by the Pen object, if you use it without
+	 * the toolkit.)
+	 */
 	public static void init() {
 		if (alreadyInitialized) {
 			return;
@@ -405,24 +417,23 @@ public class PaperToolkit {
 	 * A Welcome message.
 	 */
 	private static void printInitializationMessages() {
-		final String dashes = StringUtils.repeat("-", versionString.length());
-		System.out.println("-------------------------------------" + dashes);
+		System.out.println("---------------------------------------------");
 		System.out.println(" PaperToolkit version " + versionString);
-		System.out.println(" Copyright (c) 2007 Stanford University ");
+		System.out.println(" Copyright (c) 2006-2007 Stanford University ");
 		System.out.println(" Ron B. Yeh [ronyeh@cs.stanford.edu] ");
-		System.out.println("-------------------------------------" + dashes);
+		System.out.println("---------------------------------------------");
 	}
 
 	/**
 	 * 
 	 */
 	private static void printUsage() {
-		System.out
-				.println("Without any arguments, we run the PaperToolkit Explorer. You can also run Papertoolkit with one argument: ");
+		System.out.println("Without any arguments, we run the PaperToolkit Explorer. "
+				+ "You can also run Papertoolkit with one argument: ");
 		System.out.println("	-actions	// runs the action receiver");
 		System.out.println("	-pen		// runs the pen server");
-		System.out
-				.println("Thank you for using PaperToolkit! Feel free to send feedback (good & bad) to ronyeh@cs.stanford.edu.");
+		System.out.println("Thank you for using PaperToolkit! Feel free to send feedback (good & bad) to "
+				+ "ronyeh@cs.stanford.edu.");
 	}
 
 	/**
@@ -485,6 +496,11 @@ public class PaperToolkit {
 	private BatchedDataDispatcher batchedDataDispatcher;
 
 	/**
+	 * For replaying pen input.
+	 */
+	private EventSaveAndReplay saveAndReplayManager;
+	
+	/**
 	 * The engine that processes all pen events, producing the correct outputs and calling the right event
 	 * handlers.
 	 */
@@ -540,7 +556,8 @@ public class PaperToolkit {
 
 		eventDispatcher = new EventDispatcher();
 		batchedDataDispatcher = new BatchedDataDispatcher(eventDispatcher);
-
+		saveAndReplayManager = new EventSaveAndReplay();
+		
 		// the handwriting server starts up only if the sheet has a handwriting
 		// recognizer... (or something
 		// like that)
@@ -586,6 +603,10 @@ public class PaperToolkit {
 		return frequentlyUsedPens;
 	}
 
+	/**
+	 * @param propertyKey
+	 * @return
+	 */
 	public String getProperty(String propertyKey) {
 		return localProperties.getProperty(propertyKey);
 	}
@@ -632,7 +653,7 @@ public class PaperToolkit {
 	}
 
 	/**
-	 * TODO: Figure out the easiest way to send a PDF (with or without regions) to the default printer.
+	 * TODO: Figure out the easiest way to send a PS/PDF (with or without regions) to the default printer.
 	 * 
 	 * @param sheet
 	 */

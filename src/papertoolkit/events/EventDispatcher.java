@@ -61,12 +61,6 @@ public class EventDispatcher {
 			.synchronizedList(new ArrayList<PatternToSheetMapping>());
 
 	/**
-	 * Keeps track of how many times a pen has been registered. If during an unregister, this count drops to
-	 * zero, we remove the pen altogether.
-	 */
-	private Map<InputDevice, Integer> penRegistrationCount = new HashMap<InputDevice, Integer>();
-
-	/**
 	 * Allows us to identify a pen by ID (the position of the pen in this list).
 	 */
 	private List<InputDevice> pensCurrentlyMonitoring = new ArrayList<InputDevice>();
@@ -108,26 +102,6 @@ public class EventDispatcher {
 	}
 
 	/**
-	 * @param pen
-	 * @return the registration count AFTER the decrement.
-	 */
-	private int decrementPenRegistrationCount(InputDevice pen) {
-		Integer count = penRegistrationCount.get(pen);
-		if (count == null) {
-			// huh? We don't have a record for this pen...
-			DebugUtils.println("We do not have a record for this pen, and "
-					+ "cannot decrement the registration count.");
-			return 0;
-		} else if (count == 1) {
-			penRegistrationCount.remove(pen); // decrement from one to zero
-			return 0;
-		} else {
-			penRegistrationCount.put(pen, count - 1);
-			return count - 1;
-		}
-	}
-
-	/**
 	 * @param penInputDevice
 	 * @return a pen listener that will report data to this event dispatcher. The engine will then package the
 	 *         data and report it to all event handlers that are interested in this data.
@@ -135,9 +109,7 @@ public class EventDispatcher {
 	private PenListener getNewPenListener(final InputDevice penInputDevice) {
 		pensCurrentlyMonitoring.add(penInputDevice);
 
-		/**
-		 * properties of the pen
-		 */
+		// properties of the pen
 		final int penID = pensCurrentlyMonitoring.indexOf(penInputDevice);
 		final String penName = penInputDevice.getName();
 
@@ -273,6 +245,7 @@ public class EventDispatcher {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private boolean sendEventToAllKnownRegions(PenEvent penEvent, boolean eventHandledAtLeastOnce) {
 		if (!eventHandledAtLeastOnce) {
 			// before, we would just trash it...
@@ -304,6 +277,10 @@ public class EventDispatcher {
 		return eventHandledAtLeastOnce;
 	}
 
+	/**
+	 * @param handler
+	 * @param event
+	 */
 	private void monitoredHandleEvent(EventHandler handler, PenEvent event) {
 		if (handler != null) {
 			handler.handleEvent(event);
@@ -314,43 +291,19 @@ public class EventDispatcher {
 	}
 
 	/**
-	 * 
-	 * @param pen
-	 *            the input device that provides pen-like data.
-	 */
-	private void incrementPenRegistrationCount(InputDevice pen) {
-		final Integer count = penRegistrationCount.get(pen);
-		if (count == null) {
-			penRegistrationCount.put(pen, 1); // incremented from zero to one
-		} else {
-			penRegistrationCount.put(pen, count + 1);
-		}
-		// DebugUtils.println("We have registered " + penRegistrationCount.get(pen) + " pens in total.");
-	}
-
-	/**
-	 * If you register a pen multiple times, a different pen listener will be attached to the pen. Only ONE
-	 * EventEngine listener will be attached to a pen at one time. Otherwise, multiple events would get fired
-	 * by the same pen.
-	 * 
-	 * Why would you want to register a single pen multiple times? I dunnno. For some reason I added support
-	 * for it... but perhaps I'll remove it in the future. :)
+	 * You cannot register a pen multiple times with the same dispatcher. Otherwise, multiple events would get
+	 * fired by the same pen.
 	 * 
 	 * @param pen
 	 */
 	public void register(InputDevice pen) {
-		// get the old listener, if it exists
-		PenListener listener = penToListener.get(pen);
-		if (listener != null) {
-			removePenFromInternalLists(pen, listener);
+		if (pensCurrentlyMonitoring.contains(pen)) {
+			DebugUtils.println("Cannot register a pen with the EventDispatcher multiple times.");
+			return;
 		}
-		// this pen has never been registered, or
-		// we just removed the old listener...
 
 		// add a new listener
-		listener = getNewPenListener(pen);
-		addPenToInternalLists(pen, listener);
-		incrementPenRegistrationCount(pen);
+		addPenToInternalLists(pen, getNewPenListener(pen));
 	}
 
 	/**
@@ -428,14 +381,12 @@ public class EventDispatcher {
 	 * @param pen
 	 */
 	public void unregisterPen(InputDevice pen) {
-		int newCount = decrementPenRegistrationCount(pen);
-		if (newCount == 0) {
-			// DebugUtils.println("Count is at Zero. Let's remove the pen and its listener...");
-			PenListener listener = penToListener.get(pen);
-			removePenFromInternalLists(pen, listener);
-		}
+		removePenFromInternalLists(pen, penToListener.get(pen));
 	}
 
+	/**
+	 * @param monitor
+	 */
 	public void setMonitor(ToolkitMonitor monitor) {
 		toolkitMonitor = monitor;
 	}

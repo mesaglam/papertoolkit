@@ -1,11 +1,11 @@
 package papertoolkit.pen;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -16,7 +16,6 @@ import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.tools.components.InkPanel;
 import papertoolkit.util.WindowUtils;
-
 
 /**
  * <p>
@@ -36,15 +35,12 @@ import papertoolkit.util.WindowUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PenSimulator extends InputDevice implements MouseListener, MouseMotionListener {
+public class PenSimulator extends InputDevice {
 
 	private InkStroke currentStroke;
 	private JFrame frame;
 	private Ink ink;
-
 	private InkPanel inputPanel;
-	private List<PenListener> listeners = new ArrayList<PenListener>();
-
 	private InkSimplification simplifier = new InkSimplification();
 
 	public PenSimulator() {
@@ -52,10 +48,12 @@ public class PenSimulator extends InputDevice implements MouseListener, MouseMot
 	}
 
 	public void addLivePenListener(PenListener penListener) {
-		// we don't need to call the super's method, because we just keep our own list of penListeners...
-		listeners.add(penListener);
+		super.addLivePenListener(penListener);
 	}
 
+	/**
+	 * @return a JPanel that you can click and drag on to simulate pen input.
+	 */
 	private InkPanel getInputPanel() {
 		if (inputPanel == null) {
 			inputPanel = new InkPanel();
@@ -63,8 +61,8 @@ public class PenSimulator extends InputDevice implements MouseListener, MouseMot
 			// set the background of the panel
 			inputPanel.setOpaque(false);
 			inputPanel.setPreferredSize(new Dimension(593, 768));
-			inputPanel.addMouseListener(this);
-			inputPanel.addMouseMotionListener(this);
+			inputPanel.addMouseListener(getMouseAdapter());
+			inputPanel.addMouseMotionListener(getMouseMotionAdapter());
 			inputPanel.displayInvertedInkColor();
 
 			ink = inputPanel.addNewInk();
@@ -72,86 +70,77 @@ public class PenSimulator extends InputDevice implements MouseListener, MouseMot
 		return inputPanel;
 	}
 
-	public void mouseClicked(MouseEvent e) {
-	}
+	private MouseMotionListener getMouseMotionAdapter() {
+		return new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					return;
+				}
 
-	public void mouseDragged(MouseEvent e) {
-		if (SwingUtilities.isRightMouseButton(e)) {
-			return;
-		}
+				// DebugUtils.println("Dragging: " + e.getX() + ", " + e.getY());
+				PenSample penSample = new PenSample(e.getX(), e.getY(), 128, System.currentTimeMillis());
 
-		// DebugUtils.println("Dragging: " + e.getX() + ", " + e.getY());
-		PenSample penSample = new PenSample(e.getX(), e.getY(), 128, System.currentTimeMillis());
-
-		for (PenListener l : listeners) {
-			l.sample(penSample);
-		}
-		currentStroke.addSample(penSample);
-		inputPanel.repaint();
-	}
-
-	public void mouseEntered(MouseEvent arg0) {
-	}
-
-	public void mouseExited(MouseEvent arg0) {
-	}
-
-	public void mouseMoved(MouseEvent arg0) {
-	}
-
-	public void mousePressed(MouseEvent e) {
-		if (SwingUtilities.isRightMouseButton(e)) {
-			return;
-		}
-
-		// DebugUtils.println("Pressed: " + e.getX() + ", " + e.getY());
-		PenSample sample = new PenSample(e.getX(), e.getY(), 128, System.currentTimeMillis());
-		for (PenListener l : listeners) {
-			l.penDown(sample);
-		}
-		currentStroke = new InkStroke();
-		currentStroke.addSample(sample);
-		ink.addStroke(currentStroke);
-		inputPanel.repaint();
-	}
-
-	public void mouseReleased(MouseEvent e) {
-		if (SwingUtilities.isRightMouseButton(e)) {
-			// clear the board!
-			inputPanel.clear();
-			ink = inputPanel.addNewInk();
-		} else {
-			// DebugUtils.println("Released: " + e.getX() + ", " + e.getY());
-			PenSample penSample = new PenSample(e.getX(), e.getY(), 0, System.currentTimeMillis());
-			penSample.setPenUp(true);
-			for (PenListener l : listeners) {
-				l.penUp(penSample);
+				for (PenListener l : penListeners) {
+					l.sample(penSample);
+				}
+				currentStroke.addSample(penSample);
+				inputPanel.repaint();
 			}
-			currentStroke.addSample(penSample);
-
-			// simplify this stroke!
-			simplifier.simplifyStroke(currentStroke);
-
-			inputPanel.repaint();
-		}
+		};
 	}
+
+	private MouseListener getMouseAdapter() {
+		return new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					return;
+				}
+
+				// DebugUtils.println("Pressed: " + e.getX() + ", " + e.getY());
+				PenSample sample = new PenSample(e.getX(), e.getY(), 128, System.currentTimeMillis());
+				for (PenListener l : penListeners) {
+					l.penDown(sample);
+				}
+				currentStroke = new InkStroke();
+				currentStroke.addSample(sample);
+				ink.addStroke(currentStroke);
+				inputPanel.repaint();
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					// clear the board!
+					inputPanel.clear();
+					ink = inputPanel.addNewInk();
+				} else {
+					// DebugUtils.println("Released: " + e.getX() + ", " + e.getY());
+					PenSample penSample = new PenSample(e.getX(), e.getY(), 0, System.currentTimeMillis());
+					penSample.setPenUp(true);
+					for (PenListener l : penListeners) {
+						l.penUp(penSample);
+					}
+					currentStroke.addSample(penSample);
+
+					// simplify this stroke!
+					simplifier.simplifyStroke(currentStroke);
+
+					inputPanel.repaint();
+				}
+			}
+		};
+	}
+
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see edu.stanford.hci.r3.pen.PenInput#removeLivePenListener(edu.stanford.hci.r3.pen.streaming.listeners.PenListener)
-	 */
-	public void removeLivePenListener(PenListener penListener) {
-		listeners.remove(penListener);
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.stanford.hci.r3.pen.PenInput#startLiveMode()
+	 * @see papertoolkit.pen.InputDevice#startLiveMode()
 	 */
 	public void startLiveMode() {
 		// start up a JFrame w/ GUI to get mouse input...
 		frame = new JFrame("Pen Simulator");
 		frame.setContentPane(getInputPanel());
+
 		// if you exit your pen, we might as well close the entire paper application
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
@@ -160,8 +149,10 @@ public class PenSimulator extends InputDevice implements MouseListener, MouseMot
 		liveMode = true;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.stanford.hci.r3.pen.PenInput#stopLiveMode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see papertoolkit.pen.InputDevice#stopLiveMode()
 	 */
 	public void stopLiveMode() {
 		frame.dispose();
