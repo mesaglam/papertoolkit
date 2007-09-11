@@ -290,6 +290,17 @@ public class DollarRecognizer {
 		// one predefined template for each gesture type
 		//
 		templates = new ArrayList<Template>();
+		templates.add(new Template("check", makeArray(new Pt(91, 185), new Pt(93, 185), new Pt(95, 185),
+				new Pt(97, 185), new Pt(100, 188), new Pt(102, 189), new Pt(104, 190), new Pt(106, 193),
+				new Pt(108, 195), new Pt(110, 198), new Pt(112, 201), new Pt(114, 204), new Pt(115, 207),
+				new Pt(117, 210), new Pt(118, 212), new Pt(120, 214), new Pt(121, 217), new Pt(122, 219),
+				new Pt(123, 222), new Pt(124, 224), new Pt(126, 226), new Pt(127, 229), new Pt(129, 231),
+				new Pt(130, 233), new Pt(129, 231), new Pt(129, 228), new Pt(129, 226), new Pt(129, 224),
+				new Pt(129, 221), new Pt(129, 218), new Pt(129, 212), new Pt(129, 208), new Pt(130, 198),
+				new Pt(132, 189), new Pt(134, 182), new Pt(137, 173), new Pt(143, 164), new Pt(147, 157),
+				new Pt(151, 151), new Pt(155, 144), new Pt(161, 137), new Pt(165, 131), new Pt(171, 122),
+				new Pt(174, 118), new Pt(176, 114), new Pt(177, 112), new Pt(177, 114), new Pt(175, 116),
+				new Pt(173, 118))));
 		templates.add(new Template("triangle", makeArray(new Pt(137, 139), new Pt(135, 141),
 				new Pt(133, 144), new Pt(132, 146), new Pt(130, 149), new Pt(128, 151), new Pt(126, 155),
 				new Pt(123, 160), new Pt(120, 166), new Pt(116, 171), new Pt(112, 177), new Pt(107, 183),
@@ -342,17 +353,6 @@ public class DollarRecognizer {
 				new Pt(179, 196), new Pt(182, 188), new Pt(182, 177), new Pt(178, 167), new Pt(170, 150),
 				new Pt(163, 138), new Pt(152, 130), new Pt(143, 129), new Pt(140, 131), new Pt(129, 136),
 				new Pt(126, 139))));
-		templates.add(new Template("check", makeArray(new Pt(91, 185), new Pt(93, 185), new Pt(95, 185),
-				new Pt(97, 185), new Pt(100, 188), new Pt(102, 189), new Pt(104, 190), new Pt(106, 193),
-				new Pt(108, 195), new Pt(110, 198), new Pt(112, 201), new Pt(114, 204), new Pt(115, 207),
-				new Pt(117, 210), new Pt(118, 212), new Pt(120, 214), new Pt(121, 217), new Pt(122, 219),
-				new Pt(123, 222), new Pt(124, 224), new Pt(126, 226), new Pt(127, 229), new Pt(129, 231),
-				new Pt(130, 233), new Pt(129, 231), new Pt(129, 228), new Pt(129, 226), new Pt(129, 224),
-				new Pt(129, 221), new Pt(129, 218), new Pt(129, 212), new Pt(129, 208), new Pt(130, 198),
-				new Pt(132, 189), new Pt(134, 182), new Pt(137, 173), new Pt(143, 164), new Pt(147, 157),
-				new Pt(151, 151), new Pt(155, 144), new Pt(161, 137), new Pt(165, 131), new Pt(171, 122),
-				new Pt(174, 118), new Pt(176, 114), new Pt(177, 112), new Pt(177, 114), new Pt(175, 116),
-				new Pt(173, 118))));
 		templates.add(new Template("caret", makeArray(new Pt(79, 245), new Pt(79, 242), new Pt(79, 239),
 				new Pt(80, 237), new Pt(80, 234), new Pt(81, 232), new Pt(82, 230), new Pt(84, 224), new Pt(
 						86, 220), new Pt(86, 218), new Pt(87, 216), new Pt(88, 213), new Pt(90, 207), new Pt(
@@ -532,6 +532,9 @@ public class DollarRecognizer {
 	}
 
 	public RecognitionResult recognize(ArrayList<Pt> points) {
+		if (points.size() < 2) {
+			return new RecognitionResult(templates.get(0).Name, 0.1); // too small!
+		}
 		points = Resample(points, NumPoints);
 		points = RotateToZero(points);
 		points = ScaleToSquare(points, SquareSize);

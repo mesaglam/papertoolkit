@@ -83,7 +83,7 @@ public class ToolExplorer implements FlashListener {
 			DebugUtils.println("ToolExplorer Connected");
 			StringBuilder pens = new StringBuilder();
 			pens.append("<pens>");
-			final List<Pen> frequentlyUsedPens = paperToolkit.getFrequentlyUsedPens();
+			final List<Pen> frequentlyUsedPens = Pen.getQuickList();
 			currentPen = frequentlyUsedPens.get(0);
 			for (Pen p : frequentlyUsedPens) {
 				pens.append("<pen name='" + p.getName() + "' server='" + p.getPenServerName() + "' port='"
@@ -112,7 +112,7 @@ public class ToolExplorer implements FlashListener {
 				String penServer = matcherPen.group(2);
 				String penPort = matcherPen.group(3);
 				DebugUtils.println("Matched: " + penName + " " + penServer + " " + penPort);
-				final List<Pen> frequentlyUsedPens = paperToolkit.getFrequentlyUsedPens();
+				final List<Pen> frequentlyUsedPens = Pen.getQuickList();
 				for (Pen p : frequentlyUsedPens) {
 					DebugUtils.println("Testing: " + p.getName() + " " + p.getPenServerName() + " "
 							+ p.getPenServerPort());

@@ -1,5 +1,8 @@
 package papertoolkit.pen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import papertoolkit.PaperToolkit;
 import papertoolkit.pen.streaming.PenClient;
 import papertoolkit.pen.streaming.PenServer;
@@ -36,6 +39,44 @@ public class Pen extends InputDevice {
 	 * The local machine.
 	 */
 	private static final String LOCALHOST = "localhost";
+
+	/**
+	 * Store frequently used pens here... so that you can ask for them instead of creating them from scratch.
+	 * This list is loaded up from the PaperToolkit.xml config file. The list is loaded lazily!
+	 */
+	private static List<String> quickListOfPenNamesAndPorts = new ArrayList<String>();
+
+	private static List<Pen> quickListOfPenObjects;
+
+	public static void addToQuickList(String pen) {
+		if (quickListOfPenNamesAndPorts.size() == 0) {
+			quickListOfPenNamesAndPorts.add("localhost:" + PenServer.DEFAULT_JAVA_PORT);
+		}
+		quickListOfPenNamesAndPorts.add(pen);
+	}
+
+	/**
+	 * @return
+	 */
+	public static List<Pen> getQuickList() {
+		if (quickListOfPenObjects == null) {
+			quickListOfPenObjects = new ArrayList<Pen>();
+			for (String penNameAndPort : quickListOfPenNamesAndPorts) {
+				int colonIndex = penNameAndPort.indexOf(":");
+				String penServerName = penNameAndPort.substring(0, colonIndex);
+				int penServerPort = Integer.parseInt(penNameAndPort.substring(colonIndex + 1, penNameAndPort
+						.length()));
+				String shortName = "";
+				if (penServerName.contains(".")) {
+					shortName = penServerName.substring(0, penServerName.indexOf("."));
+				} else {
+					shortName = penServerName;
+				}
+				quickListOfPenObjects.add(new Pen(shortName, penServerName, penServerPort));
+			}
+		}
+		return quickListOfPenObjects;
+	}
 
 	/**
 	 * Where to connect when we go live.
@@ -203,9 +244,9 @@ public class Pen extends InputDevice {
 		} else {
 			DebugUtils.println("Pen [" + getName() + "] is already live. ");
 		}
-		
+
 		// add event save and replay here...
-		
+
 	}
 
 	/**

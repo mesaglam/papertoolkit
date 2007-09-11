@@ -93,12 +93,13 @@ public class PenSimulator extends InputDevice {
 				}
 				PenSample penSample = new PenSample(offsetX + e.getX(), offsetY + e.getY(), 128,
 						System.currentTimeMillis());
-				for (PenListener l : penListeners) {
+				for (PenListener l : getPenListeners()) {
 					l.sample(penSample);
 				}
 				currentStroke.addSample(penSample);
 				inputPanel.repaint();
 			}
+
 		};
 	}
 
@@ -112,7 +113,7 @@ public class PenSimulator extends InputDevice {
 				}
 				PenSample sample = new PenSample(getOffsetX() + e.getX(), getOffsetY() + e.getY(), 128,
 						System.currentTimeMillis());
-				for (PenListener l : penListeners) {
+				for (PenListener l : getPenListeners()) {
 					l.penDown(sample);
 				}
 				currentStroke = new InkStroke();
@@ -132,7 +133,7 @@ public class PenSimulator extends InputDevice {
 					PenSample penSample = new PenSample(getOffsetX() + e.getX(), getOffsetY() + e.getY(), 0,
 							System.currentTimeMillis());
 					penSample.setPenUp(true);
-					for (PenListener l : penListeners) {
+					for (PenListener l : getPenListeners()) {
 						l.penUp(penSample);
 					}
 					currentStroke.addSample(penSample);

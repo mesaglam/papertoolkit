@@ -611,7 +611,7 @@ public class Application {
 	}
 
 	/**
-	 * 
+	 * Convenience Method.
 	 */
 	public void run() {
 		PaperToolkit.getInstance().startApplication(this);
@@ -664,8 +664,7 @@ public class Application {
 			}
 		}
 		if (namesOfSheets.size() > 0) {
-			DebugUtils.println("Loaded the most recent Pattern Mappings for: ");
-			DebugUtils.println(namesOfSheets);
+			DebugUtils.println("Loaded the most recent Pattern Mappings for: " + namesOfSheets);
 		}
 	}
 }

@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,6 +85,10 @@ public class SaveAndReplay {
 			lastPenSampleTracked = sample;
 			saveSample(sample);
 		}
+
+		public String toString() {
+			return "Save/Replay PenListener";
+		}
 	}
 
 	/**
@@ -109,8 +115,6 @@ public class SaveAndReplay {
 
 	private HashMap<String, InputDevice> knownInputDevices = new HashMap<String, InputDevice>();
 
-	private List<InputDevice> knownInputDevicesList = new ArrayList<InputDevice>();
-
 	private PenSample lastPenSampleTracked;
 
 	/**
@@ -135,7 +139,7 @@ public class SaveAndReplay {
 	 * @param inputDevice
 	 */
 	private SaveAndReplay() {
-
+		loadMostRecentSession();
 	}
 
 	private void checkIfInteractionGap(PenSample sample) {
@@ -181,15 +185,8 @@ public class SaveAndReplay {
 	public ActionListener getActionListenerForChooseSession() {
 		return new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadEventDataFromFileChooser();
-			}
-		};
-	}
-
-	public ActionListener getActionListenerForClear() {
-		return new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
 				clearLoadedEvents();
+				loadEventDataFromFileChooser();
 			}
 		};
 	}
@@ -198,6 +195,7 @@ public class SaveAndReplay {
 		return new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// load the most recent, and then replay it!
+				clearLoadedEvents();
 				loadMostRecentSession();
 			}
 		};
@@ -224,16 +222,21 @@ public class SaveAndReplay {
 	 * @return
 	 */
 	private InputDevice getFirstInputDevice() {
-		if (knownInputDevicesList.size() > 0) {
-			return knownInputDevicesList.get(0);
+		Object[] devices = knownInputDevices.values().toArray();
+		if (devices.length > 0) {
+			return (InputDevice) devices[0];
+		} else {
+			return null;
 		}
-		return null;
 	}
 
+	/**
+	 * @param inputDevice
+	 * @return
+	 */
 	public PenListener getPenListener(final InputDevice inputDevice) {
 		// register this input device for later
 		knownInputDevices.put(inputDevice.getID(), inputDevice);
-		knownInputDevicesList.add(inputDevice);
 		PenListener penListener = inputDeviceToListener.get(inputDevice);
 		if (penListener == null) {
 			penListener = new SaveAndReplayListener(inputDevice);
@@ -282,10 +285,10 @@ public class SaveAndReplay {
 		final List<File> eventFiles = FileUtils.listVisibleFiles(getEventStoragePath(), FILE_EXTENSION);
 		if (eventFiles.size() > 0) {
 			final File mostRecentFile = eventFiles.get(eventFiles.size() - 1);
-			DebugUtils.println("Loading Most Recent Session: " + mostRecentFile.getName());
+			// DebugUtils.println("Loading Most Recent Session: " + mostRecentFile.getName());
 			loadSessionDataFrom(mostRecentFile);
 		} else {
-			DebugUtils.println("No Event Data Files Found in " + getEventStoragePath());
+			// DebugUtils.println("No Event Data Files Found in " + getEventStoragePath());
 		}
 	}
 
@@ -358,8 +361,6 @@ public class SaveAndReplay {
 				String penID = "0";
 				InputDevice currPenInputDevice = getFirstInputDevice();
 
-				DebugUtils.println(currPenInputDevice);
-				
 				long lastTimeStamp = 0;
 				HashMap<String, Boolean> penIsUp = new HashMap<String, Boolean>();
 
@@ -368,6 +369,7 @@ public class SaveAndReplay {
 					case PEN_CHANGE:
 						penID = e.penID;
 						currPenInputDevice = knownInputDevices.get(penID);
+						// DebugUtils.println("Changed to " + currPenInputDevice);
 
 						// keep track of this pen's down or up state
 						if (!penIsUp.keySet().contains(penID)) {
@@ -386,8 +388,8 @@ public class SaveAndReplay {
 									// play in "real time"
 									Thread.sleep(diff);
 								} else if (diff < 0) {
-									DebugUtils
-											.println("Timestamps went backwards... Probably loaded new session.");
+									DebugUtils.println("Timestamps went backwards... "
+											+ "Probably loaded new session.");
 									Thread.sleep(2000);
 								}
 							} catch (InterruptedException ex) {
@@ -423,7 +425,7 @@ public class SaveAndReplay {
 						break;
 					}
 				}
-				// DebugUtils.println("Done. Replayed " + events.size() + " Events");
+				DebugUtils.println("Done replaying " + events.size() + " events");
 			}
 
 		}).start();
