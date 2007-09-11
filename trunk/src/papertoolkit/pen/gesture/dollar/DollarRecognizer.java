@@ -53,14 +53,15 @@ public class DollarRecognizer {
 	public static class RecognitionResult {
 		String name;
 		double score;
-
 		public RecognitionResult(String nameVal, double scoreVal) {
 			name = nameVal;
 			score = scoreVal;
 		}
-		
 		public String toString() {
 			return "Recognized as " + name + " with a score of " + score; 
+		}
+		public String getName() {
+			return name;
 		}
 	}
 

@@ -1,5 +1,7 @@
 package papertoolkit.pen;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,6 +10,9 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import papertoolkit.pen.ink.Ink;
@@ -42,6 +47,9 @@ public class PenSimulator extends InputDevice {
 	private Ink ink;
 	private InkPanel inputPanel;
 	private InkSimplification simplifier = new InkSimplification();
+	private JPanel offsetPanel;
+	private JTextField xField;
+	private JTextField yField;
 
 	public PenSimulator() {
 		super("Pen Simulator");
@@ -57,6 +65,7 @@ public class PenSimulator extends InputDevice {
 	private InkPanel getInputPanel() {
 		if (inputPanel == null) {
 			inputPanel = new InkPanel();
+			inputPanel.setRecenterFlag(false);
 
 			// set the background of the panel
 			inputPanel.setOpaque(false);
@@ -76,9 +85,8 @@ public class PenSimulator extends InputDevice {
 				if (SwingUtilities.isRightMouseButton(e)) {
 					return;
 				}
-
-				// DebugUtils.println("Dragging: " + e.getX() + ", " + e.getY());
-				PenSample penSample = new PenSample(e.getX(), e.getY(), 128, System.currentTimeMillis());
+				PenSample penSample = new PenSample(getOffsetX() + e.getX(), getOffsetY() + e.getY(), 128,
+						System.currentTimeMillis());
 				for (PenListener l : penListeners) {
 					l.sample(penSample);
 				}
@@ -94,9 +102,8 @@ public class PenSimulator extends InputDevice {
 				if (SwingUtilities.isRightMouseButton(e)) {
 					return;
 				}
-
-				// DebugUtils.println("Pressed: " + e.getX() + ", " + e.getY());
-				PenSample sample = new PenSample(e.getX(), e.getY(), 128, System.currentTimeMillis());
+				PenSample sample = new PenSample(getOffsetX() + e.getX(), getOffsetY() + e.getY(), 128,
+						System.currentTimeMillis());
 				for (PenListener l : penListeners) {
 					l.penDown(sample);
 				}
@@ -112,8 +119,8 @@ public class PenSimulator extends InputDevice {
 					inputPanel.clear();
 					ink = inputPanel.addNewInk();
 				} else {
-					// DebugUtils.println("Released: " + e.getX() + ", " + e.getY());
-					PenSample penSample = new PenSample(e.getX(), e.getY(), 0, System.currentTimeMillis());
+					PenSample penSample = new PenSample(getOffsetX() + e.getX(), getOffsetY() + e.getY(), 0,
+							System.currentTimeMillis());
 					penSample.setPenUp(true);
 					for (PenListener l : penListeners) {
 						l.penUp(penSample);
@@ -129,6 +136,29 @@ public class PenSimulator extends InputDevice {
 		};
 	}
 
+	protected int getOffsetY() {
+		if (yField == null) {
+			return 0;
+		}
+		try {
+			int yOff = Integer.parseInt(yField.getText());
+			return yOff;
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+
+	protected int getOffsetX() {
+		if (xField == null) {
+			return 0;
+		}
+		try {
+			int xOff = Integer.parseInt(xField.getText());
+			return xOff;
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -138,7 +168,9 @@ public class PenSimulator extends InputDevice {
 	public void startLiveMode() {
 		// start up a JFrame w/ GUI to get mouse input...
 		frame = new JFrame("Pen Simulator");
-		frame.setContentPane(getInputPanel());
+		frame.setLayout(new BorderLayout());
+		frame.add(getOffsetPanel(), BorderLayout.CENTER);
+		frame.add(getInputPanel(), BorderLayout.CENTER);
 
 		// if you exit your pen, we might as well close the entire paper application
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -146,6 +178,21 @@ public class PenSimulator extends InputDevice {
 		frame.setLocation(WindowUtils.getWindowOrigin(frame, WindowUtils.DESKTOP_CENTER));
 		frame.setVisible(true);
 		liveMode = true;
+	}
+
+	private Component getOffsetPanel() {
+		if (offsetPanel == null) {
+			offsetPanel = new JPanel();
+			offsetPanel.add(new JLabel("X Offset: "));
+			xField = new JTextField(20);
+			xField.setText("0");
+			offsetPanel.add(xField);
+			offsetPanel.add(new JLabel("Y Offset: "));
+			yField = new JTextField(20);
+			yField.setText("0");
+			offsetPanel.add(yField);
+		}
+		return offsetPanel;
 	}
 
 	/*
