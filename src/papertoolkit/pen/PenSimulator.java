@@ -79,7 +79,6 @@ public class PenSimulator extends InputDevice {
 
 				// DebugUtils.println("Dragging: " + e.getX() + ", " + e.getY());
 				PenSample penSample = new PenSample(e.getX(), e.getY(), 128, System.currentTimeMillis());
-
 				for (PenListener l : penListeners) {
 					l.sample(penSample);
 				}

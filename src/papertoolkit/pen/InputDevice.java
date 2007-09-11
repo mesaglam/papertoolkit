@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import papertoolkit.pen.replay.SaveAndReplay;
+import papertoolkit.pen.replay.SaveAndReplay.SaveAndReplayListener;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.util.DebugUtils;
 
@@ -22,6 +23,9 @@ import papertoolkit.util.DebugUtils;
  */
 public abstract class InputDevice {
 
+	/**
+	 * A unique string identifier. This is set by the system.
+	 */
 	private String id = "None";
 
 	/**
@@ -33,7 +37,7 @@ public abstract class InputDevice {
 	/**
 	 * A simple default name.
 	 */
-	private String name;
+	private String name = "Pen Input Device";
 
 	/**
 	 * The full list of live pen listeners...
@@ -58,13 +62,14 @@ public abstract class InputDevice {
 		id = ""+uniquePenIDs++;
 		setName(penName);
 		saveAndReplay = SaveAndReplay.getInstance();
-		PenListener penListener = saveAndReplay.getPenListener(this);
+
+		final PenListener saveListener = saveAndReplay.getPenListener(this);
 
 		// for subclasses who dispatch info by iterating through this list
-		penListeners.add(penListener);
+		penListeners.add(saveListener);
 
 		// for subclasses who process penListeners at runtime.
-		penListenersToRegisterWhenLive.add(penListener);
+		penListenersToRegisterWhenLive.add(saveListener);
 	}
 
 	/**
@@ -108,6 +113,45 @@ public abstract class InputDevice {
 	 */
 	public boolean isLive() {
 		return liveMode;
+	}
+
+	/**
+	 * Pass the sample onto the listeners. Used by Save & Replay.
+	 * @param sample
+	 */
+	public void playPenDown(PenSample sample) {
+		for (PenListener l : penListeners) {
+			if (l instanceof SaveAndReplayListener) {
+				continue;
+			}
+			l.penDown(sample);
+		}
+	}
+
+	/**
+	 * Pass the sample onto the listeners. Used by Save & Replay.
+	 * @param sample
+	 */
+	public void playPenSample(PenSample sample) {
+		for (PenListener l : penListeners) {
+			if (l instanceof SaveAndReplayListener) {
+				continue;
+			}
+			l.sample(sample);
+		}
+	}
+
+	/**
+	 * Pass the sample onto the listeners. Used by Save & Replay.
+	 * @param sample
+	 */
+	public void playPenUp(PenSample sample) {
+		for (PenListener l : penListeners) {
+			if (l instanceof SaveAndReplayListener) {
+				continue;
+			}
+			l.penUp(sample);
+		}
 	}
 
 	/**
