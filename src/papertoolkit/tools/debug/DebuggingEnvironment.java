@@ -10,6 +10,7 @@ import papertoolkit.flash.FlashCommunicationServer;
 import papertoolkit.flash.FlashListener;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
+import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -105,6 +106,10 @@ public class DebuggingEnvironment {
 	public void showFlashView() {
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File eventVizHTML = new File(r3RootPath, "flash/bin/EventViz.html");
+		if (!eventVizHTML.exists()) {
+			DebugUtils.println("EventViz.html doesn't exit. Please compile this application with the Flex Builder.");
+			return;
+		}
 		flash.openFlashHTMLGUI(eventVizHTML);
 		flash.removeAllFlashClientListeners(); // HACK: for now...
 		flash.addFlashClientListener(new FlashListener() {

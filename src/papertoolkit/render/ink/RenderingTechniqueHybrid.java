@@ -7,6 +7,8 @@ import java.util.List;
 
 import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.ink.InkUtils;
+import papertoolkit.util.ArrayUtils;
+import papertoolkit.util.DebugUtils;
 import papertoolkit.util.geometry.CatmullRomSpline;
 
 
@@ -26,6 +28,7 @@ class RenderingTechniqueHybrid implements RenderingTechnique {
 	public void render(Graphics2D g2d, List<InkStroke> strokes) {
 		for (InkStroke stroke : strokes) {
 			double width = stroke.getWidth();
+			
 			g2d.setStroke(new BasicStroke((float) width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
 			// this doubles as a good max velocity measure, since the samples come in at more or less a
@@ -33,7 +36,6 @@ class RenderingTechniqueHybrid implements RenderingTechnique {
 			// TODO: In the future, we should hybridize at an even finer granularity (i.e. within stroke)
 			// right now, we are hybridizing between strokes.
 			double maxDistanceBetweenSamples = InkUtils.getMaxDistanceBetweenSamples(stroke);
-			// DebugUtils.println("MaxD: " + maxDistanceBetweenSamples);
 
 			boolean largeStroke = maxDistanceBetweenSamples > 75;
 			if (largeStroke) {

@@ -188,4 +188,11 @@ public abstract class InputDevice {
 	 */
 	public abstract void stopLiveMode();
 
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "InpuDevice: " + getName();
+	}
 }

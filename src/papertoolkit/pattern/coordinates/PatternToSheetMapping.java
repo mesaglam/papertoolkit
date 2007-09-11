@@ -185,10 +185,10 @@ public class PatternToSheetMapping {
 	 * @param xmlFile
 	 */
 	@SuppressWarnings("unchecked")
-	public void loadConfigurationFromXML(File xmlFile) {
+	public boolean loadConfigurationFromXML(File xmlFile) {
 		if (!xmlFile.exists()) {
-			DebugUtils.println("PatternMapping cannot be found at: " + xmlFile.getAbsolutePath());
-			return;
+			// DebugUtils.println("PatternMapping cannot be found at: " + xmlFile.getAbsolutePath());
+			return false;
 		}
 
 		// for each region, there should be a specification of the pattern information
@@ -196,8 +196,6 @@ public class PatternToSheetMapping {
 				.fromXML(xmlFile);
 		for (Region r : regionToPatternBounds.keySet()) {
 			final RegionID xmlKey = new RegionID(r);
-			// System.out.println("Found Key: " + regionIDToPattern.containsKey(xmlKey) + " for " +
-			// r.getName());
 
 			// loads the information into our map
 			if (regionIDToPattern.containsKey(xmlKey)) {
@@ -205,6 +203,7 @@ public class PatternToSheetMapping {
 				regionToPatternBounds.put(r, regionIDToPattern.get(xmlKey));
 			}
 		}
+		return true;
 	}
 
 	/**

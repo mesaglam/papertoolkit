@@ -7,7 +7,8 @@ import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
- * Handles single pen strokes...
+ * Fires an event on every single pen stroke... If you have gesture recognizers that depend on single strokes,
+ * you can subclass this.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -24,58 +25,54 @@ public abstract class StrokeHandler extends EventHandler {
 	 */
 	private PenEvent lastEvent;
 
-	/**
-	 * 
-	 */
 	private boolean penDownHappened = false;
 
 	/**
-	 * 
+	 * Keep a single stroke around... throw away older strokes.
 	 */
-	private InkStroke stroke;
+	private InkStroke mostRecentStroke;
 
 	/**
-	 * 
-	 * @return
+	 * @return the latest stroke
 	 */
 	public InkStroke getStroke() {
-		return stroke;
+		return mostRecentStroke;
 	}
 
 	/**
 	 * @see papertoolkit.events.EventHandler#handleEvent(papertoolkit.events.PenEvent)
 	 */
 	public void handleEvent(PenEvent event) {
+		if (event == null || event.getOriginalSample() == null) {
+			DebugUtils.println("Event Object is NULL");
+			return;
+		}
+
 		if (event.isTypePenDown()) {
-			stroke = new InkStroke();
+			mostRecentStroke = new InkStroke();
 			penDownHappened = true;
 		} else if (event.isTypePenUp()) {
 			// really, this should always be true
 			if (penDownHappened) {
-				strokeArrived(lastEvent);
+				strokeArrived(lastEvent, mostRecentStroke);
 				penDownHappened = false;
 				return;
 			}
-		}
-
-		if (event == null || event.getOriginalSample() == null) {
-			DebugUtils.println("Event Object is NULL");
 		} else {
-			stroke.addSample(event.getOriginalSample());
+			mostRecentStroke.addSample(event.getOriginalSample());
 			lastEvent = event;
 		}
-
 		// do not consume the event (event has a consumed property that we do not set here)
 	}
 
 	/**
-	 * @param e
-	 */
-	public abstract void strokeArrived(PenEvent e);
-
-	/**
+	 * This handler is called on every pen up.
 	 * 
+	 * @param lastSample
+	 * @param stroke
 	 */
+	public abstract void strokeArrived(PenEvent lastSample, InkStroke stroke);
+
 	public String toString() {
 		return "StrokeHandler";
 	}

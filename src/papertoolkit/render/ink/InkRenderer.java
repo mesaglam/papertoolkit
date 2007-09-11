@@ -70,7 +70,7 @@ public class InkRenderer {
 					255 - inkColor.getBlue());
 			inkColor = newColor;
 		}
-		DebugUtils.println("Rendering Ink with Color == " + inkColor);
+		// DebugUtils.println("Rendering Ink with Color == " + inkColor);
 		g2d.setColor(inkColor);
 
 		final List<InkStroke> strokes = ink.getStrokes();

@@ -12,8 +12,8 @@ import javax.swing.JPanel;
 
 import papertoolkit.pen.ink.Ink;
 import papertoolkit.render.ink.InkRenderer;
+import papertoolkit.util.DebugUtils;
 import papertoolkit.util.graphics.GraphicsUtils;
-
 
 /**
  * <p>
@@ -34,7 +34,10 @@ import papertoolkit.util.graphics.GraphicsUtils;
  */
 public class InkPanel extends JPanel {
 
-	private Ink currentInk;
+	/**
+	 * Provides access to the most recently added ink object.
+	 */
+	protected Ink mostRecentInk;
 
 	/**
 	 * Zoom in (> 1.0) or out (< 1.0) to the ink canvas.
@@ -52,13 +55,15 @@ public class InkPanel extends JPanel {
 	 */
 	private boolean invertInkColors = false;
 
-	private double minX = Double.MAX_VALUE;
-
-	private double minY = Double.MAX_VALUE;
-
 	private double paddingLeft = 15;
 
 	private double paddingTop = 25;
+
+	/**
+	 * By default, recenters the ink so that it is displayed in the upper left corner. Set it to false if your
+	 * coordinates are correct already...
+	 */
+	private boolean shouldRecenter = true;
 
 	/**
 	 * 
@@ -72,6 +77,13 @@ public class InkPanel extends JPanel {
 		this(new InkRenderer(), new Color(250, 250, 250));
 	}
 
+	/**
+	 * @param recFlag
+	 */
+	public void setRecenterFlag(boolean recFlag) {
+		shouldRecenter = recFlag;
+	}
+	
 	/**
 	 * Choose your own renderer.
 	 * 
@@ -89,10 +101,8 @@ public class InkPanel extends JPanel {
 	 * @param ink
 	 */
 	public void addInk(Ink ink) {
-		currentInk = ink;
+		mostRecentInk = ink;
 		inkWell.add(ink);
-		minX = Math.min(minX, ink.getMinX());
-		minY = Math.min(minY, ink.getMinY());
 		repaint();
 	}
 
@@ -111,8 +121,6 @@ public class InkPanel extends JPanel {
 	 */
 	public void clear() {
 		inkWell.clear();
-		minX = Double.MAX_VALUE;
-		minY = Double.MAX_VALUE;
 		repaint();
 	}
 
@@ -150,11 +158,11 @@ public class InkPanel extends JPanel {
 		final AffineTransform transform = g2d.getTransform();
 		g2d.scale(inkScale, inkScale);
 
-		recenter(g2d);
-
 		// the drawing of ink is "atomic" with respect to
 		// adding and removing from the inkWell
 		synchronized (inkWell) {
+			recenter(g2d, inkWell);
+
 			for (Ink ink : inkWell) {
 				renderer.setInk(ink);
 				if (invertInkColors) {
@@ -169,7 +177,17 @@ public class InkPanel extends JPanel {
 	/**
 	 * @param g2d
 	 */
-	private void recenter(Graphics2D g2d) {
+	private void recenter(Graphics2D g2d, List<Ink> inks) {
+		if (!shouldRecenter) {
+			return;
+		}
+		
+		double minX = Double.MAX_VALUE;
+		double minY = Double.MAX_VALUE;
+		for (Ink ink : inks) {
+			minX = Math.min(ink.getMinX(), minX);
+			minY = Math.min(ink.getMinY(), minY);
+		}
 		g2d.translate(-(minX - paddingLeft), -(minY - paddingTop));
 	}
 

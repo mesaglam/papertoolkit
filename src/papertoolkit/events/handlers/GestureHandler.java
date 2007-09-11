@@ -1,8 +1,12 @@
 package papertoolkit.events.handlers;
 
-import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
-
+import papertoolkit.pen.Pen;
+import papertoolkit.pen.gesture.dollar.DollarRecognizer;
+import papertoolkit.pen.gesture.dollar.DollarRecognizer.RecognitionResult;
+import papertoolkit.pen.ink.InkStroke;
+import papertoolkit.pen.streaming.listeners.PenStrokeListener;
+import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -15,13 +19,32 @@ import papertoolkit.events.PenEvent;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class GestureHandler extends EventHandler {
+public abstract class GestureHandler extends StrokeHandler {
 
-	public void handleEvent(PenEvent event) {
-		
+	private DollarRecognizer dollarRecognizer;
+
+	public GestureHandler() {
+		dollarRecognizer = new DollarRecognizer();
 	}
 
 	public String toString() {
-		return "Gesture Handler";
+		return "DollarGestureHandler";
 	}
+
+	// add template
+	// add example to template
+	// remove template
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see papertoolkit.events.handlers.StrokeHandler#strokeArrived(papertoolkit.events.PenEvent,
+	 *      papertoolkit.pen.ink.InkStroke)
+	 */
+	public void strokeArrived(PenEvent lastSample, InkStroke stroke) {
+		RecognitionResult result = dollarRecognizer.recognize(stroke);
+		gestureArrived(lastSample, result, stroke);
+	}
+	
+	public abstract void gestureArrived(PenEvent lastSample, RecognitionResult result, InkStroke stroke);
 }

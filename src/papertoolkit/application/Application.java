@@ -26,6 +26,8 @@ import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
 import papertoolkit.pen.InputDevice;
+import papertoolkit.pen.PenSimulator;
+import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
@@ -241,10 +243,12 @@ public class Application {
 
 	/**
 	 * Called right before an applications starts. Override to do anything you like right after a person
-	 * clicks start, and right before the application actually starts.
+	 * clicks start, and right before the application actually starts. If you override, make sure you call the
+	 * parent's method...
 	 */
 	public void initializeBeforeStarting() {
-		// do nothing, unless it is overridden.
+		// try to load the pattern mappings from last time, if they exist
+		loadMostRecentPatternMappings();
 	}
 
 	/**
@@ -294,6 +298,7 @@ public class Application {
 
 		final Menu interactionsMenu = new Menu("Interactions");
 		menu.add(interactionsMenu);
+		populateInteractionsMenu(interactionsMenu);
 
 		/**
 		 * @return the button to load the Acrobat plugin for designing Paper UIs (drawing out regions)...
@@ -306,17 +311,6 @@ public class Application {
 			}
 		});
 		sheetsMenu.add(designItem);
-
-		for (final Sheet s : getSheets()) {
-			MenuItem item = new MenuItem("Simulate Pen Interactions for Sheet [" + s.getName() + "]");
-			item.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					SheetFrame sheetFrame = new SheetFrame(s, 800, 600);
-					sheetFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				}
-			});
-			interactionsMenu.add(item);
-		}
 
 		final MenuItem renderItem = new MenuItem("Render PDFs of " + sheets.size() + " sheets");
 		renderItem.addActionListener(new ActionListener() {
@@ -340,25 +334,41 @@ public class Application {
 				final List<Sheet> thisAppsSheets = getSheets();
 				for (Sheet s : thisAppsSheets) {
 					// use the longer, more descriptive string
-					DebugUtils.println(s.toDetailedString());
+					DebugUtils.println("\n" + s.toDetailedString());
 				}
 			}
 		});
 		sheetsMenu.add(printSheetInfoItem);
 
-		// will populate the system tray with a feature for runtime binding of regions... =)
-		addItemsToBindUninitializedRegions(interactionsMenu);
-
 		populateTrayMenuForSideCar(menu);
 		populateTrayMenuExtensions(menu);
 	}
 
+	private void populateInteractionsMenu(final Menu interactionsMenu) {
+		MenuItem simulateItem = new MenuItem("Start Pen Simulator");
+		simulateItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				host.stopApplication(Application.this);
+				Application.this.addPenInput(new PenSimulator());
+				host.startApplication(Application.this);
+			}
+		});
+		interactionsMenu.add(simulateItem);
+
+		// will populate the system tray with a feature for runtime binding of regions... =)
+		addItemsToBindUninitializedRegions(interactionsMenu);
+	}
+
 	/**
+	 * A unique pattern info file for each sheet... We don't want to clobber the same patternInfo file if we
+	 * have multiple sheets.
+	 * 
+	 * @param map
 	 * @return
 	 */
-	private File getPatternInfoFile() {
+	private File getPatternInfoFile(PatternToSheetMapping map) {
 		File dir = PaperToolkit.getToolkitFile("/mappings/");
-		final File destFile = new File(dir, getName() + ".patternInfo.xml");
+		final File destFile = new File(dir, getName() + "." + map.getSheet().getName() + ".patternInfo.xml");
 		return destFile;
 	}
 
@@ -369,30 +379,44 @@ public class Application {
 	 * @param mappings
 	 */
 	private void addItemsToBindUninitializedRegions(Menu popupMenu) {
+		
 		for (final PatternToSheetMapping map : getPatternMaps()) {
-			final MenuItem loadMappingItem = new MenuItem("Load Pattern Mappings");
-			loadMappingItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent nullActionEvent) {
-					map.loadConfigurationFromXML(getPatternInfoFile());
+			final Menu sheetMenu = new Menu(map.getSheet().getName());
+			popupMenu.add(sheetMenu);
+			
+			
+			MenuItem item = new MenuItem("Simulate Pen for this Sheet");
+			item.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					SheetFrame sheetFrame = new SheetFrame(map.getSheet(), 800, 600);
+					sheetFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				}
 			});
-			popupMenu.add(loadMappingItem);
+			sheetMenu.add(item);
+			
+			
+			final MenuItem loadMappingItem = new MenuItem("Load Mappings");
+			loadMappingItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent nullActionEvent) {
+					map.loadConfigurationFromXML(getPatternInfoFile(map));
+				}
+			});
+			sheetMenu.add(loadMappingItem);
 
 			Map<Region, PatternCoordinateConverter> regionToPatternMapping = map.getRegionToPatternMapping();
 
 			for (final Region r : regionToPatternMapping.keySet()) {
 				// the menu item for invoking the runtime binding
 				// We need to update the text later...
-				final MenuItem bindPatternToRegionItem = new MenuItem("Add Pattern Binding For ["
-						+ r.getName() + "]");
+				final MenuItem bindPatternToRegionItem = new MenuItem("Add Binding For [" + r.getName() + "]");
 
 				bindPatternToRegionItem.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						addEventHandlerForUnmappedEvents(map, r, bindPatternToRegionItem,
-								getPatternInfoFile());
+								getPatternInfoFile(map));
 					}
 				});
-				popupMenu.add(bindPatternToRegionItem);
+				sheetMenu.add(bindPatternToRegionItem);
 			}
 		}
 	}
@@ -406,12 +430,12 @@ public class Application {
 	private void addEventHandlerForUnmappedEvents(final PatternToSheetMapping map, final Region region,
 			final MenuItem bindPatternToRegionItem, final File destFile) {
 
-		DebugUtils.println("Draw a box (with one stroke) to bind region: [" + region
+		DebugUtils.println("Draw a box (with a single stroke) to bind region: [" + region
 				+ "] to an area on patterned paper.");
-		
+
 		// Runtime Pattern to Region Binding adds a listener for unmapped events in the Event Dispatcher
 		host.getEventDispatcher().addEventHandlerForUnmappedEvents(new StrokeHandler() {
-			public void strokeArrived(PenEvent e) {
+			public void strokeArrived(PenEvent lastEvent, InkStroke stroke) {
 				Rectangle2D bounds = getStroke().getBounds();
 				// determine the bounds of the region in
 				// pattern space. this information was provided by the user
@@ -628,9 +652,20 @@ public class Application {
 		return name + " Application";
 	}
 
+	/**
+	 * 
+	 */
 	public void loadMostRecentPatternMappings() {
+		List<String> namesOfSheets = new ArrayList<String>();
 		for (final PatternToSheetMapping map : getPatternMaps()) {
-			map.loadConfigurationFromXML(getPatternInfoFile());
+			boolean successful = map.loadConfigurationFromXML(getPatternInfoFile(map));
+			if (successful) {
+				namesOfSheets.add(map.getSheet().getName());
+			}
+		}
+		if (namesOfSheets.size() > 0) {
+			DebugUtils.println("Loaded the most recent Pattern Mappings for: ");
+			DebugUtils.println(namesOfSheets);
 		}
 	}
 }

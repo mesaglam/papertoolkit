@@ -33,8 +33,6 @@ import papertoolkit.util.graphics.GraphicsUtils;
  */
 public class SheetFrame extends JFrame {
 
-	private static final long serialVersionUID = 8854448449113342296L;
-
 	/**
 	 * Constructs a new JFrame based on a Sheet object. If the sheet has XMLRegions, the meta data will be
 	 * used to construct JButtons, and JTextFields.

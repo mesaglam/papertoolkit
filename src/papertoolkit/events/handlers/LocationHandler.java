@@ -2,7 +2,6 @@ package papertoolkit.events.handlers;
 
 import papertoolkit.events.PenEvent;
 import papertoolkit.units.coordinates.PercentageCoordinates;
-import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -24,7 +23,6 @@ public abstract class LocationHandler extends StrokeHandler {
 	 */
 	public void handleEvent(PenEvent event) {
 		super.handleEvent(event);
-		
 		PercentageCoordinates percentageLocation = event.getPercentageLocation();
 		// DebugUtils.println(percentageLocation);
 	}
