@@ -3,6 +3,7 @@ package papertoolkit.pen;
 import java.util.ArrayList;
 import java.util.List;
 
+import papertoolkit.pen.replay.SaveAndReplay;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.util.DebugUtils;
 
@@ -21,6 +22,8 @@ import papertoolkit.util.DebugUtils;
  */
 public abstract class InputDevice {
 
+	private int id = -1;
+
 	/**
 	 * TRUE if the PenInput object is currently connected to the underlying (physical or simulated) pen in
 	 * streaming mode.
@@ -33,23 +36,35 @@ public abstract class InputDevice {
 	private String name;
 
 	/**
+	 * The full list of live pen listeners...
+	 */
+	protected List<PenListener> penListeners = new ArrayList<PenListener>();
+
+	/**
 	 * Cached pen listeners, so we can "add" them when/if you go live.
 	 */
 	protected List<PenListener> penListenersToRegisterWhenLive = new ArrayList<PenListener>();
 
 	/**
-	 * The full list of live pen listeners...
+	 * 
 	 */
-	protected List<PenListener> penListeners = new ArrayList<PenListener>();
+	private SaveAndReplay saveAndReplay;
+	private int uniquePenIDs = 0;
 
-	
 	/**
 	 * @param penName
 	 */
 	public InputDevice(String penName) {
+		id = uniquePenIDs++;
 		setName(penName);
-		
-		
+		saveAndReplay = SaveAndReplay.getInstance();
+		PenListener penListener = saveAndReplay.getPenListener(this);
+
+		// for subclasses who dispatch info by iterating through this list
+		penListeners.add(penListener);
+
+		// for subclasses who process penListeners at runtime.
+		penListenersToRegisterWhenLive.add(penListener);
 	}
 
 	/**
@@ -65,13 +80,20 @@ public abstract class InputDevice {
 	public void addLivePenListener(PenListener penListener) {
 		// always keep track of penListeners, for save & replay
 		penListeners.add(penListener);
-		
+
 		if (!isLive()) {
 			// DebugUtils.println("We are not registering this listener [" + penListener.toString()
 			// + "] with the event dispatcher at the moment. The Pen is not in Live Mode.");
 			// DebugUtils.println("We will keep this listener around until you startLiveMode().");
 			penListenersToRegisterWhenLive.add(penListener);
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	public int getID() {
+		return id;
 	}
 
 	/**

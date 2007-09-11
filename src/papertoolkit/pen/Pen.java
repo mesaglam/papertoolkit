@@ -198,7 +198,6 @@ public class Pen extends InputDevice {
 
 			// add all the cached listeners now
 			for (PenListener pl : penListenersToRegisterWhenLive) {
-				// DebugUtils.println("Adding cached pen listeners...");
 				livePenClient.addPenListener(pl);
 			}
 		} else {

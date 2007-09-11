@@ -110,7 +110,7 @@ public class EventDispatcher {
 		pensCurrentlyMonitoring.add(penInputDevice);
 
 		// properties of the pen
-		final int penID = pensCurrentlyMonitoring.indexOf(penInputDevice);
+		final int penID = penInputDevice.getID();
 		final String penName = penInputDevice.getName();
 
 		// TODO: Should the time be gotten from the sample instead? This may have impact if we are processing

@@ -3,10 +3,13 @@ package papertoolkit.pen;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.sun.org.apache.xerces.internal.util.XML11Char;
 
 import papertoolkit.units.PatternDots;
 import papertoolkit.util.MathUtils;
-
 
 /**
  * <p>
@@ -22,10 +25,39 @@ import papertoolkit.util.MathUtils;
  */
 public class PenSample implements Serializable {
 
+	public static final String DOWN = "DOWN";
+
 	/**
 	 * To prettify the output string.
 	 */
 	private static final DecimalFormat FORMATTER = PatternDots.FORMATTER;
+
+	private static final String SAMPLE_XML_FORMAT = "<p x=\"(.*?)\" y=\"(.*?)\" f=\"(.*?)\" t=\"(.*?)\" p=\"(.*?)\".*?/>";
+
+	private static final Pattern SAMPLE_XML_FORMAT_PATTERN = Pattern.compile(SAMPLE_XML_FORMAT);
+
+	public static final String UP = "UP";
+
+	/**
+	 * @param xmlString
+	 * @return
+	 */
+	public static PenSample fromXMLString(String xmlString) {
+		// of the form
+		// <p x="10" y="20" f="123" t="108098098" p="UP"/>
+		final Matcher matcherSample = SAMPLE_XML_FORMAT_PATTERN.matcher(xmlString);
+		if (matcherSample.find()) {
+			final String x = matcherSample.group(1);
+			final String y = matcherSample.group(2);
+			final String f = matcherSample.group(3);
+			final String t = matcherSample.group(4);
+			final String penUpOrDown = matcherSample.group(5);
+			return new PenSample(Double.parseDouble(x), Double.parseDouble(y), Integer.parseInt(f), Long
+					.parseLong(t), penUpOrDown.equals(UP));
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * measure of force from pen tip
@@ -41,7 +73,6 @@ public class PenSample implements Serializable {
 	 * timestamp of server when received
 	 */
 	public long timestamp;
-
 	/**
 	 * x location of the point, in physical Anoto coordinates TODO: Make these private later...
 	 */
@@ -163,14 +194,15 @@ public class PenSample implements Serializable {
 	}
 
 	/**
-	 * @return
+	 * to serialize/unserialize, use toXMLString instead...
+	 * 
+	 * @return a readable, network-friendly, comma-separated string
 	 */
 	public String toCommaSeparatedString() {
 		final DecimalFormat df = new DecimalFormat("#.####");
 		final String xString = df.format(x);
 		final String yString = df.format(y);
-		return "" + timestamp + "," + xString + "," + yString + "," + force + ","
-				+ (isPenUp() ? "UP" : "DOWN");
+		return "" + timestamp + "," + xString + "," + yString + "," + force + "," + (isPenUp() ? UP : DOWN);
 	}
 
 	/**
@@ -178,7 +210,7 @@ public class PenSample implements Serializable {
 	 */
 	public String toString() {
 		return "Sample: [" + FORMATTER.format(x) + ", " + FORMATTER.format(y) + "] F=" + force + " T="
-				+ timestamp + " P=" + (isPenUp() ? "UP" : "DOWN");
+				+ timestamp + " P=" + (isPenUp() ? UP : DOWN);
 	}
 
 	/**
@@ -188,6 +220,6 @@ public class PenSample implements Serializable {
 	 */
 	public String toXMLString() {
 		return "<p x=\"" + x + "\" y=\"" + y + "\" f=\"" + force + "\" t=\"" + timestamp + "\" p=\""
-				+ (isPenUp() ? "U" : "D") + "\"/>";
+				+ (isPenUp() ? UP : DOWN) + "\"/>";
 	}
 }
