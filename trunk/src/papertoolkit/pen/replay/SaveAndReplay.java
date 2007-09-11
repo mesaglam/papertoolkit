@@ -1,5 +1,6 @@
 package papertoolkit.pen.replay;
 
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -42,33 +43,33 @@ import papertoolkit.util.files.FileUtils;
  */
 public class SaveAndReplay {
 
-	private static enum ReplayEventType {
-		TIME_GAP, PEN_CHANGE, SAMPLE
-	}
-
 	private static class ReplayEvent {
-		public ReplayEventType type;
-		public PenSample sample;
-		public String penID = "0";
 		public long gapTime = 0L;
+		public String penID = "0";
+		public PenSample sample;
+		public ReplayEventType type;
 
 		public ReplayEvent(ReplayEventType t) {
 			type = t;
 		}
 	}
 
-	private static final String PEN_XML_FORMAT = "<pen id=\"(.*?)\".*?/>";
-	private static final Pattern PEN_XML_FORMAT_PATTERN = Pattern.compile(PEN_XML_FORMAT);
-
-	private static final String GAP_XML_FORMAT = "<gap time=\"(.*?)\".*?/>";
-	private static final Pattern GAP_XML_FORMAT_PATTERN = Pattern.compile(GAP_XML_FORMAT);
+	private static enum ReplayEventType {
+		PEN_CHANGE, SAMPLE, TIME_GAP
+	}
 
 	/**
 	 * Event Data files are of the form *.eventData.
 	 */
 	public static final String[] FILE_EXTENSION = new String[] { "eventData" };
+	private static final String GAP_XML_FORMAT = "<gap time=\"(.*?)\".*?/>";
 
+	private static final Pattern GAP_XML_FORMAT_PATTERN = Pattern.compile(GAP_XML_FORMAT);
 	private static SaveAndReplay instance;
+
+	private static final String PEN_XML_FORMAT = "<pen id=\"(.*?)\".*?/>";
+
+	private static final Pattern PEN_XML_FORMAT_PATTERN = Pattern.compile(PEN_XML_FORMAT);
 
 	public static synchronized SaveAndReplay getInstance() {
 		if (instance == null) {
@@ -77,12 +78,19 @@ public class SaveAndReplay {
 		return instance;
 	}
 
-	private HashMap<InputDevice, PenListener> inputDeviceToListener = new HashMap<InputDevice, PenListener>();
-
 	/**
 	 * Events that we can replay...
 	 */
 	private List<ReplayEvent> eventsToReplay = new ArrayList<ReplayEvent>();
+
+	private HashMap<InputDevice, PenListener> inputDeviceToListener = new HashMap<InputDevice, PenListener>();
+
+	private PenSample lastPenSampleTracked;
+
+	/**
+	 * 
+	 */
+	private InputDevice lastPenUsed;
 
 	/**
 	 * Allows us to write to our output file for serializing the event stream.
@@ -95,12 +103,8 @@ public class SaveAndReplay {
 	 */
 	private boolean playEventsInRealTime = true;
 
-	/**
-	 * 
-	 */
-	private InputDevice lastPenUsed;
-
-	private PenSample lastPenSampleTracked;
+	private HashMap<String, InputDevice> knownInputDevices = new HashMap<String, InputDevice>();
+	private List<InputDevice> knownInputDevicesList = new ArrayList<InputDevice>();
 
 	/**
 	 * Record input at the InputDevice level, and replay to PenListeners.... This should work for multiple
@@ -110,6 +114,16 @@ public class SaveAndReplay {
 	 */
 	private SaveAndReplay() {
 
+	}
+
+	private void checkIfInteractionGap(PenSample sample) {
+		if (lastPenSampleTracked != null) {
+			long diff = sample.timestamp - lastPenSampleTracked.timestamp;
+			if (diff > 9000) { // 9 seconds
+				output.println("<gap time=\"" + diff + "\"/>");
+			}
+		}
+		lastPenSampleTracked = sample;
 	}
 
 	private void checkIfNewPen(InputDevice inputDevice) {
@@ -124,8 +138,57 @@ public class SaveAndReplay {
 	/**
 	 * 
 	 */
-	public void clearLoadedEvents() {
+	private void clearLoadedEvents() {
 		eventsToReplay = new ArrayList<ReplayEvent>();
+	}
+
+	public ActionListener getActionListenerForClear() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				clearLoadedEvents();
+			}
+		};
+	}
+
+	public ActionListener getActionListenerForLoadLatest() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// load the most recent, and then replay it!
+				loadMostRecentSession();
+			}
+		};
+	}
+
+	public ActionListener getActionListenerForChooseSession() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadEventDataFromFileChooser();
+			}
+		};
+	}
+
+	public ActionListener getActionListenerForReplay() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// the replayed session will not be saved, as we save it at the InputDevice level
+				countDownToReplay();
+				replayLoadedEvents();
+			}
+		};
+	}
+
+	private void countDownToReplay() {
+		// count down from 4...3...2...1...replay!
+		int count = 4;
+		DebugUtils.println("Starting Replay in...");
+		while (count > 0) {
+			DebugUtils.println(count + "...");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
+			count--;
+		}
 	}
 
 	/**
@@ -133,6 +196,62 @@ public class SaveAndReplay {
 	 */
 	private File getEventStoragePath() {
 		return new File(PaperToolkit.getToolkitRootPath(), "eventData/");
+	}
+
+	public class SaveAndReplayListener implements PenListener {
+		private InputDevice inputDevice;
+
+		public SaveAndReplayListener(InputDevice dev) {
+			inputDevice = dev;
+		}
+
+		public void penDown(PenSample sample) {
+			lazyInitOutputFile();
+			checkIfInteractionGap(sample);
+			checkIfNewPen(inputDevice);
+			saveSample(sample);
+		}
+
+		public void penUp(PenSample sample) {
+			checkIfNewPen(inputDevice);
+			lastPenSampleTracked = sample;
+			saveSample(sample);
+		}
+
+		public void sample(PenSample sample) {
+			checkIfNewPen(inputDevice);
+			lastPenSampleTracked = sample;
+			saveSample(sample);
+		}
+	}
+
+	public PenListener getPenListener(final InputDevice inputDevice) {
+		// register this input device for later
+		knownInputDevices.put(inputDevice.getID(), inputDevice);
+		knownInputDevicesList.add(inputDevice);
+		PenListener penListener = inputDeviceToListener.get(inputDevice);
+		if (penListener == null) {
+			penListener = new SaveAndReplayListener(inputDevice);
+			inputDeviceToListener.put(inputDevice, penListener);
+		}
+		return penListener;
+	}
+
+	/**
+	 * 
+	 */
+	private void loadEventDataFromFileChooser() {
+		JFileChooser chooser = FileUtils.createNewFileChooser(SaveAndReplay.FILE_EXTENSION);
+		chooser.setCurrentDirectory(new File(PaperToolkit.getToolkitRootPath(), "eventData/"));
+		chooser.setMultiSelectionEnabled(true);
+		int result = chooser.showDialog(null, "Import Event Data");
+		if (result == JFileChooser.APPROVE_OPTION) {
+			File[] selectedFiles = chooser.getSelectedFiles();
+			for (File f : selectedFiles) {
+				// DebugUtils.println("Loading " + f);
+				loadSessionDataFrom(f);
+			}
+		}
 	}
 
 	// if we never write to it, the file should never be created...
@@ -151,58 +270,17 @@ public class SaveAndReplay {
 		}
 	}
 
-	public PenListener getPenListener(final InputDevice inputDevice) {
-		PenListener penListener = inputDeviceToListener.get(inputDevice);
-		if (penListener == null) {
-			penListener = new PenListener() {
-				public void penDown(PenSample sample) {
-					lazyInitOutputFile();
-					checkIfInteractionGap(sample);
-					checkIfNewPen(inputDevice);
-					saveSample(sample);
-				}
-
-				public void penUp(PenSample sample) {
-					checkIfNewPen(inputDevice);
-					lastPenSampleTracked = sample;
-					saveSample(sample);
-				}
-
-				public void sample(PenSample sample) {
-					checkIfNewPen(inputDevice);
-					lastPenSampleTracked = sample;
-					saveSample(sample);
-				}
-			};
-			inputDeviceToListener.put(inputDevice, penListener);
-		}
-		return penListener;
-	}
-
-	private void checkIfInteractionGap(PenSample sample) {
-		if (lastPenSampleTracked != null) {
-			long diff = sample.timestamp - lastPenSampleTracked.timestamp;
-			if (diff > 9000) { // 9 seconds
-				output.println("<gap time=\"" + diff + "\"/>");
-			}
-		}
-		lastPenSampleTracked = sample;
-	}
-
 	/**
-	 * 
+	 * Load the most recent event data file...
 	 */
-	public void importEventDataFromFileChooser() {
-		JFileChooser chooser = FileUtils.createNewFileChooser(SaveAndReplay.FILE_EXTENSION);
-		chooser.setCurrentDirectory(new File(PaperToolkit.getToolkitRootPath(), "eventData/"));
-		chooser.setMultiSelectionEnabled(true);
-		int result = chooser.showDialog(null, "Import Event Data");
-		if (result == JFileChooser.APPROVE_OPTION) {
-			File[] selectedFiles = chooser.getSelectedFiles();
-			for (File f : selectedFiles) {
-				// DebugUtils.println("Loading " + f);
-				loadSessionDataFrom(f);
-			}
+	public void loadMostRecentSession() {
+		final List<File> eventFiles = FileUtils.listVisibleFiles(getEventStoragePath(), FILE_EXTENSION);
+		if (eventFiles.size() > 0) {
+			final File mostRecentFile = eventFiles.get(eventFiles.size() - 1);
+			DebugUtils.println("Loading Most Recent Session: " + mostRecentFile.getName());
+			loadSessionDataFrom(mostRecentFile);
+		} else {
+			DebugUtils.println("No Event Data Files Found in " + getEventStoragePath());
 		}
 	}
 
@@ -210,6 +288,8 @@ public class SaveAndReplay {
 	 * @param eventDataFile
 	 */
 	public void loadSessionDataFrom(File eventDataFile) {
+		DebugUtils.println("Loading Session Data from: " + eventDataFile.getName());
+		DebugUtils.println("Started with " + eventsToReplay.size() + " events.");
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(eventDataFile));
@@ -240,7 +320,7 @@ public class SaveAndReplay {
 					}
 				}
 			}
-			DebugUtils.println("Loaded " + eventsToReplay.size() + " events.");
+			DebugUtils.println("Ended with " + eventsToReplay.size() + " events.");
 			br.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -251,24 +331,10 @@ public class SaveAndReplay {
 	}
 
 	/**
-	 * Load the most recent event data file...
-	 */
-	public void loadMostRecentSession() {
-		final List<File> eventFiles = FileUtils.listVisibleFiles(getEventStoragePath(), FILE_EXTENSION);
-		if (eventFiles.size() > 0) {
-			final File mostRecentFile = eventFiles.get(eventFiles.size() - 1);
-			DebugUtils.println("Loading Most Recent Session: " + mostRecentFile.getName());
-			loadSessionDataFrom(mostRecentFile);
-		} else {
-			DebugUtils.println("No Event Data Files Found in " + getEventStoragePath());
-		}
-	}
-
-	/**
 	 * Replay the events that have been loaded, in the order that they appear in the list...
 	 */
-	public void replayLoadedEvents(EventDispatcher dispatcher) {
-		replayToEventDispatcher(dispatcher, eventsToReplay);
+	public void replayLoadedEvents() {
+		replayToInputDevice(eventsToReplay);
 	}
 
 	/**
@@ -278,15 +344,14 @@ public class SaveAndReplay {
 	 * Threaded, because we do not want any GUI to block when calling this. Alternatively, refactor this into
 	 * blocking & nonblocking versions.
 	 * 
-	 * @param eventDispatcher
-	 *            We will dispatch events to this event engine, simulating input from one or more pens...
-	 *            eventEngine = engine;
 	 * @param events
 	 */
-	private void replayToEventDispatcher(final EventDispatcher eventDispatcher, final List<ReplayEvent> events) {
+	private void replayToInputDevice(final List<ReplayEvent> events) {
 		new Thread(new Runnable() {
 			public void run() {
 				String penID = "0";
+				InputDevice currPenInputDevice = getFirstInputDevice();
+
 				long lastTimeStamp = 0;
 				HashMap<String, Boolean> penIsUp = new HashMap<String, Boolean>();
 
@@ -294,6 +359,7 @@ public class SaveAndReplay {
 					switch (e.type) {
 					case PEN_CHANGE:
 						penID = e.penID;
+						currPenInputDevice = knownInputDevices.get(penID);
 
 						// keep track of this pen's down or up state
 						if (!penIsUp.keySet().contains(penID)) {
@@ -303,35 +369,43 @@ public class SaveAndReplay {
 					case SAMPLE:
 						// determine if it is a DOWN, REGULAR, or UP event.... and handle accordingly
 						PenSample sample = e.sample;
-						PenEventType type;
-						if (penIsUp.get(penID)) {
-							penIsUp.put(penID, false); // pen just came down
-							type = PenEventType.DOWN;
-						} else if (sample.isPenUp()) {
-							penIsUp.put(penID, true); // pen just lifted
-							type = PenEventType.UP;
-						} else {
-							type = PenEventType.SAMPLE;
-						}
 
 						if (playEventsInRealTime && lastTimeStamp != 0) {
 							// pause some amount, to replicate realtime...
 							long diff = sample.getTimestamp() - lastTimeStamp;
-							if (diff > 0) {
-								try {
+							try {
+								if (diff > 0) {
 									// play in "real time"
 									Thread.sleep(diff);
-								} catch (InterruptedException ex) {
+								} else if (diff < 0) {
+									DebugUtils.println("Timestamps went backwards... Probably loaded new session.");
+									Thread.sleep(2000);
 								}
+							} catch (InterruptedException ex) {
 							}
 						}
-						eventDispatcher.handlePenEvent(new PenEvent(penID, "Replay Pen", sample, type, true));
+
+						if (currPenInputDevice == null) {
+							// the pen ID doesn't match.. so we grab the first pen
+							currPenInputDevice = getFirstInputDevice();
+						}
+
+						if (penIsUp.get(penID)) {
+							penIsUp.put(penID, false); // pen just came down
+							currPenInputDevice.playPenDown(sample);
+						} else if (sample.isPenUp()) {
+							penIsUp.put(penID, true); // pen just lifted
+							currPenInputDevice.playPenUp(sample);
+						} else {
+							currPenInputDevice.playPenSample(sample);
+						}
 						lastTimeStamp = sample.getTimestamp();
 						break;
 					case TIME_GAP: // this was an extended gap (compress to 2 secs)
 						long gapTime = e.gapTime;
 						try {
-							Thread.sleep(gapTime);
+							DebugUtils.println("Sleeping two seconds for the gap of: " + gapTime);
+							Thread.sleep(2000);
 						} catch (InterruptedException ex) {
 						}
 						lastTimeStamp = 0; // don't sleep the next time...
@@ -342,7 +416,15 @@ public class SaveAndReplay {
 				}
 				// DebugUtils.println("Done. Replayed " + events.size() + " Events");
 			}
+
 		}).start();
+	}
+
+	private InputDevice getFirstInputDevice() {
+		if (knownInputDevicesList.size() > 0) {
+			return knownInputDevicesList.get(0);
+		}
+		return null;
 	}
 
 	/**
@@ -353,21 +435,5 @@ public class SaveAndReplay {
 	 */
 	private void saveSample(PenSample sample) {
 		output.println(sample.toXMLString());
-	}
-
-	public ActionListener getActionListenerForReplayLast() {
-		return new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		};
-	}
-
-	public ActionListener getActionListenerForChooseSession() {
-		return new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		};
 	}
 }

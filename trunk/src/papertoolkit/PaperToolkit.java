@@ -325,12 +325,22 @@ public class PaperToolkit {
 
 			// for event save and replay
 			final Menu replayItem = new Menu("Event Replay");
-			final MenuItem replayLastInteraction = new MenuItem("Most Recent Session");
-			replayLastInteraction.addActionListener(SaveAndReplay.getInstance().getActionListenerForReplayLast());
-			final MenuItem chooseInteraction = new MenuItem("Choose a Session...");
-			chooseInteraction.addActionListener(SaveAndReplay.getInstance().getActionListenerForChooseSession());
-			replayItem.add(replayLastInteraction);
-			replayItem.add(chooseInteraction);
+			final MenuItem replayNow = new MenuItem("Play");
+			replayNow.addActionListener(SaveAndReplay.getInstance().getActionListenerForReplay());
+
+			final MenuItem latestSession = new MenuItem("Load Previous Session");
+			latestSession.addActionListener(SaveAndReplay.getInstance().getActionListenerForLoadLatest());
+
+			final MenuItem chooseSession = new MenuItem("Load a Session...");
+			chooseSession.addActionListener(SaveAndReplay.getInstance().getActionListenerForChooseSession());
+
+			final MenuItem clearLoaded = new MenuItem("Clear Loaded Events");
+			clearLoaded.addActionListener(SaveAndReplay.getInstance().getActionListenerForClear());
+			
+			replayItem.add(clearLoaded);
+			replayItem.add(chooseSession);
+			replayItem.add(latestSession);
+			replayItem.add(replayNow);
 			trayMenu.add(replayItem);
 		}
 
