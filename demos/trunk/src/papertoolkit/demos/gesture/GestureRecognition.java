@@ -7,10 +7,21 @@ import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.streaming.listeners.PenStrokeListener;
 import papertoolkit.util.DebugUtils;
 
+/**
+ * <p>
+ * Uses the Dollar Recognizer directly, with the low level PenListeners...
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ */
 public class GestureRecognition {
 	public static void main(String[] args) {
 		final DollarRecognizer dollarRecognizer = new DollarRecognizer();
-		
+
 		// capture ink from a pen
 		Pen pen = new Pen();
 		pen.addLivePenListener(new PenStrokeListener() {

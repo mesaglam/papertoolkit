@@ -17,6 +17,7 @@ import papertoolkit.pen.debug.DebuggingPenListener;
  * </p>
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ * @lastWorkedOn 10 September 2007
  */
 public class PenSaveAndReplay {
 
