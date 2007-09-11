@@ -2,6 +2,7 @@ package papertoolkit;
 
 import java.awt.AWTException;
 import java.awt.Image;
+import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -11,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
-import java.beans.EventSetDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,7 +55,6 @@ import papertoolkit.units.Inches;
 import papertoolkit.units.Pixels;
 import papertoolkit.units.Points;
 import papertoolkit.util.DebugUtils;
-import papertoolkit.util.StringUtils;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.graphics.ImageCache;
 import papertoolkit.util.graphics.ImageUtils;
@@ -323,6 +322,16 @@ public class PaperToolkit {
 				}
 			});
 			trayMenu.add(exitItem);
+
+			// for event save and replay
+			final Menu replayItem = new Menu("Event Replay");
+			final MenuItem replayLastInteraction = new MenuItem("Most Recent Session");
+			replayLastInteraction.addActionListener(SaveAndReplay.getInstance().getActionListenerForReplayLast());
+			final MenuItem chooseInteraction = new MenuItem("Choose a Session...");
+			chooseInteraction.addActionListener(SaveAndReplay.getInstance().getActionListenerForChooseSession());
+			replayItem.add(replayLastInteraction);
+			replayItem.add(chooseInteraction);
+			trayMenu.add(replayItem);
 		}
 
 		return trayMenu;

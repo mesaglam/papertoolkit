@@ -75,8 +75,8 @@ public class SheetFrame extends JFrame {
 								long ts = System.currentTimeMillis();
 								for (EventHandler eh : xr.getEventHandlers()) {
 									if (eh instanceof ClickAdapter)
-										((ClickAdapter) eh).clicked(new PenEvent(0, "swing", ts,
-												new PenSample(0, 0, 128, ts), PenEventType.DOWN, true));
+										((ClickAdapter) eh).clicked(new PenEvent("0_Simulated", "swing", new PenSample(0,
+												0, 128, ts), PenEventType.DOWN, true));
 								}
 							}
 						});

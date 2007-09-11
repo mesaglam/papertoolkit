@@ -46,40 +46,21 @@ import papertoolkit.util.files.FileUtils;
 public class BatchedDataDispatcher {
 
 	/**
-	 * .*? is a reluctant matcher (i.e., not greedy)
-	 */
-	private static final String BEGIN_PAGE_TAG = "<page address=\"(.*?)\".*?>";
-
-	private static final String BEGIN_SAMPLE_TAG_END_SAMPLE_TAG = "<p x=\"(.*?)\" y=\"(.*?)\" f=\"(.*?)\" t=\"(.*?)\".*?/>";
-
-	private static final String BEGIN_STROKE_TAG = "<stroke begin=\"(.*?)\".*?>";
-
-	/**
 	 * Will listen on this port for text commands.
 	 */
 	public static final int DEFAULT_PLAINTEXT_PORT = Constants.Ports.BATCH_SERVER;
-
-	/**
-	 * the end tag
-	 */
-	private static final String END_PAGE_TAG = "</page>";
-
-	private static final String END_STROKE_TAG = "</stroke>";
 
 	/**
 	 * Tells the server that a client wishes to exit. Closes the client's handler.
 	 */
 	public static final String EXIT_COMMAND = "[[exit]]";
 
-	private static final Pattern PATTERN_BEGIN_PAGE = Pattern.compile(BEGIN_PAGE_TAG);
-
-	private static final Pattern PATTERN_BEGIN_STROKE = Pattern.compile(BEGIN_STROKE_TAG);
-
-	private static final Pattern PATTERN_END_PAGE = Pattern.compile(END_PAGE_TAG);
-
-	private static final Pattern PATTERN_END_STROKE = Pattern.compile(END_STROKE_TAG);
-
-	private static final Pattern PATTERN_SAMPLE = Pattern.compile(BEGIN_SAMPLE_TAG_END_SAMPLE_TAG);
+	private static final Pattern PATTERN_PEN_ID = Pattern.compile("<penID id=\"(.*?)\".*?>");
+	private static final Pattern PATTERN_BEGIN_PAGE = Pattern.compile("<page address=\"(.*?)\".*?>");
+	private static final Pattern PATTERN_BEGIN_STROKE = Pattern.compile("<stroke begin=\"(.*?)\".*?>");
+	private static final Pattern PATTERN_END_PAGE = Pattern.compile("</page>");
+	private static final Pattern PATTERN_END_STROKE = Pattern.compile("</stroke>");
+	private static final Pattern PATTERN_SAMPLE = Pattern.compile("<p x=\"(.*?)\" y=\"(.*?)\" f=\"(.*?)\" t=\"(.*?)\".*?/>");
 
 	/**
 	 * 
@@ -141,6 +122,15 @@ public class BatchedDataDispatcher {
 		// is this an issue if the xml file is large, say 20MB?
 		final StringBuilder requestBuffer = FileUtils.readFileIntoStringBuffer(xmlDataFile);
 
+		
+		// extract the pen ID
+		final Matcher matcherPenID = PATTERN_PEN_ID.matcher(requestBuffer);
+		String penID = "0";
+		if (matcherPenID.find()) {
+			penID = matcherPenID.group(1);
+		}
+		
+		
 		final Matcher matcherPageBegin = PATTERN_BEGIN_PAGE.matcher(requestBuffer);
 		final Matcher matcherPageEnd = PATTERN_END_PAGE.matcher(requestBuffer);
 
@@ -158,11 +148,6 @@ public class BatchedDataDispatcher {
 			// location of the closing tag </page>
 			final int endTagStartIndex = matcherPageEnd.start();
 			final int endTagEndIndex = matcherPageEnd.end();
-
-			// DebugUtils.println(BEGIN_PAGE_TAG + " found at " + beginTagStartIndex + " to "
-			// + beginTagEndIndex);
-			// DebugUtils.println(END_PAGE_TAG + " found at " + endTagStartIndex + " to "
-			// + endTagEndIndex);
 
 			// extract page address
 			final String pageAddress = matcherPageBegin.group(1);
@@ -211,7 +196,6 @@ public class BatchedDataDispatcher {
 					samples.add(sample);
 				}
 
-				
 				// dispatch the whole pen stroke
 				// TODO Figure out the handling with multiple pens, etc... at some point
 				// Figure out how to handle this in simulated REAL-TIME
@@ -231,18 +215,18 @@ public class BatchedDataDispatcher {
 						}
 
 						// DebugUtils.println("DOWN");
-						eventDispatcher.handlePenEvent(new PenEvent(0, penName, System.currentTimeMillis(),
-								samples.get(i), PenEventType.DOWN, false));
+						eventDispatcher.handlePenEvent(new PenEvent(penID, penName, samples.get(i),
+								PenEventType.DOWN, false));
 
 					} else if (i == samples.size() - 1) {
 						// DebugUtils.println("UP");
-						eventDispatcher.handlePenEvent(new PenEvent(0, penName, System.currentTimeMillis(),
-								samples.get(i), PenEventType.UP, false));
+						eventDispatcher.handlePenEvent(new PenEvent(penID, penName, samples.get(i),
+								PenEventType.UP, false));
 						lastPenUpTimestamp = samples.get(i).timestamp;
 					} else {
 						// DebugUtils.println("P");
-						eventDispatcher.handlePenEvent(new PenEvent(0, penName, System.currentTimeMillis(),
-								samples.get(i), PenEventType.SAMPLE, false));
+						eventDispatcher.handlePenEvent(new PenEvent(penID, penName, samples.get(i),
+								PenEventType.SAMPLE, false));
 					}
 				}
 			}

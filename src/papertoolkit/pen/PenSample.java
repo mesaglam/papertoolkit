@@ -25,18 +25,13 @@ import papertoolkit.util.MathUtils;
  */
 public class PenSample implements Serializable {
 
-	public static final String DOWN = "DOWN";
-
 	/**
 	 * To prettify the output string.
 	 */
 	private static final DecimalFormat FORMATTER = PatternDots.FORMATTER;
-
-	private static final String SAMPLE_XML_FORMAT = "<p x=\"(.*?)\" y=\"(.*?)\" f=\"(.*?)\" t=\"(.*?)\" p=\"(.*?)\".*?/>";
-
-	private static final Pattern SAMPLE_XML_FORMAT_PATTERN = Pattern.compile(SAMPLE_XML_FORMAT);
-
+	private static final Pattern SAMPLE_XML_FORMAT_PATTERN = Pattern.compile("<p x=\"(.*?)\" y=\"(.*?)\" f=\"(.*?)\" t=\"(.*?)\" p=\"(.*?)\".*?/>");
 	public static final String UP = "UP";
+	public static final String DOWN = "DOWN";
 
 	/**
 	 * @param xmlString
@@ -59,6 +54,11 @@ public class PenSample implements Serializable {
 		}
 	}
 
+	public static Boolean isXMLString(String inputLine) {
+		final Matcher matcherSample = SAMPLE_XML_FORMAT_PATTERN.matcher(inputLine);
+		return matcherSample.matches();
+	}
+
 	/**
 	 * measure of force from pen tip
 	 */
@@ -68,11 +68,11 @@ public class PenSample implements Serializable {
 	 * whether pen is up
 	 */
 	public boolean penUp;
-
 	/**
 	 * timestamp of server when received
 	 */
 	public long timestamp;
+
 	/**
 	 * x location of the point, in physical Anoto coordinates TODO: Make these private later...
 	 */
@@ -149,7 +149,7 @@ public class PenSample implements Serializable {
 	}
 
 	/**
-	 * @return
+	 * @return if this sample represents the pen lifting from the page.
 	 */
 	public boolean isPenUp() {
 		return penUp;
