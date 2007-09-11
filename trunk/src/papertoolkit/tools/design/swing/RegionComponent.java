@@ -154,7 +154,7 @@ public class RegionComponent extends JComponent {
 			type = down ? PenEventType.DOWN : PenEventType.UP;
 		}
 
-		PenEvent pe = new PenEvent(0, "Swing", ts, new PenSample(x, y, down ? 128 : 0, ts), type, true);
+		PenEvent pe = new PenEvent("0_Simulated", "Swing", new PenSample(x, y, down ? 128 : 0, ts), type, true);
 		pe.setPercentageLocation(new PercentageCoordinates(getPercentage(x, getWidth()), getPercentage(y,
 				getHeight())));
 

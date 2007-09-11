@@ -22,7 +22,7 @@ import papertoolkit.util.DebugUtils;
  */
 public abstract class InputDevice {
 
-	private int id = -1;
+	private String id = "None";
 
 	/**
 	 * TRUE if the PenInput object is currently connected to the underlying (physical or simulated) pen in
@@ -55,7 +55,7 @@ public abstract class InputDevice {
 	 * @param penName
 	 */
 	public InputDevice(String penName) {
-		id = uniquePenIDs++;
+		id = ""+uniquePenIDs++;
 		setName(penName);
 		saveAndReplay = SaveAndReplay.getInstance();
 		PenListener penListener = saveAndReplay.getPenListener(this);
@@ -92,7 +92,7 @@ public abstract class InputDevice {
 	/**
 	 * @return
 	 */
-	public int getID() {
+	public String getID() {
 		return id;
 	}
 

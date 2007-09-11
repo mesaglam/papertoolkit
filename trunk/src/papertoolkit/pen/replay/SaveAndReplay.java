@@ -1,5 +1,7 @@
 package papertoolkit.pen.replay;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +12,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
 
@@ -38,6 +42,27 @@ import papertoolkit.util.files.FileUtils;
  */
 public class SaveAndReplay {
 
+	private static enum ReplayEventType {
+		TIME_GAP, PEN_CHANGE, SAMPLE
+	}
+
+	private static class ReplayEvent {
+		public ReplayEventType type;
+		public PenSample sample;
+		public String penID = "0";
+		public long gapTime = 0L;
+
+		public ReplayEvent(ReplayEventType t) {
+			type = t;
+		}
+	}
+
+	private static final String PEN_XML_FORMAT = "<pen id=\"(.*?)\".*?/>";
+	private static final Pattern PEN_XML_FORMAT_PATTERN = Pattern.compile(PEN_XML_FORMAT);
+
+	private static final String GAP_XML_FORMAT = "<gap time=\"(.*?)\".*?/>";
+	private static final Pattern GAP_XML_FORMAT_PATTERN = Pattern.compile(GAP_XML_FORMAT);
+
 	/**
 	 * Event Data files are of the form *.eventData.
 	 */
@@ -57,7 +82,7 @@ public class SaveAndReplay {
 	/**
 	 * Events that we can replay...
 	 */
-	private ArrayList<PenEvent> loadedEvents = new ArrayList<PenEvent>();
+	private List<ReplayEvent> eventsToReplay = new ArrayList<ReplayEvent>();
 
 	/**
 	 * Allows us to write to our output file for serializing the event stream.
@@ -100,7 +125,7 @@ public class SaveAndReplay {
 	 * 
 	 */
 	public void clearLoadedEvents() {
-		loadedEvents = new ArrayList<PenEvent>();
+		eventsToReplay = new ArrayList<ReplayEvent>();
 	}
 
 	/**
@@ -157,7 +182,7 @@ public class SaveAndReplay {
 	private void checkIfInteractionGap(PenSample sample) {
 		if (lastPenSampleTracked != null) {
 			long diff = sample.timestamp - lastPenSampleTracked.timestamp;
-			if (diff > 1000) { // 10 seconds
+			if (diff > 9000) { // 9 seconds
 				output.println("<gap time=\"" + diff + "\"/>");
 			}
 		}
@@ -176,7 +201,7 @@ public class SaveAndReplay {
 			File[] selectedFiles = chooser.getSelectedFiles();
 			for (File f : selectedFiles) {
 				// DebugUtils.println("Loading " + f);
-				loadEventDataFrom(f);
+				loadSessionDataFrom(f);
 			}
 		}
 	}
@@ -184,16 +209,38 @@ public class SaveAndReplay {
 	/**
 	 * @param eventDataFile
 	 */
-	public void loadEventDataFrom(File eventDataFile) {
+	public void loadSessionDataFrom(File eventDataFile) {
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(eventDataFile));
 			String inputLine = null;
 			while ((inputLine = br.readLine()) != null) {
-				PenEvent event = null; /* TODO */
-				loadedEvents.add(event);
+				ReplayEvent e;
+				PenSample sample = PenSample.fromXMLString(inputLine);
+				if (sample != null) {
+					// this was a real sample
+					e = new ReplayEvent(ReplayEventType.SAMPLE);
+					e.sample = sample;
+					eventsToReplay.add(e);
+				} else {
+					if (inputLine.startsWith("<pen ")) {
+						e = new ReplayEvent(ReplayEventType.PEN_CHANGE);
+						Matcher matcher = PEN_XML_FORMAT_PATTERN.matcher(inputLine);
+						if (matcher.find()) {
+							e.penID = matcher.group(1);
+							eventsToReplay.add(e);
+						}
+					} else if (inputLine.startsWith("<gap ")) {
+						e = new ReplayEvent(ReplayEventType.TIME_GAP);
+						Matcher matcher = GAP_XML_FORMAT_PATTERN.matcher(inputLine);
+						if (matcher.find()) {
+							e.gapTime = Long.parseLong(matcher.group(1));
+							eventsToReplay.add(e);
+						}
+					}
+				}
 			}
-			// DebugUtils.println("Loaded " + loadedEvents.size() + " events.");
+			DebugUtils.println("Loaded " + eventsToReplay.size() + " events.");
 			br.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -206,12 +253,12 @@ public class SaveAndReplay {
 	/**
 	 * Load the most recent event data file...
 	 */
-	public void loadMostRecentEventData() {
+	public void loadMostRecentSession() {
 		final List<File> eventFiles = FileUtils.listVisibleFiles(getEventStoragePath(), FILE_EXTENSION);
 		if (eventFiles.size() > 0) {
 			final File mostRecentFile = eventFiles.get(eventFiles.size() - 1);
-			DebugUtils.println(mostRecentFile);
-			loadEventDataFrom(mostRecentFile);
+			DebugUtils.println("Loading Most Recent Session: " + mostRecentFile.getName());
+			loadSessionDataFrom(mostRecentFile);
 		} else {
 			DebugUtils.println("No Event Data Files Found in " + getEventStoragePath());
 		}
@@ -220,8 +267,8 @@ public class SaveAndReplay {
 	/**
 	 * Replay the events that have been loaded, in the order that they appear in the list...
 	 */
-	public void replayLoadedEvents(EventDispatcher eventEngine) {
-		replayToEventDispatcher(eventEngine, loadedEvents);
+	public void replayLoadedEvents(EventDispatcher dispatcher) {
+		replayToEventDispatcher(dispatcher, eventsToReplay);
 	}
 
 	/**
@@ -236,29 +283,62 @@ public class SaveAndReplay {
 	 *            eventEngine = engine;
 	 * @param events
 	 */
-	private void replayToEventDispatcher(final EventDispatcher eventDispatcher, final List<PenEvent> events) {
+	private void replayToEventDispatcher(final EventDispatcher eventDispatcher, final List<ReplayEvent> events) {
 		new Thread(new Runnable() {
 			public void run() {
+				String penID = "0";
 				long lastTimeStamp = 0;
-				for (PenEvent event : events) {
-					if (playEventsInRealTime && lastTimeStamp != 0) {
-						try {
-							// pause some amount, to replicate realtime...
-							long diff = event.getTimestamp() - lastTimeStamp;
-							if (diff > 0) {
-								// DebugUtils.println("Sleeping for " + diff + " ms between
-								// events.");
-								Thread.sleep(diff);
-							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+				HashMap<String, Boolean> penIsUp = new HashMap<String, Boolean>();
+
+				for (ReplayEvent e : events) {
+					switch (e.type) {
+					case PEN_CHANGE:
+						penID = e.penID;
+
+						// keep track of this pen's down or up state
+						if (!penIsUp.keySet().contains(penID)) {
+							penIsUp.put(penID, true);
+						}
+						break;
+					case SAMPLE:
+						// determine if it is a DOWN, REGULAR, or UP event.... and handle accordingly
+						PenSample sample = e.sample;
+						PenEventType type;
+						if (penIsUp.get(penID)) {
+							penIsUp.put(penID, false); // pen just came down
+							type = PenEventType.DOWN;
+						} else if (sample.isPenUp()) {
+							penIsUp.put(penID, true); // pen just lifted
+							type = PenEventType.UP;
+						} else {
+							type = PenEventType.SAMPLE;
 						}
 
+						if (playEventsInRealTime && lastTimeStamp != 0) {
+							// pause some amount, to replicate realtime...
+							long diff = sample.getTimestamp() - lastTimeStamp;
+							if (diff > 0) {
+								try {
+									// play in "real time"
+									Thread.sleep(diff);
+								} catch (InterruptedException ex) {
+								}
+							}
+						}
+						eventDispatcher.handlePenEvent(new PenEvent(penID, "Replay Pen", sample, type, true));
+						lastTimeStamp = sample.getTimestamp();
+						break;
+					case TIME_GAP: // this was an extended gap (compress to 2 secs)
+						long gapTime = e.gapTime;
+						try {
+							Thread.sleep(gapTime);
+						} catch (InterruptedException ex) {
+						}
+						lastTimeStamp = 0; // don't sleep the next time...
+						break;
+					default:
+						break;
 					}
-
-					// assume here that all PenEvent objects have their flags set correctly
-					eventDispatcher.handlePenEvent(event);
-					lastTimeStamp = event.getTimestamp();
 				}
 				// DebugUtils.println("Done. Replayed " + events.size() + " Events");
 			}
@@ -275,4 +355,19 @@ public class SaveAndReplay {
 		output.println(sample.toXMLString());
 	}
 
+	public ActionListener getActionListenerForReplayLast() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		};
+	}
+
+	public ActionListener getActionListenerForChooseSession() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		};
+	}
 }

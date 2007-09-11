@@ -40,7 +40,7 @@ public class PenEvent {
 	/**
 	 * Which pen generated this event?
 	 */
-	private int penID;
+	private String penID;
 
 	/**
 	 * Give a unique name if you would like to identify your pens and the source of your PenEvents.
@@ -60,23 +60,26 @@ public class PenEvent {
 	/**
 	 * When was this event generated, in system time (milliseconds).
 	 */
-	private long timestamp;
+	private long creationTimestamp;
 
 	/**
 	 * Creates a new PenEvent from the Pen Name and Identifier, etc.
 	 * 
 	 * @param thePenID
 	 * @param thePenName
-	 * @param time
 	 * @param sample
 	 * @param type
 	 *            UP, DOWN, or SAMPLE (most common)
 	 * @param isRealtime
 	 *            TRUE if the pen is streaming, FALSE if the pen has just been docked in the cradle
 	 */
-	public PenEvent(int thePenID, String thePenName, long time, PenSample sample, PenEventType type, boolean isRealtime) {
+	public PenEvent(String thePenID, String thePenName, PenSample sample, PenEventType type, boolean isRealtime) {
 		penID = thePenID;
-		timestamp = time;
+		// the time the PenEvent was CREATED/DISPATCHED (usually we want to dispatch ASAP after creation)
+		// note that the penSample's timestamp may be different!
+		// it should be CLOSE to our creationTimestamp, if this is a RealTime event
+		// if it is batched, or replayed, the timestamp will be very different!
+		creationTimestamp = System.currentTimeMillis();
 		penSample = sample;
 		penName = thePenName;
 		eventType = type;
@@ -106,7 +109,7 @@ public class PenEvent {
 	/**
 	 * @return Which pen generated this event?
 	 */
-	public int getPenID() {
+	public String getPenID() {
 		return penID;
 	}
 
@@ -140,10 +143,10 @@ public class PenEvent {
 	}
 
 	/**
-	 * @return the timestamp of this event...
+	 * @return the creation/dispatch timestamp of this event...
 	 */
 	public long getTimestamp() {
-		return timestamp;
+		return creationTimestamp;
 	}
 
 	/**
@@ -173,7 +176,7 @@ public class PenEvent {
 	public boolean isTypePenDown() {
 		return eventType.equals(PenEventType.DOWN);
 	}
-	
+
 	/**
 	 * @return if this event object represents the pen lifting up from the page
 	 */

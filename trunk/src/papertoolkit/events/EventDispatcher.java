@@ -102,6 +102,7 @@ public class EventDispatcher {
 	}
 
 	/**
+	 * Instead of Calling handlePenEvent directly, we should get a new PenListener and call its methods...
 	 * @param penInputDevice
 	 * @return a pen listener that will report data to this event dispatcher. The engine will then package the
 	 *         data and report it to all event handlers that are interested in this data.
@@ -110,17 +111,14 @@ public class EventDispatcher {
 		pensCurrentlyMonitoring.add(penInputDevice);
 
 		// properties of the pen
-		final int penID = penInputDevice.getID();
+		final String penID = penInputDevice.getID();
 		final String penName = penInputDevice.getName();
 
-		// TODO: Should the time be gotten from the sample instead? This may have impact if we are processing
-		// Batched data...
-		// See the three calls to System.currentTimeMillis() below...
+		// NOTE: the third argument to PenEvent should ALWAYS be System.currentTimeMillis()
 		return new PenListener() {
 			public void penDown(PenSample sample) {
 				// DebugUtils.println("D " + sample);
-				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample,
-						PenEventType.DOWN, true));
+				handlePenEvent(new PenEvent(penID, penName, sample, PenEventType.DOWN, true));
 			}
 
 			/**
@@ -131,14 +129,12 @@ public class EventDispatcher {
 			 */
 			public void penUp(PenSample sample) {
 				// DebugUtils.println("U " + sample);
-				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample,
-						PenEventType.UP, true));
+				handlePenEvent(new PenEvent(penID, penName, sample, PenEventType.UP, true));
 			}
 
 			public void sample(PenSample sample) {
 				// DebugUtils.println("S " + sample);
-				handlePenEvent(new PenEvent(penID, penName, System.currentTimeMillis(), sample,
-						PenEventType.SAMPLE, true));
+				handlePenEvent(new PenEvent(penID, penName, sample, PenEventType.SAMPLE, true));
 			}
 		};
 	}

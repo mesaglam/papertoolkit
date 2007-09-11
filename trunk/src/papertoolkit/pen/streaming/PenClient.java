@@ -143,8 +143,7 @@ public class PenClient {
 
 							// TODO: Should we replace the time field in the sample with the time we received
 							// this sample?
-							// The old way is that the sample's time field is set to whatever the pen server's
-							// time is set to...
+							// Currently, sample's time field is set to the PenServer's time...
 							// this might result in some clock skew between different pens...
 							// should there be an option to do this?
 

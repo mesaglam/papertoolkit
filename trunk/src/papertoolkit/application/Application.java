@@ -1,6 +1,7 @@
 package papertoolkit.application;
 
 import java.awt.Desktop;
+import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
@@ -262,7 +263,7 @@ public class Application {
 			isfirstAppPopulatingSystemTray = false;
 		}
 
-		final PopupMenu menu = new PopupMenu(getName());
+		final Menu menu = new Menu(getName());
 		popupMenu.add(menu);
 
 		final MenuItem startStopItem = new MenuItem("Stop Application");
@@ -288,10 +289,10 @@ public class Application {
 		});
 		menu.add(debugItem);
 
-		final PopupMenu sheetsMenu = new PopupMenu("Paper UI");
+		final Menu sheetsMenu = new Menu("Paper UI");
 		menu.add(sheetsMenu);
 
-		final PopupMenu interactionsMenu = new PopupMenu("Interactions");
+		final Menu interactionsMenu = new Menu("Interactions");
 		menu.add(interactionsMenu);
 
 		/**
@@ -367,7 +368,7 @@ public class Application {
 	 * 
 	 * @param mappings
 	 */
-	private void addItemsToBindUninitializedRegions(PopupMenu popupMenu) {
+	private void addItemsToBindUninitializedRegions(Menu popupMenu) {
 		for (final PatternToSheetMapping map : getPatternMaps()) {
 			final MenuItem loadMappingItem = new MenuItem("Load Pattern Mappings");
 			loadMappingItem.addActionListener(new ActionListener() {
@@ -442,14 +443,14 @@ public class Application {
 	 * 
 	 * @param popupMenu
 	 */
-	public void populateTrayMenuExtensions(PopupMenu popupMenu) {
+	public void populateTrayMenuExtensions(Menu popupMenu) {
 		// nothing; subclasses can use this
 	}
 
 	/**
 	 * @param popupMenu
 	 */
-	private final void populateTrayMenuForSideCar(PopupMenu popupMenu) {
+	private final void populateTrayMenuForSideCar(Menu popupMenu) {
 		popupMenu.add("-");
 
 		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
