@@ -24,6 +24,11 @@ import papertoolkit.util.DebugUtils;
 public abstract class InputDevice {
 
 	/**
+	 * Argh... make sure this is static!
+	 */
+	private static int uniquePenIDs = 0;
+
+	/**
 	 * A unique string identifier. This is set by the system.
 	 */
 	private String id = "None";
@@ -42,7 +47,7 @@ public abstract class InputDevice {
 	/**
 	 * The full list of live pen listeners...
 	 */
-	protected List<PenListener> penListeners = new ArrayList<PenListener>();
+	private List<PenListener> penListeners = new ArrayList<PenListener>();
 
 	/**
 	 * Cached pen listeners, so we can "add" them when/if you go live.
@@ -53,13 +58,14 @@ public abstract class InputDevice {
 	 * 
 	 */
 	private SaveAndReplay saveAndReplay;
-	private int uniquePenIDs = 0;
 
 	/**
 	 * @param penName
 	 */
 	public InputDevice(String penName) {
-		id = ""+uniquePenIDs++;
+		id = "" + uniquePenIDs;// + "_" + System.currentTimeMillis();
+		uniquePenIDs++;
+
 		setName(penName);
 		saveAndReplay = SaveAndReplay.getInstance();
 
@@ -71,6 +77,7 @@ public abstract class InputDevice {
 		// for subclasses who process penListeners at runtime.
 		penListenersToRegisterWhenLive.add(saveListener);
 	}
+
 
 	/**
 	 * Adds a low-level pen data listener to the live pen. You SHOULD call this after starting live mode....
@@ -85,6 +92,8 @@ public abstract class InputDevice {
 	public void addLivePenListener(PenListener penListener) {
 		// always keep track of penListeners, for save & replay
 		penListeners.add(penListener);
+
+		//
 
 		if (!isLive()) {
 			// DebugUtils.println("We are not registering this listener [" + penListener.toString()
@@ -108,6 +117,10 @@ public abstract class InputDevice {
 		return name;
 	}
 
+	public List<PenListener> getPenListeners() {
+		return penListeners;
+	}
+
 	/**
 	 * @return if this pen in live mode.
 	 */
@@ -117,32 +130,37 @@ public abstract class InputDevice {
 
 	/**
 	 * Pass the sample onto the listeners. Used by Save & Replay.
+	 * 
 	 * @param sample
 	 */
 	public void playPenDown(PenSample sample) {
 		for (PenListener l : penListeners) {
 			if (l instanceof SaveAndReplayListener) {
 				continue;
+			} else {
+				l.penDown(sample);
 			}
-			l.penDown(sample);
 		}
 	}
 
 	/**
 	 * Pass the sample onto the listeners. Used by Save & Replay.
+	 * 
 	 * @param sample
 	 */
 	public void playPenSample(PenSample sample) {
 		for (PenListener l : penListeners) {
 			if (l instanceof SaveAndReplayListener) {
 				continue;
+			} else {
+				l.sample(sample);
 			}
-			l.sample(sample);
 		}
 	}
 
 	/**
 	 * Pass the sample onto the listeners. Used by Save & Replay.
+	 * 
 	 * @param sample
 	 */
 	public void playPenUp(PenSample sample) {
@@ -188,11 +206,12 @@ public abstract class InputDevice {
 	 */
 	public abstract void stopLiveMode();
 
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "InpuDevice: " + getName();
+		return "InputDevice: " + getName();
 	}
 }

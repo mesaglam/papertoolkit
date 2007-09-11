@@ -328,16 +328,12 @@ public class PaperToolkit {
 			final MenuItem replayNow = new MenuItem("Play");
 			replayNow.addActionListener(SaveAndReplay.getInstance().getActionListenerForReplay());
 
-			final MenuItem latestSession = new MenuItem("Load Previous Session");
+			final MenuItem latestSession = new MenuItem("Load Most Recent Session");
 			latestSession.addActionListener(SaveAndReplay.getInstance().getActionListenerForLoadLatest());
 
-			final MenuItem chooseSession = new MenuItem("Load a Session...");
+			final MenuItem chooseSession = new MenuItem("Load a Different Session...");
 			chooseSession.addActionListener(SaveAndReplay.getInstance().getActionListenerForChooseSession());
 
-			final MenuItem clearLoaded = new MenuItem("Clear Loaded Events");
-			clearLoaded.addActionListener(SaveAndReplay.getInstance().getActionListenerForClear());
-			
-			replayItem.add(clearLoaded);
 			replayItem.add(chooseSession);
 			replayItem.add(latestSession);
 			replayItem.add(replayNow);
@@ -520,11 +516,6 @@ public class PaperToolkit {
 	 */
 	private EventDispatcher eventDispatcher;
 
-	/**
-	 * Store frequently used pens here... so that you can ask the toolkit for them instead of creating them
-	 * from scratch. This list is loaded up from the PaperToolkit.xml config file.
-	 */
-	private List<Pen> frequentlyUsedPens = new ArrayList<Pen>();
 
 	/**
 	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
@@ -609,12 +600,6 @@ public class PaperToolkit {
 		System.exit(0);
 	}
 
-	/**
-	 * @return
-	 */
-	public List<Pen> getFrequentlyUsedPens() {
-		return frequentlyUsedPens;
-	}
 
 	/**
 	 * @param propertyKey
@@ -687,25 +672,14 @@ public class PaperToolkit {
 		}
 
 		// add the Pens that we use most frequently...
-		frequentlyUsedPens.add(new Pen("Local Pen"));
+		Pen.addToQuickList("localhost");
 		if (props.containsKey(REMOTE_PENS_KEY)) {
 			String theProp = props.getProperty(REMOTE_PENS_KEY);
 			// DebugUtils.println("Loading Frequently Used Remote Pens from
 			// PaperToolkit.xml: " + theProp);
 			String[] pens = theProp.split(","); // comma delimited
 			for (String pen : pens) {
-				int colonIndex = pen.indexOf(":");
-				String penServerName = pen.substring(0, colonIndex);
-				int penServerPort = Integer.parseInt(pen.substring(colonIndex + 1, pen.length()));
-				// DebugUtils.println("Adding Pen " + penServerName + " : " +
-				// penServerPort);
-				String shortName = "";
-				if (penServerName.contains(".")) {
-					shortName = penServerName.substring(0, penServerName.indexOf("."));
-				} else {
-					shortName = penServerName;
-				}
-				frequentlyUsedPens.add(new Pen(shortName, penServerName, penServerPort));
+				Pen.addToQuickList(pen);
 			}
 		}
 

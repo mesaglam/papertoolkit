@@ -136,6 +136,10 @@ public class EventDispatcher {
 				// DebugUtils.println("S " + sample);
 				handlePenEvent(new PenEvent(penID, penName, sample, PenEventType.SAMPLE, true));
 			}
+			
+			public String toString() {
+				return "EventDispatcher PenListener for Pen: " + penID;
+			}
 		};
 	}
 
