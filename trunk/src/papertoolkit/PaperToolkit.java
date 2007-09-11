@@ -34,7 +34,6 @@ import papertoolkit.application.Application;
 import papertoolkit.application.config.Configuration;
 import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.EventDispatcher;
-import papertoolkit.events.EventSaveAndReplay;
 import papertoolkit.events.PenEvent;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
@@ -44,6 +43,7 @@ import papertoolkit.pattern.coordinates.conversion.TiledPatternCoordinateConvert
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.handwriting.HandwritingRecognitionService;
+import papertoolkit.pen.replay.SaveAndReplay;
 import papertoolkit.pen.streaming.PenServerTrayApp;
 import papertoolkit.pen.synch.BatchedDataDispatcher;
 import papertoolkit.tools.ToolExplorer;
@@ -496,11 +496,6 @@ public class PaperToolkit {
 	private BatchedDataDispatcher batchedDataDispatcher;
 
 	/**
-	 * For replaying pen input.
-	 */
-	private EventSaveAndReplay saveAndReplayManager;
-	
-	/**
 	 * The engine that processes all pen events, producing the correct outputs and calling the right event
 	 * handlers.
 	 */
@@ -556,7 +551,6 @@ public class PaperToolkit {
 
 		eventDispatcher = new EventDispatcher();
 		batchedDataDispatcher = new BatchedDataDispatcher(eventDispatcher);
-		saveAndReplayManager = new EventSaveAndReplay();
 		
 		// the handwriting server starts up only if the sheet has a handwriting
 		// recognizer... (or something

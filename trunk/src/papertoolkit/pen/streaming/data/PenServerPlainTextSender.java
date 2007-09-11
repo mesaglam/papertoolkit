@@ -22,7 +22,6 @@ import papertoolkit.util.SystemUtils;
 public class PenServerPlainTextSender implements PenServerSender {
 
 	private Socket socket;
-
 	private BufferedOutputStream bos;
 
 	/**

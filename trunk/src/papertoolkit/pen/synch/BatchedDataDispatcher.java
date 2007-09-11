@@ -146,6 +146,7 @@ public class BatchedDataDispatcher {
 
 		// for simulating realtime
 		long lastPenUpTimestamp = 0L;
+		final String penName = "Batched Pen";
 
 		while (matcherPageBegin.find() && matcherPageEnd.find()) {
 			// DebugUtils.println("Processing Page: ");
@@ -210,6 +211,7 @@ public class BatchedDataDispatcher {
 					samples.add(sample);
 				}
 
+				
 				// dispatch the whole pen stroke
 				// TODO Figure out the handling with multiple pens, etc... at some point
 				// Figure out how to handle this in simulated REAL-TIME
@@ -229,17 +231,17 @@ public class BatchedDataDispatcher {
 						}
 
 						// DebugUtils.println("DOWN");
-						eventDispatcher.handlePenEvent(new PenEvent(0, "Pen", System.currentTimeMillis(),
+						eventDispatcher.handlePenEvent(new PenEvent(0, penName, System.currentTimeMillis(),
 								samples.get(i), PenEventType.DOWN, false));
 
 					} else if (i == samples.size() - 1) {
 						// DebugUtils.println("UP");
-						eventDispatcher.handlePenEvent(new PenEvent(0, "Pen", System.currentTimeMillis(),
+						eventDispatcher.handlePenEvent(new PenEvent(0, penName, System.currentTimeMillis(),
 								samples.get(i), PenEventType.UP, false));
 						lastPenUpTimestamp = samples.get(i).timestamp;
 					} else {
 						// DebugUtils.println("P");
-						eventDispatcher.handlePenEvent(new PenEvent(0, "Pen", System.currentTimeMillis(),
+						eventDispatcher.handlePenEvent(new PenEvent(0, penName, System.currentTimeMillis(),
 								samples.get(i), PenEventType.SAMPLE, false));
 					}
 				}

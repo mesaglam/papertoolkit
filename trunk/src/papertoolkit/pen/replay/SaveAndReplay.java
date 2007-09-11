@@ -1,4 +1,4 @@
-package papertoolkit.events;
+package papertoolkit.pen.replay;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,12 +8,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 
 import papertoolkit.PaperToolkit;
+import papertoolkit.events.EventDispatcher;
+import papertoolkit.events.PenEvent;
+import papertoolkit.events.PenEventType;
+import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
+import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
@@ -30,17 +36,23 @@ import papertoolkit.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class EventSaveAndReplay {
+public class SaveAndReplay {
 
 	/**
 	 * Event Data files are of the form *.eventData.
 	 */
 	public static final String[] FILE_EXTENSION = new String[] { "eventData" };
 
-	/**
-	 * For tab-delimiting the fields in the eventData file.
-	 */
-	private static final String SEPARATOR = "\t";
+	private static SaveAndReplay instance;
+
+	public static synchronized SaveAndReplay getInstance() {
+		if (instance == null) {
+			instance = new SaveAndReplay();
+		}
+		return instance;
+	}
+
+	private HashMap<InputDevice, PenListener> inputDeviceToListener = new HashMap<InputDevice, PenListener>();
 
 	/**
 	 * Events that we can replay...
@@ -53,25 +65,35 @@ public class EventSaveAndReplay {
 	private PrintWriter output;
 
 	/**
-	 * Write events to disk (autoflushed), so that we can replay sessions in the future.
-	 */
-	private File outputFile;
-
-	/**
 	 * Should we play back the pen events in real time. That is, if there is a one second pause between two
 	 * pen taps, true --> we replicate that one second pause, false --> we replay it as fast as possible.
 	 */
 	private boolean playEventsInRealTime = true;
 
 	/**
-	 * The standard replay manager requires an event dispatcher...
 	 * 
-	 * The new approach is to record it at the pen level...
-	 * 
-	 * @param engine
 	 */
-	public EventSaveAndReplay() {
-		// nothing
+	private InputDevice lastPenUsed;
+
+	private PenSample lastPenSampleTracked;
+
+	/**
+	 * Record input at the InputDevice level, and replay to PenListeners.... This should work for multiple
+	 * pens...
+	 * 
+	 * @param inputDevice
+	 */
+	private SaveAndReplay() {
+
+	}
+
+	private void checkIfNewPen(InputDevice inputDevice) {
+		// if it's a new pen, inject some xml to close the previous pen, and open a new one...
+		if (inputDevice != lastPenUsed) {
+			// add XML tag to tell us a pen was changed...
+			output.println("<pen id=\"" + inputDevice.getID() + "\"/>");
+		}
+		lastPenUsed = inputDevice;
 	}
 
 	/**
@@ -82,53 +104,19 @@ public class EventSaveAndReplay {
 	}
 
 	/**
-	 * The inverse of createStringFromEvent(...). This creates a PenEvent object from one line of the
-	 * eventData file.
-	 * 
-	 * @param eventString
-	 * @return
-	 */
-	public PenEvent createEventFromString(String eventString) {
-		// DebugUtils.println(eventString);
-		final String[] fields = eventString.split(SEPARATOR);
-		final PenEventType modifier = PenEventType.valueOf(fields[0]);
-		final String penName = fields[2];
-		final int penID = Integer.parseInt(fields[1]);
-		final long time = Long.parseLong(fields[3]);
-		final double x = Double.parseDouble(fields[4]);
-		final double y = Double.parseDouble(fields[5]);
-		final long ts = Long.parseLong(fields[6]);
-		final int f = Integer.parseInt(fields[7]);
-
-		return new PenEvent(penID, penName, time, new PenSample(x, y, f, ts), modifier, false);
-	}
-
-	/**
-	 * @param event
-	 * @return
-	 */
-	private String createStringFromEvent(PenEvent event) {
-		final PenSample sample = event.getOriginalSample();
-		return event.getType() + SEPARATOR + event.getPenID() + SEPARATOR + event.getPenName() + SEPARATOR
-				+ event.getTimestamp() + SEPARATOR + sample.getX() + SEPARATOR + sample.getY() + SEPARATOR
-				+ sample.getTimestamp() + SEPARATOR + sample.getForce();
-	}
-
-	/**
 	 * @return
 	 */
 	private File getEventStoragePath() {
 		return new File(PaperToolkit.getToolkitRootPath(), "eventData/");
 	}
 
-	/**
-	 * @return the printWriter to the eventData file. This is initialized lazily, because we do not want to
-	 *         create a file if saveEvent is never called.
-	 */
-	private PrintWriter getOutput() {
+	// if we never write to it, the file should never be created...
+	private void lazyInitOutputFile() {
 		if (output == null) {
 			try {
-				outputFile = new File(getEventStoragePath(), FileUtils
+				// Write events to disk (autoflushed), so that we can replay sessions in the
+				// future.
+				File outputFile = new File(getEventStoragePath(), FileUtils
 						.getCurrentTimeForUseInASortableFileName()
 						+ ".eventData");
 				output = new PrintWriter(new FileOutputStream(outputFile), true /* autoflush */);
@@ -136,14 +124,51 @@ public class EventSaveAndReplay {
 				e.printStackTrace();
 			}
 		}
-		return output;
+	}
+
+	public PenListener getPenListener(final InputDevice inputDevice) {
+		PenListener penListener = inputDeviceToListener.get(inputDevice);
+		if (penListener == null) {
+			penListener = new PenListener() {
+				public void penDown(PenSample sample) {
+					lazyInitOutputFile();
+					checkIfInteractionGap(sample);
+					checkIfNewPen(inputDevice);
+					saveSample(sample);
+				}
+
+				public void penUp(PenSample sample) {
+					checkIfNewPen(inputDevice);
+					lastPenSampleTracked = sample;
+					saveSample(sample);
+				}
+
+				public void sample(PenSample sample) {
+					checkIfNewPen(inputDevice);
+					lastPenSampleTracked = sample;
+					saveSample(sample);
+				}
+			};
+			inputDeviceToListener.put(inputDevice, penListener);
+		}
+		return penListener;
+	}
+
+	private void checkIfInteractionGap(PenSample sample) {
+		if (lastPenSampleTracked != null) {
+			long diff = sample.timestamp - lastPenSampleTracked.timestamp;
+			if (diff > 1000) { // 10 seconds
+				output.println("<gap time=\"" + diff + "\"/>");
+			}
+		}
+		lastPenSampleTracked = sample;
 	}
 
 	/**
 	 * 
 	 */
 	public void importEventDataFromFileChooser() {
-		JFileChooser chooser = FileUtils.createNewFileChooser(EventSaveAndReplay.FILE_EXTENSION);
+		JFileChooser chooser = FileUtils.createNewFileChooser(SaveAndReplay.FILE_EXTENSION);
 		chooser.setCurrentDirectory(new File(PaperToolkit.getToolkitRootPath(), "eventData/"));
 		chooser.setMultiSelectionEnabled(true);
 		int result = chooser.showDialog(null, "Import Event Data");
@@ -165,7 +190,7 @@ public class EventSaveAndReplay {
 			br = new BufferedReader(new FileReader(eventDataFile));
 			String inputLine = null;
 			while ((inputLine = br.readLine()) != null) {
-				PenEvent event = createEventFromString(inputLine);
+				PenEvent event = null; /* TODO */
 				loadedEvents.add(event);
 			}
 			// DebugUtils.println("Loaded " + loadedEvents.size() + " events.");
@@ -246,7 +271,8 @@ public class EventSaveAndReplay {
 	 * 
 	 * @param event
 	 */
-	public void saveEvent(PenEvent event) {
-		getOutput().println(createStringFromEvent(event));
+	private void saveSample(PenSample sample) {
+		output.println(sample.toXMLString());
 	}
+
 }

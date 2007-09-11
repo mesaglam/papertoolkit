@@ -47,15 +47,10 @@ public class InkXMLParser {
 	}
 
 	private long beginTS;
-
 	private PenSample currentSample;
-
 	private ArrayList<PenSample> currentStroke;
-
 	private long endTS;
-
 	private int f;
-
 	private Ink ink;
 
 	/**
@@ -64,9 +59,7 @@ public class InkXMLParser {
 	private String recentXMLText = "";
 
 	private long t;
-
 	private double x;
-
 	private double y;
 
 	public InkXMLParser(Ink theInk) {
