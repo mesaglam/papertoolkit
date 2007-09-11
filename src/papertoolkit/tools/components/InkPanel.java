@@ -35,11 +35,6 @@ import papertoolkit.util.graphics.GraphicsUtils;
 public class InkPanel extends JPanel {
 
 	/**
-	 * Provides access to the most recently added ink object.
-	 */
-	protected Ink mostRecentInk;
-
-	/**
 	 * Zoom in (> 1.0) or out (< 1.0) to the ink canvas.
 	 */
 	private double inkScale = 1.0;
@@ -55,20 +50,28 @@ public class InkPanel extends JPanel {
 	 */
 	private boolean invertInkColors = false;
 
+	/**
+	 * Provides access to the most recently added ink object.
+	 */
+	protected Ink mostRecentInk;
+
+	private int offX = -120;
+	
+	private int offY = -100;
+
 	private double paddingLeft = 15;
 
 	private double paddingTop = 25;
 
 	/**
+	 * 
+	 */
+	private InkRenderer renderer;
+	/**
 	 * By default, recenters the ink so that it is displayed in the upper left corner. Set it to false if your
 	 * coordinates are correct already...
 	 */
 	private boolean shouldRecenter = true;
-
-	/**
-	 * 
-	 */
-	private InkRenderer renderer;
 
 	/**
 	 * Default Catmull-Rom method.
@@ -77,13 +80,6 @@ public class InkPanel extends JPanel {
 		this(new InkRenderer(), new Color(250, 250, 250));
 	}
 
-	/**
-	 * @param recFlag
-	 */
-	public void setRecenterFlag(boolean recFlag) {
-		shouldRecenter = recFlag;
-	}
-	
 	/**
 	 * Choose your own renderer.
 	 * 
@@ -156,6 +152,7 @@ public class InkPanel extends JPanel {
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 
 		final AffineTransform transform = g2d.getTransform();
+		g2d.translate(offX, offY);
 		g2d.scale(inkScale, inkScale);
 
 		// the drawing of ink is "atomic" with respect to
@@ -181,7 +178,7 @@ public class InkPanel extends JPanel {
 		if (!shouldRecenter) {
 			return;
 		}
-		
+
 		double minX = Double.MAX_VALUE;
 		double minY = Double.MAX_VALUE;
 		for (Ink ink : inks) {
@@ -209,6 +206,22 @@ public class InkPanel extends JPanel {
 	public void setAllInk(List<Ink> theInk) {
 		inkWell = theInk;
 		repaint();
+	}
+
+	/**
+	 * @param oX
+	 * @param oY
+	 */
+	public void set2DOffset(int oX, int oY) {
+		offX = oX;
+		offY = oY;
+	}
+
+	/**
+	 * @param recFlag
+	 */
+	public void setRecenterFlag(boolean recFlag) {
+		shouldRecenter = recFlag;
 	}
 
 	/**

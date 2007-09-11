@@ -20,6 +20,7 @@ import papertoolkit.pen.ink.InkSimplification;
 import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.tools.components.InkPanel;
+import papertoolkit.util.DebugUtils;
 import papertoolkit.util.WindowUtils;
 
 /**
@@ -82,10 +83,15 @@ public class PenSimulator extends InputDevice {
 	private MouseMotionListener getMouseMotionAdapter() {
 		return new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
+				final int offsetX = getOffsetX();
+				final int offsetY = getOffsetY();
+				
+				inputPanel.set2DOffset(-offsetX, -offsetY);
+
 				if (SwingUtilities.isRightMouseButton(e)) {
 					return;
 				}
-				PenSample penSample = new PenSample(getOffsetX() + e.getX(), getOffsetY() + e.getY(), 128,
+				PenSample penSample = new PenSample(offsetX + e.getX(), offsetY + e.getY(), 128,
 						System.currentTimeMillis());
 				for (PenListener l : penListeners) {
 					l.sample(penSample);
@@ -99,6 +105,8 @@ public class PenSimulator extends InputDevice {
 	private MouseListener getMouseAdapter() {
 		return new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
+				inputPanel.set2DOffset(-getOffsetX(), -getOffsetY());
+
 				if (SwingUtilities.isRightMouseButton(e)) {
 					return;
 				}
@@ -114,6 +122,8 @@ public class PenSimulator extends InputDevice {
 			}
 
 			public void mouseReleased(MouseEvent e) {
+				inputPanel.set2DOffset(-getOffsetX(), -getOffsetY());
+
 				if (SwingUtilities.isRightMouseButton(e)) {
 					// clear the board!
 					inputPanel.clear();
@@ -169,7 +179,7 @@ public class PenSimulator extends InputDevice {
 		// start up a JFrame w/ GUI to get mouse input...
 		frame = new JFrame("Pen Simulator");
 		frame.setLayout(new BorderLayout());
-		frame.add(getOffsetPanel(), BorderLayout.CENTER);
+		frame.add(getOffsetPanel(), BorderLayout.NORTH);
 		frame.add(getInputPanel(), BorderLayout.CENTER);
 
 		// if you exit your pen, we might as well close the entire paper application
