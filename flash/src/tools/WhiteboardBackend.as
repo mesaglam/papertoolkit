@@ -1,25 +1,24 @@
 ﻿package tools {	
 
-	import flash.events.*;
-	import flash.net.*;
+	import components.Whiteboard;
+	
 	import flash.display.Sprite;
-	import mx.controls.TextArea;
+	import flash.events.*;
+	import flash.geom.Rectangle;
+	import flash.net.*;
+	import flash.utils.Timer;
+	
 	import ink.Ink;
 	import ink.InkStroke;
-	import flash.display.Stage;
-	import java.JavaIntegration;
-	import flash.display.DisplayObject;
-	import flash.display.LoaderInfo;
-	import flash.filters.BevelFilter;
-	import flash.display.SpreadMethod;
 	import ink.InkUtils;
-	import components.Whiteboard;
-	import ink.InkCluster;
-	import mx.containers.Canvas;
-	import flash.geom.Rectangle;
-	import java.Constants;
-
 	
+	import java.Constants;
+	import java.JavaIntegration;
+	
+	import mx.containers.Canvas;
+	import mx.controls.TextArea;
+
+	//
 	public class WhiteboardBackend extends Sprite implements Tool {
 		
 		private var inkWell:Ink;
@@ -30,6 +29,9 @@
 		// this number is set by the first sample that comes in that uses scientific notation
 		private var xMinOffset:Number = -1;
 		private var yMinOffset:Number = -1;
+		
+		private var xPadding:Number = 80;
+		private var yPadding:Number = 50;
 		
 		private var theParent:Whiteboard = null;
 
@@ -45,8 +47,10 @@
 		private var inkStrokeThickness:Number = 3.4;
 
 
+		private var penTipTimer:Timer = new Timer(2000);
+
+
 		public function WhiteboardBackend(p:Whiteboard):void {
-			trace("Whiteboard Started.");
 			theParent = p;
 
 			inkWell = new Ink();
@@ -60,6 +64,8 @@
 			inkWell.addChild(penTipCrossHair);
 
 			inkCanvas = theParent.inkCanvas;
+			
+			penTipTimer.addEventListener(TimerEvent.TIMER, penTipTimerHandler);
 		}
 
 		// for when we wrap the tool in HTML
@@ -70,6 +76,11 @@
 		// asks the java server to System.exit(0);
 		public function exit():void {
 			javaServer.send("exitApplication");
+		}
+		
+		private function penTipTimerHandler(e:TimerEvent):void {
+			penTipCrossHair.visible = false;
+			penTipTimer.stop();
 		}
 		
 		//
@@ -116,8 +127,9 @@
    				currInkStroke = new InkStroke();
    				currInkStroke.inkWidth = inkStrokeThickness;
    				
-   				// add it to the stage
-				inkWell.addChild(currInkStroke);
+   				// add it to the stage, temporarily
+   				inkWell.addChild(currInkStroke);
+				
    			} else if (msgName=="p") {
 				handleInk(msgText);
 	   		} else if (msgName=="swatchColor") {
@@ -151,7 +163,7 @@
 			xVal = InkUtils.getCoordinateValueFromString(xStr);
 			// Figure out a minimum offset to reduce these large numbers!
 			if (xMinOffset == -1) { // uninitialized
-				xMinOffset = xVal;
+				xMinOffset = xVal - xPadding;
 			}
 			xVal = xVal - xMinOffset;
 
@@ -160,13 +172,13 @@
 			yVal = InkUtils.getCoordinateValueFromString(yStr);
 			// Figure out a minimum offset to reduce these large numbers!
 			if (yMinOffset == -1) { // uninitialized
-				yMinOffset = yVal;
+				yMinOffset = yVal - yPadding;
 			}
 			yVal = yVal - yMinOffset;
 
 			// trace(xVal + ", " + yVal);
-
-			var penUp:Boolean = inkXML.@p == "U";
+			var penUp:Boolean = inkXML.@p == "UP";
+			
 			if (penUp) {
 				inkWell.removeChild(currInkStroke);
 				inkWell.addStroke(currInkStroke);
@@ -181,11 +193,19 @@
 				// add samples to the current stroke
 				currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));
 
+				penTipCrossHair.visible = true;
 				penTipCrossHair.x = xVal;
 				penTipCrossHair.y = yVal;
+				hidePenTipCrossHair();
 			}	
 		}
 
+
+		private function hidePenTipCrossHair():void {
+			// after two seconds, hide it...
+			penTipTimer.reset();
+			penTipTimer.start();
+		}
 
 
 		// make the ink easier to read by zooming in

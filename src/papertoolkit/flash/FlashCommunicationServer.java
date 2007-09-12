@@ -244,6 +244,7 @@ public class FlashCommunicationServer {
 			}
 			exitServer();
 		} else if (commandName.equals("exitApplication")) {
+			DebugUtils.println("Got exitApplicaton command...");
 			if (client != null) {
 				client.exitClient();
 			}

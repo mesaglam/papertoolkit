@@ -37,15 +37,7 @@ public class ToolExplorer implements FlashListener {
 	/**
 	 * @param paperToolkit
 	 */
-	public ToolExplorer(PaperToolkit tk) {
-		this(tk, null, Constants.Ports.FLASH_COMMUNICATION_SERVER);
-	}
-
-	/**
-	 * @param ptk
-	 * @param startupMode
-	 */
-	public ToolExplorer(PaperToolkit ptk, String startupMode, int port) {
+	public ToolExplorer(PaperToolkit ptk) {
 		// ToolExplorer is Work in Progress: it doesn't do anything much yet...
 		
 		paperToolkit = ptk;

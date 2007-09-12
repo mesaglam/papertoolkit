@@ -4,7 +4,9 @@
 	backgroundGradientColors="[0x333333, 0x333333]" 
 	pageTitle="Tool Wrapper" 
 	addedToStage="init();" 
-	xmlns:components="components.*">
+	xmlns:components="components.*"
+	fontSize="14"
+	color="0xFFFFFF">
 	<mx:Script>
 		<![CDATA[
 			import tools.ToolWrapperBackend;
