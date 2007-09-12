@@ -1,5 +1,5 @@
 package papertoolkit.flash;
 
-public interface FlashCommand {
+public interface ExternalCommand {
 	public void invoke(String... args);
 }

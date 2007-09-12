@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.config.Constants;
-import papertoolkit.flash.FlashCommunicationServer;
-import papertoolkit.flash.FlashListener;
+import papertoolkit.flash.ExternalCommunicationServer;
+import papertoolkit.flash.ExternalListener;
 import papertoolkit.flash.FlashPenListener;
 import papertoolkit.pen.Pen;
 import papertoolkit.tools.design.sketch.SketchToPaperUI;
@@ -27,10 +27,10 @@ import papertoolkit.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ToolExplorer implements FlashListener {
+public class ToolExplorer implements ExternalListener {
 
 	private Pen currentPen;
-	private FlashCommunicationServer flash;
+	private ExternalCommunicationServer flash;
 	private PaperToolkit paperToolkit;
 	private SketchToPaperUI sketchToPaperUI;
 
@@ -45,7 +45,7 @@ public class ToolExplorer implements FlashListener {
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File toolExplorerHTML = new File(r3RootPath, "flash/bin/ToolExplorer.html");
 		
-		flash = new FlashCommunicationServer();
+		flash = new ExternalCommunicationServer();
 		flash.addFlashClientListener(this);
 		flash.openFlashHTMLGUI(toolExplorerHTML);
 	}
@@ -53,14 +53,14 @@ public class ToolExplorer implements FlashListener {
 	/**
 	 * @param listener
 	 */
-	public void addFlashClientListener(FlashListener listener) {
+	public void addFlashClientListener(ExternalListener listener) {
 		flash.addFlashClientListener(listener);
 	}
 
 	/**
 	 * @return
 	 */
-	public FlashCommunicationServer getFlashServer() {
+	public ExternalCommunicationServer getFlashServer() {
 		return flash;
 	}
 

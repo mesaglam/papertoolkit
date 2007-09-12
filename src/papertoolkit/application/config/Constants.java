@@ -28,5 +28,7 @@ public class Constants {
 
 		public static final int PEN_SERVER_JAVA = 11025;
 		public static final int PEN_SERVER_PLAINTEXT = 11026;
+		
+		public static final int SIDE_CAR_COMMUNICATIONS = 43210;
 	}
 }

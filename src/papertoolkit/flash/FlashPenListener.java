@@ -18,9 +18,9 @@ public class FlashPenListener implements PenListener {
 	/**
 	 * Send pen samples over to this Flash GUI. 
 	 */
-	private FlashCommunicationServer flash;
+	private ExternalCommunicationServer flash;
 
-	public FlashPenListener(FlashCommunicationServer f) {
+	public FlashPenListener(ExternalCommunicationServer f) {
 		flash = f;
 	}
 

@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.flash.FlashCommunicationServer;
+import papertoolkit.flash.ExternalCommunicationServer;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.components.SuperJTextField;
 
@@ -52,7 +52,7 @@ public class FlashControlDebugger {
 	/**
 	 * The server that clients can connect to (localhost:8545)
 	 */
-	private FlashCommunicationServer server;
+	private ExternalCommunicationServer server;
 
 	/**
 	 * Contains the message to send.
@@ -65,7 +65,7 @@ public class FlashControlDebugger {
 	 */
 	public FlashControlDebugger() {
 		PaperToolkit.initializeLookAndFeel();
-		server = new FlashCommunicationServer();
+		server = new ExternalCommunicationServer();
 
 		control = new JFrame("Flash UI Controller");
 		control.setSize(640, 80);

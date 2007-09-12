@@ -19,17 +19,17 @@ import papertoolkit.util.DebugUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
  */
-public class FlashClient {
+public class ExternalClient {
 
 	private int clientID;
 	private Socket clientSocket;
 	private Thread clientThread;
 	private BufferedReader fromClient;
-	private FlashCommunicationServer server;
+	private ExternalCommunicationServer server;
 	private PrintStream toClient;
 	private boolean done = false;
 
-	public FlashClient(FlashCommunicationServer flashCommServer, int id, Socket clientSock,
+	public ExternalClient(ExternalCommunicationServer flashCommServer, int id, Socket clientSock,
 			BufferedReader readerIn, PrintStream writerOut) {
 		server = flashCommServer;
 		clientID = id;
@@ -55,7 +55,7 @@ public class FlashClient {
 							// drop the surrounding whitespace
 							command = command.trim(); 
 							// always pass commands up to the server
-							server.handleCommand(FlashClient.this, command);
+							server.handleCommand(ExternalClient.this, command);
 						}
 					} catch (IOException e) {
 						e.printStackTrace();

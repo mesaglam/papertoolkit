@@ -21,6 +21,7 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.devices.Device;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.StrokeHandler;
+import papertoolkit.flash.ExternalCommunicationServer;
 import papertoolkit.flash.tools.FlashWhiteboard;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
@@ -494,13 +495,10 @@ public class Application {
 		openSideCarItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				DebugUtils.println("Opening Sidecar...");
-
-				// opens the flex application
-
-				// our eclipse is already instrumented with the SideCar plugin, so it's already listening on
-				// all the right ports
-
-				// TODO:
+				// make a socket connection to 4949 and ask the (already running) SideCar to 
+				// start its Flex GUI
+				
+				
 			}
 		});
 

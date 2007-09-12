@@ -12,8 +12,8 @@ import java.util.List;
 import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.flash.FlashCommunicationServer;
-import papertoolkit.flash.FlashListener;
+import papertoolkit.flash.ExternalCommunicationServer;
+import papertoolkit.flash.ExternalListener;
 import papertoolkit.flash.FlashPenListener;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.ink.Ink;
@@ -56,7 +56,7 @@ public class InkAPIBrowser {
 
 	private int currentSynchedFileIndex = -1;
 	private List<Method> exposedMethods;
-	private FlashCommunicationServer flash;
+	private ExternalCommunicationServer flash;
 	private HashMap<String, Method> methodsHashMap = new HashMap<String, Method>();
 	private Ink mostRecentInkObject;
 	private List<File> synchedFiles;
@@ -241,7 +241,7 @@ public class InkAPIBrowser {
 
 		// HACK: for now..., so we always have one flash listener
 		flash.removeAllFlashClientListeners();
-		flash.addFlashClientListener(new FlashListener() {
+		flash.addFlashClientListener(new ExternalListener() {
 			public boolean messageReceived(String command, String...args) {
 				if (command.equals("apibrowserclient connected")) {
 					// DebugUtils.println("Flash Client Connected!");
@@ -277,7 +277,7 @@ public class InkAPIBrowser {
 	 */
 	private void startFlashAPIBrowser() {
 		// Start the local messaging server
-		flash = new FlashCommunicationServer();
+		flash = new ExternalCommunicationServer();
 		showFlashView();
 	}
 }
