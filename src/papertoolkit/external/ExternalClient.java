@@ -44,21 +44,22 @@ public class ExternalClient {
 					String command = null;
 					try {
 						command = fromClient.readLine();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					try {
 						if (command == null) {
 							done = true;
 							clientSocket.close();
 						} else {
 							// drop the surrounding whitespace
-							command = command.trim(); 
+							command = command.trim();
 							// always pass commands up to the server
 							server.handleCommand(ExternalClient.this, command);
 						}
 					} catch (IOException e) {
-						e.printStackTrace();
+						if (e.getMessage().contains("Connection reset")) {
+							DebugUtils.println("Client Logged Off");
+							done=true;
+						} else {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -66,7 +67,7 @@ public class ExternalClient {
 		});
 		clientThread.start();
 	}
-	
+
 	public int getID() {
 		return clientID;
 	}
