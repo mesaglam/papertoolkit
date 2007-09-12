@@ -37,8 +37,8 @@ public class ToolExplorer implements FlashListener {
 	/**
 	 * @param paperToolkit
 	 */
-	public ToolExplorer(PaperToolkit r3) {
-		this(r3, null, Constants.Ports.FLASH_COMMUNICATION_SERVER);
+	public ToolExplorer(PaperToolkit tk) {
+		this(tk, null, Constants.Ports.FLASH_COMMUNICATION_SERVER);
 	}
 
 	/**
@@ -46,18 +46,16 @@ public class ToolExplorer implements FlashListener {
 	 * @param startupMode
 	 */
 	public ToolExplorer(PaperToolkit ptk, String startupMode, int port) {
-		// look for the HTML file... if it doesn't exist, then ask people to download FLEX and compile it!
-		// TODO...
+		// ToolExplorer is Work in Progress: it doesn't do anything much yet...
 		
 		paperToolkit = ptk;
 		// start the Flash Communications Server, and register our listeners...
-		// Start the Apollo GUI
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
-		final File toolExplorerApollo = new File(r3RootPath, "flash/bin/ToolExplorer.exe");
+		final File toolExplorerHTML = new File(r3RootPath, "flash/bin/ToolExplorer.html");
+		
 		flash = new FlashCommunicationServer();
 		flash.addFlashClientListener(this);
-
-		// flash.openFlashApolloGUI(toolExplorerApollo);
+		flash.openFlashHTMLGUI(toolExplorerHTML);
 	}
 
 	/**

@@ -72,12 +72,12 @@ public class FlashWhiteboard {
 	 * A little block of color on the upper right corner, for helping us match the output window with the
 	 * input pen (if you have color-coded your pens).
 	 */
-	private Color swatchColor;
+	private Color swatchColor = Color.WHITE;
 
 	/**
 	 * Displayed in the GUI.
 	 */
-	private String title;
+	private String title = "Ink Display";
 
 	/**
 	 * 

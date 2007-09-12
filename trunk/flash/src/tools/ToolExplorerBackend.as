@@ -1,15 +1,13 @@
 package tools {
-	import flash.display.Stage;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.display.StageDisplayState;
-	import flash.net.URLRequest;
-	
-	import java.JavaIntegration;
 	import flash.events.DataEvent;
 	import flash.events.Event;
-	import components.DesignTools;
-	import components.Whiteboard;
+	import flash.net.URLRequest;
+	
 	import java.Constants;
+	import java.JavaIntegration;
 	
 	
 	// Helps developers navigate the Paper Toolkit visually...
@@ -22,7 +20,7 @@ package tools {
 		private var modeName:String;
 
 		// the port that the Java back end is listening on
-		private var portNum:int;
+		private var portNum:int = 8545;
 		private var javaBackend:JavaIntegration;
 
 		// constructor
@@ -31,6 +29,7 @@ package tools {
 			stageObj = app.stage;
 			addListenerForCommandLineArguments();
 			setupToolList();
+		    start();
 		}			
 
 
@@ -103,31 +102,12 @@ package tools {
 		// Exits the Application...		
 		public function exit():void {
 			javaBackend.send("exitServer");
+			flash.net.navigateToURL(new URLRequest("javascript:window.close()"));
 		}
 		
 		public function addListenerForCommandLineArguments():void {
 		}
 
-		// process the command line arguments
-		public function processCommandLineArguments(invocation:Event):void{
-			var arguments:Array;
-		    if (arguments.length > 0) {
-		    	// trace(arguments);
-		    	for each (var arg:String in arguments) {
-		    		trace(arg);
-		    		
-		    		if (arg.indexOf("port:") == 0) {
-		    			portNum = parseInt(arg.substr(arg.indexOf("port:")+5));
-		    			trace("Port: " + portNum);
-		    		}
-		    		if (arg.indexOf("mode:") == 0) {
-		    			modeName = arg.substr(arg.indexOf("mode:")+5);
-		    			trace("Mode: " + modeName);
-		    		}
-		    	}
-		    }
-		    start();
-		}
 
 		// handlers for Flex GUI buttons
 		public function browseToAuthorWebsite():void {
