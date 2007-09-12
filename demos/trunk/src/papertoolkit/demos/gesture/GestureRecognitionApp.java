@@ -1,10 +1,13 @@
 package papertoolkit.demos.gesture;
 
+import java.awt.Color;
+
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.GestureHandler;
 import papertoolkit.events.handlers.MarkingGestureHandler;
+import papertoolkit.flash.tools.FlashWhiteboard;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pen.Pen;
@@ -27,32 +30,34 @@ public class GestureRecognitionApp {
 
 	public GestureRecognitionApp() {
 		Application app = PaperToolkit.createApplication();
-		app.addPenInput(new Pen());
+		final Pen pen = new Pen();
+		app.addPenInput(pen);
 
 		Sheet sheet = app.createSheet(5, 8);
 		Region region = sheet.createRegion(0, 0, 5, 8);
-		region.addEventHandler(new GestureHandler() {
-			public void gestureArrived(PenEvent lastSample, RecognitionResult result, InkStroke stroke) {
-				DebugUtils.println(result);
-			}
-		});
+		// region.addEventHandler(new GestureHandler() {
+		// public void gestureArrived(PenEvent lastSample, RecognitionResult result, InkStroke stroke) {
+		// DebugUtils.println(result);
+		// }
+		// });
 
 		Sheet sheet2 = app.createSheet(5, 8);
 		Region region2 = sheet2.createRegion();
-		region2.addEventHandler(new MarkingGestureHandler() {
-			public void handleMark(PenEvent e, MarkDirection dir) {
-				DebugUtils.println(dir);
-				switch (dir) {
-				case E:
-					break;
-				case W:
-					break;
-				default:
-					break;
-				}
-			}
-		});
+		// region2.addEventHandler(new MarkingGestureHandler() {
+		// public void handleMark(PenEvent e, MarkDirection dir) {
+		// DebugUtils.println(dir);
+		// switch (dir) {
+		// case E:
+		// break;
+		// case W:
+		// break;
+		// default:
+		// break;
+		// }
+		// }
+		// });
 
+		
 		app.run();
 	}
 
