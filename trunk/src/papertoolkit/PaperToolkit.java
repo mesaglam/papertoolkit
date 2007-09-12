@@ -333,8 +333,11 @@ public class PaperToolkit {
 			latestSession.addActionListener(SaveAndReplay.getInstance().getActionListenerForLoadLatest());
 			final MenuItem chooseSession = new MenuItem("Load a Different Session...");
 			chooseSession.addActionListener(SaveAndReplay.getInstance().getActionListenerForChooseSession());
+			final Menu playBookmarked = new Menu("Bookmarked Sessions");
+			SaveAndReplay.getInstance().populateBookmarks(playBookmarked);
 			replayItem.add(chooseSession);
 			replayItem.add(latestSession);
+			replayItem.add(playBookmarked);
 			replayItem.add(replayNow);
 			trayMenu.add(replayItem);
 		}

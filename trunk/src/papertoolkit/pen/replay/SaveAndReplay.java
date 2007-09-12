@@ -1,6 +1,7 @@
 package papertoolkit.pen.replay;
 
-import java.awt.Container;
+import java.awt.Menu;
+import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -13,17 +14,12 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.events.EventDispatcher;
-import papertoolkit.events.PenEvent;
-import papertoolkit.events.PenEventType;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
@@ -439,5 +435,22 @@ public class SaveAndReplay {
 	 */
 	private void saveSample(PenSample sample) {
 		output.println(sample.toXMLString());
+	}
+
+	public void populateBookmarks(Menu playBookmarked) {
+		File bookmarked = new File(PaperToolkit.getToolkitRootPath(), "eventData/savedEventData");
+		final List<File> eventFiles = FileUtils.listVisibleFiles(bookmarked, FILE_EXTENSION);
+		for (final File f : eventFiles) {
+			MenuItem m = new MenuItem(f.getName().replace(".eventData", ""));
+			m.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					clearLoadedEvents();
+					loadSessionDataFrom(f);
+					countDownToReplay();
+					replayLoadedEvents();
+				}
+			});
+			playBookmarked.add(m);
+		}
 	}
 }
