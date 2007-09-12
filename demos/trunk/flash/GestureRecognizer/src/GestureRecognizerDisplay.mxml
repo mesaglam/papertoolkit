@@ -58,20 +58,34 @@
 
 			[Embed(source="../images/X.png")]
 			private var cross:Class;
+
+			[Embed(source="../images/spacer.gif")]
+			private var spacer:Class;
 			
 			
 			private var portNum:int;
 			private var javaBackend:JavaIntegration;
 			private var container:UIComponent;
+
+			// a circle to remind us where the pen was last seen
+			private var penTipCrossHair:Sprite = new Sprite();
+			private var SCALE:Number = 2.2;
 			
 			public function init():void {
 				// start the communication with Java
 				processParameters();
 				start();
-				recognizedGestureImage.source = arrow;
 
 				container = new UIComponent();
 				inkStrokeCanvas.addChild(container);
+
+				recognizedGestureImage.source = spacer;
+
+				penTipCrossHair.graphics.lineStyle(2, 0xDC3322);
+				penTipCrossHair.graphics.drawCircle(-1, -1, 4);
+				penTipCrossHair.x = -200;
+				penTipCrossHair.scaleX = SCALE;
+				penTipCrossHair.scaleY = SCALE;
 			}
 
 			// this is called after the command line arguments are processed
@@ -94,7 +108,12 @@
 	            	
 						// start up a new stroke
 		   				currInkStroke = new InkStroke();
-		   				currInkStroke.inkWidth = 3;
+		   				currInkStroke.x = inkStrokeCanvas.width/3;
+		   				currInkStroke.y = inkStrokeCanvas.height/3;
+		   				currInkStroke.scaleX = SCALE;
+		   				currInkStroke.scaleY = SCALE;
+		   				currInkStroke.inkWidth = 3.3;
+		   				currInkStroke.addChild(penTipCrossHair);
 		   				container.addChild(currInkStroke);
 		   				xMinOffset = -1;
 		   				yMinOffset = -1;
@@ -103,7 +122,44 @@
 	            		handleInk(msg);
 		            	break;
 	    			case "penUpEvent":
-	    				break;        	
+	    				break;
+	    			case "recognized":
+	    				trace("Recognized: " + msg.@templateName);
+	    				var name:String = msg.@templateName;
+	    				switch(name) {
+	    					case "caret":
+	    						recognizedGestureImage.source = caret;
+	    						gestureLabel.text = "Caret";
+	    						break;
+	    					case "delete":
+	    						recognizedGestureImage.source = del;
+	    						gestureLabel.text = "Delete";
+		    					break;
+	    					case "question":
+	    						recognizedGestureImage.source = question;
+	    						gestureLabel.text = "Question Mark";
+		    					break;
+	    					case "E":
+	    						recognizedGestureImage.source = spacer;
+	    						gestureLabel.text = "East";
+		    					break;
+	    					case "W":
+	    						recognizedGestureImage.source = spacer;
+	    						gestureLabel.text = "West";
+		    					break;
+	    					case "SW":
+	    						recognizedGestureImage.source = spacer;
+	    						gestureLabel.text = "South-West";
+		    					break;
+	    					case "NE":
+	    						recognizedGestureImage.source = spacer;
+	    						gestureLabel.text = "North-East";
+	    						break;
+	    				}
+	    				
+	    				break;
+    				default:
+	    				break;
 	            }
 	        }
 
@@ -120,7 +176,7 @@
 				if (xMinOffset == -1) { // uninitialized
 					xMinOffset = xVal;
 				}
-				xVal = xVal - xMinOffset + PADDING;
+				xVal = xVal - xMinOffset;
 	
 				var yStr:String = inkXML.@y;
 				var yVal:Number = 0;
@@ -129,17 +185,25 @@
 				if (yMinOffset == -1) { // uninitialized
 					yMinOffset = yVal;
 				}
-				yVal = yVal - yMinOffset + PADDING;
+				yVal = yVal - yMinOffset;
 	
 				// trace(xVal + ", " + yVal);
 				var penUp:Boolean = inkXML.@p == "UP";
 				if (penUp) {
 					currInkStroke.rerenderWithCurves();
-					currInkStroke.x = (inkStrokeCanvas.width - currInkStroke.strokeWidth)/2;
-					currInkStroke.y = (inkStrokeCanvas.height - currInkStroke.strokeHeight)/2;
+					var newX:Number = (inkStrokeCanvas.width - currInkStroke.strokeWidth)/2;
+					var newY:Number = (inkStrokeCanvas.height - currInkStroke.strokeHeight)/2;
+					var diffPenTipX:Number = newX - currInkStroke.x;
+					var diffPenTipY:Number = newY - currInkStroke.y;
+
+					currInkStroke.x = newX;
+					currInkStroke.y = newY;
+
 				} else {
 					// add samples to the current stroke
 					currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));
+					penTipCrossHair.x = xVal;
+					penTipCrossHair.y = yVal;
 				}	
 			}
 
@@ -184,7 +248,7 @@
 		<mx:VBox width="50%" height="100%" backgroundColor="0xFDFDFD" verticalAlign="middle" horizontalAlign="center" 
 			borderThickness="2" cornerRadius="25" borderStyle="solid" borderColor="0x333333">
 			<mx:Image id="recognizedGestureImage" scaleContent="false" verticalCenter="0" horizontalCenter="0" scaleX="1.5" scaleY="1.5"/>
-			<mx:Label id="gestureLabel" text="Arrow" color="0x222222" fontSize="32" fontFamily="Myriad Pro"/>
+			<mx:Label id="gestureLabel" text="Waiting..." color="0x222222" fontSize="44" fontFamily="Myriad Pro"/>
 		</mx:VBox>
 		<mx:Spacer width="20"/>
 	</mx:HBox>
