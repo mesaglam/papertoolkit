@@ -82,7 +82,10 @@ public class PenClient {
 	}
 
 	/**
-	 * Listens to the PenClient (always local), which is talking to the PenServer (either remote or local).
+	 * Listens to the PenClient (always local), which is talking to the PenServer (either remote or local). In
+	 * reality, all Pen objects get their data directly from PenClient, which may get it from a local or
+	 * remote PenServer. This is a bit overkill for local Pens, which is the common case =\... However, this
+	 * allows multiple apps to monitor a single PenServer.
 	 * 
 	 * @param penListener
 	 * @return

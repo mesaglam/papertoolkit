@@ -91,13 +91,22 @@ public class SaveAndReplay {
 	 * Event Data files are of the form *.eventData.
 	 */
 	public static final String[] FILE_EXTENSION = new String[] { "eventData" };
-	private static SaveAndReplay instance;
 	private static final Pattern PATTERN_GAP_XML_FORMAT = Pattern.compile("<gap time=\"(.*?)\".*?/>");
 	private static final Pattern PATTERN_PEN_XML_FORMAT = Pattern.compile("<pen id=\"(.*?)\".*?/>");
 
-	public static synchronized SaveAndReplay getInstance() {
+	private static SaveAndReplay instance;
+
+	// ARGH EXPLAIN TO ME WHY THIS DOESN'T WORK!!!!!!!!!!!
+	// SOMETIMES it is called twice...
+	// It's because the static initializer in PaperToolkit ends up calling getInstance again...
+	// since this thread already has the lock, 
+	public static SaveAndReplay getInstance() {
 		if (instance == null) {
-			instance = new SaveAndReplay();
+			synchronized (SaveAndReplay.class) {
+				if (instance == null) {
+					instance = new SaveAndReplay();
+				}
+			}
 		}
 		return instance;
 	}
@@ -395,6 +404,10 @@ public class SaveAndReplay {
 						if (currPenInputDevice == null) {
 							// the pen ID doesn't match.. so we grab the first pen
 							currPenInputDevice = getFirstInputDevice();
+						}
+						if (currPenInputDevice == null) {
+							DebugUtils.println("No Known Input Devices to Replay Events to...");
+							return;
 						}
 
 						if (penIsUp.get(penID)) {

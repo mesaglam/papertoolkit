@@ -1,12 +1,14 @@
 package papertoolkit.tools.services;
 
-import papertoolkit.PaperToolkit;
-import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
+import papertoolkit.pen.InputDevice;
+import papertoolkit.pen.PenSample;
 
 /**
  * <p>
+ * All of the methods in this class are called by various toolkit objects to broadcast information to
+ * listeners.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -17,22 +19,25 @@ import papertoolkit.events.PenEvent;
  */
 public class ToolkitMonitor {
 
-	private PaperToolkit toolkit;
-	private EventDispatcher dispatcher;
 	private ToolkitMonitoringService monitoringService;
 
-	public ToolkitMonitor(PaperToolkit paperToolkit, EventDispatcher eventDispatcher,
-			ToolkitMonitoringService toolkitMonitoringService) {
-		toolkit = paperToolkit;
-		dispatcher = eventDispatcher;
+	public ToolkitMonitor(ToolkitMonitoringService toolkitMonitoringService) {
 		monitoringService = toolkitMonitoringService;
 	}
 
 	public void eventHandled(EventHandler handler, PenEvent event) {
 		if (handler != null) {
-			monitoringService.outputToClients("Event Handled: " + handler.toString() + " :: " + event);
+			monitoringService.outputToClients("Event Handled: " + handler + " :: " + event);
 		} else {
 			monitoringService.outputToClients("Unhandled Event: " + event);
 		}
+	}
+
+	public void penDown(InputDevice dev, PenSample sample) {
+		monitoringService.outputToClients("Pen Down: " + dev + " :: " + sample);
+	}
+
+	public void penUp(InputDevice dev, PenSample sample) {
+		monitoringService.outputToClients("Pen Up: " + dev + " :: " + sample);
 	}
 }

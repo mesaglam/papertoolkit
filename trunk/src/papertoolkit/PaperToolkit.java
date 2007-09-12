@@ -213,6 +213,21 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * Remove any tray icons, and exit!
+	 * 
+	 * @return
+	 */
+	private static void exitPaperToolkit() {
+		System.out.println("Exiting PaperToolkit...");
+		if (trayIcon != null) {
+			TrayIcon iconToRemove = trayIcon;
+			trayIcon = null;
+			SystemTray.getSystemTray().remove(iconToRemove);
+		}
+		System.exit(0);
+	}
+
+	/**
 	 * Loads an object from an XML File.
 	 * 
 	 * @param xmlFile
@@ -343,41 +358,9 @@ public class PaperToolkit {
 			replayItem.add(playBookmarked);
 			replayItem.add(replayNow);
 			trayMenu.add(replayItem);
-
-			populateTrayMenuForSideCar(trayMenu);
 		}
 
 		return trayMenu;
-	}
-
-	/**
-	 * @param popupMenu
-	 */
-	private static void populateTrayMenuForSideCar(Menu popupMenu) {
-		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
-		openSideCarItem.addActionListener(new ActionListener() {
-			private Socket sideCarSocket;
-			private PrintWriter sideCarPrintWriter;
-
-			public void actionPerformed(ActionEvent arg0) {
-				DebugUtils.println("Opening Sidecar...");
-				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
-				try {
-					if (sideCarSocket == null) {
-						sideCarSocket = new Socket("localhost", Ports.SIDE_CAR_COMMUNICATIONS);
-						OutputStream outputStream = sideCarSocket.getOutputStream();
-						sideCarPrintWriter = new PrintWriter(outputStream);
-					}
-					sideCarPrintWriter.println("StartFlexGUI");
-					sideCarPrintWriter.flush();
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		popupMenu.add(openSideCarItem);
 	}
 
 	/**
@@ -463,6 +446,35 @@ public class PaperToolkit {
 		} else if (args[0].startsWith("-pen")) {
 			PenServerTrayApp.main(new String[] {});
 		}
+	}
+
+	/**
+	 * @param popupMenu
+	 */
+	private static void populateTrayMenuForSideCar(Menu popupMenu) {
+		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
+		openSideCarItem.addActionListener(new ActionListener() {
+			private PrintWriter sideCarPrintWriter;
+			private Socket sideCarSocket;
+
+			public void actionPerformed(ActionEvent arg0) {
+				DebugUtils.println("Opening Sidecar...");
+				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
+				try {
+					if (sideCarSocket == null) {
+						sideCarSocket = new Socket("localhost", Ports.SIDE_CAR_COMMUNICATIONS);
+						OutputStream outputStream = sideCarSocket.getOutputStream();
+						sideCarPrintWriter = new PrintWriter(outputStream);
+					}
+					sideCarPrintWriter.println("StartFlexGUI");
+					sideCarPrintWriter.flush();
+				} catch (Exception e) {
+					DebugUtils.println("Is SideCar Running Yet? If not... start SideCar, and try again!");
+					DebugUtils.println("We are expecting SideCar to be listening at Port: " + Ports.SIDE_CAR_COMMUNICATIONS);
+				}
+			}
+		});
+		popupMenu.add(openSideCarItem);
 	}
 
 	/**
@@ -554,26 +566,26 @@ public class PaperToolkit {
 	private EventDispatcher eventDispatcher;
 
 	/**
+	 * The list of running or stopped applications.
+	 */
+	private List<Application> loadedApplications = new ArrayList<Application>();
+
+	/**
 	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
 	 * your own program. Then, you can get the local properties from this properties object.
 	 */
 	private final Properties localProperties = new Properties();
 
 	/**
-	 * The list of running or stopped applications.
+	 * For allowing external apps (e.g., SideCar) to monitor the toolkit's actions...
 	 */
-	private List<Application> loadedApplications = new ArrayList<Application>();
+	@SuppressWarnings("unused")
+	private ToolkitMonitoringService monitoringService;
 
 	/**
 	 * Whether or not to use handwriting recognition. It will start the HWRec Server...
 	 */
 	private boolean useHandwriting;
-
-	/**
-	 * For allowing external apps (e.g., SideCar) to monitor the toolkit's actions...
-	 */
-	@SuppressWarnings("unused")
-	private ToolkitMonitoringService monitoringService;
 
 	/**
 	 * Start up a paper toolkit. A toolkit can load multiple applications, and dispatch events accordingly
@@ -621,19 +633,8 @@ public class PaperToolkit {
 		return eventDispatcher;
 	}
 
-	/**
-	 * Remove any tray icons, and exit!
-	 * 
-	 * @return
-	 */
-	private static void exitPaperToolkit() {
-		System.out.println("Exiting PaperToolkit...");
-		if (trayIcon != null) {
-			TrayIcon iconToRemove = trayIcon;
-			trayIcon = null;
-			SystemTray.getSystemTray().remove(iconToRemove);
-		}
-		System.exit(0);
+	public List<Application> getLoadedApps() {
+		return loadedApplications;
 	}
 
 	/**
@@ -720,6 +721,8 @@ public class PaperToolkit {
 
 	}
 
+	private static boolean isfirstAppPopulatingSystemTray = true;
+
 	/**
 	 * Start this application and register all live pens with the event engine. The event engine will then
 	 * start dispatching events for this application until the application is stopped.
@@ -728,6 +731,12 @@ public class PaperToolkit {
 	 */
 	public void startApplication(Application paperApp) {
 		if (!loadedApplications.contains(paperApp)) {
+			if (isfirstAppPopulatingSystemTray) {
+				populateTrayMenuForSideCar(trayMenu); // add the sidecar menu if there is an application!
+				trayMenu.add(new MenuItem("-")); // separator
+				isfirstAppPopulatingSystemTray = false;
+			}
+
 			paperApp.populateTrayMenu(getTrayMenu());
 
 			// run any initializers that need to happen before we begin
@@ -786,6 +795,11 @@ public class PaperToolkit {
 		}
 		eventDispatcher.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
 		paperApp.setRunning(false);
+	}
+
+	public static SaveAndReplay initializeSaveAndReplay() {
+		// the static initializer will have run by this time, so getInstance will be valid!
+		return SaveAndReplay.getInstance();
 	}
 
 }

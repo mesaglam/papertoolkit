@@ -71,7 +71,6 @@ import papertoolkit.util.files.FileUtils;
  */
 public class Application {
 
-	private static boolean isfirstAppPopulatingSystemTray = true;
 
 	/**
 	 * For inspecting the application at runtime.
@@ -271,10 +270,7 @@ public class Application {
 	 * @param popupMenu
 	 */
 	public final void populateTrayMenu(PopupMenu popupMenu) {
-		if (isfirstAppPopulatingSystemTray) {
-			popupMenu.add(new MenuItem("-")); // separator
-			isfirstAppPopulatingSystemTray = false;
-		}
+
 
 		final Menu menu = new Menu(getName());
 		popupMenu.add(menu);
