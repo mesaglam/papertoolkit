@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+	backgroundGradientColors="[0x222222, 0x666666]" fontSize="16" fontFamily="Myriad Pro" color="0xFFFFFF">
+	<mx:Label text="Gesture Recognizer" fontWeight="bold" fontSize="36" left="20" top="20"/>
+	<mx:HBox horizontalCenter="0" width="100%" height="90%" bottom="0">
+		<mx:Canvas id="inkStrokeCanvas" width="50%" height="100%"/>
+		<mx:Image id="recognizedGestureImage" width="50%" height="100%"/>
+	</mx:HBox>
+</mx:Application>
