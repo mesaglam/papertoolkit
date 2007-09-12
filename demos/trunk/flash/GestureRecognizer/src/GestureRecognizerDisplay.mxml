@@ -1,9 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
-	backgroundGradientColors="[0x222222, 0x666666]" fontSize="16" fontFamily="Myriad Pro" color="0xFFFFFF">
+	backgroundGradientColors="[0x222222, 0x555555]" fontSize="16" fontFamily="Myriad Pro" color="0xFFFFFF" addedToStage="init()">
+
+	<mx:Script>
+		<![CDATA[
+			import ink.InkCluster;
+			import mx.core.UIComponent;
+			import ink.InkStroke;
+			import ink.InkUtils;
+			import java.JavaIntegration;
+			
+			[Embed(source="../images/Arrow.png")]
+			private var arrow:Class;
+			
+			[Embed(source="../images/Caret.png")]
+			private var caret:Class;
+			
+			[Embed(source="../images/Check.png")]
+			private var check:Class;
+			
+			[Embed(source="../images/Circle.png")]
+			private var circle:Class;
+
+			[Embed(source="../images/Delete.png")]
+			private var del:Class;
+
+			[Embed(source="../images/LeftBrace.png")]
+			private var leftbrace:Class;
+
+			[Embed(source="../images/LeftBracket.png")]
+			private var leftbracket:Class;
+
+			[Embed(source="../images/Pigtail.png")]
+			private var pigtail:Class;
+
+
+			[Embed(source="../images/Question.png")]
+			private var question:Class;
+
+			[Embed(source="../images/Rectangle.png")]
+			private var rect:Class;
+
+			[Embed(source="../images/RightBrace.png")]
+			private var rightbrace:Class;
+
+			[Embed(source="../images/RightBracket.png")]
+			private var rightbracket:Class;
+
+			[Embed(source="../images/Star.png")]
+			private var star:Class;
+
+			[Embed(source="../images/Triangle.png")]
+			private var triangle:Class;
+
+			[Embed(source="../images/V.png")]
+			private var v:Class;
+
+			[Embed(source="../images/X.png")]
+			private var cross:Class;
+			
+			
+			private var portNum:int;
+			private var javaBackend:JavaIntegration;
+			private var container:UIComponent;
+			
+			public function init():void {
+				// start the communication with Java
+				processParameters();
+				start();
+				recognizedGestureImage.source = arrow;
+
+				container = new UIComponent();
+				inkStrokeCanvas.addChild(container);
+			}
+
+			// this is called after the command line arguments are processed
+			private function start():void {
+				// toggleFullScreen();
+				javaBackend = new JavaIntegration(portNum);	
+				javaBackend.addMessageListener(msgListener);
+			}
+
+			// handle messages
+	        private function msgListener(event:DataEvent):void {
+	            var msg:XML = new XML(event.text);
+	            var msgName:String = msg.name();
+	            
+	            switch(msgName) {
+	            	case "penDownEvent":
+	            		if (currInkStroke!=null) {
+	            			container.removeChild(currInkStroke);
+	            		}
+	            	
+						// start up a new stroke
+		   				currInkStroke = new InkStroke();
+		   				currInkStroke.inkWidth = 3;
+		   				container.addChild(currInkStroke);
+		   				xMinOffset = -1;
+		   				yMinOffset = -1;
+		            	break;
+	            	case "p":
+	            		handleInk(msg);
+		            	break;
+	    			case "penUpEvent":
+	    				break;        	
+	            }
+	        }
+
+			private var currInkStroke:InkStroke;
+			private var xMinOffset:Number = -1;
+			private var yMinOffset:Number = -1;
+			
+	
+			private function handleInk(inkXML:XML):void {
+				var xVal:Number = 0;
+				var xStr:String = inkXML.@x;
+				xVal = InkUtils.getCoordinateValueFromString(xStr);
+				// Figure out a minimum offset to reduce these large numbers!
+				if (xMinOffset == -1) { // uninitialized
+					xMinOffset = xVal;
+				}
+				xVal = xVal - xMinOffset + PADDING;
+	
+				var yStr:String = inkXML.@y;
+				var yVal:Number = 0;
+				yVal = InkUtils.getCoordinateValueFromString(yStr);
+				// Figure out a minimum offset to reduce these large numbers!
+				if (yMinOffset == -1) { // uninitialized
+					yMinOffset = yVal;
+				}
+				yVal = yVal - yMinOffset + PADDING;
+	
+				// trace(xVal + ", " + yVal);
+				var penUp:Boolean = inkXML.@p == "UP";
+				if (penUp) {
+					currInkStroke.rerenderWithCurves();
+					currInkStroke.x = (inkStrokeCanvas.width - currInkStroke.strokeWidth)/2;
+					currInkStroke.y = (inkStrokeCanvas.height - currInkStroke.strokeHeight)/2;
+				} else {
+					// add samples to the current stroke
+					currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));
+				}	
+			}
+
+
+			private const PADDING:Number = 80;	
+
+			// retrieve parameters from the host HTML page
+			private function processParameters():void {
+				// for storing the parameters
+				var paramObj:Object;
+				try {
+					var keyStr:String;
+					var valueStr:String;
+					paramObj = LoaderInfo(root.loaderInfo).parameters;
+					for (keyStr in paramObj) {
+						valueStr = paramObj[keyStr] as String;
+						trace(keyStr + ":\t" + valueStr);
+						if (keyStr=="port") {
+							portNum = parseInt(valueStr);
+						}
+					}
+				} catch (error:Error) {
+					trace(error);
+				}
+			}
+
+			
+			public function displayGestureResult(templateName:String):void {
+				switch(templateName) {
+					default:
+					break;	
+				}
+				gestureLabel.text = templateName;
+			}
+		]]>
+	</mx:Script>
 	<mx:Label text="Gesture Recognizer" fontWeight="bold" fontSize="36" left="20" top="20"/>
-	<mx:HBox horizontalCenter="0" width="100%" height="90%" bottom="0">
-		<mx:Canvas id="inkStrokeCanvas" width="50%" height="100%"/>
-		<mx:Image id="recognizedGestureImage" width="50%" height="100%"/>
+	<mx:HBox horizontalCenter="0" width="100%" height="90%" bottom="20" verticalAlign="bottom" horizontalGap="20">
+		<mx:Spacer width="20"/>
+		<mx:Canvas id="inkStrokeCanvas" width="50%" height="90%" backgroundColor="0x111111"
+			borderThickness="2" cornerRadius="25" borderStyle="solid" borderColor="0x333333"/>
+		<mx:VBox width="50%" height="100%" backgroundColor="0xFDFDFD" verticalAlign="middle" horizontalAlign="center" 
+			borderThickness="2" cornerRadius="25" borderStyle="solid" borderColor="0x333333">
+			<mx:Image id="recognizedGestureImage" scaleContent="false" verticalCenter="0" horizontalCenter="0" scaleX="1.5" scaleY="1.5"/>
+			<mx:Label id="gestureLabel" text="Arrow" color="0x222222" fontSize="32" fontFamily="Myriad Pro"/>
+		</mx:VBox>
+		<mx:Spacer width="20"/>
 	</mx:HBox>
 </mx:Application>
