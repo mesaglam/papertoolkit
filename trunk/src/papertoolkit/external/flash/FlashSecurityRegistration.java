@@ -1,4 +1,4 @@
-package papertoolkit.flash;
+package papertoolkit.external.flash;
 
 import java.io.File;
 import java.util.ArrayList;

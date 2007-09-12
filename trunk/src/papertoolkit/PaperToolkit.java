@@ -35,7 +35,7 @@ import papertoolkit.application.config.Configuration;
 import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.PenEvent;
-import papertoolkit.flash.tools.FlashWhiteboard;
+import papertoolkit.external.flash.FlashWhiteboard;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;

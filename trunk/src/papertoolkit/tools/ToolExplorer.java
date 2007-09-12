@@ -7,9 +7,9 @@ import java.util.regex.Pattern;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.config.Constants;
-import papertoolkit.flash.ExternalCommunicationServer;
-import papertoolkit.flash.ExternalListener;
-import papertoolkit.flash.FlashPenListener;
+import papertoolkit.external.ExternalCommunicationServer;
+import papertoolkit.external.ExternalListener;
+import papertoolkit.external.flash.FlashPenListener;
 import papertoolkit.pen.Pen;
 import papertoolkit.tools.design.sketch.SketchToPaperUI;
 import papertoolkit.util.DebugUtils;
