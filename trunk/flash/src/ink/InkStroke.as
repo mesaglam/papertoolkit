@@ -32,7 +32,7 @@ package ink {
 		private var g:Graphics = graphics;
 
 		// draw with this width and color
-		private var strokeWidth:Number = 1.5;
+		private var lineWidth:Number = 1.5;
 		private var color:uint = DEFAULT_COLOR;
 		
 		// whether this stroke should be highlighted, and rendered using the highlight color
@@ -64,7 +64,7 @@ package ink {
 		// add an ink sample...
 		public function addPoint(xVal:Number, yVal:Number, f:Number):void {
 			// consider modifying the color and width based on force
-			g.lineStyle(strokeWidth, color);
+			g.lineStyle(lineWidth, color);
 			
 			
 			if (xSamples.length == 0) {
@@ -116,11 +116,11 @@ package ink {
 			}
 		}
 
+		// clean up the stroke
 		public function rerenderWithCurves():void {
-			trace("Rerender");
 			g.clear();
 			var crspline:CatmullRomSpline = new CatmullRomSpline(xSamples, ySamples);
-			g.lineStyle(strokeWidth, color);
+			g.lineStyle(lineWidth, color);
 			crspline.plotAll(g);
 		}
 
@@ -220,6 +220,12 @@ package ink {
 		public function get lastY():Number {
 			return lastYVal;
 		}
+		public function get strokeWidth():Number {
+			return xMax - xMin;
+		}
+		public function get strokeHeight():Number {
+			return yMax - yMin;
+		}
 		///////////////// END GETTERS ////////////////////////		
 		
 		
@@ -228,7 +234,7 @@ package ink {
 			color = c;
 		}
 		public function set inkWidth(w:Number):void {
-			strokeWidth = w;
+			lineWidth = w;
 		}
 		// determines whether this stroke should be highlighted on screen
 		public function set highlighted(value:Boolean):void {
