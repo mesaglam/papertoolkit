@@ -10,10 +10,10 @@ import papertoolkit.application.Application;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.GestureHandler;
 import papertoolkit.events.handlers.MarkingGestureHandler;
-import papertoolkit.flash.FlashCommunicationServer;
-import papertoolkit.flash.FlashListener;
-import papertoolkit.flash.FlashPenListener;
-import papertoolkit.flash.tools.FlashWhiteboard;
+import papertoolkit.external.ExternalCommunicationServer;
+import papertoolkit.external.ExternalListener;
+import papertoolkit.external.flash.FlashPenListener;
+import papertoolkit.external.flash.FlashWhiteboard;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pen.InputDevice;
@@ -36,7 +36,7 @@ import papertoolkit.util.files.FileUtils;
  */
 public class GestureRecognitionApp {
 
-	private FlashCommunicationServer flash;
+	private ExternalCommunicationServer flash;
 
 	public GestureRecognitionApp() {
 		Application app = PaperToolkit.createApplication();
@@ -69,15 +69,15 @@ public class GestureRecognitionApp {
 
 	private void connectWithFlashGUI() {
 		// start the local server for sending ink over to the Flash client app
-		flash = new FlashCommunicationServer(7890);
+		flash = new ExternalCommunicationServer(7890);
 		flash.addFlashClientListener(getFlashListener());
 		final File gestureRecHTML = new File("flash/GestureRecognizer/bin/GestureRecognizerDisplay.html");
 		DebugUtils.println(gestureRecHTML.getAbsolutePath());
 		flash.openFlashHTMLGUI(gestureRecHTML);
 	}
 
-	private FlashListener getFlashListener() {
-		return new FlashListener() {
+	private ExternalListener getFlashListener() {
+		return new ExternalListener() {
 			public boolean messageReceived(String command, String... args) {
 				if (command.equals("exit")) {
 					return CONSUMED;

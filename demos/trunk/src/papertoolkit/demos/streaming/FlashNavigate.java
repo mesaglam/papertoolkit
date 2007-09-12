@@ -1,6 +1,6 @@
 package papertoolkit.demos.streaming;
 
-import papertoolkit.flash.FlashCommunicationServer;
+import papertoolkit.external.ExternalCommunicationServer;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
@@ -20,7 +20,7 @@ import papertoolkit.pen.streaming.listeners.PenListener;
 public class FlashNavigate {
 
 	private static PenSample down;
-	private static FlashCommunicationServer server;
+	private static ExternalCommunicationServer server;
 	private static PenSample up;
 
 	/**
@@ -56,7 +56,7 @@ public class FlashNavigate {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		server = new FlashCommunicationServer();
+		server = new ExternalCommunicationServer();
 		Pen pen = new Pen();
 		pen.startLiveMode();
 		pen.addLivePenListener(getDebugPenListener());
