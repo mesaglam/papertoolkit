@@ -19,7 +19,6 @@
 		 	
 			//
 			public function constructWhiteboard():void {
-				trace("WhiteBoard Init");
 				whitebd = new WhiteboardBackend(this);
 				container = new UIComponent();
 				container.addChild(whitebd);				
@@ -33,7 +32,7 @@
 			// forward the message onto the actionscript object backing this mxml GUI
 	        public function processMessage(msgText:String):void {
 	        	if (whitebd == null) {
-	        		trace("Whiteboard Backend is not initialized. Message: [" + msgText + "] was discarded.");
+	        		// trace("Whiteboard Backend is not initialized. Message: [" + msgText + "] was discarded.");
 	        		return;
 	        	}
 	        	whitebd.processMessage(msgText);

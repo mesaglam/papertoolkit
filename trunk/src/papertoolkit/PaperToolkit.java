@@ -35,6 +35,7 @@ import papertoolkit.application.config.Configuration;
 import papertoolkit.application.config.StartupOptions;
 import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.PenEvent;
+import papertoolkit.flash.tools.FlashWhiteboard;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
@@ -323,17 +324,15 @@ public class PaperToolkit {
 			});
 			trayMenu.add(exitItem);
 
+			
 			// for event save and replay
 			final Menu replayItem = new Menu("Event Replay");
 			final MenuItem replayNow = new MenuItem("Play");
 			replayNow.addActionListener(SaveAndReplay.getInstance().getActionListenerForReplay());
-
 			final MenuItem latestSession = new MenuItem("Load Most Recent Session");
 			latestSession.addActionListener(SaveAndReplay.getInstance().getActionListenerForLoadLatest());
-
 			final MenuItem chooseSession = new MenuItem("Load a Different Session...");
 			chooseSession.addActionListener(SaveAndReplay.getInstance().getActionListenerForChooseSession());
-
 			replayItem.add(chooseSession);
 			replayItem.add(latestSession);
 			replayItem.add(replayNow);

@@ -15,7 +15,7 @@ package ink {
 	public class Ink extends Sprite {
 	
 		private var padding:int = 60;
-		private var paddingSmall:int = 10;
+		private var paddingSmall:int = 15;
 		
 		
 		private var xMin:Number = Number.MAX_VALUE;
@@ -102,6 +102,8 @@ package ink {
 				// see if this stroke is close to the previous stroke or not
 				var dDist:Number = MathUtils.distance(stroke.avgX, stroke.avgY, 
 													  mostRecentStroke.avgX, mostRecentStroke.avgY);
+													  
+				trace("Ink: " + dDist);	
 				if (dDist > InkCluster.CLUSTER_GAP) {
 					// if it's > 500 anoto dots away from the last ink stroke, 
 					// we assume it's in a different cluster (e.g, new page)
@@ -153,6 +155,8 @@ package ink {
 		// make sure the most recent cluster is visible within this rectangle
 		// if not, then at the very least, the most recent stroke...
 		public function recenterMostRecentCluster(rect:Rectangle):void {
+			trace("Recenter to: " + rect);
+
 			var minX:Number = Number.MAX_VALUE;
 			var minY:Number = Number.MAX_VALUE;
 			
@@ -161,8 +165,8 @@ package ink {
 				minY = Math.min(currentlyPreviewing.minY, minY);
 			}
 			if (mostRecentCluster != null) {
-				// trace("Recenter Most Recent Cluster to: " + rect);
-				// trace("Most Recent Cluster: " + mostRecentCluster.toString());
+				trace("Recenter Most Recent Cluster to: " + rect);
+				trace("Most Recent Cluster: " + mostRecentCluster.toString());
 				minX = Math.min(mostRecentCluster.minX, minX);
 				minY = Math.min(mostRecentCluster.minY, minY);
 			}

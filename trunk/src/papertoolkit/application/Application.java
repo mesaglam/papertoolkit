@@ -21,6 +21,7 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.devices.Device;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.StrokeHandler;
+import papertoolkit.flash.tools.FlashWhiteboard;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
@@ -293,16 +294,35 @@ public class Application {
 		});
 		menu.add(debugItem);
 
-		final Menu sheetsMenu = new Menu("Paper UI");
-		menu.add(sheetsMenu);
-
 		final Menu interactionsMenu = new Menu("Interactions");
 		menu.add(interactionsMenu);
 		populateInteractionsMenu(interactionsMenu);
 
-		/**
-		 * @return the button to load the Acrobat plugin for designing Paper UIs (drawing out regions)...
-		 */
+		final Menu sheetsMenu = new Menu("Paper UI");
+		menu.add(sheetsMenu);
+		populateSheetsMenu(sheetsMenu);
+
+		// to display incoming ink
+		final MenuItem whiteboardItem = new MenuItem("Open Ink Display");
+		whiteboardItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// whiteboard should be an internal option...
+				FlashWhiteboard whiteboard = new FlashWhiteboard(8989);
+				for (InputDevice device : penInputDevices) {
+					whiteboard.addPen(device);
+				}
+				whiteboard.load();
+			}
+		});
+		menu.add(whiteboardItem);
+
+		populateTrayMenuForSideCar(menu);
+		populateTrayMenuExtensions(menu);
+	}
+
+	private void populateSheetsMenu(final Menu sheetsMenu) {
+
+		// load the Acrobat plugin for designing Paper UIs (drawing out regions)...
 		final MenuItem designItem = new MenuItem("Design Sheets");
 		designItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -339,9 +359,6 @@ public class Application {
 			}
 		});
 		sheetsMenu.add(printSheetInfoItem);
-
-		populateTrayMenuForSideCar(menu);
-		populateTrayMenuExtensions(menu);
 	}
 
 	private void populateInteractionsMenu(final Menu interactionsMenu) {
@@ -379,12 +396,11 @@ public class Application {
 	 * @param mappings
 	 */
 	private void addItemsToBindUninitializedRegions(Menu popupMenu) {
-		
+
 		for (final PatternToSheetMapping map : getPatternMaps()) {
 			final Menu sheetMenu = new Menu(map.getSheet().getName());
 			popupMenu.add(sheetMenu);
-			
-			
+
 			MenuItem item = new MenuItem("Simulate Pen for this Sheet");
 			item.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -393,8 +409,7 @@ public class Application {
 				}
 			});
 			sheetMenu.add(item);
-			
-			
+
 			final MenuItem loadMappingItem = new MenuItem("Load Mappings");
 			loadMappingItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent nullActionEvent) {
@@ -475,8 +490,6 @@ public class Application {
 	 * @param popupMenu
 	 */
 	private final void populateTrayMenuForSideCar(Menu popupMenu) {
-		popupMenu.add("-");
-
 		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
 		openSideCarItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

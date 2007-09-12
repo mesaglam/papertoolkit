@@ -11,18 +11,17 @@ import papertoolkit.PaperToolkit;
 import papertoolkit.flash.FlashCommunicationServer;
 import papertoolkit.flash.FlashListener;
 import papertoolkit.flash.FlashPenListener;
-import papertoolkit.pen.Pen;
+import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.ink.Ink;
 import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.streaming.listeners.PenListener;
-import papertoolkit.tools.ToolExplorer;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
 /**
  * <p>
- * Opens the Whiteboard Flash/Flex application.
+ * Opens the Whiteboard Flex application.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -61,33 +60,30 @@ public class FlashWhiteboard {
 	/**
 	 * A list of the active pens. Their strokes are displayed in this whiteboard.
 	 */
-	private List<Pen> pens = new ArrayList<Pen>();
+	private List<InputDevice> pens = new ArrayList<InputDevice>();
 
 	/**
-	 * 
+	 * Which socket port should we use to communicate over?
 	 */
 	private int port;
 
+	/**
+	 * TODO: We may want to flip or scale the incoming ink.
+	 */
+	private double rotation = 0;
+
+	private double scaleX = 1;
+
+	private double scaleY = 1;
 	/**
 	 * A little block of color on the upper right corner, for helping us match the output window with the
 	 * input pen (if you have color-coded your pens).
 	 */
 	private Color swatchColor = Color.WHITE;
-
 	/**
 	 * Displayed in the GUI.
 	 */
 	private String title = "Ink Display";
-
-	/**
-	 * 
-	 */
-	private ToolExplorer toolExplorer;
-
-	/**
-	 * 
-	 */
-	private double rotation = 0;
 
 	/**
 	 * @param portNum
@@ -101,7 +97,7 @@ public class FlashWhiteboard {
 	 * 
 	 * @param pen
 	 */
-	public void addPen(Pen pen) {
+	public void addPen(InputDevice pen) {
 		pens.add(pen);
 		pen.startLiveMode();
 	}
@@ -123,7 +119,7 @@ public class FlashWhiteboard {
 							+ "' b='" + bgColor.getBlue() + "'/>");
 					flash.sendMessage("<title value='" + title + "'/>");
 
-					for (Pen p : pens) {
+					for (InputDevice p : pens) {
 						// DebugUtils.println("Adding Pen Listener");
 						p.addLivePenListener(new FlashPenListener(flash));
 						p.addLivePenListener(getInkListener());
@@ -184,16 +180,6 @@ public class FlashWhiteboard {
 	}
 
 	/**
-	 * Loads the Apollo version. It's a native EXE that you have compiled with the Apollo builder. However, it
-	 * seems you can't launch multiple instances. Boo.
-	 */
-	public void loadApolloGUI() {
-		toolExplorer = new ToolExplorer(new PaperToolkit(), "Whiteboard", port);
-		flash = toolExplorer.getFlashServer();
-		toolExplorer.addFlashClientListener(getFlashListener());
-	}
-
-	/**
 	 * @param c
 	 */
 	public void setBackgroundColor(Color c) {
@@ -205,6 +191,13 @@ public class FlashWhiteboard {
 	 */
 	public void setInkColor(Color color) {
 		inkColor = color;
+	}
+
+	/**
+	 * @param numDegrees
+	 */
+	public void setRotation(double numDegrees) {
+		rotation = numDegrees;
 	}
 
 	/**
@@ -221,12 +214,5 @@ public class FlashWhiteboard {
 	 */
 	public void setTitle(String titleStr) {
 		title = titleStr;
-	}
-
-	/**
-	 * @param numDegrees
-	 */
-	public void setRotation(double numDegrees) {
-		rotation = numDegrees;
 	}
 }
