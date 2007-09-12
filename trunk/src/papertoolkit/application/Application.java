@@ -7,8 +7,15 @@ import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,10 +25,10 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.PaperToolkit;
+import papertoolkit.application.config.Constants.Ports;
 import papertoolkit.devices.Device;
 import papertoolkit.events.PenEvent;
 import papertoolkit.events.handlers.StrokeHandler;
-import papertoolkit.external.ExternalCommunicationServer;
 import papertoolkit.external.flash.FlashWhiteboard;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
@@ -317,7 +324,6 @@ public class Application {
 		});
 		menu.add(whiteboardItem);
 
-		populateTrayMenuForSideCar(menu);
 		populateTrayMenuExtensions(menu);
 	}
 
@@ -487,23 +493,6 @@ public class Application {
 		// nothing; subclasses can use this
 	}
 
-	/**
-	 * @param popupMenu
-	 */
-	private final void populateTrayMenuForSideCar(Menu popupMenu) {
-		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
-		openSideCarItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				DebugUtils.println("Opening Sidecar...");
-				// make a socket connection to 4949 and ask the (already running) SideCar to 
-				// start its Flex GUI
-				
-				
-			}
-		});
-
-		popupMenu.add(openSideCarItem);
-	}
 
 	/**
 	 * Only if this app is currently running, we will ask the event engine to register the pattern mapping so

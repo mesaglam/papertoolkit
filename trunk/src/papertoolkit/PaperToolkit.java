@@ -18,8 +18,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.InvalidPropertiesFormatException;
@@ -33,6 +36,7 @@ import papertoolkit.actions.remote.ActionReceiverTrayApp;
 import papertoolkit.application.Application;
 import papertoolkit.application.config.Configuration;
 import papertoolkit.application.config.StartupOptions;
+import papertoolkit.application.config.Constants.Ports;
 import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.PenEvent;
 import papertoolkit.external.flash.FlashWhiteboard;
@@ -324,7 +328,6 @@ public class PaperToolkit {
 			});
 			trayMenu.add(exitItem);
 
-			
 			// for event save and replay
 			final Menu replayItem = new Menu("Event Replay");
 			final MenuItem replayNow = new MenuItem("Play");
@@ -340,9 +343,41 @@ public class PaperToolkit {
 			replayItem.add(playBookmarked);
 			replayItem.add(replayNow);
 			trayMenu.add(replayItem);
+
+			populateTrayMenuForSideCar(trayMenu);
 		}
 
 		return trayMenu;
+	}
+
+	/**
+	 * @param popupMenu
+	 */
+	private static void populateTrayMenuForSideCar(Menu popupMenu) {
+		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
+		openSideCarItem.addActionListener(new ActionListener() {
+			private Socket sideCarSocket;
+			private PrintWriter sideCarPrintWriter;
+
+			public void actionPerformed(ActionEvent arg0) {
+				DebugUtils.println("Opening Sidecar...");
+				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
+				try {
+					if (sideCarSocket == null) {
+						sideCarSocket = new Socket("localhost", Ports.SIDE_CAR_COMMUNICATIONS);
+						OutputStream outputStream = sideCarSocket.getOutputStream();
+						sideCarPrintWriter = new PrintWriter(outputStream);
+					}
+					sideCarPrintWriter.println("StartFlexGUI");
+					sideCarPrintWriter.flush();
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		popupMenu.add(openSideCarItem);
 	}
 
 	/**
@@ -518,7 +553,6 @@ public class PaperToolkit {
 	 */
 	private EventDispatcher eventDispatcher;
 
-
 	/**
 	 * Feel free to edit the PaperToolkit.xml in your local directory, to add configuration properties for
 	 * your own program. Then, you can get the local properties from this properties object.
@@ -563,7 +597,7 @@ public class PaperToolkit {
 
 		eventDispatcher = new EventDispatcher();
 		batchedDataDispatcher = new BatchedDataDispatcher(eventDispatcher);
-		
+
 		// the handwriting server starts up only if the sheet has a handwriting
 		// recognizer... (or something
 		// like that)
@@ -601,7 +635,6 @@ public class PaperToolkit {
 		}
 		System.exit(0);
 	}
-
 
 	/**
 	 * @param propertyKey
