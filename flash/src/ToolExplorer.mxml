@@ -3,8 +3,6 @@
 	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Tool Explorer" addedToStage="init();" xmlns:components="components.*" 
 	color="0xffffff" fontSize="14">
 	
-
-
 	<mx:Style source="styles/styles.css"/>
 	<mx:Script>
 		<![CDATA[
