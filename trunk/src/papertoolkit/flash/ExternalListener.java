@@ -12,7 +12,7 @@ package papertoolkit.flash;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  * 
  */
-public interface FlashListener {
+public interface ExternalListener {
 	
 	public static final boolean CONSUMED = true;
 	public static final boolean NOT_CONSUMED = false;

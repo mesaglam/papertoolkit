@@ -6,8 +6,8 @@ import java.util.List;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
 import papertoolkit.events.EventHandler;
-import papertoolkit.flash.FlashCommunicationServer;
-import papertoolkit.flash.FlashListener;
+import papertoolkit.flash.ExternalCommunicationServer;
+import papertoolkit.flash.ExternalListener;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
 import papertoolkit.util.DebugUtils;
@@ -34,14 +34,14 @@ public class DebuggingEnvironment {
 	}
 
 	private Application app;
-	private FlashCommunicationServer flash;
+	private ExternalCommunicationServer flash;
 
 	/**
 	 * @param paperApp
 	 */
 	public DebuggingEnvironment(Application app) {
 		// Start the local messaging server
-		flash = new FlashCommunicationServer();
+		flash = new ExternalCommunicationServer();
 		setApp(app);
 	}
 
@@ -112,7 +112,7 @@ public class DebuggingEnvironment {
 		}
 		flash.openFlashHTMLGUI(eventVizHTML);
 		flash.removeAllFlashClientListeners(); // HACK: for now...
-		flash.addFlashClientListener(new FlashListener() {
+		flash.addFlashClientListener(new ExternalListener() {
 			public boolean messageReceived(String command, String...args) {
 				if (command.equals("eventvizclient connected")) {
 					// DebugUtils.println("Flash Client Connected!");

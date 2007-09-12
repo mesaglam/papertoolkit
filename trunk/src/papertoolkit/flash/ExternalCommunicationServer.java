@@ -49,7 +49,7 @@ import papertoolkit.util.files.FileUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class FlashCommunicationServer {
+public class ExternalCommunicationServer {
 
 	private String argDelimiter;
 
@@ -67,17 +67,17 @@ public class FlashCommunicationServer {
 	/**
 	 * 
 	 */
-	private Map<String, FlashCommand> commands = new HashMap<String, FlashCommand>();
+	private Map<String, ExternalCommand> commands = new HashMap<String, ExternalCommand>();
 
 	/**
 	 * All the clients that have connected to us! You can test this by telnetting in to this server and port.
 	 */
-	private List<FlashClient> flashClients = new ArrayList<FlashClient>();
+	private List<ExternalClient> flashClients = new ArrayList<ExternalClient>();
 
 	/**
 	 * Send messages to these Java listeners.
 	 */
-	private List<FlashListener> listeners = new ArrayList<FlashListener>();
+	private List<ExternalListener> listeners = new ArrayList<ExternalListener>();
 
 	/**
 	 * Replaces OTHER_PARAMS in the HTML/Flash template with other query parameters.
@@ -107,7 +107,7 @@ public class FlashCommunicationServer {
 	/**
 	 * Allows us to send messages to the Flash GUI.
 	 */
-	public FlashCommunicationServer() {
+	public ExternalCommunicationServer() {
 		this(Constants.Ports.FLASH_COMMUNICATION_SERVER);
 	}
 
@@ -116,7 +116,7 @@ public class FlashCommunicationServer {
 	 * 
 	 * @param port
 	 */
-	public FlashCommunicationServer(int port) {
+	public ExternalCommunicationServer(int port) {
 		setCommandDelimiter("%%*%%");
 		setArgumentsDelimiter("@_*_@");
 
@@ -131,14 +131,14 @@ public class FlashCommunicationServer {
 	 * @param cmdName
 	 * @param flashCommand
 	 */
-	public void addCommand(String cmdName, FlashCommand flashCommand) {
+	public void addCommand(String cmdName, ExternalCommand flashCommand) {
 		commands.put(cmdName, flashCommand);
 	}
 
 	/**
 	 * @param flashListener
 	 */
-	public void addFlashClientListener(FlashListener flashListener) {
+	public void addFlashClientListener(ExternalListener flashListener) {
 		listeners.add(flashListener);
 	}
 
@@ -157,7 +157,7 @@ public class FlashCommunicationServer {
 	 * Exits the Flash communication server.
 	 */
 	public void exitServer() {
-		for (FlashClient client : flashClients) {
+		for (ExternalClient client : flashClients) {
 			client.exitClient();
 		}
 		try {
@@ -167,7 +167,7 @@ public class FlashCommunicationServer {
 		}
 		DebugUtils.println("Exiting Flash Communications Server.... "
 				+ "If this is the last thread, the program should exit.");
-		for (FlashListener listener : listeners) {
+		for (ExternalListener listener : listeners) {
 			listener.messageReceived("exitServer");
 		}
 	}
@@ -190,7 +190,7 @@ public class FlashCommunicationServer {
 						final PrintStream writerOut = new PrintStream(incoming.getOutputStream());
 
 						// pass this to a handler thread that will service this client!
-						flashClients.add(new FlashClient(FlashCommunicationServer.this, clientID++, incoming,
+						flashClients.add(new ExternalClient(ExternalCommunicationServer.this, clientID++, incoming,
 								readerIn, writerOut));
 					}
 				} catch (SocketException e) {
@@ -211,7 +211,7 @@ public class FlashCommunicationServer {
 	 * @param command
 	 *            case sensitive commands...
 	 */
-	public void handleCommand(FlashClient client, String command) {
+	public void handleCommand(ExternalClient client, String command) {
 
 		// extract the command name using our delimiters...
 		String commandName = "";
@@ -261,7 +261,7 @@ public class FlashCommunicationServer {
 				DebugUtils.println("Server got command [" + commandName + "].");
 			}
 
-			for (FlashListener listener : listeners) {
+			for (ExternalListener listener : listeners) {
 				boolean consumed = listener.messageReceived(commandName, args);
 				if (consumed) {
 					break;
@@ -340,7 +340,7 @@ public class FlashCommunicationServer {
 			}
 		}
 
-		for (FlashClient client : flashClients) {
+		for (ExternalClient client : flashClients) {
 			client.sendMessage(msg);
 		}
 	}

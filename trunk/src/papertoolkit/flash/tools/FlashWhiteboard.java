@@ -8,8 +8,8 @@ import java.util.List;
 import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.flash.FlashCommunicationServer;
-import papertoolkit.flash.FlashListener;
+import papertoolkit.flash.ExternalCommunicationServer;
+import papertoolkit.flash.ExternalListener;
 import papertoolkit.flash.FlashPenListener;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
@@ -45,7 +45,7 @@ public class FlashWhiteboard {
 	/**
 	 * The object that we use to communicate with the Flash GUI.
 	 */
-	private FlashCommunicationServer flash;
+	private ExternalCommunicationServer flash;
 
 	/**
 	 * Default to white Ink.
@@ -105,8 +105,8 @@ public class FlashWhiteboard {
 	/**
 	 * @return
 	 */
-	private FlashListener getFlashListener() {
-		return new FlashListener() {
+	private ExternalListener getFlashListener() {
+		return new ExternalListener() {
 			public boolean messageReceived(String command, String... args) {
 				if (command.equals("Whiteboard")) {
 					// DebugUtils.println("Whiteboard Connected!");
@@ -171,7 +171,7 @@ public class FlashWhiteboard {
 	 */
 	public void load() {
 		// start the local server for sending ink over to the Flash client app
-		flash = new FlashCommunicationServer(port);
+		flash = new ExternalCommunicationServer(port);
 		flash.addFlashClientListener(getFlashListener());
 		final File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File inputWhiteBoardHTML = new File(r3RootPath, "flash/bin/ToolWrapper.html");
