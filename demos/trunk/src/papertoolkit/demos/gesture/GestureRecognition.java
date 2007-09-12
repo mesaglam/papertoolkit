@@ -10,6 +10,7 @@ import papertoolkit.util.DebugUtils;
 /**
  * <p>
  * Uses the Dollar Recognizer directly, with the low level PenListeners...
+ * This class cannot use the monitoring service, because it doesn't instantiate the toolkit...
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
