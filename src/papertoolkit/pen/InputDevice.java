@@ -3,6 +3,7 @@ package papertoolkit.pen;
 import java.util.ArrayList;
 import java.util.List;
 
+import papertoolkit.PaperToolkit;
 import papertoolkit.pen.replay.SaveAndReplay;
 import papertoolkit.pen.replay.SaveAndReplay.SaveAndReplayListener;
 import papertoolkit.pen.streaming.listeners.PenListener;
@@ -67,7 +68,9 @@ public abstract class InputDevice {
 		uniquePenIDs++;
 
 		setName(penName);
-		saveAndReplay = SaveAndReplay.getInstance();
+		
+		// getInstance should only be accessible by PaperToolkit... =)
+		saveAndReplay = PaperToolkit.initializeSaveAndReplay();
 
 		final PenListener saveListener = saveAndReplay.getPenListener(this);
 
@@ -94,7 +97,6 @@ public abstract class InputDevice {
 		penListeners.add(penListener);
 
 		//
-
 		if (!isLive()) {
 			// DebugUtils.println("We are not registering this listener [" + penListener.toString()
 			// + "] with the event dispatcher at the moment. The Pen is not in Live Mode.");
@@ -206,10 +208,8 @@ public abstract class InputDevice {
 	 */
 	public abstract void stopLiveMode();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/**
+	 * Name of the InputDevice...
 	 */
 	public String toString() {
 		return "InputDevice: " + getName();

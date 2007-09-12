@@ -12,7 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.application.config.Constants.Ports;
 import papertoolkit.events.EventDispatcher;
+import papertoolkit.pen.InputDevice;
+import papertoolkit.pen.PenSample;
+import papertoolkit.pen.streaming.listeners.PenListener;
 
 /**
  * <p>
@@ -30,11 +35,6 @@ public class ToolkitMonitoringService {
 
 	private static int clientIDs = 0;
 	
-	/**
-	 * Communicate over this port.
-	 */
-	public static int SERVICES_PORT = 9797;
-
 	private List<Socket> clients = new ArrayList<Socket>();
 	private boolean exitServer = false;
 	private boolean firstTimeClientConnected = true;
@@ -44,6 +44,9 @@ public class ToolkitMonitoringService {
 
 	private ToolkitMonitor monitor;
 	
+	/**
+	 * @param paperToolkit
+	 */
 	public ToolkitMonitoringService(PaperToolkit paperToolkit) {
 		toolkit = paperToolkit;
 		
@@ -51,19 +54,16 @@ public class ToolkitMonitoringService {
 		createServerToWaitForAConnection();
 
 		// once the first one happens, access paper toolkit and instrument the event dispatcher...
-
 		// send out information to the socket!
-
 	}
 
 	private void createServerToWaitForAConnection() {
 		try {
-			serverSocket = new ServerSocket(SERVICES_PORT);
+			serverSocket = new ServerSocket(Ports.TOOLKIT_MONITORING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		new Thread() {
-
 			public void run() {
 				while (!exitServer) {
 					Socket client;
@@ -86,10 +86,36 @@ public class ToolkitMonitoringService {
 		}.start();
 	}
 
+	/**
+	 * Add hooks to listen to the toolkit.
+	 */
 	private void instrumentToolkitForMonitoring() {
+		monitor = new ToolkitMonitor(this);
+
+		// instrument the event dispatcher
 		EventDispatcher eventDispatcher = toolkit.getEventDispatcher();
-		monitor = new ToolkitMonitor(toolkit, eventDispatcher, this);
 		eventDispatcher.setMonitor(monitor);
+		
+		List<Application> loadedApps = toolkit.getLoadedApps();
+		for (Application app : loadedApps) {
+			// instrument all pens
+			List<InputDevice> penInputDevices = app.getPenInputDevices();
+			for (final InputDevice dev : penInputDevices) {
+				dev.addLivePenListener(new PenListener() {
+					public void penDown(PenSample sample) {
+						monitor.penDown(dev, sample);
+					}
+					public void penUp(PenSample sample) {
+						monitor.penUp(dev, sample);
+					}
+					public void sample(PenSample sample) {
+						// don't do anything here (for now), because it's too much info
+					}
+				});
+			}
+			
+			//  instrument all event handlers!
+		}
 	}
 
 	/**
