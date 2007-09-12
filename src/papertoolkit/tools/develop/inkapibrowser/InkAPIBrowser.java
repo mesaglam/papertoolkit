@@ -12,9 +12,9 @@ import java.util.List;
 import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.flash.ExternalCommunicationServer;
-import papertoolkit.flash.ExternalListener;
-import papertoolkit.flash.FlashPenListener;
+import papertoolkit.external.ExternalCommunicationServer;
+import papertoolkit.external.ExternalListener;
+import papertoolkit.external.flash.FlashPenListener;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.ink.Ink;
 import papertoolkit.pen.ink.InkUtils;

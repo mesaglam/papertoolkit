@@ -1,5 +1,6 @@
-package papertoolkit.flash;
+package papertoolkit.external.flash;
 
+import papertoolkit.external.ExternalCommunicationServer;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
 

@@ -1,4 +1,4 @@
-package papertoolkit.flash.tools;
+package papertoolkit.external.flash;
 
 import java.awt.Color;
 import java.io.File;
@@ -8,9 +8,8 @@ import java.util.List;
 import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.flash.ExternalCommunicationServer;
-import papertoolkit.flash.ExternalListener;
-import papertoolkit.flash.FlashPenListener;
+import papertoolkit.external.ExternalCommunicationServer;
+import papertoolkit.external.ExternalListener;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.ink.Ink;

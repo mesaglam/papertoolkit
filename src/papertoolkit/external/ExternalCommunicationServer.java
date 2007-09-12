@@ -1,4 +1,4 @@
-package papertoolkit.flash;
+package papertoolkit.external;
 
 import java.awt.Desktop;
 import java.io.BufferedReader;

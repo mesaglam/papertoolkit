@@ -1,14 +1,17 @@
-package papertoolkit.flash.tools;
+package papertoolkit.external.flash;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.flash.ExternalCommunicationServer;
+import papertoolkit.external.ExternalCommunicationServer;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.components.SuperJTextField;
 
