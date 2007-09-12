@@ -5,9 +5,7 @@
 	<mx:Label x="10" y="10" text="Examine and Replay pen events..." fontSize="15" color="#ffffff"/>
 	<mx:Script>
 		<![CDATA[
-			
 			public function init():void {
-				
 			}
 		]]>
 	</mx:Script>

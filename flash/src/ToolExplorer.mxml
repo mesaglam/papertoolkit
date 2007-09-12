@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
-	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Tool Explorer" addedToStage="init();" xmlns:components="components.*">
+	backgroundGradientColors="[0x333333, 0x333333]" pageTitle="Tool Explorer" addedToStage="init();" xmlns:components="components.*" 
+	color="0xffffff" fontSize="14">
 	
 
 
@@ -179,7 +180,7 @@
 		<mx:ComboBox id="toolList" color="#000000" toolTip="Other Tools" change="explorer.selectTool();"></mx:ComboBox>
 	</mx:VBox>
 
-	<mx:VBox bottom="10" id="copyrightContainer" left="157" width="212">
+	<mx:VBox bottom="10" id="copyrightContainer" left="157">
 		<mx:Label text="Copyright 2007" fontWeight="bold" fontFamily="Trebuchet MS" color="#c0c0c0"/>
 		<mx:LinkButton label="Stanford University HCI Group" click="explorer.browseToHCIWebsite();" fontFamily="Trebuchet MS" color="#c0c0c0"/>
 		<mx:LinkButton label="Ron B. Yeh" click="explorer.browseToAuthorWebsite();" fontFamily="Trebuchet MS" color="#c0c0c0"/>

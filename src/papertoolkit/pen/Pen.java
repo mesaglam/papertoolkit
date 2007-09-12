@@ -63,9 +63,17 @@ public class Pen extends InputDevice {
 			quickListOfPenObjects = new ArrayList<Pen>();
 			for (String penNameAndPort : quickListOfPenNamesAndPorts) {
 				int colonIndex = penNameAndPort.indexOf(":");
-				String penServerName = penNameAndPort.substring(0, colonIndex);
-				int penServerPort = Integer.parseInt(penNameAndPort.substring(colonIndex + 1, penNameAndPort
-						.length()));
+				String penServerName = "";
+				int penServerPort = 0;
+				if (colonIndex == -1) {
+					penServerName = penNameAndPort;
+					penServerPort = PenServer.DEFAULT_JAVA_PORT;
+				} else {
+					penServerName = penNameAndPort.substring(0, colonIndex);
+					penServerPort = Integer.parseInt(penNameAndPort.substring(colonIndex + 1, penNameAndPort
+							.length()));
+				}
+
 				String shortName = "";
 				if (penServerName.contains(".")) {
 					shortName = penServerName.substring(0, penServerName.indexOf("."));
