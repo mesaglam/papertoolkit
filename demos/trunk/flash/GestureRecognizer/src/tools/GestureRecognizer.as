@@ -2,6 +2,8 @@ package tools {
 	import flash.display.LoaderInfo;
 	import flash.display.Sprite;
 	import flash.events.DataEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	import ink.InkStroke;
 	import ink.InkUtils;
@@ -12,55 +14,38 @@ package tools {
 
 		[Embed(source="../../images/Arrow.png")]
 		private var arrow:Class;
-		
 		[Embed(source="../../images/Caret.png")]
 		private var caret:Class;
-		
 		[Embed(source="../../images/Check.png")]
 		private var check:Class;
-		
 		[Embed(source="../../images/Circle.png")]
 		private var circle:Class;
-
 		[Embed(source="../../images/Delete.png")]
 		private var del:Class;
-
 		[Embed(source="../../images/LeftBrace.png")]
 		private var leftbrace:Class;
-
 		[Embed(source="../../images/LeftBracket.png")]
 		private var leftbracket:Class;
-
 		[Embed(source="../../images/Pigtail.png")]
 		private var pigtail:Class;
-
 		[Embed(source="../../images/Question.png")]
 		private var question:Class;
-
 		[Embed(source="../../images/Rectangle.png")]
 		private var rect:Class;
-
 		[Embed(source="../../images/RightBrace.png")]
 		private var rightbrace:Class;
-
 		[Embed(source="../../images/RightBracket.png")]
 		private var rightbracket:Class;
-
 		[Embed(source="../../images/Star.png")]
 		private var star:Class;
-
 		[Embed(source="../../images/Triangle.png")]
 		private var triangle:Class;
-
 		[Embed(source="../../images/V.png")]
 		private var v:Class;
-
 		[Embed(source="../../images/X.png")]
 		private var cross:Class;
-
 		[Embed(source="../../images/Direction.png")]
 		private var direction:Class;
-
 		[Embed(source="../../images/spacer.gif")]
 		private var spacer:Class;
 		
@@ -73,6 +58,7 @@ package tools {
 
 		// a circle to remind us where the pen was last seen
 		private var penTipCrossHair:Sprite = new Sprite();
+		private var penTipHideTimer:Timer = new Timer(2000);
 
 		private var gui:GestureRecognizerDisplay;
 		public function GestureRecognizer(rec:GestureRecognizerDisplay):void {
@@ -87,10 +73,17 @@ package tools {
 			penTipCrossHair.x = -200;
 			penTipCrossHair.scaleX = SCALE;
 			penTipCrossHair.scaleY = SCALE;
+			
+			penTipHideTimer.addEventListener(TimerEvent.TIMER, hidePenTip);
+			penTipHideTimer.start();
 	
 			gui.recognizedGestureImage.source = spacer;
 			gui.recognizedDirImage.source = direction;
 			gui.rotater.duration  = 20;
+		}
+		
+		private function hidePenTip(e:TimerEvent):void {
+			penTipCrossHair.visible = false;
 		}
 
 		private function showDirImage(angle:int, label:String):void {
@@ -268,6 +261,9 @@ package tools {
 				currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));
 				penTipCrossHair.x = xVal;
 				penTipCrossHair.y = yVal;
+				penTipCrossHair.visible = true;
+				penTipHideTimer.reset();
+				penTipHideTimer.start();
 			}	
 		}
 
