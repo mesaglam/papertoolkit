@@ -1,8 +1,13 @@
 package papertoolkit.events.handlers;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.Timer;
+
 
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
@@ -13,7 +18,6 @@ import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.units.PatternDots;
 import papertoolkit.units.Units;
 import papertoolkit.units.coordinates.PercentageCoordinates;
-
 
 /**
  * <p>
@@ -38,6 +42,8 @@ public abstract class HandwritingHandler extends EventHandler {
 	 */
 	private List<PenSample> currentStrokeSamples = new ArrayList<PenSample>();
 
+	private Timer notificationTimer;
+
 	/**
 	 * This is the client that will connect to the handwriting recognition server...
 	 */
@@ -49,11 +55,17 @@ public abstract class HandwritingHandler extends EventHandler {
 	private List<InkStroke> strokes = Collections.synchronizedList(new ArrayList<InkStroke>());
 
 	/**
-	 * Gets access to the HandwritingRecognitionService, which wraps the communication with the
-	 * Handwriting Recognition Server.
+	 * Gets access to the HandwritingRecognitionService, which wraps the communication with the Handwriting
+	 * Recognition Server.
 	 */
 	public HandwritingHandler() {
 		recognizerService = HandwritingRecognitionService.getInstance();
+		notificationTimer = new Timer(450, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				notificationTimer.stop();
+				contentArrived();
+			}
+		});
 	}
 
 	/**
@@ -63,10 +75,14 @@ public abstract class HandwritingHandler extends EventHandler {
 		strokes.clear();
 	}
 
-	public abstract void contentArrived();
-
 	/**
-	 * Capture Ink Strokes and notify listeners on every Pen Up.
+	 * 
+	 */
+	public abstract void contentArrived();
+	
+	/**
+	 * Capture Ink Strokes and Notify listeners when the user has paused writing. This is to make it more
+	 * efficient to call recognizeHandwriting on every contentArrived() notification.
 	 */
 	public void handleEvent(PenEvent event) {
 		final PercentageCoordinates percentageLocation = event.getPercentageLocation();
@@ -78,15 +94,15 @@ public abstract class HandwritingHandler extends EventHandler {
 		if (event.isTypePenDown()) {
 			// not a pen error!
 			currentStrokeSamples.clear();
-			currentStrokeSamples.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128,
-					timestamp));
+			currentStrokeSamples
+					.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
+			notificationTimer.stop(); // if the pen down happened within our ~350 ms, then we don't notify anyone
 		} else if (event.isTypePenUp()) {
 			strokes.add(new InkStroke(currentStrokeSamples, DOTS));
-			contentArrived();
-			// System.out.println("Collected " + strokes.size() + " strokes so far.");
+			notificationTimer.restart();
 		} else { // regular sample
-			currentStrokeSamples.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128,
-					timestamp));
+			currentStrokeSamples
+					.add(new PenSample(x.getValueInPixels(), y.getValueInPixels(), 128, timestamp));
 		}
 	}
 
@@ -113,7 +129,9 @@ public abstract class HandwritingHandler extends EventHandler {
 		return recognizerService.getAlternatives();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.stanford.hci.r3.events.EventHandler#toString()
 	 */
 	public String toString() {

@@ -303,7 +303,7 @@ public class ExternalCommunicationServer {
 			final URI uri = outputTempHTML.toURI();
 
 			// browse to this new file
-			DebugUtils.println("Loading the Flash GUI...");
+//			DebugUtils.println("Loading the Flash GUI...");
 			Desktop.getDesktop().browse(uri);
 		} catch (IOException e) {
 			e.printStackTrace();
