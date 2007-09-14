@@ -18,6 +18,7 @@ import papertoolkit.events.EventDispatcher;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
+import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -174,7 +175,8 @@ public class ToolkitMonitoringService {
 						}
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					DebugUtils.println("SideCar probably exited.");
+					// e.printStackTrace();
 				}
 				disconnect();
 			}

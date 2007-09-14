@@ -94,6 +94,7 @@ var SideCarViz = {
 	
 };
 
+// SideCar's Server runs at port 54321
 function println(msg) {
 	SCNetwork.sendMessageToAllListeners(msg + "\r\n");
 }

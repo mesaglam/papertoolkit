@@ -190,8 +190,8 @@ public class ExternalCommunicationServer {
 						final PrintStream writerOut = new PrintStream(incoming.getOutputStream());
 
 						// pass this to a handler thread that will service this client!
-						flashClients.add(new ExternalClient(ExternalCommunicationServer.this, clientID++, incoming,
-								readerIn, writerOut));
+						flashClients.add(new ExternalClient(ExternalCommunicationServer.this, clientID++,
+								incoming, readerIn, writerOut));
 					}
 				} catch (SocketException e) {
 					DebugUtils.println("Server Socket was Closed");
@@ -303,7 +303,7 @@ public class ExternalCommunicationServer {
 			final URI uri = outputTempHTML.toURI();
 
 			// browse to this new file
-//			DebugUtils.println("Loading the Flash GUI...");
+			// DebugUtils.println("Loading the Flash GUI...");
 			Desktop.getDesktop().browse(uri);
 		} catch (IOException e) {
 			e.printStackTrace();
