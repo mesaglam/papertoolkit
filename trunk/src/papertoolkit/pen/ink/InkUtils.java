@@ -8,8 +8,6 @@ import java.util.List;
 
 import papertoolkit.pen.PenSample;
 import papertoolkit.tools.develop.inkapibrowser.HideFromFlash;
-import papertoolkit.util.DebugUtils;
-
 
 /**
  * <p>
@@ -24,6 +22,82 @@ import papertoolkit.util.DebugUtils;
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
 public class InkUtils {
+
+	public static enum StationaryPointType {
+		MAX, MIN
+	}
+
+	public static class StationaryPoint {
+		public Point2D point;
+		public StationaryPointType type;
+
+		public String toString() {
+			return "(" + point.getX() + ", " + point.getY() + ")" + ":" + type;
+		}
+	}
+
+	/**
+	 * Probably Buggy.... should debug.
+	 * @param stroke
+	 * @return a list of points where the first derivative is zero (the tangent of the stroke is horizontal).
+	 */
+	public static List<StationaryPoint> getVerticalLocalMaximaAndMinima(InkStroke stroke) {
+		// analyzes the stroke for zero derivative points
+		// really, the point where the first derivative switches from positive to negative, and vice-versa...
+		// maybe we should have a function for getLocalMaxima and getLocalMinima???
+
+		List<StationaryPoint> pts = new ArrayList<StationaryPoint>();
+
+		List<PenSample> samples = stroke.getSamples();
+		int numSamples = samples.size();
+		if (numSamples < 2) {
+			return new ArrayList<StationaryPoint>(); // empty list
+		}
+
+		// detect sign changes or 0 points
+
+		PenSample currSample = samples.get(0);
+		PenSample nextSample;
+
+		// signum of this is 0, so we can't falsely go into the second case
+		double lastDerivative = 0;
+		for (int i = 1; i < numSamples; i++) {
+			nextSample = samples.get(i);
+			double dX = nextSample.x - currSample.x;
+			double dY = nextSample.y - currSample.y;
+			double dY_dX = dY / dX;
+
+			// is current derivative 0? If so, interpolate between the two points
+			if (dY_dX == 0) {
+				StationaryPoint pt = new StationaryPoint();
+				pt.point = new Point2D.Double(currSample.x + (dX / 2), currSample.y);
+
+				// check next or previous derivative!
+
+				// Y actually increases going down the page!
+				if (lastDerivative != 0) {
+					pt.type = (lastDerivative < 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
+				} else {
+					PenSample nextNextSample = samples.get(Math.min(i + 1, numSamples - 1));
+					double nextDerivative = (nextNextSample.y - nextSample.y)
+							/ (nextNextSample.x - nextSample.x);
+					pt.type = (nextDerivative > 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
+				}
+				pts.add(pt);
+			} else if (Math.signum(dY_dX) * Math.signum(lastDerivative) == -1) {
+				// is current deriviative opposite sign of last derivative?, if so, choose currPoint
+				StationaryPoint pt = new StationaryPoint();
+				pt.point = new Point2D.Double(currSample.x, currSample.y);
+
+				// Y actually increases going down the page!
+				pt.type = (dY_dX > 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
+				pts.add(pt);
+			}
+			lastDerivative = dY_dX;
+			currSample = nextSample;
+		}
+		return pts;
+	}
 
 	/**
 	 * Clusters a list of strokes into a list of list of strokes. The margin allows you to control how big the
@@ -143,13 +217,13 @@ public class InkUtils {
 	/**
 	 * Last year's Remote API fun was actually useful! Wow.
 	 * 
-	 * @return
+	 * @return a list of methods that can be accessed by our InkAPI Browser...
 	 */
 	@HideFromFlash()
 	public static List<Method> getExposedMethods() {
 		Method[] methods = InkUtils.class.getMethods();
 		Class<InkUtils> c = InkUtils.class;
-		Class<?> s = c.getSuperclass();
+		// Class<?> s = c.getSuperclass();
 
 		List<Method> methodsToReturn = new ArrayList<Method>();
 
