@@ -26,7 +26,7 @@ public class GestureRecognition {
 		// capture ink from a pen
 		Pen pen = new Pen();
 		pen.addLivePenListener(new PenStrokeListener() {
-			public void penStroke(InkStroke stroke) {
+			public void strokeArrived(InkStroke stroke) {
 				RecognitionResult result = dollarRecognizer.recognize(stroke);
 				DebugUtils.println(result);
 			}
