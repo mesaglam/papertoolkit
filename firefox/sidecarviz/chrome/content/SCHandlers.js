@@ -1,4 +1,5 @@
 var SCHandlers = {
+	shiftKeyIsDown : false,
 	controlKeyIsDown : false,
 	altKeyIsDown : false,
 	clipboardChanged : false,
@@ -32,6 +33,9 @@ var SCHandlers = {
 	
 	keyDown : function(e) {
 		switch (e.keyCode) {
+			case 16: // SHIFT
+				SCHandlers.shiftKeyIsDown = true;
+				break;
 			case 67: // C
 				if (SCHandlers.controlKeyIsDown) {
 					// we copied something!
@@ -60,6 +64,9 @@ var SCHandlers = {
 	// can't access "this" inside a handler... :-(
 	keyUp : function(e) {
 		switch (e.keyCode) {
+			case 16: // SHIFT
+				SCHandlers.shiftKeyIsDown = false;
+				break;
 			case 18: // ALT
 				SCHandlers.altKeyIsDown = false;
 				SCHandlers.segmentTyping();
@@ -81,7 +88,11 @@ var SCHandlers = {
 			default:
 				if (!SCHandlers.controlKeyIsDown && !SCHandlers.altKeyIsDown) {
 					// println("Key Up: " + e.keyCode);
-					SCHandlers.currentData += String.fromCharCode(e.keyCode);
+					var charData = String.fromCharCode(e.keyCode);
+					if (!SCHandlers.shiftKeyIsDown) {
+						charData = charData.toLowerCase();
+					}
+					SCHandlers.currentData += charData;
 				}
 				break;
 		}
