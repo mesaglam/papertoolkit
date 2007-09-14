@@ -186,7 +186,7 @@ public class CalibrationCaptureApp {
 	private PenListener getPenListener() {
 		if (listener == null) {
 			listener = new PenStrokeListener() {
-				public void penStroke(InkStroke stroke) {
+				public void strokeArrived(InkStroke stroke) {
 					if (currStreamedInk == null) {
 						currStreamedInk = new Ink();
 					}
