@@ -456,7 +456,7 @@ public class PaperToolkit {
 			private Socket sideCarSocket;
 
 			public void actionPerformed(ActionEvent arg0) {
-				DebugUtils.println("Opening Sidecar...");
+				DebugUtils.println("Opening Sidecar Flex GUI...");
 				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
 				try {
 					if (sideCarSocket == null) {

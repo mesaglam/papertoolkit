@@ -54,9 +54,10 @@ public class ExternalClient {
 							server.handleCommand(ExternalClient.this, command);
 						}
 					} catch (IOException e) {
-						if (e.getMessage().contains("Connection reset")) {
+						String msg = e.getMessage();
+						if (msg.contains("Connection reset") || msg.contains("socket closed")) {
 							DebugUtils.println("Client Logged Off");
-							done=true;
+							done = true;
 						} else {
 							e.printStackTrace();
 						}
