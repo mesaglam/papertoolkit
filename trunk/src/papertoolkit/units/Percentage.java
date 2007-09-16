@@ -78,4 +78,11 @@ public class Percentage extends Units {
 	public String toString() {
 		return getValue() + " Percent of " + maximumValue + " (" + actualValue + ")";
 	}
+
+	/**
+	 * @return Inches, Points, Pixels...
+	 */
+	public String getUnitName() {
+		return "Percent of [" + maximumValue + "]";
+	}
 }

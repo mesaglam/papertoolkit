@@ -102,8 +102,10 @@ public class PercentageCoordinates extends Coordinates {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
+		String xString = x.toString(2);
+		String yString = y.toString(2);
 		return "PercentageCoordinates { \n" //
-				+ "\t" + x.toString() + ", \n" //
-				+ "\t" + y.toString() + "\n}";
+				+ "\t" + xString + ", \n" //
+				+ "\t" + yString + "\n}";
 	}
 }

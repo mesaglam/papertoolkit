@@ -59,6 +59,11 @@ public abstract class StrokeHandler extends EventHandler {
 				return;
 			}
 		} else {
+			if (mostRecentStroke == null) {
+				// we must have missed the down... 
+				DebugUtils.println("Most Recent Stroke was null...");
+			}
+			
 			mostRecentStroke.addSample(event.getOriginalSample());
 			lastEvent = event;
 		}

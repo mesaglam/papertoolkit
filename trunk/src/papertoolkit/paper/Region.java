@@ -130,7 +130,16 @@ public class Region {
 	private boolean visible = true;
 
 	/**
-	 * A convenience funciton, for our American friends. =)
+	 * @param name
+	 * @param w
+	 * @param h
+	 */
+	public Region(String name, double w, double h) {
+		this(name, 0, 0, w, h);
+	}
+
+	/**
+	 * A convenience function, for our American friends. =)
 	 * 
 	 * @param xInches
 	 * @param yInches
@@ -139,6 +148,19 @@ public class Region {
 	 */
 	public Region(String name, double xInches, double yInches, double wInches, double hInches) {
 		this(name, new Rectangle2D.Double(xInches, yInches, wInches, hInches), Inches.ONE);
+	}
+
+	/**
+	 * @param name
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 * @param u
+	 */
+	public Region(String name, double x, double y, double w, double h, Units u) {
+		this(name, u.getUnitsObjectOfSameTypeWithValue(x), u.getUnitsObjectOfSameTypeWithValue(y), u
+				.getUnitsObjectOfSameTypeWithValue(w), u.getUnitsObjectOfSameTypeWithValue(h));
 	}
 
 	/**
@@ -181,12 +203,7 @@ public class Region {
 		this(name, new Rectangle2D.Double(x.getValue(), y.getValueIn(x), // assume a Rectangle2D
 				w.getValueIn(x), h.getValueIn(x)), x);
 	}
-
-	public Region(String name, double x, double y, double w, double h, Units u) {
-		this(name, u.getUnitsObjectOfSameTypeWithValue(x), u.getUnitsObjectOfSameTypeWithValue(y), u
-				.getUnitsObjectOfSameTypeWithValue(w), u.getUnitsObjectOfSameTypeWithValue(h));
-	}
-
+	
 	/**
 	 * Keeps track of this event handler. The PaperToolkit will dispatch events to these, whenever the event
 	 * deals with this region.

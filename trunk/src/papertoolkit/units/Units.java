@@ -264,4 +264,15 @@ public abstract class Units implements Cloneable {
 		return value + " " + getUnitName();
 	}
 
+	/**
+	 * @param numDecimals
+	 * @return
+	 */
+	public String toString(int numDecimals) {
+		String valueStr = value + "";
+		if (valueStr.contains(".")) {
+			valueStr = valueStr.substring(0, valueStr.indexOf(".") + numDecimals);
+		}
+		return valueStr + " " + getUnitName();
+	}
 }

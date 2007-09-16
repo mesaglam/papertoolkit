@@ -16,6 +16,7 @@ import papertoolkit.actions.types.TextToSpeechAction;
 import papertoolkit.devices.channels.ActionChannel;
 import papertoolkit.devices.channels.AudioChannel;
 import papertoolkit.devices.channels.DisplayChannel;
+import papertoolkit.devices.displays.HTMLDisplay;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.networking.ClientServerType;
 
@@ -188,6 +189,10 @@ public class Device {
 		sender = new ActionSender(hostNameOrIPAddr, ActionReceiver.DEFAULT_JAVA_PORT, ClientServerType.JAVA);
 	}
 
+	public HTMLDisplay createHTMLDisplay() {
+		return new HTMLDisplay(this, "DeviceDisplay");
+	}
+
 	/**
 	 * Disconnects from the sender. This device becomes useless afterward, until you reconnect.
 	 */
@@ -277,5 +282,9 @@ public class Device {
 			DebugUtils.println(e);
 		}
 		return false;
+	}
+
+	public void openFile(File destFile) {
+		doOpenFile(destFile);
 	}
 }
