@@ -234,7 +234,7 @@ public class Pen extends InputDevice {
 		// if the pen is on the local host...
 		// ensure that a java server has been started on this machine
 		if (hostDomainNameOrIPAddr.equals(LOCALHOST)) {
-			if (!PenServer.javaServerStarted()) {
+			if (!PenServer.isJavaServerStarted()) {
 				PenServer.startJavaServer(localPenComPort);
 			}
 		}
@@ -271,7 +271,7 @@ public class Pen extends InputDevice {
 		liveMode = false;
 
 		// if the server was started on the localhost, kill it too!
-		if (PenServer.javaServerStarted()) {
+		if (PenServer.isJavaServerStarted()) {
 			PenServer.stopServers();
 		}
 	}
