@@ -1,4 +1,4 @@
-package papertoolkit.demos.debug.simulator;
+package papertoolkit.demos.debug;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;

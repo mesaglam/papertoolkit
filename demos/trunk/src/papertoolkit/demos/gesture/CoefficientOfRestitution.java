@@ -1,17 +1,23 @@
 package papertoolkit.demos.gesture;
 
+import java.io.File;
 import java.util.List;
 
 import javax.print.attribute.standard.JobMessageFromOperator;
 import javax.swing.JOptionPane;
 
 import papertoolkit.PaperToolkit;
+import papertoolkit.devices.Device;
+import papertoolkit.devices.channels.DisplayChannel;
+import papertoolkit.devices.displays.HTMLDisplay;
 import papertoolkit.pen.Pen;
+import papertoolkit.pen.ink.Ink;
 import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.ink.InkUtils;
 import papertoolkit.pen.ink.InkUtils.StationaryPoint;
 import papertoolkit.pen.ink.InkUtils.StationaryPointType;
 import papertoolkit.pen.streaming.listeners.PenStrokeListener;
+import papertoolkit.render.ink.InkRenderer;
 import papertoolkit.util.DebugUtils;
 
 /**
@@ -30,6 +36,7 @@ public class CoefficientOfRestitution {
 	public CoefficientOfRestitution() {
 		Pen pen = new Pen();
 		pen.addLivePenListener(new PenStrokeListener() {
+			private Device localDevice;
 
 			public void strokeArrived(InkStroke stroke) {
 				// DebugUtils.println(stroke);
@@ -50,14 +57,32 @@ public class CoefficientOfRestitution {
 							double COR = Math.sqrt((lastMax.point.getY() - lastMin.point.getY())
 									/ (lastLastMax.point.getY() - lastMin.point.getY()));
 							DebugUtils.println("COR = " + COR);
-							
-							String CORString = ""+COR;
+
+							String CORString = "" + COR;
 							if (CORString.length() > 5) {
 								CORString = CORString.substring(0, 5);
 							}
-								
+
 							PaperToolkit.initializeLookAndFeel();
-							JOptionPane.showMessageDialog(null, "The COR is: " + CORString);
+							// JOptionPane.showMessageDialog(null, "The COR is: " + CORString);
+
+							stroke = InkUtils.scale(stroke, 4, 4);
+
+							// render the stroke
+							Ink ink = new Ink();
+							ink.addStroke(stroke);
+							File imageFile = ink.renderToJPEGFile();
+
+							// opens an HTML display with this file...
+							if (localDevice == null) {
+								localDevice = new Device();
+							}
+							
+							HTMLDisplay html = localDevice.createHTMLDisplay();
+							html.setTitle("Coefficient of Restitution");
+							html.addImage(imageFile);
+							html.addText("The COR is " + CORString);
+							html.showNow();
 							return;
 						}
 
