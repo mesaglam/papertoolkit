@@ -30,7 +30,7 @@ public abstract class InputDevice {
 	private static int uniquePenIDs = 0;
 
 	/**
-	 * A unique string identifier. This is set by the system.
+	 * A unique string identifier (that is actually an int). This is set by the system.
 	 */
 	private String id = "None";
 

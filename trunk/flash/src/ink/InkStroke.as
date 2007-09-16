@@ -62,7 +62,7 @@ package ink {
 		}		
 
 		// add an ink sample...
-		public function addPoint(xVal:Number, yVal:Number, f:Number):void {
+		public function addPoint(xVal:Number, yVal:Number, f:Number=128):void {
 			// consider modifying the color and width based on force
 			g.lineStyle(lineWidth, color);
 			

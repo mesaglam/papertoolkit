@@ -31,25 +31,17 @@ import papertoolkit.util.networking.ClientServerType;
  * @author Joel Brandt
  */
 public class PenServer implements PenListener {
-
 	/**
-	 * 
+	 * Hangs out here, accepting multiple client connections...
 	 */
 	private class ServerThread implements Runnable {
-
-		private void log(String msg) {
-			DebugUtils.printlnWithStackOffset(msg, 1);
-		}
-
 		public void run() {
 			while (true) {
 				Socket s = null;
-
 				if (exitFlag) {
 					log("Closing Pen Server.");
 					break;
 				}
-
 				try {
 					if (serverType == ClientServerType.PLAINTEXT) {
 						// log("Waiting for a plain text connection on port " + serverSocket.getLocalPort()
@@ -80,7 +72,6 @@ public class PenServer implements PenListener {
 						log("Error creating output: " + ioe.getLocalizedMessage());
 					}
 				}
-
 			}
 		}
 	}
@@ -91,17 +82,17 @@ public class PenServer implements PenListener {
 	public static final int DEFAULT_JAVA_PORT = Constants.Ports.PEN_SERVER_JAVA;
 
 	/**
-	 * 
+	 * The default debug port.
 	 */
 	public static final int DEFAULT_PLAINTEXT_PORT = Constants.Ports.PEN_SERVER_PLAINTEXT;
 
 	/**
-	 * 
+	 * By default, we connect to the pen on COM5 (works for Nokia pens)...
 	 */
 	public static final COMPort DEFAULT_SERIAL_PORT = COMPort.COM5;
 
 	/**
-	 * 
+	 * The default pen server sends java objects across the wire.
 	 */
 	private static PenServer javaPenServer;
 
@@ -111,15 +102,29 @@ public class PenServer implements PenListener {
 	private static PenStreamingConnection penConnection;
 
 	/**
-	 * 
+	 * A debug pen server sends text across the wire.
 	 */
 	private static PenServer textPenServer;
 
 	/**
+	 * Set to true if we could not connect to the main java port. This means someone else has already started
+	 * a local PenServer.
+	 */
+	private static boolean javaServerStartedBySomeoneElse = false;
+
+	/**
+	 * TODO: We may want to do the server started by someone else trick w/ the debug text server too...
 	 * @return whether there is a local Java server running.
 	 */
-	public static boolean javaServerStarted() {
-		return javaPenServer != null;
+	public static boolean isJavaServerStarted() {
+		return javaPenServer != null && javaServerStartedBySomeoneElse;
+	}
+
+	/**
+	 * @return whether we have started a text server on the localhost (TODO: also, see isJavaServerStarted)
+	 */
+	public static boolean isTextServerStarted() {
+		return textPenServer != null;
 	}
 
 	/**
@@ -182,6 +187,7 @@ public class PenServer implements PenListener {
 	 * Use the default java port...
 	 * 
 	 * @param serialPort
+	 *            customize the COM port
 	 */
 	public static void startJavaServer(COMPort serialPort) {
 		startJavaServer(serialPort, DEFAULT_JAVA_PORT);
@@ -195,23 +201,25 @@ public class PenServer implements PenListener {
 	 */
 	public static void startJavaServer(COMPort serialPort, int tcpipPort) {
 		try {
+			final ServerSocket javaServer = new ServerSocket(tcpipPort);
+
 			// provide access to this variable, so we can close a pen connection if necessary
 			penConnection = PenStreamingConnection.getInstance(serialPort);
 			if (penConnection == null) {
 				DebugUtils.println("The PenServer could not connect to the local serial port.");
 				return;
 			}
-
-			final ServerSocket javaServer = new ServerSocket(tcpipPort);
 			javaPenServer = new PenServer(javaServer, ClientServerType.JAVA);
 			penConnection.addPenListener(javaPenServer);
 		} catch (IOException ioe) {
-			log("Error with server socket: " + ioe.getLocalizedMessage());
+			log("A Pen Server (or some other server) already exists at " + tcpipPort);
+			log("We will try to connect to it....");
+			javaServerStartedBySomeoneElse = true;
 		}
 	}
 
 	/**
-	 * 
+	 * Start at default ports...
 	 */
 	public static void startTextServer() {
 		startTextServer(DEFAULT_SERIAL_PORT, DEFAULT_PLAINTEXT_PORT);
@@ -235,14 +243,13 @@ public class PenServer implements PenListener {
 	}
 
 	/**
-	 * 
+	 * TODO: also reset the flag, so we can check if the javaServer port is owned again...
 	 */
 	public static void stopServers() {
 		if (javaPenServer != null) {
 			javaPenServer.stopServer();
 			javaPenServer = null;
 		}
-
 		if (textPenServer != null) {
 			textPenServer.stopServer();
 			textPenServer = null;
@@ -250,36 +257,9 @@ public class PenServer implements PenListener {
 	}
 
 	/**
-	 * @return
-	 */
-	public static boolean textServerStarted() {
-		return textPenServer != null;
-	}
-
-	/**
-	 * 
+	 * Helps us break from the while loop (above).
 	 */
 	private boolean exitFlag = false;
-
-	/**
-	 * 
-	 */
-	private List<PenServerSender> outputs;
-
-	/**
-	 * Is the pen currently UP (not touching a patterned page)
-	 */
-	private boolean penUp = true;
-
-	/**
-	 * 
-	 */
-	private ServerSocket serverSocket;
-
-	/**
-	 * 
-	 */
-	private ClientServerType serverType;
 
 	/**
 	 * Weed out the spurious PENUP events that some NOKIA SU-1B pens throw...
@@ -287,10 +267,26 @@ public class PenServer implements PenListener {
 	private PenJitterFilter jitterFilter;
 
 	/**
+	 * Serializes pen samples and sends it across the wire.
+	 */
+	private List<PenServerSender> outputs;
+
+	/**
 	 * So we know when pen ups are valid...
 	 */
 	private boolean penDownHasHappened = false;
-	
+
+	/**
+	 * Is the pen currently UP (not touching a patterned page)
+	 */
+	private boolean penUp = true;
+
+	private ServerSocket serverSocket;
+
+	/**
+	 * TEXT or JAVA (default)
+	 */
+	private ClientServerType serverType;
 
 	/**
 	 * @param ss

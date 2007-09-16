@@ -599,7 +599,7 @@ public class Application {
 	}
 
 	/**
-	 * Convenience Method.
+	 * Convenience Method to load and run the paper application.
 	 */
 	public void run() {
 		PaperToolkit.getInstance().startApplication(this);
