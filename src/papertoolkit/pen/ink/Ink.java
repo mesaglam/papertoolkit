@@ -288,14 +288,13 @@ public class Ink {
 	}
 
 	/**
+	 * Drops it in the desktop directory...
 	 * @param w
 	 * @param h
 	 */
 	public File renderToJPEGFile() {
 		File homeDir = FileSystemView.getFileSystemView().getHomeDirectory();
-		// DebugUtils.println(homeDir);
 		File destFile = new File(homeDir, getName() + ".jpg");
-		// DebugUtils.println(destFile);
 		new InkRenderer(this).renderToJPEGRecentered(destFile);
 		return destFile;
 	}

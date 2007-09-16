@@ -63,7 +63,6 @@ import papertoolkit.util.files.FileUtils;
  */
 public class Application {
 
-
 	/**
 	 * For inspecting the application at runtime.
 	 */
@@ -263,7 +262,6 @@ public class Application {
 	 */
 	public final void populateTrayMenu(PopupMenu popupMenu) {
 
-
 		final Menu menu = new Menu(getName());
 		popupMenu.add(menu);
 
@@ -440,8 +438,11 @@ public class Application {
 	private void addEventHandlerForUnmappedEvents(final PatternToSheetMapping map, final Region region,
 			final MenuItem bindPatternToRegionItem, final File destFile) {
 
-		DebugUtils.println("Draw a box (with a single stroke) to bind region: [" + region
-				+ "] to an area on patterned paper.");
+		DebugUtils.println("Do one of two things to bind region: [" + region
+				+ "] to an area of patterned paper.");
+		DebugUtils.println("With a single stroke...");
+		DebugUtils.println("draw a box to represent the whole region");
+		DebugUtils.println("OR draw a small right-angled bracket to represent the top-left of the region. ");
 
 		// Runtime Pattern to Region Binding adds a listener for unmapped events in the Event Dispatcher
 		host.getEventDispatcher().addEventHandlerForUnmappedEvents(new StrokeHandler() {
@@ -454,17 +455,36 @@ public class Application {
 				final double width = bounds.getWidth();
 				final double height = bounds.getHeight();
 
-				// tie the pattern bounds to this region object
-				map.setPatternInformationOfRegion(region, //
-						new PatternDots(tlX), new PatternDots(tlY), // 
-						new PatternDots(width), new PatternDots(height));
+				// DebugUtils.println("Size of Box: " + width + " x " + height);
+				// DebugUtils.println("Num Samples: " + stroke.getNumSamples());
+
+				// if both width and height are < 50, and numSamples < 30, then we drew a bracket
+				if (width < 50 && height < 50 && stroke.getNumSamples() < 30) {
+					DebugUtils.println("Setting Top Left corner of Region.");
+					// tie the pattern bounds to this region object
+					// we use the regions size if we drew a bracket...
+					map.setPatternInformationOfRegion(region, //
+							new PatternDots(tlX), new PatternDots(tlY), // 
+							new PatternDots(region.getWidth().getValueInPatternDots()), new PatternDots(
+									region.getHeight().getValueInPatternDots()));
+				} else {
+					DebugUtils.println("Setting Entire Region.");
+					// tie the pattern bounds to this region object
+					map.setPatternInformationOfRegion(region, //
+							new PatternDots(tlX), new PatternDots(tlY), // 
+							new PatternDots(width), new PatternDots(height));
+				}
 
 				// unregister myself after one stroke
 				host.getEventDispatcher().removeEventHandlerForUnmappedEvents(this);
 
 				// DebugUtils.println("Bound the region [" + r.getName() + "] to Pattern " + bounds);
+				String boundsString = bounds.toString();
+				if (boundsString.contains("[")) { // discard the class name... of the Rectangle
+					boundsString = boundsString.substring(boundsString.indexOf("["));
+				}
 				bindPatternToRegionItem.setLabel("Change Binding for " + region.getName()
-						+ ". Currently set to " + bounds);
+						+ ". Currently set to " + boundsString);
 
 				// additionally... write this out to a file in the mappings directory
 				map.saveConfigurationToXML(destFile);
@@ -480,7 +500,6 @@ public class Application {
 	public void populateTrayMenuExtensions(Menu popupMenu) {
 		// nothing; subclasses can use this
 	}
-
 
 	/**
 	 * Only if this app is currently running, we will ask the event engine to register the pattern mapping so

@@ -23,10 +23,6 @@ import papertoolkit.tools.develop.inkapibrowser.HideFromFlash;
  */
 public class InkUtils {
 
-	public static enum StationaryPointType {
-		MAX, MIN
-	}
-
 	public static class StationaryPoint {
 		public Point2D point;
 		public StationaryPointType type;
@@ -36,67 +32,8 @@ public class InkUtils {
 		}
 	}
 
-	/**
-	 * Probably Buggy.... should debug.
-	 * @param stroke
-	 * @return a list of points where the first derivative is zero (the tangent of the stroke is horizontal).
-	 */
-	public static List<StationaryPoint> getVerticalLocalMaximaAndMinima(InkStroke stroke) {
-		// analyzes the stroke for zero derivative points
-		// really, the point where the first derivative switches from positive to negative, and vice-versa...
-		// maybe we should have a function for getLocalMaxima and getLocalMinima???
-
-		List<StationaryPoint> pts = new ArrayList<StationaryPoint>();
-
-		List<PenSample> samples = stroke.getSamples();
-		int numSamples = samples.size();
-		if (numSamples < 2) {
-			return new ArrayList<StationaryPoint>(); // empty list
-		}
-
-		// detect sign changes or 0 points
-
-		PenSample currSample = samples.get(0);
-		PenSample nextSample;
-
-		// signum of this is 0, so we can't falsely go into the second case
-		double lastDerivative = 0;
-		for (int i = 1; i < numSamples; i++) {
-			nextSample = samples.get(i);
-			double dX = nextSample.x - currSample.x;
-			double dY = nextSample.y - currSample.y;
-			double dY_dX = dY / dX;
-
-			// is current derivative 0? If so, interpolate between the two points
-			if (dY_dX == 0) {
-				StationaryPoint pt = new StationaryPoint();
-				pt.point = new Point2D.Double(currSample.x + (dX / 2), currSample.y);
-
-				// check next or previous derivative!
-
-				// Y actually increases going down the page!
-				if (lastDerivative != 0) {
-					pt.type = (lastDerivative < 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
-				} else {
-					PenSample nextNextSample = samples.get(Math.min(i + 1, numSamples - 1));
-					double nextDerivative = (nextNextSample.y - nextSample.y)
-							/ (nextNextSample.x - nextSample.x);
-					pt.type = (nextDerivative > 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
-				}
-				pts.add(pt);
-			} else if (Math.signum(dY_dX) * Math.signum(lastDerivative) == -1) {
-				// is current deriviative opposite sign of last derivative?, if so, choose currPoint
-				StationaryPoint pt = new StationaryPoint();
-				pt.point = new Point2D.Double(currSample.x, currSample.y);
-
-				// Y actually increases going down the page!
-				pt.type = (dY_dX > 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
-				pts.add(pt);
-			}
-			lastDerivative = dY_dX;
-			currSample = nextSample;
-		}
-		return pts;
+	public static enum StationaryPointType {
+		MAX, MIN
 	}
 
 	/**
@@ -366,10 +303,88 @@ public class InkUtils {
 	}
 
 	/**
+	 * Probably Buggy.... should debug.
+	 * @param stroke
+	 * @return a list of points where the first derivative is zero (the tangent of the stroke is horizontal).
+	 */
+	public static List<StationaryPoint> getVerticalLocalMaximaAndMinima(InkStroke stroke) {
+		// analyzes the stroke for zero derivative points
+		// really, the point where the first derivative switches from positive to negative, and vice-versa...
+		// maybe we should have a function for getLocalMaxima and getLocalMinima???
+
+		List<StationaryPoint> pts = new ArrayList<StationaryPoint>();
+
+		List<PenSample> samples = stroke.getSamples();
+		int numSamples = samples.size();
+		if (numSamples < 2) {
+			return new ArrayList<StationaryPoint>(); // empty list
+		}
+
+		// detect sign changes or 0 points
+
+		PenSample currSample = samples.get(0);
+		PenSample nextSample;
+
+		// signum of this is 0, so we can't falsely go into the second case
+		double lastDerivative = 0;
+		for (int i = 1; i < numSamples; i++) {
+			nextSample = samples.get(i);
+			double dX = nextSample.x - currSample.x;
+			double dY = nextSample.y - currSample.y;
+			double dY_dX = dY / dX;
+
+			// is current derivative 0? If so, interpolate between the two points
+			if (dY_dX == 0) {
+				StationaryPoint pt = new StationaryPoint();
+				pt.point = new Point2D.Double(currSample.x + (dX / 2), currSample.y);
+
+				// check next or previous derivative!
+
+				// Y actually increases going down the page!
+				if (lastDerivative != 0) {
+					pt.type = (lastDerivative < 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
+				} else {
+					PenSample nextNextSample = samples.get(Math.min(i + 1, numSamples - 1));
+					double nextDerivative = (nextNextSample.y - nextSample.y)
+							/ (nextNextSample.x - nextSample.x);
+					pt.type = (nextDerivative > 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
+				}
+				pts.add(pt);
+			} else if (Math.signum(dY_dX) * Math.signum(lastDerivative) == -1) {
+				// is current deriviative opposite sign of last derivative?, if so, choose currPoint
+				StationaryPoint pt = new StationaryPoint();
+				pt.point = new Point2D.Double(currSample.x, currSample.y);
+
+				// Y actually increases going down the page!
+				pt.type = (dY_dX > 0) ? StationaryPointType.MAX : StationaryPointType.MIN;
+				pts.add(pt);
+			}
+			lastDerivative = dY_dX;
+			currSample = nextSample;
+		}
+		return pts;
+	}
+
+	/**
 	 * @param args
 	 */
 	@HideFromFlash
 	public static void main(String[] args) {
 		InkUtils.getExposedMethods();
+	}
+
+	/**
+	 * @param stroke
+	 * @param scaleX
+	 * @param scaleY
+	 * @return
+	 */
+	public static InkStroke scale(InkStroke stroke, double scaleX, double scaleY) {
+		InkStroke scaledStroke = new InkStroke();
+		List<PenSample> samples = stroke.getSamples();
+		for (PenSample s: samples) {
+			scaledStroke.addSample(s.x*scaleX, s.y*scaleY, s.force, s.timestamp);
+		}
+		return scaledStroke;
 	}
 }

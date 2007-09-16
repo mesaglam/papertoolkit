@@ -11,7 +11,6 @@ import papertoolkit.units.PatternDots;
 import papertoolkit.units.Units;
 import papertoolkit.util.MathUtils;
 
-
 /**
  * <p>
  * Store ink strokes (multiple samples) in here.
@@ -372,9 +371,13 @@ public class InkStroke {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "InkStroke: Bounds [" + minX + ", " + minY + "  -->  " + maxX + ", " + maxY + "] "
-				+ getNumSamples() + " Samples with timestamps from [" + getFirstTimestampAsDate() + " to "
-				+ getLastTimestampAsDate() + "]";
+		if (getNumSamples() == 0) {
+			return "InkStroke without any samples";
+		} else {
+			return "InkStroke: Bounds [" + minX + ", " + minY + "  -->  " + maxX + ", " + maxY + "] "
+					+ getNumSamples() + " Samples with timestamps from [" + getFirstTimestampAsDate()
+					+ " to " + getLastTimestampAsDate() + "]";
+		}
 	}
 
 }

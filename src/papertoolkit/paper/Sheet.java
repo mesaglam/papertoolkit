@@ -3,10 +3,8 @@ package papertoolkit.paper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.Application;
@@ -14,6 +12,7 @@ import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.design.acrobat.RegionConfiguration;
 import papertoolkit.units.Inches;
+import papertoolkit.units.Millimeters;
 import papertoolkit.units.PatternDots;
 import papertoolkit.units.Size;
 import papertoolkit.units.Units;
@@ -50,7 +49,7 @@ import papertoolkit.units.coordinates.Coordinates;
 public class Sheet {
 
 	/**
-	 * 
+	 * Used for debugging.
 	 */
 	private static final String INDENT = "   ";
 
@@ -100,12 +99,39 @@ public class Sheet {
 	private Size size = new Size();
 
 	/**
+	 * <p>
+	 * For easy sheet sizes... add more here!
+	 * </p>
+	 */
+	public static enum SheetSize {
+		LETTER(new Inches(8.5), new Inches(11)),
+
+		A4(new Millimeters(210), new Millimeters(297)),
+
+		A5(new Millimeters(148), new Millimeters(210)),
+		
+		B7(new Millimeters(125), new Millimeters(88));
+
+		Units width;
+		Units height;
+
+		private SheetSize(Units w, Units h) {
+			width = w;
+			height = h;
+		}
+	}
+
+	/**
 	 * Defaults to US Letter.
 	 */
 	public Sheet() {
 		this(new Inches(8.5), new Inches(11.0));
 	}
 
+	public Sheet(SheetSize size) {
+		this(size.width, size.height);
+	}
+	
 	/**
 	 * A convenience method for our American friends. =)
 	 * 
