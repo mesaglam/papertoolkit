@@ -89,6 +89,7 @@ package ink {
 		// add an ink stroke for display
 		// we keep around the most recent stroke and ink cluster, 
 		// so that we can do cool calculations, like recentering
+		// you should add a stroke AFTER you have added all the stroke's samples...
 		public function addStroke(stroke:InkStroke):void {
 			//trace("Add Stroke");
 			strokeCount++;
@@ -154,6 +155,7 @@ package ink {
 
 		// make sure the most recent cluster is visible within this rectangle
 		// if not, then at the very least, the most recent stroke...
+		// TODO: This is not complete (does nothing with rect)
 		public function recenterMostRecentCluster(rect:Rectangle):void {
 			trace("Recenter to: " + rect);
 
@@ -173,6 +175,27 @@ package ink {
 			x = -minX + paddingSmall;
 			y = -minY + paddingSmall;
 		}
+
+		// places the center of the inkWell in the center of the rectangle!
+		// useful if you are sure your entire ink glob will fit inside your viewable rectangle
+		public function recenterTheCenter(rect:Rectangle):void {
+			
+			var xCenter:Number = (xMin + xMax)/2;
+			var yCenter:Number = (yMin + yMax)/2;
+			
+			var rectXCenter:Number = (rect.x + rect.width/2);
+			var rectYCenter:Number = (rect.y + rect.height/2);
+			
+			// how far are we off?
+			var xDiff:Number = rectXCenter - xCenter;
+			var yDiff:Number = rectYCenter - yCenter;
+
+			// add it to this ink's top/left offset
+			x = xDiff;
+			y = yDiff;
+		}
+		
+		
 
         // move the ink so that we can see the most recent ink strokes!
         // basically, we should recenter() first, and then find the delta
