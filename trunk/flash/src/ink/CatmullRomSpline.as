@@ -145,7 +145,7 @@ package ink {
 			numVertices = xSamples.length;
 			tSamples = new Array(numVertices);
 			
-			trace("Num Vertices: " + numVertices);
+			// trace("Num Vertices: " + numVertices);
 			if (numVertices == 1) {
 				// this is a bad condition, so we will duplicate the point
 				xSamples.push(xSamples[0]);
@@ -182,12 +182,12 @@ package ink {
 				// trace("Plotting");
 				g.lineTo(p[i].x,p[i].y);
 			}
-			trace("Plotted " + p.length + " points.");
+			// trace("Plotted " + p.length + " points.");
 		}
 		
 		private function getAllPoints(approxLineLength:Number = APPROX_LINE_LENGTH):Array{
 			if (verticesPlus == null){
-				trace("Making Vertices Plus");
+				// trace("Making Vertices Plus");
 				makeVerticesPlus();
 			}
 			if (lengths == null) { getSegmentLengths(); }

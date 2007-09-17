@@ -1,13 +1,10 @@
 package ink {		
 	
 	import flash.display.Sprite;
-	import flash.display.Graphics;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.display.Stage;
-	import flash.filters.GradientBevelFilter;
-	import flash.display.DisplayObject;
 	import flash.geom.Rectangle;
+	
 	import utils.MathUtils;
 
 	
@@ -33,6 +30,19 @@ package ink {
 		private var strokeCount:Number = 0;
 
 		private var currentlyPreviewing:InkStroke;
+
+
+		public function Ink(dragSupport:Boolean=true) {
+			if (dragSupport) {
+				buttonMode = true;
+			
+				// add drag support
+				addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			}
+		}
+
+
 
 		public function set color(c:uint):void {
 			// for each stroke, set the color!
@@ -72,12 +82,6 @@ package ink {
 			}
 		}
 
-		public function Ink() {
-			buttonMode = true;
-			// add drag support
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-		}
 		
         private function onMouseDown(evt:Event):void {
             this.startDrag();
@@ -104,7 +108,7 @@ package ink {
 				var dDist:Number = MathUtils.distance(stroke.avgX, stroke.avgY, 
 													  mostRecentStroke.avgX, mostRecentStroke.avgY);
 													  
-				trace("Ink: " + dDist);	
+				// trace("Ink: " + dDist);	
 				if (dDist > InkCluster.CLUSTER_GAP) {
 					// if it's > 500 anoto dots away from the last ink stroke, 
 					// we assume it's in a different cluster (e.g, new page)
