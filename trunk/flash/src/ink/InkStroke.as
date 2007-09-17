@@ -66,7 +66,6 @@ package ink {
 			// consider modifying the color and width based on force
 			g.lineStyle(lineWidth, color);
 			
-			
 			if (xSamples.length == 0) {
 				lastXVal = xVal;
 				lastYVal = yVal;
@@ -225,6 +224,12 @@ package ink {
 		}
 		public function get strokeHeight():Number {
 			return yMax - yMin;
+		}
+		public function getXSamples():Array {
+			return xSamples;
+		}
+		public function getYSamples():Array {
+			return ySamples;
 		}
 		///////////////// END GETTERS ////////////////////////		
 		
