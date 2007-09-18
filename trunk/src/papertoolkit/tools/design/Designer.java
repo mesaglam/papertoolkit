@@ -23,7 +23,6 @@ import papertoolkit.tools.design.gui.DocumentPanel;
 import papertoolkit.tools.design.gui.toolbar.DebuggingTasks;
 import papertoolkit.tools.design.gui.toolbar.DocumentTasks;
 import papertoolkit.tools.design.gui.toolbar.UserTestTasks;
-import papertoolkit.util.DebugUtils;
 import papertoolkit.util.WindowUtils;
 import papertoolkit.util.components.ribbons.RibbonPanel;
 import papertoolkit.util.components.ribbons.RibbonToolbar;
@@ -43,7 +42,7 @@ import papertoolkit.util.components.ribbons.RibbonToolbar;
  */
 public class Designer {
 
-	private static final String TITLE = "R3 Paper UI Designer";
+	private static final String TITLE = "Paper UI Designer";
 
 	public static void main(String[] args) {
 		new Designer();

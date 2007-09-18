@@ -50,7 +50,7 @@ import papertoolkit.pen.replay.SaveAndReplay;
 import papertoolkit.pen.streaming.PenServerTrayApp;
 import papertoolkit.pen.synch.BatchedDataDispatcher;
 import papertoolkit.tools.ToolExplorer;
-import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
+import papertoolkit.tools.design.acrobat.PaperUIDesigner;
 import papertoolkit.tools.design.acrobat.RegionConfiguration;
 import papertoolkit.tools.services.ToolkitMonitoringService;
 import papertoolkit.units.Centimeters;
@@ -502,7 +502,7 @@ public class PaperToolkit {
 	 * 
 	 */
 	public static void startAcrobatDesigner() {
-		AcrobatDesignerLauncher.start();
+		PaperUIDesigner.start();
 	}
 
 	/**

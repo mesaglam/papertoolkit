@@ -31,7 +31,7 @@ import papertoolkit.pen.PenSimulator;
 import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.render.SheetRenderer;
 import papertoolkit.tools.debug.DebuggingEnvironment;
-import papertoolkit.tools.design.acrobat.AcrobatDesignerLauncher;
+import papertoolkit.tools.design.acrobat.PaperUIDesigner;
 import papertoolkit.tools.design.swing.SheetFrame;
 import papertoolkit.units.PatternDots;
 import papertoolkit.util.DebugUtils;
@@ -319,7 +319,7 @@ public class Application {
 		final MenuItem designItem = new MenuItem("Design Sheets");
 		designItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				JFrame frame = AcrobatDesignerLauncher.start();
+				JFrame frame = PaperUIDesigner.start();
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 			}
 		});
