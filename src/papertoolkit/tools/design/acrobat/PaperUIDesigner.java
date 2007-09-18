@@ -43,7 +43,7 @@ import papertoolkit.util.graphics.ImageCache;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class AcrobatDesignerLauncher {
+public class PaperUIDesigner {
 
 	private static BufferedImagePanel activeArea;
 
@@ -111,8 +111,7 @@ public class AcrobatDesignerLauncher {
 				e.printStackTrace();
 			}
 
-			pdfLogo = ImageCache.loadBufferedImage(AcrobatDesignerLauncher.class
-					.getResource("/icons/pdfIcon.png"));
+			pdfLogo = ImageCache.loadBufferedImage(PaperToolkit.getDataFile("icons/pdfIcon.png"));
 		}
 		return activeArea;
 	}
@@ -176,8 +175,8 @@ public class AcrobatDesignerLauncher {
 	 */
 	private static Component getLabel() {
 		JLabel label = new JLabel("<html>Drag a PDF on to the active area below to start the "
-				+ "R3 Acrobat Designer. You must have Acrobat Pro <br/>on your system, "
-				+ "with the R3 plugin installed.</html>");
+				+ "Acrobat Designer. You must have Acrobat Pro <br/>on your system, "
+				+ "with the PaperToolkit plugin installed.</html>");
 		label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		return label;
 	}
@@ -208,7 +207,7 @@ public class AcrobatDesignerLauncher {
 	public static JFrame start() {
 		PaperToolkit.initializeLookAndFeel();
 		if (frame == null) {
-			frame = new JFrame("Acrobat Designer Launcher");
+			frame = new JFrame("Acrobat Designer");
 			frame.setContentPane(getMainPanel());
 			frame.setSize(640, 480);
 			frame.setLocation(WindowUtils.getWindowOrigin(frame, WindowUtils.DESKTOP_CENTER));
