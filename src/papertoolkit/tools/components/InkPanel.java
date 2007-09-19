@@ -1,6 +1,7 @@
 package papertoolkit.tools.components;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -12,7 +13,6 @@ import javax.swing.JPanel;
 
 import papertoolkit.pen.ink.Ink;
 import papertoolkit.render.ink.InkRenderer;
-import papertoolkit.util.DebugUtils;
 import papertoolkit.util.graphics.GraphicsUtils;
 
 /**
@@ -55,9 +55,12 @@ public class InkPanel extends JPanel {
 	 */
 	protected Ink mostRecentInk;
 
-	private int offX = -120;
-	
-	private int offY = -100;
+	/**
+	 * adjust these offsets for your application
+	 * ideally, the ink can center itself
+	 */
+	private int offX = -0;
+	private int offY = -0;
 
 	private double paddingLeft = 15;
 
@@ -72,6 +75,9 @@ public class InkPanel extends JPanel {
 	 * coordinates are correct already...
 	 */
 	private boolean shouldRecenter = true;
+
+	private String overlayText = "";
+	
 
 	/**
 	 * Default Catmull-Rom method.
@@ -89,6 +95,7 @@ public class InkPanel extends JPanel {
 	public InkPanel(InkRenderer inkRenderer, Color bgColor) {
 		setBackground(bgColor);
 		renderer = inkRenderer;
+		renderer.useCatmullRomRendering();
 	}
 
 	/**
@@ -151,6 +158,12 @@ public class InkPanel extends JPanel {
 		final Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHints(GraphicsUtils.getBestRenderingHints());
 
+		if (!overlayText.equals("")) {
+			g2d.setColor(Color.WHITE);
+			g2d.setFont(new Font("Tahoma", Font.BOLD, 72));
+			g2d.drawString(overlayText, 40, 350); // a hack for demo
+		}
+		
 		final AffineTransform transform = g2d.getTransform();
 		g2d.translate(offX, offY);
 		g2d.scale(inkScale, inkScale);
@@ -168,6 +181,7 @@ public class InkPanel extends JPanel {
 				renderer.renderToG2D(g2d);
 			}
 		}
+		
 		g2d.setTransform(transform);
 	}
 
@@ -236,5 +250,10 @@ public class InkPanel extends JPanel {
 	 */
 	public void setScale(double theScale) {
 		inkScale = theScale;
+	}
+
+	public void setOverlayText(String text) {
+		overlayText = text;
+		repaint();
 	}
 }

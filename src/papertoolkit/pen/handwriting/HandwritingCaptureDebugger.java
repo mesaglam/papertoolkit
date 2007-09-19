@@ -19,7 +19,6 @@ import javax.swing.JTextArea;
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.config.StartupOptions;
 import papertoolkit.tools.components.InkPanel;
-import papertoolkit.util.DebugUtils;
 import papertoolkit.util.WindowUtils;
 
 /**
@@ -135,7 +134,7 @@ public class HandwritingCaptureDebugger extends JFrame {
 	/**
 	 * @return
 	 */
-	InkPanel getInkPanel() {
+	public InkPanel getInkPanel() {
 		if (mainPanel == null) {
 			mainPanel = new InkPanel();
 			mainPanel.setPreferredSize(new Dimension(800, 600));
