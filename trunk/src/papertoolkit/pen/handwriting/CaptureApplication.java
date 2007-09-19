@@ -1,5 +1,6 @@
 package papertoolkit.pen.handwriting;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.List;
 
@@ -12,11 +13,11 @@ import papertoolkit.paper.Sheet;
 import papertoolkit.pattern.coordinates.PatternToSheetMapping;
 import papertoolkit.pen.Pen;
 import papertoolkit.pen.PenSample;
+import papertoolkit.pen.ink.Ink;
 import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.pen.streaming.PenAdapter;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.units.PatternDots;
-import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -255,7 +256,9 @@ public class CaptureApplication extends Application {
 		inkCollector = new InkHandler() {
 			public void handleInkStroke(PenEvent event, InkStroke mostRecentStroke) {
 				// DebugUtils.println(getInk().getNumStrokes());
-				gui.getInkPanel().addInk(getNewInkOnly());
+				final Ink ink = getNewInkOnly();
+				ink.setColor(Color.WHITE);
+				gui.getInkPanel().addInk(ink);
 			}
 		};
 
@@ -267,6 +270,7 @@ public class CaptureApplication extends Application {
 				String text = recognizeHandwriting();
 				// DebugUtils.println("Handwritten Content: " + text);
 				gui.setInfoText(text);
+				gui.getInkPanel().setOverlayText(text);
 				// gui.setAlternatives(topTen);
 			}
 		};
