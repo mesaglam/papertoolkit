@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -111,9 +112,19 @@ public class PaperToolkit {
 	public static final String CONFIG_PATTERN_PATH_VALUE = "data/pattern/";
 
 	/**
+	 * We should move this out to a config file, I know... :(
+	 */
+	private static final String DEFAULT_TOOLKIT_RESOURCE_DIR = "C:/Documents and Settings/Ron Yeh/My Documents/Projects/PaperToolkit/bin";
+
+	/**
 	 * Property Keys.
 	 */
 	private static final String HW_REC_KEY = "handwritingRecognition";
+
+	/**
+	 * 
+	 */
+	private static boolean isfirstAppPopulatingSystemTray = true;
 
 	/**
 	 * Whether we have called initializeLookAndFeel() yet...
@@ -123,7 +134,7 @@ public class PaperToolkit {
 	/**
 	 * Where PaperToolkit is installed.
 	 */
-	private static File paperToolkitRootPath;
+	private static File toolkitRootPath;
 
 	/**
 	 * Where to find the directories that store our pattern definition files.
@@ -288,8 +299,16 @@ public class PaperToolkit {
 	 */
 	public static File getResourceFile(String resourcePath) {
 		try {
-			File f = new File(PaperToolkit.class.getResource(resourcePath).toURI());
-			return f;
+			// we need a way to anchor the PaperToolkit Path...
+			// maybe through a config file? but where might we access this config file...
+			// in the user's home directory?
+			// instead, if it's a resource we can't understand, we just default to the toolkitRootPath field
+			URI resourceURI = PaperToolkit.class.getResource(resourcePath).toURI();
+			if (resourceURI.getScheme().equals("bundleresource")) {
+				return new File(DEFAULT_TOOLKIT_RESOURCE_DIR, resourcePath);
+			} else {
+				return new File(resourceURI);
+			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -311,18 +330,17 @@ public class PaperToolkit {
 	 * @return the root path to the toolkit (e.g., C:\Documents and Settings\User Name\Projects\PaperToolkit\)
 	 */
 	public static File getToolkitRootPath() {
-		if (paperToolkitRootPath == null) {
+
+		if (toolkitRootPath == null) {
 			// get the runtime directory for the papertoolkit package (e.g.,
 			// PaperToolkit/bin/papertoolkit) the parent will be the root
 			// directory!
-			URL resource = PaperToolkit.class.getResource("/papertoolkitroot");
-			try {
-				paperToolkitRootPath = new File(resource.toURI()).getParentFile().getParentFile();
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
+			// 
+			// darn... this doesn't work if it is accessed by eclipse
+			File resourceFile = getResourceFile("/papertoolkitroot");
+			toolkitRootPath = resourceFile.getParentFile().getParentFile();
 		}
-		return paperToolkitRootPath;
+		return toolkitRootPath;
 	}
 
 	/**
@@ -427,6 +445,14 @@ public class PaperToolkit {
 	}
 
 	/**
+	 * @return
+	 */
+	public static SaveAndReplay initializeSaveAndReplay() {
+		// the static initializer will have run by this time, so getInstance will be valid!
+		return SaveAndReplay.getInstance();
+	}
+
+	/**
 	 * Alternatively, try using the *.bat files instead.
 	 * 
 	 * @param args
@@ -468,7 +494,8 @@ public class PaperToolkit {
 					sideCarPrintWriter.flush();
 				} catch (Exception e) {
 					DebugUtils.println("Is SideCar Running Yet? If not... start SideCar, and try again!");
-					DebugUtils.println("We are expecting SideCar to be listening at Port: " + Ports.SIDE_CAR_COMMUNICATIONS);
+					DebugUtils.println("We are expecting SideCar to be listening at Port: "
+							+ Ports.SIDE_CAR_COMMUNICATIONS);
 				}
 			}
 		});
@@ -719,8 +746,6 @@ public class PaperToolkit {
 
 	}
 
-	private static boolean isfirstAppPopulatingSystemTray = true;
-
 	/**
 	 * Start this application and register all live pens with the event engine. The event engine will then
 	 * start dispatching events for this application until the application is stopped.
@@ -794,10 +819,4 @@ public class PaperToolkit {
 		eventDispatcher.unregisterPatternMapsForEventHandling(paperApp.getPatternMaps());
 		paperApp.setRunning(false);
 	}
-
-	public static SaveAndReplay initializeSaveAndReplay() {
-		// the static initializer will have run by this time, so getInstance will be valid!
-		return SaveAndReplay.getInstance();
-	}
-
 }
