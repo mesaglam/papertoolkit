@@ -12,7 +12,7 @@ import papertoolkit.units.Inches;
 
 /**
  * <p>
- * A simple sheet with one large button that counts the number of times you click it.
+ * A simple sheet with one large button that counts the number of consecutive times you click it.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -26,7 +26,7 @@ public class Simple {
 	private static EventHandler getClickHandler() {
 		return new ClickAdapter() {
 			public void clicked(PenEvent e) {
-				System.out.println("Clicked " + clickCount + " times.");
+				System.out.println("Clicked " + getConsecutiveClickCount() + " times.");
 			}
 		};
 	}

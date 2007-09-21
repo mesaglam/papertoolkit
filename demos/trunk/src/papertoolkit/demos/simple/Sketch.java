@@ -152,7 +152,7 @@ public class Sketch {
 		Region regionBlack = sheet.getRegion("BlackPalette");
 		regionBlack.addEventHandler(new ClickAdapter() {
 			public void clicked(PenEvent e) {
-				System.out.println("Clicked Black " + clickCount + " times in a row.");
+				System.out.println("Clicked Black " + getConsecutiveClickCount() + " times in a row.");
 				currentColor = BLACK;
 				colorPanel.setBackground(currentColor);
 			}
@@ -161,7 +161,7 @@ public class Sketch {
 		Region regionPurple = sheet.getRegion("PurplePalette");
 		regionPurple.addEventHandler(new ClickAdapter() {
 			public void clicked(PenEvent e) {
-				System.out.println("Clicked Purple " + clickCount + " times in a row.");
+				System.out.println("Clicked Purple " + getConsecutiveClickCount() + " times in a row.");
 				currentColor = PURPLE;
 				colorPanel.setBackground(currentColor);
 			}
@@ -170,7 +170,7 @@ public class Sketch {
 		Region regionOrange = sheet.getRegion("OrangePalette");
 		regionOrange.addEventHandler(new ClickAdapter() {
 			public void clicked(PenEvent e) {
-				System.out.println("Clicked Orange " + clickCount + " times in a row.");
+				System.out.println("Clicked Orange " + getConsecutiveClickCount() + " times in a row.");
 				currentColor = ORANGE;
 				colorPanel.setBackground(currentColor);
 			}

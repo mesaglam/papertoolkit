@@ -103,7 +103,7 @@ public class PPTAdvancer extends Application {
 	private EventHandler getClickHandler() {
 		return new ClickAdapter() {
 			public void clicked(PenEvent e) {
-				DebugUtils.println("Clicked " + clickCount + " times...");
+				DebugUtils.println("Clicked " + getConsecutiveClickCount() + " times...");
 			}
 		};
 	}
