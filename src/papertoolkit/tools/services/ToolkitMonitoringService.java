@@ -51,6 +51,7 @@ public class ToolkitMonitoringService {
 		toolkit = paperToolkit;
 
 		// wait at this port for a connection
+		// the flex gui will connect to this monitor
 		createServerToWaitForAConnection();
 
 		// once the first one happens, access paper toolkit and instrument the event dispatcher...

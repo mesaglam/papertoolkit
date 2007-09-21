@@ -39,7 +39,7 @@ public class ExternalClient {
 
 		clientThread = new Thread(new Runnable() {
 			public void run() {
-				DebugUtils.println("New Flash Client: ID == " + clientID);
+				DebugUtils.println("Flash GUI Connected: ID == " + clientID);
 				while (!done) {
 					String command = null;
 					try {
