@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.InvalidPropertiesFormatException;
@@ -176,6 +175,8 @@ public class PaperToolkit {
 	 */
 	private static XStream xmlEngine;
 
+	private static String toolkitIconTitle;
+
 	/**
 	 * Print an Intro Message.
 	 */
@@ -201,8 +202,10 @@ public class PaperToolkit {
 		}
 		if (trayIcon == null) {
 			// this is the icon that sits in our tray...
-			trayIcon = new TrayIcon(ImageCache
-					.loadBufferedImage(PaperToolkit.getDataFile("/icons/paper.png")), "Paper Toolkit",
+			toolkitIconTitle = Configuration.getPropertyValue(Configuration.Keys.TOOLKIT_ICON_TITLE
+					.toString());
+			trayIcon = new TrayIcon(ImageCache.loadBufferedImage(PaperToolkit.getDataFile(Configuration
+					.getPropertyValue(Configuration.Keys.TOOLKIT_ICON_PATH.toString()))), toolkitIconTitle,
 					getTrayMenu());
 			trayIcon.setImageAutoSize(true);
 			trayIcon.addMouseListener(new MouseAdapter() {
@@ -351,7 +354,7 @@ public class PaperToolkit {
 			trayMenu = new PopupMenu("Paper Toolkit Options");
 
 			// for exiting the application
-			final MenuItem exitItem = new MenuItem("Exit PaperToolkit");
+			final MenuItem exitItem = new MenuItem("Exit " + toolkitIconTitle);
 			exitItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					exitPaperToolkit();
@@ -482,7 +485,6 @@ public class PaperToolkit {
 			private Socket sideCarSocket;
 
 			public void actionPerformed(ActionEvent arg0) {
-				DebugUtils.println("Opening Sidecar Flex GUI...");
 				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
 				try {
 					if (sideCarSocket == null) {
@@ -490,6 +492,7 @@ public class PaperToolkit {
 						OutputStream outputStream = sideCarSocket.getOutputStream();
 						sideCarPrintWriter = new PrintWriter(outputStream);
 					}
+					DebugUtils.println("Opening Sidecar Flex GUI...");
 					sideCarPrintWriter.println("StartFlexGUI");
 					sideCarPrintWriter.flush();
 				} catch (Exception e) {

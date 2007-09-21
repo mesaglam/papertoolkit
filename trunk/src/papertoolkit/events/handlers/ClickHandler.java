@@ -85,7 +85,7 @@ public abstract class ClickHandler extends EventHandler {
 	/**
 	 * Use this variable to see if there was a double click, while handing a clicked() event.
 	 */
-	protected int clickCount = 1;
+	private int consecutiveClickCount = 1;
 
 	/**
 	 * Whether we should filter out bad data received from bad streaming pens or poorly printed dot patterns.
@@ -96,7 +96,7 @@ public abstract class ClickHandler extends EventHandler {
 	 * 
 	 */
 	private ClickNotifier lastClickNotifier;
-
+	
 	/**
 	 * If the current click time is really close to the last click time, we can signal a double click.
 	 */
@@ -124,6 +124,13 @@ public abstract class ClickHandler extends EventHandler {
 	 * @param e
 	 */
 	public abstract void clicked(PenEvent e);
+
+	/**
+	 * @return
+	 */
+	public int getConsecutiveClickCount() {
+		return consecutiveClickCount;
+	}
 
 	/**
 	 * This method does the hard work of figuring out when a pen pressed, released, and clicked. It is up to
@@ -156,9 +163,9 @@ public abstract class ClickHandler extends EventHandler {
 			// really, this should always be true
 			if (penDownHappened) {
 				if (event.getTimestamp() - lastClickTime <= maxMillisBetweenMultipleClicks) {
-					clickCount++;
+					consecutiveClickCount++;
 				} else {
-					clickCount = 1; // reset the click count
+					consecutiveClickCount = 1; // reset the click count
 				}
 
 				if (filterJitteryPenEvents) {

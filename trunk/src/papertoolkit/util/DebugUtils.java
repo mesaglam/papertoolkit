@@ -47,7 +47,7 @@ public class DebugUtils {
 	 */
 	public static String getClassNameFromStackTraceElement(StackTraceElement stackTraceElement) {
 		String qualifiedClassName = stackTraceElement.getClassName();
-		return qualifiedClassName.substring(qualifiedClassName.lastIndexOf(".")+1);
+		return qualifiedClassName.substring(qualifiedClassName.lastIndexOf(".") + 1);
 	}
 
 	/**
@@ -76,7 +76,6 @@ public class DebugUtils {
 		// get the stuff between the parentheses
 		String element = ste[actualOffset].toString();
 		// element = element.substring(element.lastIndexOf("("), element.lastIndexOf(")")+1);
-		element = "[ " + element + " ]";
 		String methodName = ste[actualOffset].getMethodName();
 		final String trace = className + "." + methodName;
 
@@ -94,9 +93,10 @@ public class DebugUtils {
 	/**
 	 * @param object
 	 *            the object to print out
+	 * @return the method containing call to the println...
 	 */
-	public synchronized static void println(Object object) {
-		printlnWithStackOffset(object, 1);
+	public synchronized static String println(Object object) {
+		return printlnWithStackOffset(object, 1);
 	}
 
 	/**
@@ -119,23 +119,21 @@ public class DebugUtils {
 	/**
 	 * @param object
 	 * @param additionalStackOffset
+	 * @return the method that contains the location of this println
 	 */
-	public synchronized static void printlnWithStackOffset(Object object, int additionalStackOffset) {
+	public synchronized static String printlnWithStackOffset(Object object, int additionalStackOffset) {
 		final String s = (object == null) ? "null" : object.toString();
 		String linkToLineNumber = "";
 		if (DebugUtils.debugTraceOn) {
 			linkToLineNumber = printDebugTrace(additionalStackOffset);
 		}
-		System.out.print(s);
-		
 		int padding = WHITESPACE.length() - s.length();
 		if (padding < 0) {
 			padding = 0;
 		}
-		System.out.print(WHITESPACE.substring(0, padding));
-
-		System.out.println("\t" + linkToLineNumber);
+		System.out.println(s + WHITESPACE.substring(0, padding) + "\t" + "[ " + linkToLineNumber + " ]");
 		System.out.flush();
+		return linkToLineNumber.substring(0, linkToLineNumber.indexOf("("));
 	}
 
 	/**

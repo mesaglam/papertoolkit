@@ -33,7 +33,7 @@ public class MonitorSystemOut extends BufferedOutputStream {
 		monitor = toolkitMonitoringService;
 		System.setOut(new PrintStream(this));
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		systemOut.close();
@@ -64,23 +64,40 @@ public class MonitorSystemOut extends BufferedOutputStream {
 		String element = ste[actualOffset].toString();
 		element = "[ " + element + " ]";
 
-		// add it to our string builder
-		buffer.append(lastStringPrinted);
 		systemOut.print(lastStringPrinted);
 
-		if (!element.contains("java.io.PrintStream.")) {
-			// we don't want to pass any newline characters, so we should escape them
-			// since the following methods take regexps, we need a crapload of \ symbols (yay Java)
-			String printed = buffer.toString().replaceAll("\\n", "\\\\n");
-			printed = printed.replaceAll("\\r", "\\\\r");
-			systemOut.print(printed + " :: " + element);
+		// add it to our string builder
+		buffer.append(lastStringPrinted);
+		if (buffer.indexOf("\n") != -1) {
+			if (buffer.toString().contains("[ papertoolkit.")) {
+				// systemOut.println("Trashing " + buffer.toString());
+			} else {
+
+				String printed = buffer.toString();
+
+				// if we printed through DebugUtils, we should pass the actual location of the println
+				if (element.contains("papertoolkit.util.DebugUtils")) {
+					// we don't care about whitespace
+					final int splitIndex = printed.lastIndexOf("[");
+					element = printed.substring(splitIndex).trim();
+					printed = printed.substring(0, splitIndex).trim();
+				}
+				
+				// we don't want to pass any newline characters, so we should escape them
+				// since the following methods take regexps, we need a crapload of \ symbols (yay Java)
+				printed = printed.replaceAll("\\r\\n", "\\\\n");
+				monitor.outputToClients("<debugOutput location=\"" + element + "\" value=\"" + printed
+						+ "\" />");
+			}
 			buffer = new StringBuilder();
 		}
+		// else, keep collecting more in the buffer....
+
 	}
 
 	@Override
 	public synchronized void write(int b) throws IOException {
 		systemOut.write(b);
 	}
-	
+
 }

@@ -25,12 +25,12 @@ public abstract class StrokeHandler extends EventHandler {
 	 */
 	private PenEvent lastEvent;
 
-	private boolean penDownHappened = false;
-
 	/**
 	 * Keep a single stroke around... throw away older strokes.
 	 */
 	private InkStroke mostRecentStroke;
+
+	private boolean penDownHappened = false;
 
 	/**
 	 * @return the latest stroke
@@ -61,7 +61,9 @@ public abstract class StrokeHandler extends EventHandler {
 		} else {
 			if (mostRecentStroke == null) {
 				// we must have missed the down... 
-				DebugUtils.println("Most Recent Stroke was null...");
+				DebugUtils.println("Most Recent Stroke was null...... assume this was a pendown");
+				penDownHappened = true;
+				mostRecentStroke = new InkStroke();
 			}
 			
 			mostRecentStroke.addSample(event.getOriginalSample());

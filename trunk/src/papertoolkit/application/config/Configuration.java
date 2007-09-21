@@ -25,6 +25,20 @@ import papertoolkit.units.Pixels;
  */
 public class Configuration extends Properties {
 
+	public enum Keys {
+		TOOLKIT_ICON_PATH("/icons/paper.png"), TOOLKIT_ICON_TITLE("Paper Toolkit");
+
+		private String defaultVal;
+
+		Keys(String defaultValue) {
+			defaultVal = defaultValue;
+		}
+
+		public String getDefaultValue() {
+			return defaultVal;
+		}
+	}
+
 	/**
 	 * Stores our configuration properties.
 	 */
@@ -78,8 +92,17 @@ public class Configuration extends Properties {
 	 *            a key to index the toolkit's configuration
 	 * @return the value corresponding to the configName key
 	 */
-	private static String getPropertyValue(String propertyName) {
-		final String property = config.getProperty(propertyName);
+	public static String getPropertyValue(String propertyName) {
+		String property = config.getProperty(propertyName);
+		if (property == null) {
+			try {
+				Keys key = Keys.valueOf(propertyName);
+				// if it was resolved, no exception is thrown
+				return key.getDefaultValue();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
 		return property;
 	}
 
@@ -90,6 +113,14 @@ public class Configuration extends Properties {
 	private static File getResourceFile(String configFileKey) {
 		// this is a relative path to PaperToolkit
 		return new File(PaperToolkit.getToolkitRootPath(), getPropertyValue(configFileKey));
+	}
+
+	/**
+	 * @param propertyName
+	 * @param propertyValue
+	 */
+	public static void setPropertyValue(String propertyName, String propertyValue) {
+		config.setProperty(propertyName, propertyValue);
 	}
 
 	/**
