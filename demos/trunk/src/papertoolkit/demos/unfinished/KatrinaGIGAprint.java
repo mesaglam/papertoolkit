@@ -158,7 +158,5 @@ public class KatrinaGIGAprint {
 		dataset.addValue(4.0, series2, category5);
 
 		return dataset;
-
 	}
-
 }
