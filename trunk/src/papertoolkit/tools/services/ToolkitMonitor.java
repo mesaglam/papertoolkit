@@ -22,14 +22,13 @@ import papertoolkit.pen.PenSample;
  */
 public class ToolkitMonitor {
 
+	private EventHandler lastEventHandler;
+	private long lastEventHandlerTimestamp = 0L;
 	private ToolkitMonitoringService monitoringService;
 
 	public ToolkitMonitor(ToolkitMonitoringService toolkitMonitoringService) {
 		monitoringService = toolkitMonitoringService;
 	}
-
-	private EventHandler lastEventHandler;
-	private long lastEventHandlerTimestamp = 0L;
 
 	/**
 	 * Report when event handlers change...
@@ -62,10 +61,18 @@ public class ToolkitMonitor {
 		}
 	}
 
+	/**
+	 * @param dev
+	 * @param sample
+	 */
 	public void penDown(InputDevice dev, PenSample sample) {
 		monitoringService.outputToClients("Pen Down: " + dev + " :: " + sample);
 	}
 
+	/**
+	 * @param dev
+	 * @param sample
+	 */
 	public void penUp(InputDevice dev, PenSample sample) {
 		monitoringService.outputToClients("Pen Up: " + dev + " :: " + sample);
 	}

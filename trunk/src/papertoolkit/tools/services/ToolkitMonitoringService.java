@@ -35,22 +35,21 @@ import papertoolkit.util.DebugUtils;
 public class ToolkitMonitoringService {
 
 	private static int clientIDs = 0;
-	
 	private List<Socket> clients = new ArrayList<Socket>();
 	private boolean exitServer = false;
 	private boolean firstTimeClientConnected = true;
+	private ToolkitMonitor monitor;
 	private List<PrintWriter> outputs = new ArrayList<PrintWriter>();
 	private ServerSocket serverSocket;
 	private PaperToolkit toolkit;
+	private MonitorSystemOut monitorSystemOut;
 
-	private ToolkitMonitor monitor;
-	
 	/**
 	 * @param paperToolkit
 	 */
 	public ToolkitMonitoringService(PaperToolkit paperToolkit) {
 		toolkit = paperToolkit;
-		
+
 		// wait at this port for a connection
 		createServerToWaitForAConnection();
 
@@ -58,6 +57,9 @@ public class ToolkitMonitoringService {
 		// send out information to the socket!
 	}
 
+	/**
+	 * 
+	 */
 	private void createServerToWaitForAConnection() {
 		try {
 			serverSocket = new ServerSocket(Ports.TOOLKIT_MONITORING);
@@ -96,7 +98,7 @@ public class ToolkitMonitoringService {
 		// instrument the event dispatcher
 		EventDispatcher eventDispatcher = toolkit.getEventDispatcher();
 		eventDispatcher.setMonitor(monitor);
-		
+
 		List<Application> loadedApps = toolkit.getLoadedApps();
 		for (Application app : loadedApps) {
 			// instrument all pens
@@ -106,21 +108,35 @@ public class ToolkitMonitoringService {
 					public void penDown(PenSample sample) {
 						monitor.penDown(dev, sample);
 					}
+
 					public void penUp(PenSample sample) {
 						monitor.penUp(dev, sample);
 					}
+
 					public void sample(PenSample sample) {
 						// don't do anything here (for now), because it's too much info
+						
 					}
 				});
 			}
-			
-			//  instrument all event handlers!
+
+			// instrument all event handlers!
 		}
+		
+		// instrument System.outs!
+		instrumentSystemOuts();
+	}
+
+	/**
+	 * Everytime someone uses a System.out, we'll know about it, and then forward it to SideCar!
+	 */
+	private void instrumentSystemOuts() {
+		monitorSystemOut = new MonitorSystemOut(this);
 	}
 
 	/**
 	 * Use this method to broadcast information to listeners...
+	 * 
 	 * @param msg
 	 */
 	public void outputToClients(String msg) {
@@ -130,6 +146,9 @@ public class ToolkitMonitoringService {
 		}
 	}
 
+	/**
+	 * @param clientSocket
+	 */
 	private void startClientHandlerThread(final Socket clientSocket) {
 		new Thread() {
 			private BufferedReader br;
@@ -160,7 +179,8 @@ public class ToolkitMonitoringService {
 
 					String line = null;
 					while ((line = br.readLine()) != null) {
-						outputToClients("Client #" + clientID  + " said: " + line + " [" + clients.size() + " total clients]");
+						outputToClients("Client #" + clientID + " said: " + line + " [" + clients.size()
+								+ " total clients]");
 
 						if (line.equals("[[exit]]")) {
 							clients.remove(clientSocket);
@@ -175,7 +195,7 @@ public class ToolkitMonitoringService {
 						}
 					}
 				} catch (IOException e) {
-					DebugUtils.println("SideCar probably exited.");
+					DebugUtils.println("SideCar exited.");
 					// e.printStackTrace();
 				}
 				disconnect();
