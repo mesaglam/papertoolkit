@@ -52,6 +52,7 @@ import papertoolkit.pen.synch.BatchedDataDispatcher;
 import papertoolkit.tools.ToolExplorer;
 import papertoolkit.tools.design.acrobat.PaperUIDesigner;
 import papertoolkit.tools.design.acrobat.RegionConfiguration;
+import papertoolkit.tools.services.ToolkitMonitor;
 import papertoolkit.tools.services.ToolkitMonitoringService;
 import papertoolkit.units.Centimeters;
 import papertoolkit.units.Inches;
@@ -479,7 +480,7 @@ public class PaperToolkit {
 	 * @param popupMenu
 	 */
 	private static void populateTrayMenuForSideCar(Menu popupMenu) {
-		final MenuItem openSideCarItem = new MenuItem("Open SideCar Display");
+		final MenuItem openSideCarItem = new MenuItem("Start SideCar Monitoring");
 		openSideCarItem.addActionListener(new ActionListener() {
 			private PrintWriter sideCarPrintWriter;
 			private Socket sideCarSocket;
@@ -492,8 +493,8 @@ public class PaperToolkit {
 						OutputStream outputStream = sideCarSocket.getOutputStream();
 						sideCarPrintWriter = new PrintWriter(outputStream);
 					}
-					DebugUtils.println("Opening Sidecar Flex GUI...");
-					sideCarPrintWriter.println("StartFlexGUI");
+					DebugUtils.println("PaperToolkit is Asking SideCar to Open the Start Monitoring Us...");
+					sideCarPrintWriter.println(ToolkitMonitoringService.START_SIDECAR);
 					sideCarPrintWriter.flush();
 				} catch (Exception e) {
 					DebugUtils.println("Is SideCar Running Yet? If not... start SideCar, and try again!");

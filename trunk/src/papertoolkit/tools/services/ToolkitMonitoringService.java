@@ -34,6 +34,8 @@ import papertoolkit.util.DebugUtils;
  */
 public class ToolkitMonitoringService {
 
+	public static final String START_SIDECAR = "StartSideCar";
+
 	private static int clientIDs = 0;
 	private List<Socket> clients = new ArrayList<Socket>();
 	private boolean exitServer = false;
@@ -56,10 +58,14 @@ public class ToolkitMonitoringService {
 
 		// once the first one happens, access paper toolkit and instrument the event dispatcher...
 		// send out information to the socket!
+		
+		// if a flash gui already exists, ask it to connect to us! =\
+		
 	}
 
 	/**
-	 * 
+	 * Darn... so the flex GUI is supposed to connect to the toolkit? Why don't we do it the other way???
+	 * Perhaps we can easily ask the Flash GUI to connect to the toolkit?
 	 */
 	private void createServerToWaitForAConnection() {
 		try {
@@ -116,14 +122,14 @@ public class ToolkitMonitoringService {
 
 					public void sample(PenSample sample) {
 						// don't do anything here (for now), because it's too much info
-						
+
 					}
 				});
 			}
 
 			// instrument all event handlers!
 		}
-		
+
 		// instrument System.outs!
 		instrumentSystemOuts();
 	}
