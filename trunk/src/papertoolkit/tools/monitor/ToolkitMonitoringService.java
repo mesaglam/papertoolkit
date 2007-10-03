@@ -12,12 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import papertoolkit.PaperToolkit;
-import papertoolkit.application.Application;
 import papertoolkit.application.config.Constants.Ports;
-import papertoolkit.events.EventDispatcher;
-import papertoolkit.pen.InputDevice;
-import papertoolkit.pen.PenSample;
-import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.util.DebugUtils;
 
 /**
@@ -34,17 +29,23 @@ import papertoolkit.util.DebugUtils;
  */
 public class ToolkitMonitoringService {
 
-	public static final String START_SIDECAR = "StartSideCar";
-
 	private static int clientIDs = 0;
+
+	public static final String START_SIDECAR_GUI = "PaperToolkit::StartSideCarGUI";
+	public static final String START_SIDECAR = "PaperToolkit::StartSideCar";
+
 	private List<Socket> clients = new ArrayList<Socket>();
 	private boolean exitServer = false;
 	private boolean firstTimeClientConnected = true;
-	private ToolkitMonitor monitor;
+	
+	private MonitorInputHandling monitor;
+	private MonitorPaperUIInfo monitorPaperUIInfo;
+	
+	private MonitorSystemOut monitorSystemOut;
 	private List<PrintWriter> outputs = new ArrayList<PrintWriter>();
 	private ServerSocket serverSocket;
+
 	private PaperToolkit toolkit;
-	private MonitorSystemOut monitorSystemOut;
 
 	/**
 	 * @param paperToolkit
@@ -60,7 +61,7 @@ public class ToolkitMonitoringService {
 		// send out information to the socket!
 		
 		// if a flash gui already exists, ask it to connect to us! =\
-		
+		// ...
 	}
 
 	/**
@@ -92,57 +93,32 @@ public class ToolkitMonitoringService {
 					}
 				}
 			}
-
 		}.start();
 	}
+	
+	public PaperToolkit getToolkit() {
+		return toolkit;
+	}
+
 
 	/**
 	 * Add hooks to listen to the toolkit.
 	 */
 	private void instrumentToolkitForMonitoring() {
-		monitor = new ToolkitMonitor(this);
-
-		// instrument the event dispatcher
-		EventDispatcher eventDispatcher = toolkit.getEventDispatcher();
-		eventDispatcher.setMonitor(monitor);
-
-		List<Application> loadedApps = toolkit.getLoadedApps();
-		for (Application app : loadedApps) {
-			// instrument all pens
-			List<InputDevice> penInputDevices = app.getPenInputDevices();
-			for (final InputDevice dev : penInputDevices) {
-				dev.addLivePenListener(new PenListener() {
-					public void penDown(PenSample sample) {
-						monitor.penDown(dev, sample);
-					}
-
-					public void penUp(PenSample sample) {
-						monitor.penUp(dev, sample);
-					}
-
-					public void sample(PenSample sample) {
-						// don't do anything here (for now), because it's too much info
-
-					}
-				});
-			}
-
-			// instrument all event handlers!
-		}
+		// instrument pen input and event dispatch
+		monitor = new MonitorInputHandling(this);
 
 		// instrument System.outs!
-		instrumentSystemOuts();
-	}
-
-	/**
-	 * Everytime someone uses a System.out, we'll know about it, and then forward it to SideCar!
-	 */
-	private void instrumentSystemOuts() {
+		// Everytime someone uses a System.out, we'll know about it, and then forward it to SideCar!
 		monitorSystemOut = new MonitorSystemOut(this);
+		
+		// send paper ui information to the flash GUI
+		monitorPaperUIInfo = new MonitorPaperUIInfo(this, toolkit.getLoadedApps());
 	}
 
 	/**
 	 * Use this method to broadcast information to listeners...
+	 * The Flex GUI is the listener...
 	 * 
 	 * @param msg
 	 */

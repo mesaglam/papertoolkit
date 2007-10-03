@@ -27,6 +27,9 @@ public abstract class GestureHandler extends StrokeHandler {
 		dollarRecognizer = new DollarRecognizer();
 	}
 
+	/* (non-Javadoc)
+	 * @see papertoolkit.events.handlers.StrokeHandler#toString()
+	 */
 	public String toString() {
 		return "DollarGestureHandler";
 	}

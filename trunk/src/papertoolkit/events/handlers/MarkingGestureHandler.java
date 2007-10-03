@@ -131,7 +131,7 @@ public abstract class MarkingGestureHandler extends EventHandler {
 	 */
 	public abstract void handleMark(PenEvent e, MarkDirection dir);
 
-	/* (non-Javadoc)
+	/**
 	 * @see papertoolkit.events.EventHandler#toString()
 	 */
 	public String toString() {

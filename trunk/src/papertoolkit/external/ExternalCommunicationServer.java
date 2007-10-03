@@ -51,8 +51,14 @@ import papertoolkit.util.files.FileUtils;
  */
 public class ExternalCommunicationServer {
 
+	/**
+	 * 
+	 */
 	private String argDelimiter;
 
+	/**
+	 * 
+	 */
 	private Pattern argRegExp;
 
 	/**
@@ -60,8 +66,14 @@ public class ExternalCommunicationServer {
 	 */
 	private int clientID = 0;
 
+	/**
+	 * 
+	 */
 	private String commandDelimiter;
 
+	/**
+	 * 
+	 */
 	private Pattern commandRegExp;
 
 	/**
@@ -78,6 +90,11 @@ public class ExternalCommunicationServer {
 	 * Send messages to these Java listeners.
 	 */
 	private List<ExternalListener> listeners = new ArrayList<ExternalListener>();
+	
+	/**
+	 * -1 means unlimited. Any number > 0 implies a limit on the number of flash clients....
+	 */
+	private int maxNumClients = -1;
 
 	/**
 	 * Replaces OTHER_PARAMS in the HTML/Flash template with other query parameters.
@@ -125,6 +142,13 @@ public class ExternalCommunicationServer {
 		serverThread.start();
 	}
 
+	/**
+	 * @param cmd
+	 */
+	public void addCommand(ExternalCommand cmd) {
+		addCommand(cmd.getName(), cmd);
+	}
+	
 	/**
 	 * Adds a handler for this function name...
 	 * 
@@ -189,9 +213,18 @@ public class ExternalCommunicationServer {
 								.getInputStream()));
 						final PrintStream writerOut = new PrintStream(incoming.getOutputStream());
 
+						
+						if ((maxNumClients > 0) && (flashClients.size() == maxNumClients)) {
+							// drop the first one...
+							ExternalClient removedClient = flashClients.remove(0);
+							removedClient.exitClient();
+						}
+						
 						// pass this to a handler thread that will service this client!
 						flashClients.add(new ExternalClient(ExternalCommunicationServer.this, clientID++,
 								incoming, readerIn, writerOut));
+						
+						
 					}
 				} catch (SocketException e) {
 					DebugUtils.println("Server Socket was Closed");
@@ -204,7 +237,7 @@ public class ExternalCommunicationServer {
 
 		};
 	}
-
+	
 	/**
 	 * @param client
 	 * @param clientID
@@ -251,6 +284,8 @@ public class ExternalCommunicationServer {
 			exitServer();
 			System.exit(0);
 		} else if (commands.containsKey(commandName)) {
+			DebugUtils.println("Server handling command: " + commandName);
+			
 			// invoking a stored command on the arguments
 			commands.get(commandName).invoke(args);
 		} else {
@@ -363,6 +398,13 @@ public class ExternalCommunicationServer {
 	public void setCommandDelimiter(String commandPattern) {
 		commandDelimiter = commandPattern.replace("*", "(.*?)");
 		commandRegExp = Pattern.compile(commandDelimiter);
+	}
+
+	/**
+	 * @param num
+	 */
+	public void setMaxNumClients(int num) {
+		maxNumClients = num;
 	}
 
 	/**

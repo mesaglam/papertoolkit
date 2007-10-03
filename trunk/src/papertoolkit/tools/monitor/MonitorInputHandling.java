@@ -2,11 +2,15 @@ package papertoolkit.tools.monitor;
 
 import java.util.List;
 
+import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
+import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
 import papertoolkit.paper.Region;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
+import papertoolkit.pen.streaming.listeners.PenListener;
 
 /**
  * <p>
@@ -20,14 +24,44 @@ import papertoolkit.pen.PenSample;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class ToolkitMonitor {
+public class MonitorInputHandling {
 
 	private EventHandler lastEventHandler;
 	private long lastEventHandlerTimestamp = 0L;
 	private ToolkitMonitoringService monitoringService;
 
-	public ToolkitMonitor(ToolkitMonitoringService toolkitMonitoringService) {
+	public MonitorInputHandling(ToolkitMonitoringService toolkitMonitoringService) {
 		monitoringService = toolkitMonitoringService;
+
+		PaperToolkit toolkit = toolkitMonitoringService.getToolkit();
+
+		// instrument the event dispatcher
+		EventDispatcher eventDispatcher = toolkit.getEventDispatcher();
+		eventDispatcher.setMonitor(this);
+
+		List<Application> loadedApps = toolkit.getLoadedApps();
+		for (Application app : loadedApps) {
+			// instrument all pens
+			List<InputDevice> penInputDevices = app.getPenInputDevices();
+			for (final InputDevice dev : penInputDevices) {
+				dev.addLivePenListener(new PenListener() {
+					public void penDown(PenSample sample) {
+						MonitorInputHandling.this.penDown(dev, sample);
+					}
+
+					public void penUp(PenSample sample) {
+						MonitorInputHandling.this.penUp(dev, sample);
+					}
+
+					public void sample(PenSample sample) {
+						// don't do anything here (for now), because it's too much info
+
+					}
+				});
+			}
+
+			// instrument all event handlers!
+		}
 	}
 
 	/**

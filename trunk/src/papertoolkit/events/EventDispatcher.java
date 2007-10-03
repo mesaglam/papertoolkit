@@ -14,7 +14,7 @@ import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
-import papertoolkit.tools.monitor.ToolkitMonitor;
+import papertoolkit.tools.monitor.MonitorInputHandling;
 import papertoolkit.units.Size;
 import papertoolkit.units.coordinates.PercentageCoordinates;
 import papertoolkit.util.DebugUtils;
@@ -73,7 +73,7 @@ public class EventDispatcher {
 	/**
 	 * Broadcasts toolkit internals to external services.
 	 */
-	private ToolkitMonitor toolkitMonitor;
+	private MonitorInputHandling toolkitMonitor;
 
 	/**
 	 * This object handles event dispatch by hooking up pen listeners to local and remote pen servers. It will
@@ -387,7 +387,7 @@ public class EventDispatcher {
 	/**
 	 * @param monitor
 	 */
-	public void setMonitor(ToolkitMonitor monitor) {
+	public void setMonitor(MonitorInputHandling monitor) {
 		toolkitMonitor = monitor;
 	}
 }
