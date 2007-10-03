@@ -14,7 +14,7 @@ import papertoolkit.pattern.coordinates.conversion.PatternCoordinateConverter;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
-import papertoolkit.tools.services.ToolkitMonitor;
+import papertoolkit.tools.monitor.ToolkitMonitor;
 import papertoolkit.units.Size;
 import papertoolkit.units.coordinates.PercentageCoordinates;
 import papertoolkit.util.DebugUtils;

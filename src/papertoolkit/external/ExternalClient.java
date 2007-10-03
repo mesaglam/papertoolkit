@@ -59,6 +59,7 @@ public class ExternalClient {
 							DebugUtils.println("Client Logged Off");
 							done = true;
 						} else {
+							DebugUtils.println(msg);
 							e.printStackTrace();
 						}
 					}
