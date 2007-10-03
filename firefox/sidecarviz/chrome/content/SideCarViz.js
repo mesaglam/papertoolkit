@@ -9,6 +9,7 @@ var SideCarViz = {
 		window.addEventListener('load', this.addJavaScripts, true);
 	},
 	
+	// activated from the popup menu...
 	copyToSideCar : function() {
 		var selection = content.document.getSelection(); // what is selected in the window!
 		this.copyString(selection);
@@ -74,23 +75,27 @@ var SideCarViz = {
 	
 	
 	
+	/////////////////////////////////////////////////////////////////////
 	// send this to the SideCar Eclipse Plugin / SideCar Flex Application
 	notifyListenersOfNewClipboardContents : function() {
 		// contents:{{" + this.getClipboardContents() + "}}
-		println("%%SC::ClipboardContentsChanged%% url:@_" + content.document.location + "_@");
+		println("%%Firefox::ClipboardContentsChanged%% url:@_" + content.document.location + "_@");
 	},
 	
 	notifyListenersOfNewTab : function() {
-		println("%%SC::NewTab%%");
+		println("%%Firefox::NewTab%%");
 	},
 	
 	notifyListenersOfNewPageURL : function(url) {
-		println("%%SC::NewPage%% url:@_"+url+"_@");
+		println("%%Firefox::NewPage%% url:@_"+url+"_@");
 	},
 	
 	notifyListenersOfTyping : function(str) {
-		println("%%SC::UserTyped%% text:@_"+str+"_@");
+		println("%%Firefox::UserTyped%% text:@_"+str+"_@");
 	},
+	
+	
+	
 	
 };
 

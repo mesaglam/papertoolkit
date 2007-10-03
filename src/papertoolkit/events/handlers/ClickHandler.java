@@ -32,6 +32,10 @@ public abstract class ClickHandler extends EventHandler {
 
 		public void released(PenEvent e) {
 		}
+		
+		public String toString() {
+			return "ClickAdapter";
+		}
 	}
 
 	/**
@@ -194,6 +198,9 @@ public abstract class ClickHandler extends EventHandler {
 	 */
 	public abstract void released(PenEvent e);
 
+	/**
+	 * @see papertoolkit.events.EventHandler#toString()
+	 */
 	public String toString() {
 		return "ClickHandler";
 	}

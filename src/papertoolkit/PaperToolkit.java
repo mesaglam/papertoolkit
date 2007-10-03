@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.InvalidPropertiesFormatException;
@@ -52,7 +53,7 @@ import papertoolkit.pen.synch.BatchedDataDispatcher;
 import papertoolkit.tools.ToolExplorer;
 import papertoolkit.tools.design.acrobat.PaperUIDesigner;
 import papertoolkit.tools.design.acrobat.RegionConfiguration;
-import papertoolkit.tools.monitor.ToolkitMonitor;
+import papertoolkit.tools.monitor.MonitorInputHandling;
 import papertoolkit.tools.monitor.ToolkitMonitoringService;
 import papertoolkit.units.Centimeters;
 import papertoolkit.units.Inches;
@@ -132,11 +133,6 @@ public class PaperToolkit {
 	private static boolean lookAndFeelInitialized = false;
 
 	/**
-	 * Where PaperToolkit is installed.
-	 */
-	private static File toolkitRootPath;
-
-	/**
 	 * Where to find the directories that store our pattern definition files.
 	 */
 	public static final File PATTERN_PATH = getPatternPath();
@@ -146,10 +142,21 @@ public class PaperToolkit {
 	 */
 	private static final String REMOTE_PENS_KEY = "remotePens";
 
+	private static PrintWriter sideCarPrintWriter;
+
+	private static Socket sideCarSocket;
+
+	private static String toolkitIconTitle;
+
 	/**
 	 * The instance that is created when you use the convenience function.
 	 */
 	private static PaperToolkit toolkitInstance;
+
+	/**
+	 * Where PaperToolkit is installed.
+	 */
+	private static File toolkitRootPath;
 
 	/**
 	 * In the Windows System Tray...
@@ -175,8 +182,6 @@ public class PaperToolkit {
 	 * Serializes/Unserializes toolkit objects to/from XML strings.
 	 */
 	private static XStream xmlEngine;
-
-	private static String toolkitIconTitle;
 
 	/**
 	 * Print an Intro Message.
@@ -455,6 +460,19 @@ public class PaperToolkit {
 		// the static initializer will have run by this time, so getInstance will be valid!
 		return SaveAndReplay.getInstance();
 	}
+	private static void initializeSideCarOutput() {
+		if (sideCarSocket == null) {
+			try {
+				sideCarSocket = new Socket("localhost", Ports.SIDE_CAR_COMMUNICATIONS);
+				OutputStream outputStream = sideCarSocket.getOutputStream();
+				sideCarPrintWriter = new PrintWriter(outputStream);
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * Alternatively, try using the *.bat files instead.
@@ -482,18 +500,12 @@ public class PaperToolkit {
 	private static void populateTrayMenuForSideCar(Menu popupMenu) {
 		final MenuItem openSideCarItem = new MenuItem("Start SideCar Monitoring");
 		openSideCarItem.addActionListener(new ActionListener() {
-			private PrintWriter sideCarPrintWriter;
-			private Socket sideCarSocket;
 
 			public void actionPerformed(ActionEvent arg0) {
 				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
 				try {
-					if (sideCarSocket == null) {
-						sideCarSocket = new Socket("localhost", Ports.SIDE_CAR_COMMUNICATIONS);
-						OutputStream outputStream = sideCarSocket.getOutputStream();
-						sideCarPrintWriter = new PrintWriter(outputStream);
-					}
-					DebugUtils.println("PaperToolkit is Asking SideCar to Open the Start Monitoring Us...");
+					initializeSideCarOutput();
+					DebugUtils.println("PaperToolkit is Asking SideCar to Open the Flash GUI to start Monitoring Us...");
 					sideCarPrintWriter.println(ToolkitMonitoringService.START_SIDECAR);
 					sideCarPrintWriter.flush();
 				} catch (Exception e) {
@@ -502,8 +514,31 @@ public class PaperToolkit {
 							+ Ports.SIDE_CAR_COMMUNICATIONS);
 				}
 			}
+
 		});
 		popupMenu.add(openSideCarItem);
+		
+		
+
+		final MenuItem openSideCarGUIItem = new MenuItem("Open SideCar GUI");
+		openSideCarGUIItem.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
+				try {
+					initializeSideCarOutput();
+					DebugUtils.println("PaperToolkit is Asking SideCar to Open the Flash GUI again...");
+					sideCarPrintWriter.println(ToolkitMonitoringService.START_SIDECAR_GUI);
+					sideCarPrintWriter.flush();
+				} catch (Exception e) {
+					DebugUtils.println("Is SideCar Running Yet? If not... start SideCar, and try again!");
+					DebugUtils.println("We are expecting SideCar to be listening at Port: "
+							+ Ports.SIDE_CAR_COMMUNICATIONS);
+				}
+			}
+		});
+		popupMenu.add(openSideCarGUIItem);
+	
 	}
 
 	/**

@@ -371,6 +371,6 @@ public abstract class InkHandler extends EventHandler {
 	 * @see papertoolkit.events.ContentFilter#toString()
 	 */
 	public String toString() {
-		return "Ink Handler [" + strokes.size() + " strokes]";
+		return "InkHandler [" + strokes.size() + " strokes]";
 	}
 }

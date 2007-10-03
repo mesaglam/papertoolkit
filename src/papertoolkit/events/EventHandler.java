@@ -11,7 +11,6 @@ import papertoolkit.tools.debug.DebuggingEnvironment;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
-
 /**
  * <p>
  * This is the super interface of all the other event handlers. These are the pen & paper analogues to Java
@@ -61,6 +60,10 @@ public abstract class EventHandler {
 	 */
 	public void addParentRegion(Region r) {
 		parentRegions.add(r);
+	}
+
+	public final String getName() {
+		return toString();
 	}
 
 	/**
@@ -117,7 +120,7 @@ public abstract class EventHandler {
 	}
 
 	/**
-	 * @return the Event Handler's Name
+	 * @return the Event Handler's Name, a short CamelCase string describing the purpose of the handler.
 	 */
 	public abstract String toString();
 

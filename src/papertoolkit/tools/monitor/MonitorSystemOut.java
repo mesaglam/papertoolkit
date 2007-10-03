@@ -17,20 +17,19 @@ import java.io.PrintStream;
  */
 public class MonitorSystemOut extends BufferedOutputStream {
 
-	private ToolkitMonitoringService monitor;
+	private StringBuilder buffer = new StringBuilder();
+	private String lastStringPrinted;
+	private ToolkitMonitoringService service;
+
 	/**
 	 * Our original System.out, that we are now redirecting...
 	 */
 	private PrintStream systemOut;
 
-	private String lastStringPrinted;
-
-	private StringBuilder buffer = new StringBuilder();
-
 	public MonitorSystemOut(ToolkitMonitoringService toolkitMonitoringService) {
 		super(System.out);
 		systemOut = System.out;
-		monitor = toolkitMonitoringService;
+		service = toolkitMonitoringService;
 		System.setOut(new PrintStream(this));
 	}
 
@@ -86,7 +85,7 @@ public class MonitorSystemOut extends BufferedOutputStream {
 				// we don't want to pass any newline characters, so we should escape them
 				// since the following methods take regexps, we need a crapload of \ symbols (yay Java)
 				printed = printed.replaceAll("\\r\\n", "\\\\n");
-				monitor.outputToClients("<debugOutput location=\"" + element + "\" value=\"" + printed
+				service.outputToClients("<debugOutput location=\"" + element + "\" value=\"" + printed
 						+ "\" />");
 			}
 			buffer = new StringBuilder();
