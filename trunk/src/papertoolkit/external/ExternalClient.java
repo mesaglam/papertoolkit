@@ -24,10 +24,14 @@ public class ExternalClient {
 	private int clientID;
 	private Socket clientSocket;
 	private Thread clientThread;
-	private BufferedReader fromClient;
-	private ExternalCommunicationServer server;
-	private PrintStream toClient;
 	private boolean done = false;
+	
+	private BufferedReader fromClient;
+	private String name = "ExternalClient";
+	private ExternalCommunicationServer server;
+	
+	private PrintStream toClient;
+	
 
 	public ExternalClient(ExternalCommunicationServer flashCommServer, int id, Socket clientSock,
 			BufferedReader readerIn, PrintStream writerOut) {
@@ -39,7 +43,7 @@ public class ExternalClient {
 
 		clientThread = new Thread(new Runnable() {
 			public void run() {
-				DebugUtils.println("Flash GUI Connected: ID == " + clientID);
+				DebugUtils.println("External Client Connected: ID == " + clientID);
 				while (!done) {
 					String command = null;
 					try {
@@ -56,7 +60,7 @@ public class ExternalClient {
 					} catch (IOException e) {
 						String msg = e.getMessage();
 						if (msg.contains("Connection reset") || msg.contains("socket closed")) {
-							DebugUtils.println("Client Logged Off");
+							DebugUtils.println("Client Logged Off: " + clientID);
 							done = true;
 						} else {
 							DebugUtils.println(msg);
@@ -70,15 +74,11 @@ public class ExternalClient {
 		clientThread.start();
 	}
 
-	public int getID() {
-		return clientID;
-	}
-
 	/**
 	 * Set the done flag and close the socket. We don't need this client anymore.
 	 */
 	public void exitClient() {
-		DebugUtils.println("Exiting client " + clientID);
+		DebugUtils.println("Exiting client " + clientID + " : " + getName());
 		done = true;
 		try {
 			clientSocket.close();
@@ -87,6 +87,14 @@ public class ExternalClient {
 		}
 	}
 
+	public int getID() {
+		return clientID;
+	}
+
+	public String getName() {
+		return name;
+	}
+	
 	/**
 	 * Prints to both the console and to the client.
 	 * 
@@ -102,6 +110,10 @@ public class ExternalClient {
 		}
 		// DebugUtils.println("Sent " + message.length() + " bytes.");
 		System.out.flush();
+	}
+	
+	public void setName(String n) {
+		name = n;
 	}
 
 }
