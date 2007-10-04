@@ -53,7 +53,6 @@ import papertoolkit.pen.synch.BatchedDataDispatcher;
 import papertoolkit.tools.ToolExplorer;
 import papertoolkit.tools.design.acrobat.PaperUIDesigner;
 import papertoolkit.tools.design.acrobat.RegionConfiguration;
-import papertoolkit.tools.monitor.MonitorInputHandling;
 import papertoolkit.tools.monitor.ToolkitMonitoringService;
 import papertoolkit.units.Centimeters;
 import papertoolkit.units.Inches;
@@ -142,8 +141,10 @@ public class PaperToolkit {
 	 */
 	private static final String REMOTE_PENS_KEY = "remotePens";
 
+	/**
+	 * For communicating with the SideCar server...
+	 */
 	private static PrintWriter sideCarPrintWriter;
-
 	private static Socket sideCarSocket;
 
 	private static String toolkitIconTitle;
@@ -460,12 +461,22 @@ public class PaperToolkit {
 		// the static initializer will have run by this time, so getInstance will be valid!
 		return SaveAndReplay.getInstance();
 	}
+	
+	/**
+	 * 
+	 */
 	private static void initializeSideCarOutput() {
 		if (sideCarSocket == null) {
 			try {
+				DebugUtils.println("PaperToolkit is Connecting to SideCar...");
 				sideCarSocket = new Socket("localhost", Ports.SIDE_CAR_COMMUNICATIONS);
 				OutputStream outputStream = sideCarSocket.getOutputStream();
 				sideCarPrintWriter = new PrintWriter(outputStream);
+
+				DebugUtils.println("PaperToolkit is Asking SideCar to Start...");
+				sideCarPrintWriter.println(ToolkitMonitoringService.START_SIDECAR);
+				sideCarPrintWriter.flush();
+
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -505,9 +516,6 @@ public class PaperToolkit {
 				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
 				try {
 					initializeSideCarOutput();
-					DebugUtils.println("PaperToolkit is Asking SideCar to Open the Flash GUI to start Monitoring Us...");
-					sideCarPrintWriter.println(ToolkitMonitoringService.START_SIDECAR);
-					sideCarPrintWriter.flush();
 				} catch (Exception e) {
 					DebugUtils.println("Is SideCar Running Yet? If not... start SideCar, and try again!");
 					DebugUtils.println("We are expecting SideCar to be listening at Port: "
@@ -527,7 +535,7 @@ public class PaperToolkit {
 				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
 				try {
 					initializeSideCarOutput();
-					DebugUtils.println("PaperToolkit is Asking SideCar to Open the Flash GUI again...");
+					DebugUtils.println("PaperToolkit is Asking SideCar to Open the Flash GUI...");
 					sideCarPrintWriter.println(ToolkitMonitoringService.START_SIDECAR_GUI);
 					sideCarPrintWriter.flush();
 				} catch (Exception e) {

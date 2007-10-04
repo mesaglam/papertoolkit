@@ -84,13 +84,13 @@ public class ExternalCommunicationServer {
 	/**
 	 * All the clients that have connected to us! You can test this by telnetting in to this server and port.
 	 */
-	private List<ExternalClient> flashClients = new ArrayList<ExternalClient>();
+	private List<ExternalClient> clients = new ArrayList<ExternalClient>();
 
 	/**
 	 * Send messages to these Java listeners.
 	 */
 	private List<ExternalListener> listeners = new ArrayList<ExternalListener>();
-	
+
 	/**
 	 * -1 means unlimited. Any number > 0 implies a limit on the number of flash clients....
 	 */
@@ -125,7 +125,7 @@ public class ExternalCommunicationServer {
 	 * Allows us to send messages to the Flash GUI.
 	 */
 	public ExternalCommunicationServer() {
-		this(Constants.Ports.FLASH_COMMUNICATION_SERVER);
+		this(Constants.Ports.EXTERNAL_COMMUNICATION_SERVER);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class ExternalCommunicationServer {
 	public void addCommand(ExternalCommand cmd) {
 		addCommand(cmd.getName(), cmd);
 	}
-	
+
 	/**
 	 * Adds a handler for this function name...
 	 * 
@@ -181,7 +181,7 @@ public class ExternalCommunicationServer {
 	 * Exits the Flash communication server.
 	 */
 	public void exitServer() {
-		for (ExternalClient client : flashClients) {
+		for (ExternalClient client : clients) {
 			client.exitClient();
 		}
 		try {
@@ -189,7 +189,7 @@ public class ExternalCommunicationServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		DebugUtils.println("Exiting Flash Communications Server.... "
+		DebugUtils.println("Exiting ExternalCommunications Server.... "
 				+ "If this is the last thread, the program should exit.");
 		for (ExternalListener listener : listeners) {
 			listener.messageReceived("exitServer");
@@ -202,7 +202,7 @@ public class ExternalCommunicationServer {
 	private Runnable getServer() {
 		return new Runnable() {
 			public void run() {
-				DebugUtils.println("Starting Flash Communications Server at port: " + serverPort);
+				DebugUtils.println("Starting ExternalCommunications Server at port: " + serverPort);
 				try {
 					socket = new ServerSocket(serverPort);
 					while (true) {
@@ -213,18 +213,16 @@ public class ExternalCommunicationServer {
 								.getInputStream()));
 						final PrintStream writerOut = new PrintStream(incoming.getOutputStream());
 
-						
-						if ((maxNumClients > 0) && (flashClients.size() == maxNumClients)) {
+						if ((maxNumClients > 0) && (clients.size() == maxNumClients)) {
 							// drop the first one...
-							ExternalClient removedClient = flashClients.remove(0);
+							ExternalClient removedClient = clients.remove(0);
 							removedClient.exitClient();
 						}
-						
+
 						// pass this to a handler thread that will service this client!
-						flashClients.add(new ExternalClient(ExternalCommunicationServer.this, clientID++,
+						clients.add(new ExternalClient(ExternalCommunicationServer.this, clientID++,
 								incoming, readerIn, writerOut));
-						
-						
+
 					}
 				} catch (SocketException e) {
 					DebugUtils.println("Server Socket was Closed");
@@ -237,7 +235,7 @@ public class ExternalCommunicationServer {
 
 		};
 	}
-	
+
 	/**
 	 * @param client
 	 * @param clientID
@@ -266,26 +264,45 @@ public class ExternalCommunicationServer {
 			args = arguments.toArray(args);
 		}
 
-		// System.out.println(">> Reading a line from the client: [" + command + "]");
+		// DebugUtils.println(">> Reading a line from the client: [" + command + "]");
+
 		if (commandName.equals("exit")) {
-			if (client != null) {
-				client.exitClient();
+			if (client == null) {
+				return;
 			}
+			client.exitClient();
+		} else if (commandName.equals("exitClients")) {
+			ArrayList<ExternalClient> toBeRemoved = new ArrayList<ExternalClient>();
+			for (ExternalClient cl : clients) {
+				if (cl.getName().equals(args[0])) {
+					cl.exitClient();
+					toBeRemoved.add(cl);
+				}
+			}
+			clients.removeAll(toBeRemoved);
+			DebugUtils.println(clients.size() + " clients remain.");
 		} else if (commandName.equals("exitServer")) {
-			if (client != null) {
-				client.exitClient();
+			if (client == null) {
+				return;
 			}
+			client.exitClient();
 			exitServer();
 		} else if (commandName.equals("exitApplication")) {
-			DebugUtils.println("Got exitApplicaton command...");
-			if (client != null) {
-				client.exitClient();
+			if (client == null) {
+				return;
 			}
+			DebugUtils.println("Got exitApplicaton command...");
+			client.exitClient();
 			exitServer();
 			System.exit(0);
+		} else if (commandName.equals("setName")) {
+			if (client == null) {
+				return;
+			}
+			client.setName(arguments.get(0));
 		} else if (commands.containsKey(commandName)) {
 			DebugUtils.println("Server handling command: " + commandName);
-			
+
 			// invoking a stored command on the arguments
 			commands.get(commandName).invoke(args);
 		} else {
@@ -293,7 +310,7 @@ public class ExternalCommunicationServer {
 			if (client != null) {
 				DebugUtils.println("Server got command [" + commandName + "] from client " + client.getID());
 			} else {
-				DebugUtils.println("Server got command [" + commandName + "].");
+				DebugUtils.println("Server got Message: " + commandName);
 			}
 
 			for (ExternalListener listener : listeners) {
@@ -367,15 +384,15 @@ public class ExternalCommunicationServer {
 	public void sendMessage(String msg) {
 		if (verbose) {
 			if (msg.length() < 100) {
-				DebugUtils.println("Sending message: " + msg.replace("\n", "") + " to all "
-						+ flashClients.size() + " clients");
+				DebugUtils.println("Sending message: " + msg.replace("\n", "") + " to all " + clients.size()
+						+ " clients");
 			} else {
 				DebugUtils.println("Sending message: " + msg.substring(0, 100).replace("\n", "")
-						+ "... to all " + flashClients.size() + " clients");
+						+ "... to all " + clients.size() + " clients");
 			}
 		}
 
-		for (ExternalClient client : flashClients) {
+		for (ExternalClient client : clients) {
 			client.sendMessage(msg);
 		}
 	}

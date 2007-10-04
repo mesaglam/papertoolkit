@@ -1,11 +1,10 @@
 package java {
 	
+	import flash.events.DataEvent;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.events.DataEvent;
-	import flash.events.IEventDispatcher;
 	import flash.net.XMLSocket;
 
 	
@@ -85,5 +84,20 @@ package java {
 			}
 			sock.send(msg + "\n");
 		}
+		
+		public function sendWithArgs(msg:String, ...args):void {
+			if (sock==null || !sock.connected) {
+				trace("Socket is null or not connected. Message ["+msg+"] was not sent.");
+				return;
+			}
+			
+			// use ExternalCommunicationServer's command and argument delimiters...
+			var messageWithArgs:String = "%%"+msg+"%%";
+			for each (var arg:String in args) {
+				messageWithArgs = messageWithArgs + "@_" + arg + "_@";
+			}
+			sock.send(messageWithArgs + "\n");
+		}
+		
 	}
 }

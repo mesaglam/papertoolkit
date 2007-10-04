@@ -37,10 +37,10 @@ public class ToolkitMonitoringService {
 	private List<Socket> clients = new ArrayList<Socket>();
 	private boolean exitServer = false;
 	private boolean firstTimeClientConnected = true;
-	
+
 	private MonitorInputHandling monitor;
 	private MonitorPaperUIInfo monitorPaperUIInfo;
-	
+
 	private MonitorSystemOut monitorSystemOut;
 	private List<PrintWriter> outputs = new ArrayList<PrintWriter>();
 	private ServerSocket serverSocket;
@@ -59,14 +59,13 @@ public class ToolkitMonitoringService {
 
 		// once the first one happens, access paper toolkit and instrument the event dispatcher...
 		// send out information to the socket!
-		
+
 		// if a flash gui already exists, ask it to connect to us! =\
 		// ...
 	}
 
 	/**
-	 * Darn... so the flex GUI is supposed to connect to the toolkit? Why don't we do it the other way???
-	 * Perhaps we can easily ask the Flash GUI to connect to the toolkit?
+	 * SideCarViz connects to the toolkit....
 	 */
 	private void createServerToWaitForAConnection() {
 		try {
@@ -95,30 +94,30 @@ public class ToolkitMonitoringService {
 			}
 		}.start();
 	}
-	
+
 	public PaperToolkit getToolkit() {
 		return toolkit;
 	}
-
 
 	/**
 	 * Add hooks to listen to the toolkit.
 	 */
 	private void instrumentToolkitForMonitoring() {
+		DebugUtils.println("Got a connection. Instrumenting the toolkit now...");
+
 		// instrument pen input and event dispatch
 		monitor = new MonitorInputHandling(this);
 
 		// instrument System.outs!
 		// Everytime someone uses a System.out, we'll know about it, and then forward it to SideCar!
 		monitorSystemOut = new MonitorSystemOut(this);
-		
+
 		// send paper ui information to the flash GUI
 		monitorPaperUIInfo = new MonitorPaperUIInfo(this, toolkit.getLoadedApps());
 	}
 
 	/**
-	 * Use this method to broadcast information to listeners...
-	 * The Flex GUI is the listener...
+	 * Use this method to broadcast information to listeners... The Flex GUI is the listener...
 	 * 
 	 * @param msg
 	 */
