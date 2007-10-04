@@ -141,12 +141,6 @@ public class PaperToolkit {
 	 */
 	private static final String REMOTE_PENS_KEY = "remotePens";
 
-	/**
-	 * For communicating with the SideCar server...
-	 */
-	private static PrintWriter sideCarPrintWriter;
-	private static Socket sideCarSocket;
-
 	private static String toolkitIconTitle;
 
 	/**
@@ -461,29 +455,6 @@ public class PaperToolkit {
 		// the static initializer will have run by this time, so getInstance will be valid!
 		return SaveAndReplay.getInstance();
 	}
-	
-	/**
-	 * 
-	 */
-	private static void initializeSideCarOutput() {
-		if (sideCarSocket == null) {
-			try {
-				DebugUtils.println("PaperToolkit is Connecting to SideCar...");
-				sideCarSocket = new Socket("localhost", Ports.SIDE_CAR_COMMUNICATIONS);
-				OutputStream outputStream = sideCarSocket.getOutputStream();
-				sideCarPrintWriter = new PrintWriter(outputStream);
-
-				DebugUtils.println("PaperToolkit is Asking SideCar to Start...");
-				sideCarPrintWriter.println(ToolkitMonitoringService.START_SIDECAR);
-				sideCarPrintWriter.flush();
-
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 
 	/**
 	 * Alternatively, try using the *.bat files instead.
@@ -494,8 +465,7 @@ public class PaperToolkit {
 		if (args.length == 0) {
 			// the 0 args branch will run the Paper Toolkit GUI, which helps
 			// designers learn what you can do
-			// with this toolkit. It integrates with the documentation and stuff
-			// too!
+			// with this toolkit. It integrates with the documentation and stuff too!
 			printUsage();
 			getInstance().startToolExplorer();
 		} else if (args[0].startsWith("-actions")) {
@@ -509,44 +479,14 @@ public class PaperToolkit {
 	 * @param popupMenu
 	 */
 	private static void populateTrayMenuForSideCar(Menu popupMenu) {
-		final MenuItem openSideCarItem = new MenuItem("Start SideCar Monitoring");
-		openSideCarItem.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
-				try {
-					initializeSideCarOutput();
-				} catch (Exception e) {
-					DebugUtils.println("Is SideCar Running Yet? If not... start SideCar, and try again!");
-					DebugUtils.println("We are expecting SideCar to be listening at Port: "
-							+ Ports.SIDE_CAR_COMMUNICATIONS);
-				}
-			}
-
-		});
-		popupMenu.add(openSideCarItem);
-		
-		
-
 		final MenuItem openSideCarGUIItem = new MenuItem("Open SideCar GUI");
 		openSideCarGUIItem.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent arg0) {
-				// make a socket connection and ask the (already running) SideCar to start its Flex GUI
-				try {
-					initializeSideCarOutput();
-					DebugUtils.println("PaperToolkit is Asking SideCar to Open the Flash GUI...");
-					sideCarPrintWriter.println(ToolkitMonitoringService.START_SIDECAR_GUI);
-					sideCarPrintWriter.flush();
-				} catch (Exception e) {
-					DebugUtils.println("Is SideCar Running Yet? If not... start SideCar, and try again!");
-					DebugUtils.println("We are expecting SideCar to be listening at Port: "
-							+ Ports.SIDE_CAR_COMMUNICATIONS);
-				}
+				monitoringService.openSideCarGUI();
 			}
 		});
 		popupMenu.add(openSideCarGUIItem);
-	
+
 	}
 
 	/**
@@ -652,7 +592,7 @@ public class PaperToolkit {
 	 * For allowing external apps (e.g., SideCar) to monitor the toolkit's actions...
 	 */
 	@SuppressWarnings("unused")
-	private ToolkitMonitoringService monitoringService;
+	private static ToolkitMonitoringService monitoringService;
 
 	/**
 	 * Whether or not to use handwriting recognition. It will start the HWRec Server...
@@ -691,9 +631,6 @@ public class PaperToolkit {
 		if (useHandwriting && startupOptions.getParamTurnOnHandwritingRecognitionServer()) {
 			HandwritingRecognitionService.getInstance();
 		}
-
-		// set up the monitoring
-		monitoringService = new ToolkitMonitoringService(this);
 	}
 
 	/**
@@ -826,7 +763,16 @@ public class PaperToolkit {
 			// provides access back to the toolkit object
 			paperApp.setHostToolkit(this);
 		}
+			
+		// set up the monitoring
+		// assume only one for now...
+		if (monitoringService == null) {
+			monitoringService = new ToolkitMonitoringService(this);
+		}
+		// tell the monitor...
+		monitoringService.startedApp(paperApp);
 
+		
 		// register all the live pens with the dispatcher
 		final List<InputDevice> pens = paperApp.getPenInputDevices();
 		for (InputDevice pen : pens) {

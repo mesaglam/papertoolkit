@@ -280,7 +280,10 @@ public class ExternalCommunicationServer {
 				}
 			}
 			clients.removeAll(toBeRemoved);
-			DebugUtils.println(clients.size() + " clients remain.");
+			DebugUtils.println(clients.size() + " clients remain:");
+			for (ExternalClient cl : clients) {
+				DebugUtils.println(cl.getID() + ": " + cl.getName());
+			}
 		} else if (commandName.equals("exitServer")) {
 			if (client == null) {
 				return;
