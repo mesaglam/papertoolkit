@@ -6,6 +6,7 @@ import papertoolkit.application.Application;
 import papertoolkit.events.EventHandler;
 import papertoolkit.paper.Region;
 import papertoolkit.paper.Sheet;
+import papertoolkit.util.DebugUtils;
 
 public class MonitorPaperUIInfo {
 
@@ -15,7 +16,8 @@ public class MonitorPaperUIInfo {
 	public MonitorPaperUIInfo(ToolkitMonitoringService toolkitMonitoringService, List<Application> loadedApps) {
 		service = toolkitMonitoringService;
 		apps = loadedApps;
-
+		
+		DebugUtils.println("Monitoring Paper UI Info: " + apps );
 		// right now, we sort of assume one app... but what the hey
 		for (Application app : apps) {
 			List<Sheet> sheets = app.getSheets();

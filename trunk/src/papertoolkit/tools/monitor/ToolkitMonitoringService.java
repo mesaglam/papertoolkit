@@ -8,10 +8,12 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import papertoolkit.PaperToolkit;
+import papertoolkit.application.Application;
 import papertoolkit.application.config.Constants.Ports;
 import papertoolkit.util.DebugUtils;
 
@@ -31,11 +33,12 @@ public class ToolkitMonitoringService {
 
 	private static int clientIDs = 0;
 
-	public static final String START_SIDECAR_GUI = "PaperToolkit::StartSideCarGUI";
 	public static final String START_SIDECAR = "PaperToolkit::StartSideCar";
+	public static final String START_SIDECAR_GUI = "PaperToolkit::StartSideCarGUI";
 
 	private List<Socket> clients = new ArrayList<Socket>();
 	private boolean exitServer = false;
+
 	private boolean firstTimeClientConnected = true;
 
 	private MonitorInputHandling monitor;
@@ -45,7 +48,16 @@ public class ToolkitMonitoringService {
 	private List<PrintWriter> outputs = new ArrayList<PrintWriter>();
 	private ServerSocket serverSocket;
 
+	/**
+	 * For communicating with the SideCar server...
+	 */
+	private PrintWriter printWriterToSideCarServer;
+
+	private Socket sideCarSocket;
+
 	private PaperToolkit toolkit;
+
+	private List<String> cachedMessages = new ArrayList<String>();
 
 	/**
 	 * @param paperToolkit
@@ -57,11 +69,9 @@ public class ToolkitMonitoringService {
 		// the flex gui will connect to this monitor
 		createServerToWaitForAConnection();
 
-		// once the first one happens, access paper toolkit and instrument the event dispatcher...
-		// send out information to the socket!
-
-		// if a flash gui already exists, ask it to connect to us! =\
-		// ...
+		// We will assume that SideCar is already running at this point, so we should issue the connect
+		// command
+		initializeOutputToSideCar();
 	}
 
 	/**
@@ -83,6 +93,7 @@ public class ToolkitMonitoringService {
 							clients.add(client);
 							startClientHandlerThread(client);
 							if (firstTimeClientConnected) {
+								DebugUtils.println("Got a connection. Instrumenting the toolkit now...");
 								instrumentToolkitForMonitoring();
 								firstTimeClientConnected = false;
 							}
@@ -100,11 +111,36 @@ public class ToolkitMonitoringService {
 	}
 
 	/**
+	 * Connect as a client to the SideCar Server...
+	 */
+	private void initializeOutputToSideCar() {
+		if (sideCarSocket == null) {
+			try {
+				DebugUtils.println("PaperToolkit Monitor is trying to talk to the SideCar Server...");
+				sideCarSocket = new Socket("localhost", Ports.SIDE_CAR_COMMUNICATIONS);
+				OutputStream outputStream = sideCarSocket.getOutputStream();
+				printWriterToSideCarServer = new PrintWriter(outputStream);
+
+				// ask the SideCar server to connect back to us!
+				// why do we even do this?? Can we not just use the sideCar socket???
+				// this is a bad design!
+				// is it to check that SideCar is actually running?
+				// argh.... clean up design at some point... :-(
+				DebugUtils.println("PaperToolkit is Asking SideCar to Start...");
+				printWriterToSideCarServer.println(ToolkitMonitoringService.START_SIDECAR);
+				printWriterToSideCarServer.flush();
+
+				printWriterToSideCarServer.println("[[setName]]@_PaperToolkitMonitor_@");
+			} catch (Exception e) {
+				DebugUtils.println("SideCar Monitor is not running. " + e.getMessage());
+			}
+		}
+	}
+
+	/**
 	 * Add hooks to listen to the toolkit.
 	 */
 	private void instrumentToolkitForMonitoring() {
-		DebugUtils.println("Got a connection. Instrumenting the toolkit now...");
-
 		// instrument pen input and event dispatch
 		monitor = new MonitorInputHandling(this);
 
@@ -117,11 +153,32 @@ public class ToolkitMonitoringService {
 	}
 
 	/**
-	 * Use this method to broadcast information to listeners... The Flex GUI is the listener...
+	 * 
+	 */
+	public void openSideCarGUI() {
+		try {
+			printWriterToSideCarServer.println(ToolkitMonitoringService.START_SIDECAR_GUI);
+			printWriterToSideCarServer.flush();
+		} catch (Exception e) {
+			DebugUtils.println("Is SideCar Running Yet? If not... start SideCar, and try again!");
+			DebugUtils.println("We are expecting SideCar to be listening at Port: "
+					+ Ports.SIDE_CAR_COMMUNICATIONS);
+		}
+	}
+
+	/**
+	 * Use this method to broadcast information to listeners... The Flex GUI is one listener...
 	 * 
 	 * @param msg
 	 */
 	public void outputToClients(String msg) {
+		if (outputs.size() == 0) {
+			// cache the string, for later!
+			cachedMessages.add(msg);
+			return;
+		}
+
+		// deal with regular messages
 		for (PrintWriter clientPW : outputs) {
 			clientPW.println(msg);
 			clientPW.flush();
@@ -159,6 +216,12 @@ public class ToolkitMonitoringService {
 					pw = new PrintWriter(outputStream);
 					outputs.add(pw);
 
+					// send cached messages to this client
+					for (String cached : cachedMessages) {
+						pw.println(cached);
+						pw.flush();
+					}
+
 					String line = null;
 					while ((line = br.readLine()) != null) {
 						outputToClients("Client #" + clientID + " said: " + line + " [" + clients.size()
@@ -184,5 +247,9 @@ public class ToolkitMonitoringService {
 			}
 
 		}.start();
+	}
+
+	public void startedApp(Application paperApp) {
+		outputToClients("<applicationStarted appName=\"" + paperApp.getName() + "\" />");
 	}
 }
