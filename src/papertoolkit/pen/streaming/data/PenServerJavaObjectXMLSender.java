@@ -22,8 +22,10 @@ import papertoolkit.util.SystemUtils;
  */
 public class PenServerJavaObjectXMLSender implements PenServerSender {
 
-	private BufferedOutputStream bos;
-
+	/**
+	 * For subclasses to accesss. :-)
+	 */
+	protected BufferedOutputStream bos;
 	private Socket sock;
 
 	/**
@@ -75,7 +77,6 @@ public class PenServerJavaObjectXMLSender implements PenServerSender {
 			xmlString = xmlString.replace(" ", "");
 		}
 
-		// System.out.println(xmlString);
 		bos.write((xmlString + SystemUtils.LINE_SEPARATOR).getBytes());
 		bos.flush();
 	}

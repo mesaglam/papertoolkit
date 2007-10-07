@@ -15,5 +15,6 @@ package papertoolkit.util.networking;
  */
 public enum ClientServerType {
 	JAVA, 
+	FLASH,
 	PLAINTEXT
 }
