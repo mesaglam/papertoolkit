@@ -53,10 +53,17 @@ public class PenServerTrayApp {
 	 */
 	private static final String STOP_PEN_SERVER_MSG = "Stop the Pen Server";
 
+	private static boolean useFlashServer;
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		if (args.length == 1 && args[0].equals("-flash")) {
+			DebugUtils.println("Using Flash Server");
+			useFlashServer = true;
+		}
+		
 		PaperToolkit.initializeLookAndFeel();
 
 		// pop up a dialog box asking which serial port and which TCP/IP port to use...
@@ -154,8 +161,8 @@ public class PenServerTrayApp {
 		tcpipPort = penServerTcpIpPorT;
 
 		// the on/off icons
-		imageON = ImageCache.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sun.png"));
-		imageOFF = ImageCache.loadBufferedImage(PenServerTrayApp.class.getResource("/icons/sunOff.png"));
+		imageON = ImageCache.loadBufferedImage(PaperToolkit.getDataFile("/icons/sun.png"));
+		imageOFF = ImageCache.loadBufferedImage(PaperToolkit.getDataFile("/icons/sunOff.png"));
 
 		final PopupMenu popup = new PopupMenu();
 		final MenuItem exitItem = new MenuItem("Exit");
@@ -185,7 +192,7 @@ public class PenServerTrayApp {
 		}
 
 		// start the pen server!
-		PenServer.startJavaServer(comPort, tcpipPort);
+		startTheServer();
 		serverRunning = true;
 	}
 
@@ -219,14 +226,27 @@ public class PenServerTrayApp {
 					} else {
 						trayIcon.displayMessage("Pen is Online",
 								"Server started. The pen is now in live mode.", TrayIcon.MessageType.INFO);
-						PenServer.startJavaServer(comPort, tcpipPort);
+
+						startTheServer();
+						
 						trayIcon.setImage(imageON);
 						onOffItem.setLabel(STOP_PEN_SERVER_MSG);
 						serverRunning = true;
 					}
 				}
+
 			};
 		}
 		return iconListener;
+	}
+
+	private void startTheServer() {
+		if (useFlashServer) {
+			PenServer flashServer = PenServer.startFlashServer(comPort, tcpipPort);
+			flashServer.setVerbose(true);
+		} else {
+			PenServer javaServer = PenServer.startJavaServer(comPort, tcpipPort);
+			javaServer.setVerbose(true);
+		}
 	}
 }

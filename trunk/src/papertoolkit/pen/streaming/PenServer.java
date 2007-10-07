@@ -9,6 +9,7 @@ import java.util.List;
 import papertoolkit.application.config.Constants;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.PenJitterFilter.PenUpCallback;
+import papertoolkit.pen.streaming.data.PenServerFlashXMLSender;
 import papertoolkit.pen.streaming.data.PenServerJavaObjectXMLSender;
 import papertoolkit.pen.streaming.data.PenServerPlainTextSender;
 import papertoolkit.pen.streaming.data.PenServerSender;
@@ -43,25 +44,25 @@ public class PenServer implements PenListener {
 					break;
 				}
 				try {
-					if (serverType == ClientServerType.PLAINTEXT) {
-						// log("Waiting for a plain text connection on port " + serverSocket.getLocalPort()
-						// + "...");
-					} else { // serverType == Java Server
-						// log("Waiting for a java connection on port " + serverSocket.getLocalPort() +
-						// "...");
-					}
 					s = serverSocket.accept();
-					// log("Got a connection on port " + serverSocket.getLocalPort() + "...");
-					// log("Client IP Addr is " + s.getRemoteSocketAddress());
+					log("Got a connection on port " + serverSocket.getLocalPort() + "...");
+					log("Client IP Addr is " + s.getRemoteSocketAddress());
 				} catch (IOException ioe) {
 					log("Error with server socket: " + ioe.getLocalizedMessage());
 				}
 				if (s != null) {
 					try {
-						if (serverType == ClientServerType.PLAINTEXT) {
+						DebugUtils.println("Pen Server Type: " + serverType);
+						switch (serverType) {
+						case PLAINTEXT:
 							outputs.add(new PenServerPlainTextSender(s));
-						} else { // serverType == Java Server
+							break;
+						case JAVA:
 							outputs.add(new PenServerJavaObjectXMLSender(s));
+							break;
+						case FLASH:
+							outputs.add(new PenServerFlashXMLSender(s));
+							break;
 						}
 					} catch (IOException ioe) {
 						try {
@@ -91,10 +92,13 @@ public class PenServer implements PenListener {
 	 */
 	public static final COMPort DEFAULT_SERIAL_PORT = COMPort.COM5;
 
+	private static PenServer flashPenServer;
+
 	/**
 	 * The default pen server sends java objects across the wire.
 	 */
 	private static PenServer javaPenServer;
+	
 
 	/**
 	 * A connection to the local COM port.
@@ -102,22 +106,23 @@ public class PenServer implements PenListener {
 	private static PenStreamingConnection penConnection;
 
 	/**
+	 * Set to true if we could not connect to the main java port. This means someone else has already started
+	 * a local PenServer.
+	 */
+	private static boolean penServerStartedBySomeoneElse = false;
+
+	/**
 	 * A debug pen server sends text across the wire.
 	 */
 	private static PenServer textPenServer;
 
 	/**
-	 * Set to true if we could not connect to the main java port. This means someone else has already started
-	 * a local PenServer.
-	 */
-	private static boolean javaServerStartedBySomeoneElse = false;
-
-	/**
 	 * TODO: We may want to do the server started by someone else trick w/ the debug text server too...
+	 * 
 	 * @return whether there is a local Java server running.
 	 */
 	public static boolean isJavaServerStarted() {
-		return javaPenServer != null && javaServerStartedBySomeoneElse;
+		return javaPenServer != null && penServerStartedBySomeoneElse;
 	}
 
 	/**
@@ -176,6 +181,26 @@ public class PenServer implements PenListener {
 		startTextServer(serialPortName, tcpipPortPlainText);
 	}
 
+	public static PenServer startFlashServer(COMPort comPort, int tcpipPort) {
+		try {
+			final ServerSocket flashServer = new ServerSocket(tcpipPort);
+
+			// provide access to this variable, so we can close a pen connection if necessary
+			penConnection = PenStreamingConnection.getInstance(comPort);
+			if (penConnection == null) {
+				DebugUtils.println("The PenServer could not connect to the local serial port.");
+				return null;
+			}
+			flashPenServer = new PenServer(flashServer, ClientServerType.FLASH);
+			penConnection.addPenListener(flashPenServer);
+		} catch (IOException ioe) {
+			log("A Pen Server (or some other server) already exists at " + tcpipPort);
+			log("We will try to connect to it....");
+			penServerStartedBySomeoneElse = true;
+		}
+		return flashPenServer;
+	}
+
 	/**
 	 * Provides default implementation. Only start the Java Server.
 	 */
@@ -199,7 +224,7 @@ public class PenServer implements PenListener {
 	 * 
 	 * @param tcpipPort
 	 */
-	public static void startJavaServer(COMPort serialPort, int tcpipPort) {
+	public static PenServer startJavaServer(COMPort serialPort, int tcpipPort) {
 		try {
 			final ServerSocket javaServer = new ServerSocket(tcpipPort);
 
@@ -207,15 +232,16 @@ public class PenServer implements PenListener {
 			penConnection = PenStreamingConnection.getInstance(serialPort);
 			if (penConnection == null) {
 				DebugUtils.println("The PenServer could not connect to the local serial port.");
-				return;
+				return null;
 			}
 			javaPenServer = new PenServer(javaServer, ClientServerType.JAVA);
 			penConnection.addPenListener(javaPenServer);
 		} catch (IOException ioe) {
 			log("A Pen Server (or some other server) already exists at " + tcpipPort);
 			log("We will try to connect to it....");
-			javaServerStartedBySomeoneElse = true;
+			penServerStartedBySomeoneElse = true;
 		}
+		return javaPenServer;
 	}
 
 	/**
@@ -288,6 +314,8 @@ public class PenServer implements PenListener {
 	 */
 	private ClientServerType serverType;
 
+	private boolean verbose = false;
+
 	/**
 	 * @param ss
 	 * @param type
@@ -325,9 +353,12 @@ public class PenServer implements PenListener {
 		penDownHasHappened = true;
 		if (jitterFilter.happenedTooCloseToLastPenUp()) {
 			jitterFilter.cancelLastPenUp();
-		} else {
+		} else { // actual pen down!
 			penUp = false;
 			sample(s);
+			if (verbose) {
+				DebugUtils.println("Pen Down");
+			}
 		}
 	}
 
@@ -368,6 +399,10 @@ public class PenServer implements PenListener {
 			penServerOutput.destroy();
 			outputs.remove(penServerOutput);
 		}
+	}
+
+	public void setVerbose(boolean b) {
+		verbose = b;
 	}
 
 	/**

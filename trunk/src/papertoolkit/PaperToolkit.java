@@ -46,6 +46,7 @@ import papertoolkit.pattern.coordinates.RegionID;
 import papertoolkit.pattern.coordinates.conversion.TiledPatternCoordinateConverter;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.Pen;
+import papertoolkit.pen.PenSample;
 import papertoolkit.pen.handwriting.HandwritingRecognitionService;
 import papertoolkit.pen.replay.SaveAndReplay;
 import papertoolkit.pen.streaming.PenServerTrayApp;
@@ -402,6 +403,7 @@ public class PaperToolkit {
 			xmlEngine.alias("TiledPatternCoordinateConverter", TiledPatternCoordinateConverter.class);
 			xmlEngine.alias("RegionID", RegionID.class);
 			xmlEngine.alias("PenEvent", PenEvent.class);
+			xmlEngine.alias("PenSample", PenSample.class);
 		}
 		return xmlEngine;
 	}
