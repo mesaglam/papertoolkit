@@ -35,7 +35,7 @@ import papertoolkit.util.DebugUtils;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-public class PenSynch {
+public class PenSynch implements Synch {
 
 	/**
 	 * 

@@ -2,8 +2,10 @@ package papertoolkit.pen.ink;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import papertoolkit.pen.PenSample;
@@ -164,6 +166,9 @@ public class InkStroke {
 	 * @return the earliest time stamp of this stroke
 	 */
 	public long getFirstTimestamp() {
+		if (samples.size() == 0) {
+			return Long.MAX_VALUE; // biggest possible timestamp! (i.e., invalid)
+		}
 		return samples.get(0).timestamp;
 	}
 
@@ -187,6 +192,9 @@ public class InkStroke {
 	 * @return
 	 */
 	public long getLastTimestamp() {
+		if (samples.size() == 0) {
+			return Long.MIN_VALUE; // smallest possible timestamp! (i.e., invalid)
+		}
 		return samples.get(samples.size() - 1).timestamp;
 	}
 
@@ -195,6 +203,15 @@ public class InkStroke {
 	 */
 	public Date getLastTimestampAsDate() {
 		return new Date(samples.get(samples.size() - 1).timestamp);
+	}
+	
+	/**
+	 * @return
+	 */
+	public Calendar getLastTimestampAsCalendar() {
+		final GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(getLastTimestampAsDate());
+		return cal;
 	}
 
 	/**

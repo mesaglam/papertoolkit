@@ -10,6 +10,17 @@ import javax.swing.filechooser.FileSystemView;
 
 import papertoolkit.devices.Device;
 
+/**
+ * <p>
+ * Composes an HTML file.
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
+ */
 public class HTMLDisplay {
 
 	private String head = "";
@@ -18,6 +29,10 @@ public class HTMLDisplay {
 	private Device parentDevice;
 	private String title;
 
+	public HTMLDisplay() {
+		this(Device.getLocal(), "Local HTML Display");
+	}
+	
 	public HTMLDisplay(Device device, String n) {
 		parentDevice = device;
 		name = n;
