@@ -295,8 +295,15 @@ public class Ink {
 	public File renderToJPEGFile() {
 		File homeDir = FileSystemView.getFileSystemView().getHomeDirectory();
 		File destFile = new File(homeDir, getName() + ".jpg");
-		new InkRenderer(this).renderToJPEGRecentered(destFile);
+		renderToJPEGFile(destFile);
 		return destFile;
+	}
+	
+	/**
+	 * @param dest
+	 */
+	public void renderToJPEGFile(File dest) {
+		new InkRenderer(this).renderToJPEGRecentered(dest);
 	}
 
 	/**

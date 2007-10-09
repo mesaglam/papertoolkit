@@ -76,6 +76,8 @@ public class Device {
 	 */
 	private static PlaySoundAction playSoundAction;
 
+	private static Device localDevice;
+
 	/**
 	 * Opens a file on the local device, using the default file editor.
 	 * 
@@ -286,5 +288,12 @@ public class Device {
 
 	public void openFile(File destFile) {
 		doOpenFile(destFile);
+	}
+
+	public static Device getLocal() {
+		if (localDevice == null) {
+			localDevice = new Device();
+		}
+		return localDevice;
 	}
 }
