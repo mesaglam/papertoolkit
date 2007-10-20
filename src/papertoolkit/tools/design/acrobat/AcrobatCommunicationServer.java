@@ -49,7 +49,7 @@ public class AcrobatCommunicationServer {
 	 * The RESPONSE to send to Acrobat Pro.
 	 */
 	private static final StringBuilder CONFIRMATION = FileUtils.readFileIntoStringBuffer(
-			PaperToolkit.getResourceFile("/designer/Confirmation.html"), false /* no new lines */);
+			PaperToolkit.getDataFile("/designer/Confirmation.html"), false /* no new lines */);
 
 	private static AcrobatCommunicationServer server;
 
@@ -269,7 +269,7 @@ public class AcrobatCommunicationServer {
 	 */
 	private void processXML(String xml) {
 		logToConsoleAndFile(xml);
-		final File xmlFile = PaperToolkit.getResourceFile("/designer/TemporaryXML.xml");
+		final File xmlFile = PaperToolkit.getDataFile("/designer/TemporaryXML.xml");
 		FileWriter fw;
 		try {
 			fw = new FileWriter(xmlFile);
