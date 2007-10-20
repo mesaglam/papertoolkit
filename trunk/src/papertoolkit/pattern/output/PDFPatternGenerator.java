@@ -92,10 +92,12 @@ public class PDFPatternGenerator {
 
 	/**
 	 * @return the tahoma font from disk.
+	 * TODO: What happened? It used to work... Where does BaseFont Look?
 	 */
 	private static BaseFont createBaseFontTahoma() {
+		// TODO RON YEH xxxx
 		try {
-			return BaseFont.createFont("/fonts/tahoma.ttf", BaseFont.CP1252, BaseFont.EMBEDDED);
+			return BaseFont.createFont("data/fonts/tahoma.ttf", BaseFont.CP1252, BaseFont.EMBEDDED);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
