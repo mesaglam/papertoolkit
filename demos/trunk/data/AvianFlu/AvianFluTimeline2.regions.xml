@@ -1,0 +1,421 @@
+<RegionConfiguration>
+  <heightInPoints>
+    <unitName>Points</unitName>
+    <value>2592.0</value>
+  </heightInPoints>
+  <regions>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor>
+        <red>240</red>
+        <green>240</green>
+        <blue>240</blue>
+        <alpha>255</alpha>
+      </fillColor>
+      <name>Comments_0</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>58.000076</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>58.000076</x>
+        <y>665.5023189999999</y>
+        <width>503.501023</width>
+        <height>378.751221</height>
+      </shape>
+      <strokeColor>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </strokeColor>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Vote_5</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>1327.004883</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>1327.004883</x>
+        <y>2375.508804</y>
+        <width>253.75012199999992</width>
+        <height>99.750153</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Vote_4</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>6244.002441</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>6244.002441</x>
+        <y>2374.504196</y>
+        <width>258.25</width>
+        <height>104.250137</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Vote_7</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2130.257813</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2130.257813</x>
+        <y>2452.00914</y>
+        <width>249.25024399999984</width>
+        <height>99.750107</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Retrieve_3</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>582.252075</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>582.252075</x>
+        <y>1392.255127</y>
+        <width>55.74926800000003</width>
+        <height>52.49987800000008</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Vote_3</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>3355.387451</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>3355.387451</x>
+        <y>2348.508789</y>
+        <width>250.37524399999984</width>
+        <height>97.500046</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Retrieve_7</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>2611.759766</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>2611.759766</x>
+        <y>2470.009293</y>
+        <width>53.499510999999984</width>
+        <height>51.374725</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Vote_0</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>4106.378906</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>4106.378906</x>
+        <y>1199.302856</y>
+        <width>252.9951170000004</width>
+        <height>98.99231000000009</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Retrieve_1</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>8311.03125</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>8311.03125</x>
+        <y>1277.504639</y>
+        <width>66.99511700000039</width>
+        <height>67.12267999999995</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Vote_1</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>7361.52832</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>7361.52832</x>
+        <y>1261.754639</y>
+        <width>253.75</width>
+        <height>97.5</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Retrieve_0</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>6506.524902</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>6506.524902</x>
+        <y>1232.504517</y>
+        <width>57.999023999999736</width>
+        <height>66.0</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Comments_1</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>9353.993164</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>9353.993164</x>
+        <y>2160.851227</y>
+        <width>798.7246090000008</width>
+        <height>385.090378</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Retrieve_2</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>9366.820313</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>9366.820313</x>
+        <y>1287.86731</y>
+        <width>48.97558500000014</width>
+        <height>53.984984999999824</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Vote_2</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>10060.62793</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>10060.62793</x>
+        <y>1276.135986</y>
+        <width>258.9941399999989</width>
+        <height>95.98913599999992</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Vote_6</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>10344.537109</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>10344.537109</x>
+        <y>2390.7550050000004</y>
+        <width>267.9960940000001</width>
+        <height>98.99067699999999</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Retrieve_5</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>8980.367188</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>8980.367188</x>
+        <y>2441.218872</y>
+        <width>54.97558500000014</width>
+        <height>50.98829699999999</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Retrieve_4</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>4571.481445</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>4571.481445</x>
+        <y>2424.131668</y>
+        <width>54.97802799999954</width>
+        <height>53.98751800000001</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>Retrieve_6</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>6639.833008</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>6639.833008</x>
+        <y>2451.585419</y>
+        <width>54.975586000000476</width>
+        <height>53.98835699999999</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+    <Region>
+      <active>true</active>
+      <eventHandlers/>
+      <fillColor reference="../../Region/fillColor"/>
+      <name>TopTimeline</name>
+      <opacity>0.0</opacity>
+      <referenceUnits class="Points">
+        <unitName>Points</unitName>
+        <value>619.951172</value>
+      </referenceUnits>
+      <scaleX>1.0</scaleX>
+      <scaleY>1.0</scaleY>
+      <shape class="Rectangle2DDouble">
+        <x>619.951172</x>
+        <y>81.31738300000006</y>
+        <width>10405.489258000001</width>
+        <height>119.18286099999978</height>
+      </shape>
+      <strokeColor reference="../../Region/strokeColor"/>
+      <visible>true</visible>
+    </Region>
+  </regions>
+  <widthInPoints>
+    <unitName>Points</unitName>
+    <value>11520.0</value>
+  </widthInPoints>
+</RegionConfiguration>
