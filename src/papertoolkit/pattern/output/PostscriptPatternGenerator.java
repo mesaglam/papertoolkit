@@ -63,7 +63,7 @@ public class PostscriptPatternGenerator {
 
 		// read in the template file
 		template = FileUtils.readFileIntoStringBuffer(
-				PaperToolkit.getResourceFile("/templates/PostscriptPatternTemplate.txt"), true).toString();
+				PaperToolkit.getDataFile("/templates/PostscriptPatternTemplate.txt"), true).toString();
 
 		// add the width, height, and margin
 		template = template.replaceAll("__WIDTH_POINTS__", horizLength.getValueInPoints() + "");

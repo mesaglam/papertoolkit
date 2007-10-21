@@ -197,7 +197,7 @@ package ink {
 			var p:Array = new Array();
 			var c:Number = 0;
 			
-			// trace("Vertices Plus: " + v);
+			trace("Vertices Plus: " + v);
 			
 			for(var i:int=0, len:int=v.length; i<len-3; i++){
 				var p1:Object = v[i+1];

@@ -14,11 +14,10 @@ import papertoolkit.pen.Pen;
 import papertoolkit.tools.design.sketch.SketchToPaperUI;
 import papertoolkit.util.DebugUtils;
 
-
 /**
  * <p>
  * If you run the PaperToolkit.main, you will invoke the ToolExplorer, which helps you to figure out what the
- * toolkit offers.
+ * toolkit offers... This feature is incomplete / in progress.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -39,12 +38,12 @@ public class ToolExplorer implements ExternalListener {
 	 */
 	public ToolExplorer(PaperToolkit ptk) {
 		// ToolExplorer is Work in Progress: it doesn't do anything much yet...
-		
+
 		paperToolkit = ptk;
 		// start the Flash Communications Server, and register our listeners...
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File toolExplorerHTML = new File(r3RootPath, "flash/bin/ToolExplorer.html");
-		
+
 		flash = new ExternalCommunicationServer();
 		flash.addFlashClientListener(this);
 		flash.openFlashHTMLGUI(toolExplorerHTML);
@@ -67,7 +66,7 @@ public class ToolExplorer implements ExternalListener {
 	/*
 	 * @see edu.stanford.hci.r3.flash.FlashListener#messageReceived(java.lang.String)
 	 */
-	public boolean messageReceived(String command, String...args) {
+	public boolean messageReceived(String command, String... args) {
 		DebugUtils.println(command);
 		if (command.equals("Connected")) {
 			DebugUtils.println("ToolExplorer Connected");
@@ -85,6 +84,9 @@ public class ToolExplorer implements ExternalListener {
 		} else if (command.equals("Design")) {
 			sketchToPaperUI = new SketchToPaperUI(currentPen);
 			sketchToPaperUI.addPenListener(new FlashPenListener(flash));
+			
+			// add some stuff here?
+			
 			return CONSUMED;
 		} else if (command.equals("Main Menu")) {
 			if (sketchToPaperUI != null) {

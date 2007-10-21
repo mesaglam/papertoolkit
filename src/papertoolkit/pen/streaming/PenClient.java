@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import papertoolkit.PaperToolkit;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
 import papertoolkit.util.DebugUtils;
@@ -136,12 +137,13 @@ public class PenClient {
 					try {
 						final BufferedReader br = setupSocketAndReader();
 						String line = null;
-						final XStream xml = new XStream();
+						
 						while ((line = br.readLine()) != null) {
 							// System.out.println(line);
 
 							// reconstruct the sample from xml
-							final PenSample sample = (PenSample) xml.fromXML(line);
+							// DebugUtils.println(line);
+							final PenSample sample = (PenSample) PaperToolkit.fromXML(line);
 							final boolean penIsUp = sample.isPenUp();
 
 							// TODO: Should we replace the time field in the sample with the time we received

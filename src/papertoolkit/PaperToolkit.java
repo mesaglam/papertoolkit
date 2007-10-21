@@ -257,6 +257,10 @@ public class PaperToolkit {
 		return o;
 	}
 
+	public static Object fromXML(String xmlString) {
+		return getXMLEngine().fromXML(xmlString);
+	}
+
 	/**
 	 * @param relativePath
 	 * @return a file under the /data/ directory...
@@ -301,8 +305,10 @@ public class PaperToolkit {
 	 * 
 	 * @param resourcePath
 	 * @return
+	 * @deprecated until we figure out what we want to do with the JAR situation. No plans to deploy
+	 *             PaperToolkit as a single JAR.
 	 */
-	public static File getResourceFile(String resourcePath) {
+	private static File getResourceFile(String resourcePath) {
 		try {
 			// we need a way to anchor the PaperToolkit Path...
 			// maybe through a config file? but where might we access this config file...
@@ -765,7 +771,7 @@ public class PaperToolkit {
 			// provides access back to the toolkit object
 			paperApp.setHostToolkit(this);
 		}
-			
+
 		// set up the monitoring
 		// assume only one for now...
 		if (monitoringService == null) {
@@ -774,7 +780,6 @@ public class PaperToolkit {
 		// tell the monitor...
 		monitoringService.startedApp(paperApp);
 
-		
 		// register all the live pens with the dispatcher
 		final List<InputDevice> pens = paperApp.getPenInputDevices();
 		for (InputDevice pen : pens) {

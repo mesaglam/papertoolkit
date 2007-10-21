@@ -187,7 +187,7 @@ public class HandwritingRecognitionService {
 					String line;
 					// trap the console output
 					while ((line = br.readLine()) != null) {
-						System.out.println("Handwriting Server: " + line);
+						DebugUtils.println("Handwriting Server: " + line);
 						synchronized (mutex) {
 							if (line.contains("[[serverstarted]]")) {
 								serverStarted = true;

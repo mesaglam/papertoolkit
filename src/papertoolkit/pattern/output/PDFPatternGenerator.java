@@ -2,8 +2,10 @@ package papertoolkit.pattern.output;
 
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
+import java.io.File;
 import java.io.IOException;
 
+import papertoolkit.PaperToolkit;
 import papertoolkit.pattern.PatternJitter;
 import papertoolkit.pattern.TiledPattern;
 import papertoolkit.units.Units;
@@ -96,8 +98,10 @@ public class PDFPatternGenerator {
 	 */
 	private static BaseFont createBaseFontTahoma() {
 		// TODO RON YEH xxxx
+		DebugUtils.println(new File(".").getAbsolutePath());
+		
 		try {
-			return BaseFont.createFont("data/fonts/tahoma.ttf", BaseFont.CP1252, BaseFont.EMBEDDED);
+			return BaseFont.createFont(PaperToolkit.getDataFile("fonts/tahoma.ttf").getAbsolutePath(), BaseFont.CP1252, BaseFont.EMBEDDED);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

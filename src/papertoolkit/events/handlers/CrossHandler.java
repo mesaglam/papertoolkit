@@ -4,7 +4,8 @@ import papertoolkit.events.EventHandler;
 
 /**
  * <p>
- * Instead of detecting clicks, this should detect crosses on a target.
+ * Instead of detecting clicks, this should detect crosses on a target. It returns the cross direction and the
+ * relative location on the region.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a

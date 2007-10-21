@@ -70,6 +70,8 @@ namespace HandwritingRecognition {
                 switch (nodeNameLowerCase) {
                     case "p":
                         // C# Seems to use Bankers' Rounding
+                        // Can we handle numbers like: x="2.80733975875E8" y="538.625" ??? YES, I think so...
+                        // Will we lose precision by casting to INT? 
                         int x = (int)Math.Round(Double.Parse(reader.GetAttribute("x")));
                         int y = (int)Math.Round(Double.Parse(reader.GetAttribute("y")));
                         //Console.WriteLine("Sample: {0} {1} {2} {3}", x, y, reader.GetAttribute("f"), reader.GetAttribute("t"));

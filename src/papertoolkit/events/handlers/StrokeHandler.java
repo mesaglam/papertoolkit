@@ -30,6 +30,9 @@ public abstract class StrokeHandler extends EventHandler {
 	 */
 	private InkStroke mostRecentStroke;
 
+	/**
+	 * 
+	 */
 	private boolean penDownHappened = false;
 
 	/**
