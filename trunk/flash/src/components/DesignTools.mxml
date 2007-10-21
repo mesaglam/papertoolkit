@@ -5,33 +5,137 @@
 	<mx:Label x="10" y="10" text="Design a Paper UI by sketching on patterned paper." fontSize="15"/>
 	<mx:Script>
 		<![CDATA[
+			import mx.collections.XMLListCollection;
+			import tools.Images;
 			import tools.DesignToolsBackend;
 			import mx.core.UIComponent;
 			import flash.events.MouseEvent;
 
 			private var designTools:DesignToolsBackend;
 			private var container:UIComponent;
+			private var selectedNode:XML;
+			private var timerExpandTree:Timer;
+
 			
 			public function init():void {
 				trace("DesignTools Init");
+
+				timerExpandTree = new Timer(400);
+				timerExpandTree.addEventListener(TimerEvent.TIMER, timerExpandHandler);
+				paperUITreeData = new XMLListCollection();
+				paperUITree.dataProvider = paperUITreeData;
+
+
 				designTools = new DesignToolsBackend();
 				designTools.setParent(this);
 				container = new UIComponent();
 				container.addChild(designTools);
 				inkCanvas.addChild(container);
 			}
+
+			// indexed by _SheetName... your sheets better have unique names!
+			// when we find the sheet, we can add a region as a child of that sheet item.
+			private var sheets:Dictionary = new Dictionary();
+			
+			// indexed by _SheetName_RegionName... your regions better have unique names within their parent sheet!
+			// when we find the region, we can add a handler as a child of that region item
+			private var regions:Dictionary = new Dictionary();
+
+
+			// add a sheet!
+			private function addSheetItem(sheetName:String):void {
+				// assume you won't add two sheets with the same name!
+				if (sheets[sheetName] != null) {
+					return;
+				}
+				var item:XML = <sheet label={sheetName} nodeType="Sheet"/>;
+				sheets[sheetName] = item;
+				paperUITreeData.addItem(item);
+				timerExpandTree.start();
+			}
+			
+			// we keep a map of sheetNames to XML sheet items... we can append children faster that way
+			private function addRegionItem(regionName:String, sheetName:String):void {
+				var sheetItem:XML = sheets[sheetName];
+				// if the sheet doesn't exist, add it!
+				if (sheetItem == null) {
+					addSheetItem(sheetName);
+					sheetItem = sheets[sheetName];
+				}
+				var regionItem:XML = <region label={regionName} nodeType="Region"/>;
+				regions[sheetName+"_"+regionName] = regionItem;
+				sheetItem.appendChild(regionItem);
+				timerExpandTree.start();
+			}
+			
+			// we keep a map of sheetName_regionName, and assume that is unique...
+			public function addHandlerItem(handlerName:String, regionName:String, sheetName:String):void {
+				var regionItem:XML = regions[sheetName+"_"+regionName];
+				// add the region and/or sheet for ya!
+				if (regionItem == null) {
+					addRegionItem(regionName, sheetName);
+					regionItem = regions[sheetName+"_"+regionName];
+				}
+				regionItem.appendChild(<handler label={handlerName} nodeType="Handler"/>);
+				timerExpandTree.start();
+			}
+
+
+			// expands the tree in half a second
+			public function timerExpandHandler(e:TimerEvent):void {
+				timerExpandTree.stop();
+				for (var i:int=0; i<paperUITreeData.length; i++) {
+					var obj:Object = paperUITreeData.getItemAt(i);
+					// trace("expanding item: " + i + " " + obj);
+					paperUITree.expandChildrenOf(obj, true);
+				}
+			}
+
 			
 	        public function processMessage(msgText:String):void {
 	        	designTools.processMessage(msgText);
 	        }
+	        
+			// picks the right icon for the different paper UI components
+			public function iconFunction(item:Object):Class {
+				// trace("Item: [" + item + "]");
+				var xmlNode:XML = item as XML;
+				if (xmlNode.@nodeType == "Region") {
+					return Images.Region;
+				} else if (xmlNode.@nodeType == "Handler") {
+					return Images.Handler;
+				} else {
+					return Images.Sheet;
+				}
+			}
+			
+			private function treeChanged(event:Event):void {
+				selectedNode = (event.target as Tree).selectedItem as XML;
+				// trace("Tree Changed: " + selectedNode.@label);
+			}
+			private function treeItemSelected():void {
+				// trace("Selected Tree Items: " + paperUITree.selectedIndices);
+			}
+			private function treeItemDoubleClicked(event:Event):void {
+				selectedNode = paperUITree.selectedItem as XML;
+				trace("Double Clicked on : " + selectedNode.@label + " which is a " + selectedNode.@nodeType);
+			}
+
+			[Bindable]
+			private var paperUITreeData:XMLListCollection;
+			
+	        
 		]]>
 	</mx:Script>
 	<mx:HDividedBox left="10" right="10" bottom="10" top="40">
 		<mx:Canvas width="67%" height="100%" id="inkCanvas">
 		</mx:Canvas>
 		<mx:VDividedBox width="33%" height="100%">
-			<mx:Tree id="paperUIComponents" labelField="@label" backgroundColor="#454545" width="100%" height="50%">
-			</mx:Tree>
+			<mx:Tree id="paperUITree" top="95" left="10" right="10" width="100%" height="50%" backgroundColor="#454545"
+				labelField="@label" styleName="tree" defaultLeafIcon="{Images.Handler}" 
+				iconFunction="iconFunction" change="treeChanged(event);" 
+				dataProvider="" click="treeItemSelected()" doubleClick="treeItemDoubleClicked(event)" doubleClickEnabled="true"/>
+
 			<mx:DataGrid width="100%" color="#4b494a">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Name" dataField="propName"/>

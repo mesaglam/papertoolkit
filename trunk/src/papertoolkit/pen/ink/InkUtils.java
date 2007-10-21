@@ -8,6 +8,7 @@ import java.util.List;
 
 import papertoolkit.pen.PenSample;
 import papertoolkit.tools.develop.inkapibrowser.HideFromFlash;
+import papertoolkit.util.MathUtils;
 
 /**
  * <p>
@@ -200,6 +201,20 @@ public class InkUtils {
 				if (pointRange.intersects(stroke.getBounds()))
 					return ink;
 		return null;
+	}
+
+	public static Ink getInkNearestToPoint(List<Ink> inkWell, Point2D point) {
+		double minDistanceToPoint = Double.MAX_VALUE;
+		Ink closestInk = null;
+		for (Ink ink : inkWell) { // a cluster
+			Point2D meanXandY = ink.getMeanXandY(); // average value... (i.e., the "weighted center")
+			final double testDistance = MathUtils.distance(point.getX(), point.getY(), meanXandY.getX(), meanXandY.getY());
+			if (testDistance < minDistanceToPoint) {
+				minDistanceToPoint = testDistance;
+				closestInk = ink;
+			}
+		}
+		return closestInk;
 	}
 
 	/**

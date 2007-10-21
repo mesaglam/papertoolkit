@@ -58,7 +58,7 @@
 			}
 			
             //trace("dataHandler: " + event);
-            // trace(msgText); // parse the text and assemble InkStrokes...
+            trace(msgText); // parse the text and assemble InkStrokes...
             var msg:XML = new XML(msgText);
             
             // this whole switching thing isn't the smartest...
@@ -86,8 +86,10 @@
 				// add it more permanently
 				inkWell.addStroke(currInkStroke);
 	   			
+	   			trace(currInkStroke.getXSamples());
+	   			
 	   			// rerender the last stroke with curves
-	   			currInkStroke.rerenderWithCurves();
+	   			// currInkStroke.rerenderWithCurves();
 	   			
 	   			// recognize 
 	   			/*
@@ -135,7 +137,7 @@
 
 			// trace(xVal + ", " + yVal);
 
-			var penIsDown:Boolean = inkXML.@p == "D";
+			var penIsDown:Boolean = inkXML.@p == "DOWN"; // prone to bugginess... it has to match the XML specification
 			if (penIsDown) {
 				// add samples to the current stroke
 				currInkStroke.addPoint(xVal, yVal, parseFloat(inkXML.@f));

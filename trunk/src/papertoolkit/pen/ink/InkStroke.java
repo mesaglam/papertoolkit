@@ -204,7 +204,7 @@ public class InkStroke {
 	public Date getLastTimestampAsDate() {
 		return new Date(samples.get(samples.size() - 1).timestamp);
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -395,6 +395,14 @@ public class InkStroke {
 					+ getNumSamples() + " Samples with timestamps from [" + getFirstTimestampAsDate()
 					+ " to " + getLastTimestampAsDate() + "]";
 		}
+	}
+
+	public InkStroke getRecentered(double xOffset, double yOffset) {
+		InkStroke recenteredInkStroke = new InkStroke();
+		for (PenSample s : samples) {
+			recenteredInkStroke.addSample(new PenSample(s.x - xOffset, s.y - yOffset, s.force, s.timestamp));
+		}
+		return recenteredInkStroke;
 	}
 
 }

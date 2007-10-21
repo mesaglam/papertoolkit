@@ -172,7 +172,7 @@ public class InkAPIBrowser {
 		}
 
 		String html = FileUtils.readFileIntoStringBuffer(
-				PaperToolkit.getResourceFile("/templates/Preview.html")).toString();
+				PaperToolkit.getDataFile("/templates/Preview.html")).toString();
 		StringBuilder sb = new StringBuilder();
 		for (File f : renderedImages) {
 

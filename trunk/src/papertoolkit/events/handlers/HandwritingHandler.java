@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.swing.Timer;
 
-
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
 import papertoolkit.pen.PenSample;
@@ -18,6 +17,7 @@ import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.units.PatternDots;
 import papertoolkit.units.Units;
 import papertoolkit.units.coordinates.PercentageCoordinates;
+import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -116,6 +116,7 @@ public abstract class HandwritingHandler extends EventHandler {
 		} else {
 			final Ink ink = new Ink(strokes);
 			final String xml = ink.toXMLString(false /* no separator lines */);
+			DebugUtils.println(xml);
 			final String result = recognizerService.recognizeHandwriting(xml);
 			return result;
 		}
