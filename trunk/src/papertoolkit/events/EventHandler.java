@@ -51,7 +51,7 @@ public abstract class EventHandler {
 
 	/**
 	 * This is used in debugging visualizations, for traversing up the list to figure out where the event
-	 * handler should be positioned.
+	 * handler should be positioned. Why are there multiple parents?? Crazy. I guess you can add a clickhandler to multiple buttons....
 	 */
 	protected List<Region> parentRegions = new ArrayList<Region>();
 

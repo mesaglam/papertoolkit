@@ -11,6 +11,7 @@ import papertoolkit.paper.Region;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
+import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
@@ -74,6 +75,9 @@ public class MonitorInputHandling {
 		// intercept system outs too!
 		// using System.setOut and the DebugUtils trick
 
+		DebugUtils.println("Sending Event Handled Information: " + handler);
+		
+		
 		if (handler != null) {
 			// show a new group entry if it has changed...
 			// otherwise, send all pen downs and ups to be displayed in the datagrid
@@ -83,9 +87,19 @@ public class MonitorInputHandling {
 				// get the super class's name
 				List<Region> parentRegions = handler.getParentRegions();
 
-				monitoringService.outputToClients("<eventHandler component=\"" + parentRegions.toString()
+				// really, the handler name should be sufficient, but we'll send this duplicate info for
+				// now...
+				Region firstRegion = parentRegions.get(0);
+				double rX = firstRegion.getOriginX().getValueInInches();
+				double rY = firstRegion.getOriginY().getValueInInches();
+				double rW = firstRegion.getWidth().getValueInInches();
+				double rH = firstRegion.getHeight().getValueInInches();
+
+				monitoringService.outputToClients("<eventHandler component=\"" + firstRegion.getName()
 						+ "\" handlerName=\"" + handler.getClass().getSuperclass().getSimpleName()
-						+ "\" time=\"" + event.getTimestamp() + "\"/>");
+						+ "\" time=\"" + event.getTimestamp() + "\" rX=\"" + rX + "\" rY=\"" + rY
+						+ "\" rW=\"" + rW + "\" rH=\"" + rH + "\" />");
+
 				lastEventHandler = handler;
 				lastEventHandlerTimestamp = event.getTimestamp();
 			}
