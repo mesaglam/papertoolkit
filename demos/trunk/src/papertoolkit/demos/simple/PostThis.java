@@ -19,7 +19,7 @@ import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
- * A smart sticky-note app for the UIST figures and video.
+ * A skeleton app for a smart Post-it Note application. Upload ToDos to your Web Calendar.
  * </p>
  * <p>
  * <span class="BSDLicense"> This software is distributed under the <a
@@ -45,8 +45,6 @@ public class PostThis extends Application {
 	public PostThis() {
 		super("PostThis");
 		createPaperUI();
-		addInputDevices();
-		addOutputDevices();
 	}
 
 	/**
@@ -58,20 +56,6 @@ public class PostThis extends Application {
 			}
 		};
 		inkingRegion.addEventHandler(inkWell);
-	}
-
-	/**
-	 * 
-	 */
-	private void addInputDevices() {
-
-	}
-
-	/**
-	 * 
-	 */
-	private void addOutputDevices() {
-
 	}
 
 	/**
@@ -112,6 +96,7 @@ public class PostThis extends Application {
 				}
 
 				DebugUtils.println("Uploading ink to your web calendar!");
+				// INSERT CODE HERE...
 			}
 		});
 	}
