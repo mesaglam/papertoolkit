@@ -66,6 +66,7 @@ public class FileExtensionFilter extends javax.swing.filechooser.FileFilter impl
 	 * @param vis
 	 *            BOTH --> we will include files or directories that are hidden or whose names start
 	 *            with dots (e.g., .bashrc).
+	 *            Keep only what is specified here...
 	 * 
 	 */
 	public FileExtensionFilter(String[] exts, boolean directories, Visibility vis) {

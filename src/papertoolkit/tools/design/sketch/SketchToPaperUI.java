@@ -91,7 +91,6 @@ public class SketchToPaperUI {
 			}
 		});
 
-		
 		DebugUtils.println("New Sketch To Paper UI");
 		pen = p;
 
@@ -144,6 +143,9 @@ public class SketchToPaperUI {
 		public List<Ink> events;
 		private Rectangle2D sheetRect;
 
+		private double sheetWidth;
+		private double sheetHeight;
+
 		public SketchRecognizer(Ink ink) {
 			ArrayList<Ink> listOfInk = new ArrayList<Ink>();
 			listOfInk.add(ink);
@@ -155,6 +157,7 @@ public class SketchToPaperUI {
 		}
 
 		private void recognize(List<Ink> inkToRecognize) {
+
 			// Biggest stroke becomes the sheet
 			biggestStroke = InkUtils.getStrokeWithLargestArea(inkToRecognize);
 
@@ -176,19 +179,43 @@ public class SketchToPaperUI {
 
 			int regionID = 0;
 
+			StringBuilder xml = new StringBuilder();
+			if (sheetRect.getWidth() > sheetRect.getHeight()) { // Landscape
+				sheetWidth = 11;
+				sheetHeight = 8.5;
+			} else { // Portrait
+				sheetWidth = 8.5;
+				sheetHeight = 11;
+			}
+			
+			
+			// Number format...
+			DecimalFormat df = new DecimalFormat("0.##");
+			xml.append("<sheet width=\"" + sheetWidth + "\" height=\"" + sheetHeight + "\" >\n");
+
 			// find regions inside this sheet, if any...
 			for (InkStroke region : regionStrokes) {
 				DebugUtils.println("Region " + regionID);
+
+				final Rectangle2D regBounds = region.getBounds();
+				double xOffset = ((regBounds.getX() - sheetRect.getX()) / sheetRect.getWidth()) * sheetWidth;
+				double yOffset = ((regBounds.getY() - sheetRect.getY()) / sheetRect.getHeight())
+						* sheetHeight;
+				double width = (regBounds.getWidth() / sheetRect.getWidth()) * sheetWidth;
+				double height = (regBounds.getHeight() / sheetRect.getHeight()) * sheetHeight;
+
+				xml.append("\t" + "<region name=\"Region_" + regionID + "\" x=\"" + df.format(xOffset) + "\" y=\""
+						+ df.format(yOffset) + "\" width=\"" + df.format(width) + "\" height=\"" + df.format(height) + "\">\n");
 				regionID++;
 
 				// Find the connectors that match this region
 				for (InkStroke connection : connectors) {
-					if (connection.getBounds().intersects(region.getBounds())) {
+					if (connection.getBounds().intersects(regBounds)) {
 						// DebugUtils.println("\t Connector");
 
 						// Find the endpoint outside of the region
 						PenSample outsidePt = connection.getStart();
-						if (region.getBounds().contains(outsidePt.getX(), outsidePt.getY())) {
+						if (regBounds.contains(outsidePt.getX(), outsidePt.getY())) {
 							outsidePt = connection.getEnd();
 						}
 
@@ -198,15 +225,23 @@ public class SketchToPaperUI {
 						// If an event is found...
 						if (eventHandlerNameInk != null) {
 							// recentering is KEY
-							final String eventToRecognize = eventHandlerNameInk.getRecentered().toXMLString(false);
+							final String eventToRecognize = eventHandlerNameInk.getRecentered().toXMLString(
+									false);
 							// Recognize the text...
 							// DebugUtils.println(eventToRecognize);
 							String result = hwRecService.recognizeHandwriting(eventToRecognize);
 							// DebugUtils.println("\t\t Event: " + result);
+
+							xml.append("\t\t" + "<eventHandler name=\"" + result.toLowerCase() + "\" />\n");
 						}
 					}
 				}
+				xml.append("\t" + "</region>\n");
 			}
+
+			xml.append("</sheet>");
+
+			DebugUtils.println("\n" + xml.toString() + "\n");
 		}
 	}
 
@@ -296,8 +331,9 @@ public class SketchToPaperUI {
 					// Split it on non-alpha numeric characters
 					String pieces[] = result.split("[^a-zA-Z0-9]");
 					// Second piece is name
-					if (pieces.length > 1)
+					if (pieces.length > 1) {
 						r.name = pieces[1];
+					}
 					// First is event type
 					r.eventType = pieces[0].toLowerCase();
 					// TODO: there is probably a better way to split this
