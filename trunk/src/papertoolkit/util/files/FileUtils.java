@@ -32,11 +32,11 @@ import javax.swing.filechooser.FileSystemView;
 import papertoolkit.util.ArrayUtils;
 import papertoolkit.util.SystemUtils;
 import papertoolkit.util.files.filters.DirectoriesOnlyFilter;
+import papertoolkit.util.files.filters.FileExcludeHiddenAndPatternFilter;
 import papertoolkit.util.files.filters.FileExcludeHiddenFilter;
 import papertoolkit.util.files.filters.FileExtensionFilter;
 import papertoolkit.util.files.filters.FilesOnlyFilter;
 import papertoolkit.util.graphics.ImageUtils;
-
 
 /**
  * <p>
@@ -420,6 +420,64 @@ public class FileUtils {
 	}
 
 	/**
+	 * Lists files starting from a given path. These files must be visible, and match the extension filter,
+	 * but NOT match the excluding pattern filter.
+	 * 
+	 * Yes, this method name is extremely long. Feel free to suggest a better one. :)
+	 * 
+	 * @author ronyeh
+	 * 
+	 * @param path
+	 * @param extensionFilter
+	 * @param patternToExclude
+	 *            if this string appears as a file or directory name ANYWHERE in the absolute path of the file
+	 *            being examined, it is excluded. This pattern is case-sensitive.
+	 * @return
+	 */
+	public static List<File> listVisibleFilesRecursivelyExcludingPattern(File path, String[] extensionFilter,
+			String patternToExclude) {
+
+		// eliminates hidden files.
+		final FileFilter filter = (FileFilter) new FileExcludeHiddenAndPatternFilter(extensionFilter,
+				patternToExclude);
+
+		// the list of files we will return
+		final List<File> files = new ArrayList<File>();
+
+		// special case
+		// If the path doesn't fit the pattern, exclude it
+		if (path.getName().contains(patternToExclude)) {
+			return files;
+		}
+
+		// the algorithm is actually iterative, unlike what is implied by the method name
+
+		// this stores all the directories we still need to look at
+		final List<File> dirsToProcess = new ArrayList<File>();
+
+		// add the root path
+		dirsToProcess.add(path);
+		while (dirsToProcess.size() != 0) {
+			final File currentPath = dirsToProcess.remove(0);
+
+			// list it, and add all files to the files arraylist
+			// add all directories to dirsToProcess
+			final File[] currentFiles = currentPath.listFiles(filter);
+			if (currentFiles == null) {
+				continue;
+			}
+			for (File f : currentFiles) {
+				if (f.isDirectory()) {
+					dirsToProcess.add(f);
+				} else {
+					files.add(f);
+				}
+			}
+		}
+		return files;
+	}
+
+	/**
 	 * @param path
 	 * @param extensionFilter
 	 * @return a List of Files (guaranteed to be files, because if it's a dir, it will drill down)
@@ -504,6 +562,15 @@ public class FileUtils {
 		return (value < 10) ? "0" + value : "" + value;
 	}
 
+	public static List<Long> readFileIntoLinesOfLongs(File file) {
+		List<String> lines = readFileIntoLines(file);
+		List<Long> dest = new ArrayList<Long>();
+		for (String s : lines) {
+			dest.add(Long.parseLong(s));
+		}
+		return dest;
+	}
+	
 	/**
 	 * Reads a file into a list of Strings
 	 * 
@@ -752,5 +819,14 @@ public class FileUtils {
 			return;
 		}
 		writeStringToFile(string, file);
+	}
+
+	public static void writeListToFile(List<?> stuff, File file) {
+		// create a big string, with each item on one line...
+		StringBuilder b = new StringBuilder();
+		for (Object o : stuff) {
+			b.append(o.toString() + "\n");
+		}
+		writeStringToFile(b.toString(), file);
 	}
 }
