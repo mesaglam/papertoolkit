@@ -8,6 +8,7 @@ import papertoolkit.events.EventDispatcher;
 import papertoolkit.events.EventHandler;
 import papertoolkit.events.PenEvent;
 import papertoolkit.paper.Region;
+import papertoolkit.paper.Sheet;
 import papertoolkit.pen.InputDevice;
 import papertoolkit.pen.PenSample;
 import papertoolkit.pen.streaming.listeners.PenListener;
@@ -57,6 +58,7 @@ public class MonitorInputHandling {
 					public void sample(PenSample sample) {
 						// don't do anything here (for now), because it's too much info
 
+						// send it...
 					}
 				});
 			}
@@ -76,16 +78,21 @@ public class MonitorInputHandling {
 		// using System.setOut and the DebugUtils trick
 
 		DebugUtils.println("Sending Event Handled Information: " + handler);
-		
-		
+
 		if (handler != null) {
 			// show a new group entry if it has changed...
 			// otherwise, send all pen downs and ups to be displayed in the datagrid
-			if (lastEventHandler != handler || (event.getTimestamp() - lastEventHandlerTimestamp) > 3000) {
+			if (lastEventHandler != handler) {
+				// || (event.getTimestamp() - lastEventHandlerTimestamp) > 3000
 
 				// assume handlers are anonymous subclasses
 				// get the super class's name
 				List<Region> parentRegions = handler.getParentRegions();
+
+				if (parentRegions.size() == 0) {
+					DebugUtils.println("No Parent Regions");
+					return;
+				}
 
 				// really, the handler name should be sufficient, but we'll send this duplicate info for
 				// now...
@@ -95,13 +102,35 @@ public class MonitorInputHandling {
 				double rW = firstRegion.getWidth().getValueInInches();
 				double rH = firstRegion.getHeight().getValueInInches();
 
+				final Sheet parentSheet = firstRegion.getParentSheet();
+
+				StringBuilder sheetAndRegions = new StringBuilder();
+				sheetAndRegions.append("<eventHandledOnSheet sheet=\"" + parentSheet.getName() + "\" >");
+				for (Region r : parentSheet.getRegions()) {
+					sheetAndRegions.append("<region name=\"" + r.getName() + "\" rX=\""
+							+ r.getOriginX().getValueInInches() + "\" rY=\""
+							+ r.getOriginY().getValueInInches() + "\" rW=\""
+							+ r.getWidth().getValueInInches() + "\" rH=\"" + r.getHeight().getValueInInches()
+							+ "\" />");
+				}
+				sheetAndRegions.append("</eventHandledOnSheet>");
+
 				monitoringService.outputToClients("<eventHandler component=\"" + firstRegion.getName()
 						+ "\" handlerName=\"" + handler.getClass().getSuperclass().getSimpleName()
 						+ "\" time=\"" + event.getTimestamp() + "\" rX=\"" + rX + "\" rY=\"" + rY
 						+ "\" rW=\"" + rW + "\" rH=\"" + rH + "\" />");
 
+				monitoringService.outputToClients(sheetAndRegions.toString());
+
 				lastEventHandler = handler;
 				lastEventHandlerTimestamp = event.getTimestamp();
+			} else {
+				// same handler... send ink over instead!
+
+				monitoringService.outputToClients("<penSampleHandled xInches=\""
+						+ event.getPercentageLocation().getX().getValueInInches() + "\" yInches=\""
+						+ event.getPercentageLocation().getY().getValueInInches() + "\" />");
+
 			}
 		} else {
 			// TODO: Dump these into the pen data panel somewhere
