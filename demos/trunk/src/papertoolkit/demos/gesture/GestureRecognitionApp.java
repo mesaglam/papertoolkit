@@ -48,7 +48,7 @@ public class GestureRecognitionApp {
 		region.addEventHandler(new GestureHandler() {
 			public void gestureArrived(PenEvent lastSample, RecognitionResult result, InkStroke stroke) {
 				DebugUtils.println(result);
-				flash.sendMessage("<recognized templateName=\""+result.getName()+"\"/>");
+				flash.sendMessage("<recognized templateName=\"" + result.getName() + "\"/>");
 			}
 		});
 
@@ -57,7 +57,7 @@ public class GestureRecognitionApp {
 		region2.addEventHandler(new MarkingGestureHandler() {
 			public void handleMark(PenEvent e, MarkDirection dir) {
 				DebugUtils.println(dir);
-				flash.sendMessage("<recognized templateName=\""+dir.toString()+"\"/>");
+				flash.sendMessage("<recognized templateName=\"" + dir.toString() + "\"/>");
 			}
 		});
 
