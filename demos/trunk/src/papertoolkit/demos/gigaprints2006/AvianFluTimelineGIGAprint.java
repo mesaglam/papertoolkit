@@ -52,9 +52,16 @@ public class AvianFluTimelineGIGAprint extends Application {
 	 */
 	public AvianFluTimelineGIGAprint() {
 		super("Timeline");
-		file = new File("data/AvianFlu/AvianFluTimeline2.pdf");
+		
+		file = new File("data/AvianFlu/AvianFluTimeline2_Cropped.pdf");
 		sheet = new PDFSheet(file);
-		sheet.addRegions(new File("data/AvianFlu/AvianFluTimeline2.regions.xml"));
+		sheet.addRegions(new File("data/AvianFlu/AvianFluTimeline2_WithRegions_Cropped.regions.xml"));
+
+//		file = new File("data/AvianFlu/AvianFluTimeline2.pdf");
+//		sheet = new PDFSheet(file);
+//		sheet.addRegions(new File("data/AvianFlu/AvianFluTimeline2.regions.xml"));
+
+		
 		addSheet(sheet);
 		initializePaperUI();
 	}
@@ -72,7 +79,9 @@ public class AvianFluTimelineGIGAprint extends Application {
 	 * @see papertoolkit.application.Application#renderToPDF()
 	 */
 	public void renderToPDF() {
-		renderToPDF(new File("data/AvianFlu/"), "AvianFluTimeline_WithPattern");
+		DebugUtils.println("Rendering...");
+//		renderToPDF(new File("data/AvianFlu/"), "AvianFluTimeline_WithPattern");
+		renderToPDF(new File("data/AvianFlu/"), "AvianFluTimeline_Cropped_WithPattern");
 	}
 
 	/**

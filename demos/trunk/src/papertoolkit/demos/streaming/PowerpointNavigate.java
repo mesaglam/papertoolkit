@@ -36,6 +36,14 @@ public class PowerpointNavigate {
 			}
 
 			public void penUp(PenSample sample) {
+				
+				// Recognize the Stroke; if it's an O then Blank...
+				
+				
+				
+				// Otherwise... default to checking stroke
+				
+				
 				System.out.println("Pen Up: " + sample);
 				if (up.y > down.y) {
 					System.out.println("Dragged Down");
