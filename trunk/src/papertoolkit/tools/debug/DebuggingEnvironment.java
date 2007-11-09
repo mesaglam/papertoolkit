@@ -107,7 +107,7 @@ public class DebuggingEnvironment {
 		File r3RootPath = PaperToolkit.getToolkitRootPath();
 		final File eventVizHTML = new File(r3RootPath, "flash/bin/EventViz.html");
 		if (!eventVizHTML.exists()) {
-			DebugUtils.println("EventViz.html doesn't exit. Please compile this application with the Flex Builder.");
+			DebugUtils.println("EventViz.html doesn't exist. Please compile this application with the Flex Builder.");
 			return;
 		}
 		flash.openFlashHTMLGUI(eventVizHTML);
