@@ -24,6 +24,9 @@ public class PostscriptPatternGenerator {
 
 	private double dotRadiusLarge = 0.040000;
 
+	/**
+	 * In millimeters.
+	 */
 	private double dotRadiusSmall = 0.030000;
 
 	private Units horizLength;
