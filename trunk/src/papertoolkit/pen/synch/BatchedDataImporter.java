@@ -49,7 +49,7 @@ public class BatchedDataImporter {
 	/**
 	 * Pops up a Dialog to tell us this Importer was run...
 	 */
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 
 	/**
 	 * @param args
@@ -197,6 +197,7 @@ public class BatchedDataImporter {
 	 */
 	public static void main(String[] args) {
 		new BatchedDataImporter(args);
+		System.exit(0); // to kill the System Tray...
 	}
 
 	/**

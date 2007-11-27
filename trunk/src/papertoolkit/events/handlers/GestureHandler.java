@@ -1,12 +1,9 @@
 package papertoolkit.events.handlers;
 
 import papertoolkit.events.PenEvent;
-import papertoolkit.pen.Pen;
 import papertoolkit.pen.gesture.dollar.DollarRecognizer;
 import papertoolkit.pen.gesture.dollar.DollarRecognizer.RecognitionResult;
 import papertoolkit.pen.ink.InkStroke;
-import papertoolkit.pen.streaming.listeners.PenStrokeListener;
-import papertoolkit.util.DebugUtils;
 
 /**
  * <p>

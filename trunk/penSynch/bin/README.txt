@@ -1,3 +1,9 @@
 Deploy the compiled C# binaries here.
 
 For the BatchedDataImporter, see PaperToolit/data/batchimporter
+
+
+This is an admittedly ugly hack...
+Once we have saved the batched data into penSynch/data/XML/...
+We send the path to BatchedDataImporter.java
+That class will notify any registered listeners...

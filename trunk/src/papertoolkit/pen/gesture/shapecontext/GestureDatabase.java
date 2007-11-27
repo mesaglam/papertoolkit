@@ -32,15 +32,25 @@ import papertoolkit.pen.ink.Ink;
 import papertoolkit.pen.ink.InkStroke;
 import papertoolkit.render.ink.InkRenderer;
 import papertoolkit.tools.components.InkPanel;
-import papertoolkit.units.Pixels;
 import papertoolkit.units.Points;
 import papertoolkit.units.conversion.PixelsPerInch;
+import papertoolkit.util.DebugUtils;
 import papertoolkit.util.WindowUtils;
 
 import com.thoughtworks.xstream.XStream;
 
-
+/**
+ * <p>
+ * </p>
+ * <p>
+ * <span class="BSDLicense"> This software is distributed under the <a
+ * href="http://hci.stanford.edu/research/copyright.txt">BSD License</a>. </span>
+ * </p>
+ * 
+ * @author Avi Robinson-Mosher
+ */
 public class GestureDatabase implements ActionListener, FocusListener {
+	
 	private transient static JTextField entryField;
 
 	private transient static JFrame inkDisplay;
@@ -64,7 +74,11 @@ public class GestureDatabase implements ActionListener, FocusListener {
 		return layout.getConstraints(c);
 	}
 
-	static JFrame getInkDisplay() {
+	public static void main(String[] args) {
+		getInkDisplay();
+	}
+	
+	private static JFrame getInkDisplay() {
 		if (inkDisplay == null) {
 			JFrame.setDefaultLookAndFeelDecorated(true);
 			inkDisplay = new JFrame("Sketch! Display");
@@ -220,6 +234,7 @@ public class GestureDatabase implements ActionListener, FocusListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		DebugUtils.println("Action Performed");
 		if (commandMode) {
 			inputString = e.getActionCommand();
 			inputAvailable = true;

@@ -15,6 +15,7 @@ import java.util.List;
 
 import papertoolkit.PaperToolkit;
 import papertoolkit.application.config.Constants;
+import papertoolkit.pen.ink.Ink;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.files.FileUtils;
 
@@ -227,5 +228,10 @@ public class HandwritingRecognitionService {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	
+	public String recognizeHandwriting(Ink ink) {
+		final String xml = ink.toXMLString(false /* no separator lines */);
+		return recognizeHandwriting(xml);
 	}
 }
