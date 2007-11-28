@@ -1,11 +1,11 @@
-package papertoolkit.mappings;
+package papertoolkit.clustering;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import papertoolkit.util.DebugUtils;
 
-public class Clustering {
+public class HierarchicalClustering {
 
 	public static interface Cluster {
 		public void addItem(Cluster item);
@@ -130,7 +130,7 @@ public class Clustering {
 	private List<Cluster> clusters = new ArrayList<Cluster>();
 	private List<Long> leafItems;
 
-	public Clustering(List<Long> items) {
+	public HierarchicalClustering(List<Long> items) {
 		leafItems = items;
 		DebugUtils.println("Starting with " + items.size() + " items.");
 	}
