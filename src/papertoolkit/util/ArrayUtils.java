@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.print.DocFlavor;
+import javax.print.attribute.Attribute;
+
 /**
  * <p>
  * This software is distributed under the <a href="http://hci.stanford.edu/research/copyright.txt">
@@ -57,6 +60,47 @@ public class ArrayUtils {
 			}
 		}
 		System.out.println("]");
+	}
+
+	/**
+	 * Object can be of mixed type. Print them out with the class names.
+	 * 
+	 * @param array
+	 * @author ronyeh
+	 */
+	public static void printArrayOfUnknownObjects(Object[] array) {
+
+		final StringBuffer sb = new StringBuffer();
+		sb.append("Object Array: [");
+		if (array.length == 0) {
+			System.out.println(sb.toString() + "]");
+		} else {
+			for (Object o : array) {
+				final String fullyQualifiedName = o.getClass().toString();
+				final String shortClassName = fullyQualifiedName.substring(fullyQualifiedName
+						.lastIndexOf(".") + 1, fullyQualifiedName.length());
+
+				sb.append("(" + shortClassName + ": " + o.toString() + ") ");
+			}
+			System.out.println(sb.substring(0, sb.length() - 1) + "]");
+		}
+	}
+
+	/**
+	 * @created Feb 7, 2006
+	 * @author Ron Yeh
+	 */
+	public static void printArrayOfUnknownObjectsOnePerLine(Object[] array) {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("Object Array: [\n");
+		for (Object o : array) {
+			final String fullyQualifiedName = o.getClass().toString();
+			final String shortClassName = fullyQualifiedName.substring(fullyQualifiedName
+					.lastIndexOf(".") + 1, fullyQualifiedName.length());
+
+			sb.append("\t(" + shortClassName + ": " + o.toString() + ")\n");
+		}
+		System.out.println(sb.substring(0, sb.length() - 1) + "]");
 	}
 
 	/**
