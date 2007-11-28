@@ -77,4 +77,13 @@ public class PenSynchManager {
 		FileUtils.sortByLastModified(newFiles, SortDirection.OLD_TO_NEW);
 		return newFiles;
 	}
+
+	public File getMostRecentFile() {
+		return getFiles().get(0);
+	}
+
+	public PenSynch getMostRecentPenSynch() {
+		File mostRecentFile = getMostRecentFile();
+		return new PenSynch(mostRecentFile);
+	}
 }
