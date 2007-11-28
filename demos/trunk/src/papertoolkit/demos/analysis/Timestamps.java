@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import papertoolkit.mappings.Clustering;
-import papertoolkit.mappings.Clustering.Cluster;
-import papertoolkit.mappings.Clustering.LeafNode;
-import papertoolkit.mappings.Clustering.TreeNode;
+import papertoolkit.clustering.HierarchicalClustering;
+import papertoolkit.clustering.HierarchicalClustering.Cluster;
+import papertoolkit.clustering.HierarchicalClustering.LeafNode;
+import papertoolkit.clustering.HierarchicalClustering.TreeNode;
 import papertoolkit.util.DebugUtils;
 import papertoolkit.util.MathUtils;
 import papertoolkit.util.files.FileUtils;
@@ -28,7 +28,7 @@ public class Timestamps {
 		List<Long> times = FileUtils.readFileIntoLinesOfLongs(new File(desktopDirectory, "Timestamps.txt"));
 
 		// cluster them!
-		Clustering clustering = new Clustering(times);
+		HierarchicalClustering clustering = new HierarchicalClustering(times);
 		int heightOfTree = clustering.performClustering();
 		List<Long> listOfValues = clustering.getListOfValues();
 		FileUtils.writeListToFile(listOfValues, new File(desktopDirectory, "TimestampsClustered.txt"));
