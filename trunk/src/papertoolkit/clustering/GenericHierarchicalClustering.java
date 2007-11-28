@@ -5,7 +5,7 @@ import java.util.List;
 
 import papertoolkit.util.DebugUtils;
 
-public class HierarchicalClustering {
+public class GenericHierarchicalClustering {
 
 	public static interface Cluster {
 		public void addItem(Cluster item);
@@ -130,7 +130,7 @@ public class HierarchicalClustering {
 	private List<Cluster> clusters = new ArrayList<Cluster>();
 	private List<Long> leafItems;
 
-	public HierarchicalClustering(List<Long> items) {
+	public GenericHierarchicalClustering(List<Long> items) {
 		leafItems = items;
 		DebugUtils.println("Starting with " + items.size() + " items.");
 	}

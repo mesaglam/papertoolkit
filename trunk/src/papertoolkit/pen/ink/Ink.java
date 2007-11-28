@@ -2,6 +2,7 @@ package papertoolkit.pen.ink;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class Ink {
 	 */
 	private double maxY = Double.MIN_VALUE;
 
+	
 	/**
 	 * Earliest Timestamp in this Ink cluster.
 	 */
@@ -146,6 +148,10 @@ public class Ink {
 		}
 	}
 
+	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
+	}
+
 	/**
 	 * @return
 	 */
@@ -199,6 +205,27 @@ public class Ink {
 	}
 
 	/**
+	 * Not an efficient way to do it....
+	 * 
+	 * @return
+	 */
+	public Point2D getMeanXandY() {
+		double meanX = 0;
+		double meanY = 0;
+		double n = 0;
+
+		for (InkStroke s : strokes) {
+			List<PenSample> samples = s.getSamples();
+			for (PenSample ps : samples) {
+				n++;
+				meanX = (meanX * (n - 1) / n) + (ps.x / n);
+				meanY = (meanY * (n - 1) / n) + (ps.y / n);
+			}
+		}
+		return new Point2D.Double(meanX, meanY);
+	}
+
+	/**
 	 * @return
 	 */
 	public double getMinX() {
@@ -240,6 +267,15 @@ public class Ink {
 		}
 		sb.append(">");
 		return sb.toString();
+	}
+
+	public Ink getRecentered() {
+		// a copy of the ink, recentered so that the top left is 0,0
+		Ink recentered = new Ink();
+		for (InkStroke s : strokes) {
+			recentered.addStroke(s.getRecentered(minX, minY));
+		}
+		return recentered;
 	}
 
 	/**
@@ -403,35 +439,5 @@ public class Ink {
 		maxY = Math.max(s.getMaxY(), maxY);
 		minTS = Math.min(s.getFirstTimestamp(), minTS);
 		maxTS = Math.max(s.getLastTimestamp(), maxTS);
-	}
-
-	/**
-	 * Not an efficient way to do it....
-	 * 
-	 * @return
-	 */
-	public Point2D getMeanXandY() {
-		double meanX = 0;
-		double meanY = 0;
-		double n = 0;
-
-		for (InkStroke s : strokes) {
-			List<PenSample> samples = s.getSamples();
-			for (PenSample ps : samples) {
-				n++;
-				meanX = (meanX * (n - 1) / n) + (ps.x / n);
-				meanY = (meanY * (n - 1) / n) + (ps.y / n);
-			}
-		}
-		return new Point2D.Double(meanX, meanY);
-	}
-
-	public Ink getRecentered() {
-		// a copy of the ink, recentered so that the top left is 0,0
-		Ink recentered = new Ink();
-		for (InkStroke s : strokes) {
-			recentered.addStroke(s.getRecentered(minX, minY));
-		}
-		return recentered;
 	}
 }
