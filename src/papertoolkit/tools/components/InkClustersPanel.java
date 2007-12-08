@@ -43,5 +43,4 @@ public class InkClustersPanel extends InkPanel {
 		}
 		g2d.setColor(oldColor);
 	}
-
 }

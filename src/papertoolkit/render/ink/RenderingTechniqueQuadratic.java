@@ -19,11 +19,12 @@ import papertoolkit.pen.ink.InkStroke;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-class RenderingTechniqueQuadratic implements RenderingTechnique {
+class RenderingTechniqueQuadratic extends RenderingTechnique {
 
 	private static int ERROR_THRESHOLD = 500;
 
 	public void render(Graphics2D g2d, final List<InkStroke> strokes) {
+		super.render(g2d, strokes);
 		
 		g2d.setStroke(DEFAULT_INK_STROKE);
 		

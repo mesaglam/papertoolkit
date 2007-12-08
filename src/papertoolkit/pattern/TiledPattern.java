@@ -2,7 +2,6 @@ package papertoolkit.pattern;
 
 import papertoolkit.units.PatternDots;
 import papertoolkit.units.coordinates.StreamedPatternCoordinates;
-import papertoolkit.util.DebugUtils;
 
 /**
  * <p>
