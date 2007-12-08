@@ -18,12 +18,13 @@ import papertoolkit.util.geometry.CatmullRomSpline;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-class RenderingTechniqueCatmullRom implements RenderingTechnique {
+class RenderingTechniqueCatmullRom extends RenderingTechnique {
 
 	public void render(Graphics2D g2d, List<InkStroke> strokes) {
+		super.render(g2d, strokes);
 		for (InkStroke stroke : strokes) {
 			double width = stroke.getWidth();
-			g2d.setStroke(new BasicStroke((float) width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			g2d.setStroke(new BasicStroke((float) width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
 			final CatmullRomSpline crspline = new CatmullRomSpline();
 			final double[] x = stroke.getXSamples();
 			final double[] y = stroke.getYSamples();

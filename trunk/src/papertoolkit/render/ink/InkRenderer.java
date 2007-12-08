@@ -1,9 +1,7 @@
 package papertoolkit.render.ink;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.util.List;
@@ -177,6 +175,10 @@ public class InkRenderer {
 		setRenderingTechnique(new RenderingTechniqueCatmullRom());
 	}
 
+	public void useHybridRendering() {
+		setRenderingTechnique(new RenderingTechniqueHybrid());
+	}
+
 	/**
 	 * 
 	 */
@@ -195,6 +197,10 @@ public class InkRenderer {
 	 * 
 	 */
 	public void useQuadraticRendering() {
-		setRenderingTechnique(new RenderingTechniqueCatmullRom());
+		setRenderingTechnique(new RenderingTechniqueQuadratic());
+	}
+
+	public void setDebugRendering(boolean flag) {
+		renderingTechnique.setDebug(flag);
 	}
 }

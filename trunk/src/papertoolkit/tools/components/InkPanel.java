@@ -118,7 +118,7 @@ public class InkPanel extends JPanel {
 	public InkPanel(InkRenderer inkRenderer, Color bgColor) {
 		setBackground(bgColor);
 		renderer = inkRenderer;
-		renderer.useCatmullRomRendering();
+		renderer.useCatmullRomRendering(); // catmull-rom by default...
 
 		addMouseListeners();
 	}
@@ -397,4 +397,25 @@ public class InkPanel extends JPanel {
 	public void setScale(double theScale) {
 		inkScale = theScale;
 	}
+	
+	public void useLinearRendering() {
+		renderer.useLineRendering();
+	}
+	
+	public void useCatmullRomRendering() {
+		renderer.useCatmullRomRendering();
+	}
+
+	public void useHybridRendering() {
+		renderer.useHybridRendering();
+	}
+
+	public void useQuadraticRendering() {
+		renderer.useQuadraticRendering();
+	}
+
+	public void setDebugRendering(boolean flag) {
+		renderer.setDebugRendering(flag);
+	}
+
 }

@@ -284,6 +284,10 @@ public class InkStroke {
 	public double getWidth() {
 		return strokeWidth;
 	}
+	
+//	public double getWidthWithForce() {
+//		return strokeWidth * (avg / baseline);
+//	}
 
 	/**
 	 * @return

@@ -23,13 +23,19 @@ import papertoolkit.util.geometry.CatmullRomSpline;
  * 
  * @author <a href="http://graphics.stanford.edu/~ronyeh">Ron B Yeh</a> (ronyeh(AT)cs.stanford.edu)
  */
-class RenderingTechniqueHybrid implements RenderingTechnique {
+class RenderingTechniqueHybrid extends RenderingTechnique {
+
+	protected int largeStrokeThreshold = 25;
 
 	public void render(Graphics2D g2d, List<InkStroke> strokes) {
+		super.render(g2d, strokes);
+
+		DebugUtils.println("Hybrid");
+		
 		for (InkStroke stroke : strokes) {
 			double width = stroke.getWidth();
-			
-			g2d.setStroke(new BasicStroke((float) width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			final BasicStroke hybridStroke = new BasicStroke((float) width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+			g2d.setStroke(hybridStroke);
 
 			// this doubles as a good max velocity measure, since the samples come in at more or less a
 			// constant rate. If the max velocity is too high, we should probably use catmull rom.
@@ -37,7 +43,7 @@ class RenderingTechniqueHybrid implements RenderingTechnique {
 			// right now, we are hybridizing between strokes.
 			double maxDistanceBetweenSamples = InkUtils.getMaxDistanceBetweenSamples(stroke);
 
-			boolean largeStroke = maxDistanceBetweenSamples > 75;
+			boolean largeStroke = maxDistanceBetweenSamples > largeStrokeThreshold;
 			if (largeStroke) {
 				final CatmullRomSpline crspline = new CatmullRomSpline();
 				final double[] x = stroke.getXSamples();
