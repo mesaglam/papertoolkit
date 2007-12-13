@@ -67,6 +67,7 @@ public class InkFrame extends JFrame {
 			leftButton = new JButton("Previous");
 			leftButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					inkPanel.clear();
 					previous();
 				}
 
@@ -74,6 +75,7 @@ public class InkFrame extends JFrame {
 			rightButton = new JButton("Next");
 			rightButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					inkPanel.clear();
 					next();
 				}
 
